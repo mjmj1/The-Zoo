@@ -1,10 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Networks
@@ -12,6 +14,7 @@ namespace Networks
     public class ConnectionManager : MonoBehaviour
     {
         [SerializeField] Button startButton;
+        [SerializeField] TMP_InputField sessionField;
         
         private string _profileName;
         private string _sessionName;
@@ -34,7 +37,12 @@ namespace Networks
             _networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
             await UnityServices.InitializeAsync();
         }
-    
+
+        private void Start()
+        {
+            startButton.onClick.AddListener(OnStartButtonClicked);
+        }
+
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
         {
             if (_networkManager.LocalClient.IsSessionOwner)
@@ -49,32 +57,10 @@ namespace Networks
             {
                 Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
             }
-        }
 
-        private void OnGUI()
-        {
-            if (_state == ConnectionState.Connected)
-                return;
-
-            GUI.enabled = _state != ConnectionState.Connecting;
-
-            using (new GUILayout.HorizontalScope(GUILayout.Width(250)))
+            if (_networkManager.LocalClient.IsSessionOwner)
             {
-                GUILayout.Label("Profile Name", GUILayout.Width(100));
-                _profileName = GUILayout.TextField(_profileName);
-            }
-
-            using (new GUILayout.HorizontalScope(GUILayout.Width(250)))
-            {
-                GUILayout.Label("Session Name", GUILayout.Width(100));
-                _sessionName = GUILayout.TextField(_sessionName);
-            }
-
-            GUI.enabled = GUI.enabled && !string.IsNullOrEmpty(_profileName) && !string.IsNullOrEmpty(_sessionName);
-
-            if (GUILayout.Button("Create or Join Session"))
-            {
-                CreateOrJoinSessionAsync();
+                _networkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);    
             }
         }
 
@@ -106,6 +92,14 @@ namespace Networks
                 _state = ConnectionState.Disconnected;
                 Debug.LogException(e);
             }
+        }
+
+        private void OnStartButtonClicked()
+        {
+            _profileName = PlayerPrefs.GetString("ProfileName");
+            _sessionName = sessionField.text;
+            
+            _ = CreateOrJoinSessionAsync();
         }
     }
 }

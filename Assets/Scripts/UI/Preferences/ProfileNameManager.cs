@@ -29,6 +29,8 @@ namespace UI.Preferences
 
         private void OnProfileNameButtonClick()
         {
+            if (string.IsNullOrEmpty(profileNameField.text)) return;
+            
             SaveProfileName(profileNameField.text);
         }
 
