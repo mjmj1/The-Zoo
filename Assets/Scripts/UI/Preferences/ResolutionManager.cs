@@ -34,6 +34,15 @@ namespace UI.Preferences
         private readonly List<ResolutionData> _resolutionList = new ();
         private int _currentResolutionIndex;
         
+        void Start()
+        {
+            InitResolutionList();
+            SetUpResolutionDropdown();
+            
+            resolutionButton.onClick.AddListener(ResolutionBtnClick);
+            resolutionDropdown.onValueChanged.AddListener(DropboxOptionChanged);
+        }
+        
         void InitResolutionList()
         {
             foreach (var t in Screen.resolutions)
@@ -89,15 +98,8 @@ namespace UI.Preferences
         private void ResolutionBtnClick()
         {
             Screen.SetResolution(_resolutionList[_currentResolutionIndex].Resolution.width, _resolutionList[_currentResolutionIndex].Resolution.height, fullScreenToggle.isOn);
+            UIEventManager.OpenInfoWindow("해상도 변경이 완료되었습니다.");
         }
         
-        void Start()
-        {
-            InitResolutionList();
-            SetUpResolutionDropdown();
-            
-            resolutionButton.onClick.AddListener(ResolutionBtnClick);
-            resolutionDropdown.onValueChanged.AddListener(DropboxOptionChanged);
-        }
     }
 }

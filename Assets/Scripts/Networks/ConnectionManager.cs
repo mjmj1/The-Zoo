@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
+using Unity.Services.Lobbies;
+using Unity.Services.Lobbies.Models;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,7 +20,7 @@ namespace Networks
         [SerializeField] Button startButton;
         [SerializeField] TMP_InputField sessionField;
         
-        private string _profileName;
+        // private string _profileName;
         private string _sessionName;
         private int _maxPlayers = 8;
         private ConnectionState _state = ConnectionState.Disconnected;
@@ -29,18 +33,49 @@ namespace Networks
             Connecting,
             Connected,
         }
+        
+        public static async void SignInAnonymously(string profileName)
+        {
+            try
+            {
+                AuthenticationService.Instance.SwitchProfile(profileName);
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            catch (Exception e)
+            {
+                print(e.Message);
+            }
+        }
 
         private async void Awake()
         {
-            _networkManager = GetComponent<NetworkManager>();
-            _networkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-            _networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
-            await UnityServices.InitializeAsync();
+            try
+            {
+                _networkManager = GetComponent<NetworkManager>();
+                _networkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+                _networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
+                await UnityServices.InitializeAsync();
+            }
+            catch (Exception e)
+            {
+                print(e.Message);
+            }
         }
 
         private void Start()
         {
             startButton.onClick.AddListener(OnStartButtonClicked);
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Semicolon))
+            {
+                print($"_session.Name: {_session.Name}");
+                print($"_session.Id: {_session.Id}");
+                print($"_session.Code: {_session.Code}");
+                print($"_session.Players: {_session.Players}");
+            }
         }
 
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
@@ -60,7 +95,7 @@ namespace Networks
 
             if (_networkManager.LocalClient.IsSessionOwner)
             {
-                _networkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);    
+                _networkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
             }
         }
 
@@ -75,8 +110,8 @@ namespace Networks
 
             try
             {
-                AuthenticationService.Instance.SwitchProfile(_profileName);
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                /*AuthenticationService.Instance.SwitchProfile(_profileName);
+                await AuthenticationService.Instance.SignInAnonymouslyAsync();*/
 
                 var options = new SessionOptions() {
                     Name = _sessionName,
@@ -96,7 +131,6 @@ namespace Networks
 
         private void OnStartButtonClicked()
         {
-            _profileName = PlayerPrefs.GetString("ProfileName");
             _sessionName = sessionField.text;
             
             _ = CreateOrJoinSessionAsync();

@@ -32,13 +32,13 @@ namespace UI.Preferences
             if (string.IsNullOrEmpty(profileNameField.text)) return;
             
             SaveProfileName(profileNameField.text);
+
+            UIEventManager.OpenInfoWindow("닉네임 설정이 완료되었습니다.");
         }
 
         private void Start()
         {
             profileNameButton.onClick.AddListener(OnProfileNameButtonClick);
-            
-            gameObject.SetActive(false);
         }
 
         private void OnEnable()
