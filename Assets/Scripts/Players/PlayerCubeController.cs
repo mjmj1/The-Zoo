@@ -35,7 +35,6 @@ public class PlayerCubeControllerEditor : NetworkTransformEditor
 }
 #endif
 
-
 public class PlayerCubeController : NetworkTransform
 {
 #if UNITY_EDITOR
@@ -47,7 +46,7 @@ public class PlayerCubeController : NetworkTransform
     public float Speed = 10;
     public bool ApplyVerticalInputToZAxis;
     private Vector3 m_Motion;
-
+    
     private void Update()
     {
         // If not spawned or we don't have authority, then don't update

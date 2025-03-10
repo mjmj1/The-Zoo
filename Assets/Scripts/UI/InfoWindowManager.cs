@@ -16,7 +16,7 @@ namespace UI
         {
             for (var i = 0; i < 3; i++)
             {
-                var item = Instantiate(infoWindowPrefab, this.transform);
+                var item = Instantiate(infoWindowPrefab, transform);
                 _infoWindowPool.Enqueue(item);
                 item.SetActive(false);
             }
@@ -31,7 +31,7 @@ namespace UI
             }
             else
             {
-                item = Instantiate(infoWindowPrefab);
+                item = Instantiate(infoWindowPrefab, transform);
             }
 
             var msg = item.GetComponentInChildren<TextMeshProUGUI>();

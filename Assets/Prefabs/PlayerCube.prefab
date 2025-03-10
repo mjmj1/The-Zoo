@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 7601281950150145870}
   - component: {fileID: 5884640447956715888}
   - component: {fileID: 3155749932161914919}
+  - component: {fileID: -553120260605898663}
   m_Layer: 0
   m_Name: PlayerCube
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2878079559
+  GlobalObjectIdHash: 778152095
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -174,3 +175,16 @@ MonoBehaviour:
   PlayerCubeControllerPropertiesVisible: 1
   Speed: 10
   ApplyVerticalInputToZAxis: 0
+--- !u!114 &-553120260605898663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978094491091307183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2194f8c713669ee43bb4d435152522b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
