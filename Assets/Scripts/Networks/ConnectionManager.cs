@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
-using Unity.Services.Lobbies;
-using Unity.Services.Lobbies.Models;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,7 +17,7 @@ namespace Networks
         [SerializeField] Button startButton;
         [SerializeField] TMP_InputField sessionField;
         
-        // private string _profileName;
+        private string _profileName;
         private string _sessionName;
         private int _maxPlayers = 8;
         private ConnectionState _state = ConnectionState.Disconnected;
@@ -38,8 +35,23 @@ namespace Networks
         {
             try
             {
+                AuthenticationService.Instance.SignOut();
                 AuthenticationService.Instance.SwitchProfile(profileName);
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
+            }
+            catch (Exception e)
+            {
+                print(e.Message);
+            }
+        }
+
+        private async void GetPlayerInfo()
+        {
+            try
+            {
+                var playerInfo = await AuthenticationService.Instance.GetPlayerInfoAsync();
+                
+                print($"{playerInfo.Id}");
             }
             catch (Exception e)
             {
@@ -71,11 +83,18 @@ namespace Networks
         {
             if (Input.GetKeyDown(KeyCode.Semicolon))
             {
-                print($"_session.Name: {_session.Name}");
+                GetPlayerInfo();
+                
+                /*print($"_session.Name: {_session.Name}");
                 print($"_session.Id: {_session.Id}");
                 print($"_session.Code: {_session.Code}");
-                print($"_session.Players: {_session.Players}");
+                print($"_session.Players: {_session.Players}");*/
             }
+        }
+        
+        private void OnDestroy()
+        {
+            _session?.LeaveAsync();
         }
 
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
@@ -99,27 +118,18 @@ namespace Networks
             }
         }
 
-        private void OnDestroy()
-        {
-            _session?.LeaveAsync();
-        }
-
         private async Task CreateOrJoinSessionAsync()
         {
             _state = ConnectionState.Connecting;
 
             try
             {
-                /*AuthenticationService.Instance.SwitchProfile(_profileName);
-                await AuthenticationService.Instance.SignInAnonymouslyAsync();*/
-
                 var options = new SessionOptions() {
-                    Name = _sessionName,
                     MaxPlayers = _maxPlayers
                 }.WithDistributedAuthorityNetwork();
-
+                
                 _session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(_sessionName, options);
-
+                
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)
