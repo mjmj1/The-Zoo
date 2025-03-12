@@ -12,18 +12,9 @@ namespace UI.Sessions
         {
         }
 
-        // Update is called once per frame
         void Update()
         {
         
-        }
-        
-        internal async Task<IList<ISessionInfo>> QuerySessions()
-        {
-            var sessionQueryOptions = new QuerySessionsOptions();
-            //var m_SessionQueryResults = await MultiplayerService.Instance.QuerySessionsAsync(sessionQueryOptions).Result;
-            // return m_SessionQueryResults.Sessions;
-            return null;
         }
     }
 }
