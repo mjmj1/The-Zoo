@@ -7,6 +7,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -14,12 +15,12 @@ namespace Networks
 {
     public class ConnectionManager : MonoBehaviour
     {
-        [SerializeField] Button startButton;
-        [SerializeField] TMP_InputField sessionField;
+        [SerializeField] private TMP_InputField sessionNameinputField;
         
-        private string _profileName;
+        private string _playerName;
         private string _sessionName;
         private int _maxPlayers = 8;
+        
         private ConnectionState _state = ConnectionState.Disconnected;
         private ISession _session;
         private NetworkManager _networkManager;
@@ -31,31 +32,70 @@ namespace Networks
             Connected,
         }
         
-        public static async void SignInAnonymously(string profileName)
+        private static string GenerateRandomProfileName()
+        {
+            return "User_" + Guid.NewGuid().ToString("N").Substring(0, 8);
+        }
+        
+        private static string GenerateRandomSessionId()
+        {
+            return "Session_" + Guid.NewGuid().ToString("N").Substring(0, 8);
+        }
+        
+        public static async void SignInAnonymously()
         {
             try
             {
-                AuthenticationService.Instance.SignOut();
+                var profileName = GenerateRandomProfileName();
                 AuthenticationService.Instance.SwitchProfile(profileName);
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
+                
+                var playerInfo = await AuthenticationService.Instance.GetPlayerInfoAsync();
+                print($"{playerInfo}");
+                print($"{playerInfo.Id}");
             }
             catch (Exception e)
             {
                 print(e.Message);
             }
         }
-
-        private async void GetPlayerInfo()
+        
+        public static async Task<IList<ISessionInfo>> QuerySessions()
         {
+            var sessionQueryOptions = new QuerySessionsOptions();
+            var results = await MultiplayerService.Instance.QuerySessionsAsync(sessionQueryOptions);
+            return results.Sessions;
+        }
+        
+        private async Task CreateOrJoinSessionAsync()
+        {
+            _state = ConnectionState.Connecting;
+
             try
             {
-                var playerInfo = await AuthenticationService.Instance.GetPlayerInfoAsync();
+                var options = new SessionOptions() {
+                    Name = _sessionName,
+                    MaxPlayers = _maxPlayers,
+                    PlayerProperties = new()
+                    {
+                        {"PlayerName", new PlayerProperty(_playerName)}
+                    },
+                    SessionProperties = new()
+                    {
+                        {"SessionName", new SessionProperty(_sessionName)}
+                    }
+                }.WithDistributedAuthorityNetwork();
                 
-                print($"{playerInfo.Id}");
+                var sessionId = GenerateRandomSessionId();
+                
+                _session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(sessionId, options);
+                
+                _state = ConnectionState.Connected;
             }
             catch (Exception e)
             {
-                print(e.Message);
+                _state = ConnectionState.Disconnected;
+                Debug.LogException(e);
             }
         }
 
@@ -74,29 +114,31 @@ namespace Networks
             }
         }
 
-        private void Start()
-        {
-            startButton.onClick.AddListener(OnStartButtonClicked);
-        }
-
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Semicolon))
             {
-                GetPlayerInfo();
-                
-                /*print($"_session.Name: {_session.Name}");
+                print($"_session.Name: {_session.Name}");
                 print($"_session.Id: {_session.Id}");
                 print($"_session.Code: {_session.Code}");
-                print($"_session.Players: {_session.Players}");*/
+                print($"_session.Players: {_session.Players}");
             }
         }
         
-        private void OnDestroy()
+        private async void OnDestroy()
         {
-            _session?.LeaveAsync();
+            await _session?.LeaveAsync()!;
+            AuthenticationService.Instance.SignOut();
         }
 
+        public async void Connect()
+        {
+            _sessionName = sessionNameinputField.text;
+            _playerName = PlayerPrefs.GetString("PlayerName");
+
+            await CreateOrJoinSessionAsync();
+        }
+        
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
         {
             if (_networkManager.LocalClient.IsSessionOwner)
@@ -115,35 +157,8 @@ namespace Networks
             if (_networkManager.LocalClient.IsSessionOwner)
             {
                 _networkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+                print(_session.Properties["SessionName"]);
             }
-        }
-
-        private async Task CreateOrJoinSessionAsync()
-        {
-            _state = ConnectionState.Connecting;
-
-            try
-            {
-                var options = new SessionOptions() {
-                    MaxPlayers = _maxPlayers
-                }.WithDistributedAuthorityNetwork();
-                
-                _session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(_sessionName, options);
-                
-                _state = ConnectionState.Connected;
-            }
-            catch (Exception e)
-            {
-                _state = ConnectionState.Disconnected;
-                Debug.LogException(e);
-            }
-        }
-
-        private void OnStartButtonClicked()
-        {
-            _sessionName = sessionField.text;
-            
-            _ = CreateOrJoinSessionAsync();
         }
     }
 }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Networks;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 
@@ -8,15 +9,15 @@ namespace UI.Sessions
     public class SessionListWindow : MonoBehaviour
     {
         [SerializeField]
-        GameObject m_SessionItemPrefab;
+        GameObject sessionItemPrefab;
         
         [SerializeField]
-        GameObject m_ContentParent;
+        GameObject contentParent;
         
-        IList<GameObject> m_ListItems = new List<GameObject>();
-        IList<ISessionInfo> m_Sessions;
+        IList<GameObject> items = new List<GameObject>();
+        IList<ISessionInfo> sessions;
         
-        ISessionInfo m_SelectedSessionInfo;
+        ISessionInfo selectedSessionInfo;
         
         void Start()
         {
@@ -28,47 +29,40 @@ namespace UI.Sessions
             RefreshSessionList();
         }
         
-        internal async void RefreshSessionList()
+        private async void RefreshSessionList()
         {
             await UpdateSessions();
             
-            foreach (var listItem in m_ListItems)
+            foreach (var listItem in items)
             {
                 Destroy(listItem);
             }
             
-            if (m_Sessions == null)
+            if (sessions == null)
                 return;
             
-            foreach (var sessionInfo in m_Sessions)
+            foreach (var sessionInfo in sessions)
             {
-                var itemPrefab = Instantiate(m_SessionItemPrefab, m_ContentParent.transform);
+                var itemPrefab = Instantiate(sessionItemPrefab, contentParent.transform);
                 if (itemPrefab.TryGetComponent<SessionItem>(out var sessionItem))
                 {
                     sessionItem.SetSession(sessionInfo);
                     sessionItem.OnSessionSelected.AddListener(SelectSession);
                 }
-                m_ListItems.Add(itemPrefab);
+                items.Add(itemPrefab);
             }
         }
         
         void SelectSession(ISessionInfo sessionInfo)
         {
-            m_SelectedSessionInfo = sessionInfo;
+            selectedSessionInfo = sessionInfo;
             /*if (Session == null)
                 m_EnterSessionButton.interactable = true;*/
         }
         
         async Task UpdateSessions()
         {
-            m_Sessions = await QuerySessions();
-        }
-        
-        async Task<IList<ISessionInfo>> QuerySessions()
-        {
-            var sessionQueryOptions = new QuerySessionsOptions();
-            var results = await MultiplayerService.Instance.QuerySessionsAsync(sessionQueryOptions);
-            return results.Sessions;
+            sessions = await ConnectionManager.QuerySessions();
         }
     }
 }

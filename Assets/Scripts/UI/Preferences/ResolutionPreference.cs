@@ -1,45 +1,42 @@
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI.Preferences
 {
-    public class ResolutionManager : MonoBehaviour
+    public class ResolutionPreference : MonoBehaviour
     {
         private struct ResolutionData
         {
             public Resolution Resolution;
-            public readonly (int width, int height) AspectRatio;
+            private readonly (int width, int height) _aspectRatio;
 
             public ResolutionData(Resolution resolution, (int width, int height) aspectRatio)
             {
                 this.Resolution = resolution;
-                AspectRatio = aspectRatio;
+                _aspectRatio = aspectRatio;
             }
 
             public override string ToString()
             {
-                return $"{Resolution.width} x {Resolution.height}({AspectRatio.width}:{AspectRatio.height})";
+                return $"{Resolution.width} x {Resolution.height}({_aspectRatio.width}:{_aspectRatio.height})";
             }
         }
         
         [SerializeField] private TMP_Dropdown resolutionDropdown;
         [SerializeField] private Toggle fullScreenToggle;
-        [SerializeField] private Button resolutionButton;
+        [SerializeField] private Button resolutionSaveButton;
 
-        private readonly List<ResolutionData> _resolutionList = new ();
+        private readonly List<ResolutionData> resolutions = new ();
         private int _currentResolutionIndex;
         
         void Start()
         {
             InitResolutionList();
-            SetUpResolutionDropdown();
+            UpdateResolutionDropdown();
             
-            resolutionButton.onClick.AddListener(ResolutionBtnClick);
+            resolutionSaveButton.onClick.AddListener(OnResolutionSaveButtonClicked);
             resolutionDropdown.onValueChanged.AddListener(DropboxOptionChanged);
         }
         
@@ -54,23 +51,23 @@ namespace UI.Preferences
                 if (t.width * 9 == t.height * 16)
                 {
                     ResolutionData data = new(t, (16, 9));
-                    _resolutionList.Add(data);
+                    resolutions.Add(data);
                 }
                 else if (t.width * 10 == t.height * 16)
                 {
                     ResolutionData data = new(t, (16, 10));
-                    _resolutionList.Add(data);
+                    resolutions.Add(data);
                 }
             }
         }
 
-        void SetUpResolutionDropdown()
+        void UpdateResolutionDropdown()
         {
             resolutionDropdown.ClearOptions();
 
-            var optionNum = 0;
+            var currentIndex = 0;
             
-            foreach (var item in _resolutionList)
+            foreach (var item in resolutions)
             {
                 var option = new TMP_Dropdown.OptionData
                 {
@@ -81,10 +78,10 @@ namespace UI.Preferences
                 
                 if (item.Resolution.width == Screen.width && item.Resolution.height == Screen.height)
                 {
-                    resolutionDropdown.value = optionNum;
+                    resolutionDropdown.value = currentIndex;
                 }
                 
-                optionNum++;
+                currentIndex++;
             }
             
             resolutionDropdown.RefreshShownValue();
@@ -95,10 +92,10 @@ namespace UI.Preferences
             _currentResolutionIndex = x;
         }
         
-        private void ResolutionBtnClick()
+        private void OnResolutionSaveButtonClicked()
         {
-            Screen.SetResolution(_resolutionList[_currentResolutionIndex].Resolution.width, _resolutionList[_currentResolutionIndex].Resolution.height, fullScreenToggle.isOn);
-            UIEventManager.OpenInfoWindow("해상도 변경이 완료되었습니다.");
+            Screen.SetResolution(resolutions[_currentResolutionIndex].Resolution.width, resolutions[_currentResolutionIndex].Resolution.height, fullScreenToggle.isOn);
+            TitleUIManager.OpenInformationPopup("해상도 변경이 완료되었습니다.");
         }
         
     }
