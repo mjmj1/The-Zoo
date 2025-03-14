@@ -190,6 +190,8 @@ namespace Networks
             
             _playerName = PlayerPrefs.GetString("PlayerName");
 
+            GameManager.Instance.title = sessionNameInputField.text;
+
             await CreateOrJoinSessionAsync();
         }
 
@@ -198,6 +200,8 @@ namespace Networks
             if (_sessionCode.IsNullOrEmpty()) return;
             
             _playerName = PlayerPrefs.GetString("PlayerName");
+
+            GameManager.Instance.title = sessionNameInputField.text;
 
             await JoinSessionByCodeAsync(_sessionCode);
         }
