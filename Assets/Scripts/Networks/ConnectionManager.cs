@@ -9,14 +9,17 @@ using Unity.Services.Multiplayer;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using WebSocketSharp;
 
 namespace Networks
 {
     public class ConnectionManager : MonoBehaviour
     {
-        [SerializeField] private TMP_InputField sessionInputField;
+        [SerializeField] private TMP_InputField sessionNameInputField;
+        [SerializeField] private TMP_InputField sessionCodeInputField;
 
         private string _sessionName;
+        private string _sessionCode;
         private string _playerName;
         
         private int _maxPlayers = 8;
@@ -89,7 +92,7 @@ namespace Networks
             }
         }
         
-        private async Task JoinSessionAsync()
+        private async Task JoinSessionByCodeAsync(string code)
         {
             _state = ConnectionState.Connecting;
 
@@ -102,7 +105,7 @@ namespace Networks
                     }
                 };
                 
-                _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(_sessionName, options);
+                _session = await MultiplayerService.Instance.JoinSessionByCodeAsync(code, options);
                 
                 _state = ConnectionState.Connected;
             }
@@ -160,7 +163,8 @@ namespace Networks
 
         private void Start()
         {
-            sessionInputField.onEndEdit.AddListener(OnSessionInputFieldEndEdit);
+            sessionNameInputField.onEndEdit.AddListener(OnSessionNameInputFieldEndEdit);
+            sessionCodeInputField.onEndEdit.AddListener(OnSessionCodeInputFieldEndEdit);
         }
 
         private void Update()
@@ -182,16 +186,30 @@ namespace Networks
 
         public async void Connect()
         {
+            if (_sessionName.IsNullOrEmpty()) return;
+            
             _playerName = PlayerPrefs.GetString("PlayerName");
 
-            print(_sessionName);
-            print(_playerName);
-            // await CreateOrJoinSessionAsync();
+            await CreateOrJoinSessionAsync();
+        }
+
+        public async void Join()
+        {
+            if (_sessionCode.IsNullOrEmpty()) return;
+            
+            _playerName = PlayerPrefs.GetString("PlayerName");
+
+            await JoinSessionByCodeAsync(_sessionCode);
         }
         
-        private void OnSessionInputFieldEndEdit(string arg0)
+        private void OnSessionNameInputFieldEndEdit(string arg0)
         {
             _sessionName = arg0;
+        }
+        
+        private void OnSessionCodeInputFieldEndEdit(string arg0)
+        {
+            _sessionCode = arg0;
         }
 
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
