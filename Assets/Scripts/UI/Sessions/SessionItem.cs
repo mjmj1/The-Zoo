@@ -3,39 +3,41 @@ using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 public class SessionItem : MonoBehaviour, ISelectHandler
 {
     [SerializeField]
-    TMP_Text m_SessionNameText;
+    TMP_Text sessionNameText;
         
     [SerializeField]
-    TMP_Text m_SessionPlayersText;
+    TMP_Text sessionPlayersText;
     
-    public UnityEvent<ISessionInfo> OnSessionSelected;
+    public UnityEvent<ISessionInfo> onSessionSelected;
         
-    ISessionInfo m_SessionInfo;
+    ISessionInfo _sessionInfo;
 
     public void SetSession(ISessionInfo sessionInfo)
     {
-        m_SessionInfo = sessionInfo;
-        SetSessionName(m_SessionInfo.Id);
-        var currentPlayers = m_SessionInfo.MaxPlayers - m_SessionInfo.AvailableSlots;
-        SetPlayers(currentPlayers, m_SessionInfo.MaxPlayers);
-    }
-        
-    void SetSessionName(string sessionName)
-    {
-        m_SessionNameText.text = sessionName;
-    }
-        
-    void SetPlayers(int currentPlayers, int maxPlayers)
-    {
-        m_SessionPlayersText.text = $"{currentPlayers}/{maxPlayers}";
+        this._sessionInfo = sessionInfo;
+        UpdateSessionName(this._sessionInfo.Name);
+        var currentPlayers = this._sessionInfo.MaxPlayers - this._sessionInfo.AvailableSlots;
+        UpdatePlayersCount(currentPlayers, this._sessionInfo.MaxPlayers);
     }
 
     public void OnSelect(BaseEventData eventData)
     {
-        OnSessionSelected?.Invoke(m_SessionInfo);
+        print("OnSelect");
+        onSessionSelected?.Invoke(_sessionInfo);
+    }
+    
+    private void UpdateSessionName(string sessionName)
+    {
+        sessionNameText.text = sessionName;
+    }
+
+    private void UpdatePlayersCount(int currentPlayers, int maxPlayers)
+    {
+        sessionPlayersText.text = $"{currentPlayers}/{maxPlayers}";
     }
 }
