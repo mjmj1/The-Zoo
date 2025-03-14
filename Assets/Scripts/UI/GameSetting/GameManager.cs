@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     public string title;
+    public int headCount;
 
     private void Awake()
     {
@@ -18,4 +19,7 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    
+
 }

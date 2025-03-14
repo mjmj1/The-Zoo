@@ -1,4 +1,6 @@
 using TMPro;
+using Unity.Netcode;
+using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,8 +15,18 @@ public class GameSetupManager : MonoBehaviour
     [SerializeField] private Button completeBtn;
     [SerializeField] private Button cancelBtn;
 
+    GameObject[] players;
+
+    private void Update()
+    {
+        players = GameObject.FindGameObjectsWithTag(Strings.PLAYER);
+        GameManager.Instance.headCount = players.Length;
+    }
+
     public void OnSettingBtnClick()
     {
+        Debug.Log("players.Length : " + players.Length);
+
         roomNameIpf.text = GameManager.Instance.title;
 
         if (gameSetupPopup.activeSelf)
@@ -29,7 +41,7 @@ public class GameSetupManager : MonoBehaviour
 
     public void OnCompleteBtnClick()
     {
-
+        GameManager.Instance.headCount = headCountDrd.value;
         gameSetupPopup.SetActive(false);
     }
 
