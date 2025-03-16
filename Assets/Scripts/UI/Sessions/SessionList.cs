@@ -32,60 +32,67 @@ namespace UI.Sessions
         
         void Start()
         {
-            RefreshSessionList();
+            RefreshSessionListAsync();
             
             joinSessionButton.interactable = false;
             
-            joinSessionButton.onClick.AddListener(OnJoinButtonClicked);
-            createSessionButton.onClick.AddListener(OnCreateButtonClicked);
-            refreashSessionListButton.onClick.AddListener(OnRefreshButtonClicked);
+            joinSessionButton.onClick.AddListener(OnJoinButtonClick);
+            createSessionButton.onClick.AddListener(OnCreateButtonClick);
+            refreashSessionListButton.onClick.AddListener(OnRefreshButtonClick);
         }
 
         private void OnDestroy()
         {
-            joinSessionButton.onClick.RemoveListener(OnJoinButtonClicked);
-            createSessionButton.onClick.RemoveListener(OnCreateButtonClicked);
-            refreashSessionListButton.onClick.RemoveListener(OnRefreshButtonClicked);
+            joinSessionButton.onClick.RemoveListener(OnJoinButtonClick);
+            createSessionButton.onClick.RemoveListener(OnCreateButtonClick);
+            refreashSessionListButton.onClick.RemoveListener(OnRefreshButtonClick);
         }
 
-        public async void OnJoinButtonClicked()
+        public async void OnJoinButtonClick()
         {
             if (_selectedSessionInfo == null) return;
             
             await MultiplayerService.Instance.JoinSessionByIdAsync(_selectedSessionInfo.Id);
         }
 
-        public void OnCreateButtonClicked()
+        public void OnCreateButtonClick()
         {
             
         }
         
-        public void OnRefreshButtonClicked()
+        public void OnRefreshButtonClick()
         {
-            RefreshSessionList();
+            RefreshSessionListAsync();
         }
         
-        private async void RefreshSessionList()
+        private async void RefreshSessionListAsync()
         {
-            await UpdateSessions();
-            
-            foreach (var listItem in items)
+            try
             {
-                Destroy(listItem);
-            }
+                await UpdateSessionsAsync();
             
-            if (sessions == null)
-                return;
-            
-            foreach (var sessionInfo in sessions)
-            {
-                var itemPrefab = Instantiate(sessionItemPrefab, contentParent.transform);
-                if (itemPrefab.TryGetComponent<SessionItem>(out var sessionItem))
+                foreach (var listItem in items)
                 {
-                    sessionItem.SetSession(sessionInfo);
-                    sessionItem.onSessionSelected.AddListener(SelectSession);
+                    Destroy(listItem);
                 }
-                items.Add(itemPrefab);
+            
+                if (sessions == null)
+                    return;
+            
+                foreach (var sessionInfo in sessions)
+                {
+                    var itemPrefab = Instantiate(sessionItemPrefab, contentParent.transform);
+                    if (itemPrefab.TryGetComponent<SessionItem>(out var sessionItem))
+                    {
+                        sessionItem.SetSession(sessionInfo);
+                        sessionItem.onSessionSelected.AddListener(SelectSession);
+                    }
+                    items.Add(itemPrefab);
+                }
+            }
+            catch (Exception e)
+            {
+                print(e.Message);
             }
         }
 
@@ -96,7 +103,7 @@ namespace UI.Sessions
                 joinSessionButton.interactable = true;
         }
 
-        private async Task UpdateSessions()
+        private async Task UpdateSessionsAsync()
         {
             sessions = await ConnectionManager.QuerySessions();
         }

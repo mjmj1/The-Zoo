@@ -9,6 +9,7 @@ using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using WebSocketSharp;
+using static Static.Strings;
 
 namespace Networks
 {
@@ -63,7 +64,7 @@ namespace Networks
             return results.Sessions;
         }
         
-        public async void UpdateSession(string sessionName, int maxPlayers)
+        public async void UpdateSessionAsync(string sessionName, int maxPlayers)
         {
             try
             {
@@ -92,7 +93,7 @@ namespace Networks
                     MaxPlayers = _maxPlayers,
                     PlayerProperties = new()
                     {
-                        {"PlayerName", new PlayerProperty(_playerName)}
+                        {PLAYERNAME, new PlayerProperty(_playerName)}
                     }
                 }.WithDistributedAuthorityNetwork();
                 
@@ -116,7 +117,7 @@ namespace Networks
                 var options = new JoinSessionOptions() {
                     PlayerProperties = new()
                     {
-                        {"PlayerName", new PlayerProperty(_playerName)}
+                        {PLAYERNAME, new PlayerProperty(_playerName)}
                     }
                 };
                 
@@ -142,7 +143,7 @@ namespace Networks
                     MaxPlayers = _maxPlayers,
                     PlayerProperties = new()
                     {
-                        {"PlayerName", new PlayerProperty(_playerName)}
+                        {PLAYERNAME, new PlayerProperty(_playerName)}
                     }
                 }.WithDistributedAuthorityNetwork();
                 
@@ -195,7 +196,7 @@ namespace Networks
         {
             if (_sessionName.IsNullOrEmpty()) return;
             
-            _playerName = PlayerPrefs.GetString("PlayerName");
+            _playerName = PlayerPrefs.GetString(PLAYERNAME);
             
             await CreateOrJoinSessionAsync();
         }
@@ -204,7 +205,7 @@ namespace Networks
         {
             if (_sessionCode.IsNullOrEmpty()) return;
             
-            _playerName = PlayerPrefs.GetString("PlayerName");
+            _playerName = PlayerPrefs.GetString(PLAYERNAME);
 
             await JoinSessionByCodeAsync(_sessionCode);
         }

@@ -1,7 +1,7 @@
 using Networks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
+using static Static.Strings;
 
 namespace UI
 {
@@ -31,9 +31,9 @@ namespace UI
         }
 
         
-        public void OnPlayerNameSaveButtonClicked()
+        public void OnPlayerNameSaveButtonClick()
         {
-            PlayerPrefs.SetString("PlayerName", _playerNameInputField.text);
+            PlayerPrefs.SetString(PLAYERNAME, _playerNameInputField.text);
             
             playerNameSetup.SetActive(false);
             gameStart.SetActive(true);
@@ -42,12 +42,12 @@ namespace UI
             ConnectionManager.SignInAnonymously();
         }
         
-        public void OnPreferencesButtonClicked()
+        public void OnPreferencesButtonClick()
         {
             preferences.SetActive(!preferences.activeSelf);
         }
 
-        public void OnSessionListButtonClicked()
+        public void OnSessionListButtonClick()
         {
             sessionsList.SetActive(!sessionsList.activeSelf);
         }

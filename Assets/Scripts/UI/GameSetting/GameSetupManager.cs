@@ -1,3 +1,4 @@
+using Static;
 using TMPro;
 using UI.Sessions;
 using Unity.Services.Multiplayer;

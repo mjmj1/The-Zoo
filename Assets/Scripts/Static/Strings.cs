@@ -1,6 +1,10 @@
 using UnityEngine;
 
-public class Strings : MonoBehaviour
+namespace Static
 {
-    public static string PLAYER = "Player";
+    public class Strings : MonoBehaviour
+    {
+        public static string PLAYER = "Player";
+        public static string PLAYERNAME = "PlayerName";
+    }
 }

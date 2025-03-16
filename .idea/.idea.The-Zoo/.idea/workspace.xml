@@ -5,14 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Title.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Title.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetting/GameManager.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetting/GameManager.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetting/GameSetupManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetting/GameSetupManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/SessionItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/SessionItem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.services.vivox/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.services.vivox/Settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Preferences/PlayerNamePreference.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Preferences/PlayerNamePreference.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Preferences/ResolutionPreference.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Preferences/ResolutionPreference.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/SessionList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/SessionList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/TitleUIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/TitleUIManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +176,7 @@
       <workItem from="1741789216773" duration="4839000" />
       <workItem from="1741794310454" duration="990000" />
       <workItem from="1741874632097" duration="5522000" />
-      <workItem from="1742108030614" duration="8965000" />
+      <workItem from="1742108030614" duration="10483000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />
