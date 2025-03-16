@@ -475,7 +475,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 683486681}
         m_TargetAssemblyTypeName: GameSetupManager, Assembly-CSharp
-        m_MethodName: OnCancelBtnClick
+        m_MethodName: OnCancelButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4244,7 +4244,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 683486681}
         m_TargetAssemblyTypeName: GameSetupManager, Assembly-CSharp
-        m_MethodName: OnSettingBtnClick
+        m_MethodName: OnSettingButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4485,7 +4485,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 683486681}
         m_TargetAssemblyTypeName: GameSetupManager, Assembly-CSharp
-        m_MethodName: OnCompleteBtnClick
+        m_MethodName: OnCompleteButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
