@@ -1,5 +1,5 @@
 using TMPro;
-using UI.Sessions;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +23,12 @@ public class GameSetupManager : MonoBehaviour
         _gameObjects = GameObject.FindGameObjectsWithTag(Strings.PLAYER);
     }
 
+    private void Update()
+    {
+        // players = _gameObjects;
+        // GameManager.Instance.headCount = players.Length;
+    }
+
     public void OnSettingBtnClick()
     {
         Debug.Log("players.Length : " + players.Length);
@@ -41,6 +47,7 @@ public class GameSetupManager : MonoBehaviour
 
     public void OnCompleteBtnClick()
     {
+        // GameManager.Instance.headCount = headCountDrd.value;
         gameSetupPopup.SetActive(false);
     }
 
