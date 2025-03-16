@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using Networks;
+using Unity.Netcode;
 using UnityEngine;
+using static Static.Strings;
 
 namespace UI.PlayerList
 {
@@ -8,48 +11,58 @@ namespace UI.PlayerList
         [SerializeField]
         GameObject playerItemPrefab;
     
-        public IList<GameObject> playerItems = new List<GameObject>();
-    
+        IDictionary<string, GameObject> _playerDict = new Dictionary<string, GameObject>();
+        
         void Start()
         {
-            GameManager.Instance.connectionManager.NetworkManager.SceneManager.OnLoadComplete +=
-                (id, sceneName, mode) =>
-                {
-                    PlayerJoined("asd");
-                };
+            InitializePlayers();
             
-            //GameManager.Instance.connectionManager.Session.PlayerJoined += PlayerJoined;
+            GameManager.Instance.connectionManager.Session.PlayerJoined += PlayerJoined;
+            GameManager.Instance.connectionManager.Session.PlayerLeaving += PlayerLeft;
         }
-        
-        private void PlayerJoined(string playerId)
+
+        private void InitializePlayers()
         {
-            foreach (var item in playerItems)
-            {
-                Destroy(item);
-            }
-
-            var playerPrefab = Instantiate(playerItemPrefab, transform.parent);
-                
-            if (playerPrefab.TryGetComponent<PlayerItem>(out var playerItem))
-            {
-                playerItem.SetPlayerName(playerId);
-            }
+            var session = GameManager.Instance.connectionManager.Session;
             
-            playerItems.Add(playerPrefab);
-            
-            /*var players = GameManager.Instance.connectionManager.Session.Players;
-
-            foreach (var player in players)
+            foreach (var player in session.Players)
             {
                 var item = Instantiate(playerItemPrefab, transform);
                 
                 if (item.TryGetComponent<PlayerItem>(out var playerItem))
                 {
-                    playerItem.SetPlayerName(player.Id);
+                    playerItem.SetPlayerName(player.Properties[PLAYERNAME].Value);
                 }
                 
-                playerItems.Add(item);
-            }*/
+                _playerDict.Add(player.Id, item);
+            }
+        }
+        private void PlayerJoined(string playerId)
+        {
+            var session = GameManager.Instance.connectionManager.Session;
+
+            foreach (var player in session.Players)
+            {
+                if (player.Id != playerId) continue;
+                
+                var item = Instantiate(playerItemPrefab, transform);
+            
+                if (item.TryGetComponent<PlayerItem>(out var playerItem))
+                {
+                    playerItem.SetPlayerName(player.Properties[PLAYERNAME].Value);
+                }
+                
+                _playerDict.Add(playerId, item);
+                    
+                return;
+            }
+        }
+
+        private void PlayerLeft(string playerId)
+        {
+            var item = _playerDict[playerId];
+            Destroy(item);
+            _playerDict.Remove(playerId);
         }
     }
 }

@@ -51,8 +51,8 @@ namespace UI.Sessions
         public async void OnJoinButtonClick()
         {
             if (_selectedSessionInfo == null) return;
-            
-            await MultiplayerService.Instance.JoinSessionByIdAsync(_selectedSessionInfo.Id);
+
+            await GameManager.Instance.connectionManager.JoinSessionByIdAsync(_selectedSessionInfo.Id);
         }
 
         public void OnCreateButtonClick()
@@ -105,7 +105,7 @@ namespace UI.Sessions
 
         private async Task UpdateSessionsAsync()
         {
-            sessions = await ConnectionManager.QuerySessions();
+            sessions = await ConnectionManager.QuerySessionsAsync();
         }
     }
 }

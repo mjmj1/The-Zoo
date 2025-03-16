@@ -11,8 +11,6 @@ namespace UI.Preferences
         [SerializeField] private TMP_InputField playerNameInputField;
         [SerializeField] private Button playerNameSaveButton;
         
-        
-        
         void Start()
         {
             playerNameSaveButton.onClick.AddListener(OnProfileNameButtonClick);

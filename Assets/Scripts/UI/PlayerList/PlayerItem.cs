@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,9 +13,9 @@ namespace UI.PlayerList
         [SerializeField]
         Image HostIcon;
 
-        public void SetPlayerName(string name)
+        public void SetPlayerName(string playerName)
         {
-            PlayerNameText.text = name;
+            PlayerNameText.text = playerName;
         }
     }
 }

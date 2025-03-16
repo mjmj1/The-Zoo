@@ -1,6 +1,7 @@
 using Networks;
 using TMPro;
 using UnityEngine;
+using WebSocketSharp;
 using static Static.Strings;
 
 namespace UI
@@ -33,13 +34,15 @@ namespace UI
         
         public void OnPlayerNameSaveButtonClick()
         {
+            if(_playerNameInputField.text.IsNullOrEmpty()) return;
+            
             PlayerPrefs.SetString(PLAYERNAME, _playerNameInputField.text);
             
             playerNameSetup.SetActive(false);
             gameStart.SetActive(true);
             preferencesButton.SetActive(true);
 
-            ConnectionManager.SignInAnonymously();
+            ConnectionManager.SignInAnonymouslyAsync();
         }
         
         public void OnPreferencesButtonClick()
