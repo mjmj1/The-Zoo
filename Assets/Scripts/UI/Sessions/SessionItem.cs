@@ -27,7 +27,6 @@ public class SessionItem : MonoBehaviour, ISelectHandler
 
     public void OnSelect(BaseEventData eventData)
     {
-        print("OnSelect");
         onSessionSelected?.Invoke(_sessionInfo);
     }
     
