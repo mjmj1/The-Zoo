@@ -27,7 +27,7 @@ namespace UI.PlayerList
             {
                 Destroy(item);
             }
-
+            /*
             var playerPrefab = Instantiate(playerItemPrefab, transform.parent);
                 
             if (playerPrefab.TryGetComponent<PlayerItem>(out var playerItem))
@@ -36,7 +36,7 @@ namespace UI.PlayerList
             }
             
             playerItems.Add(playerPrefab);
-            
+            */
             /*var players = GameManager.Instance.connectionManager.Session.Players;
 
             foreach (var player in players)
