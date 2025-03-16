@@ -16,18 +16,24 @@ public class GameSetupManager : MonoBehaviour
     [SerializeField] private Button cancelBtn;
 
     GameObject[] players;
+    private GameObject[] _gameObjects;
+
+    private void Start()
+    {
+        _gameObjects = GameObject.FindGameObjectsWithTag(Strings.PLAYER);
+    }
 
     private void Update()
     {
-        players = GameObject.FindGameObjectsWithTag(Strings.PLAYER);
-        GameManager.Instance.headCount = players.Length;
+        // players = _gameObjects;
+        // GameManager.Instance.headCount = players.Length;
     }
 
     public void OnSettingBtnClick()
     {
         Debug.Log("players.Length : " + players.Length);
 
-        roomNameIpf.text = GameManager.Instance.title;
+        // roomNameIpf.text = GameManager.Instance.title;
 
         if (gameSetupPopup.activeSelf)
         {
@@ -41,7 +47,7 @@ public class GameSetupManager : MonoBehaviour
 
     public void OnCompleteBtnClick()
     {
-        GameManager.Instance.headCount = headCountDrd.value;
+        // GameManager.Instance.headCount = headCountDrd.value;
         gameSetupPopup.SetActive(false);
     }
 
