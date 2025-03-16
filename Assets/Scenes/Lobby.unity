@@ -403,7 +403,7 @@ GameObject:
   - component: {fileID: 245786243}
   - component: {fileID: 245786242}
   m_Layer: 5
-  m_Name: CancelBtn
+  m_Name: Cancel Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -854,7 +854,7 @@ GameObject:
   - component: {fileID: 368899020}
   - component: {fileID: 368899019}
   m_Layer: 5
-  m_Name: LevelDrd
+  m_Name: Level Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1310,7 +1310,7 @@ GameObject:
   - component: {fileID: 447179766}
   - component: {fileID: 447179765}
   m_Layer: 5
-  m_Name: RoomNameTxt
+  m_Name: Room Name Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1765,7 +1765,7 @@ GameObject:
   - component: {fileID: 582317798}
   - component: {fileID: 582317797}
   m_Layer: 5
-  m_Name: RatioTxt
+  m_Name: Ratio Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1901,7 +1901,7 @@ GameObject:
   - component: {fileID: 654995054}
   - component: {fileID: 654995053}
   m_Layer: 5
-  m_Name: GameSetupPopup
+  m_Name: Game Setup Popup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2073,7 +2073,7 @@ GameObject:
   - component: {fileID: 683486682}
   - component: {fileID: 683486681}
   m_Layer: 0
-  m_Name: GameSetupManager
+  m_Name: Game Setup Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2092,12 +2092,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameSetupPopup: {fileID: 654995052}
-  roomNameIpf: {fileID: 1431354395}
-  headCountDrd: {fileID: 1748542409}
-  levelDrd: {fileID: 368899019}
-  ratioDrd: {fileID: 918602347}
-  completeBtn: {fileID: 1267875819}
-  cancelBtn: {fileID: 245786242}
+  _roomNameInputfield: {fileID: 1431354395}
+  _headCountDropdown: {fileID: 1748542409}
+  _levelDropdown: {fileID: 368899019}
+  _ratioDropdown: {fileID: 918602347}
+  completeButton: {fileID: 1267875819}
+  cancelButton: {fileID: 245786242}
 --- !u!4 &683486682
 Transform:
   m_ObjectHideFlags: 0
@@ -2453,7 +2453,7 @@ GameObject:
   - component: {fileID: 801738767}
   - component: {fileID: 801738766}
   m_Layer: 5
-  m_Name: LevelTxt
+  m_Name: Level Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2911,7 +2911,7 @@ GameObject:
   - component: {fileID: 918602348}
   - component: {fileID: 918602347}
   m_Layer: 5
-  m_Name: RatioDrd
+  m_Name: Ratio Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4172,12 +4172,12 @@ GameObject:
   - component: {fileID: 1216503345}
   - component: {fileID: 1216503344}
   m_Layer: 5
-  m_Name: GameSettingBtn
+  m_Name: Game Setting Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1216503343
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4413,7 +4413,7 @@ GameObject:
   - component: {fileID: 1267875820}
   - component: {fileID: 1267875819}
   m_Layer: 5
-  m_Name: CompleteBtn
+  m_Name: Complete Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4776,7 +4776,7 @@ GameObject:
   - component: {fileID: 1431354396}
   - component: {fileID: 1431354395}
   m_Layer: 5
-  m_Name: RoomNameIpf
+  m_Name: Room Name InputField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5216,7 +5216,7 @@ GameObject:
   - component: {fileID: 1569870986}
   - component: {fileID: 1569870985}
   m_Layer: 5
-  m_Name: GameSetupTxt
+  m_Name: Game Setup Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5906,7 +5906,7 @@ GameObject:
   - component: {fileID: 1748542410}
   - component: {fileID: 1748542409}
   m_Layer: 5
-  m_Name: HeadCountDrd
+  m_Name: Head Count Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6388,7 +6388,7 @@ GameObject:
   - component: {fileID: 1986767278}
   - component: {fileID: 1986767277}
   m_Layer: 5
-  m_Name: HeadCountTxt
+  m_Name: Head Count Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

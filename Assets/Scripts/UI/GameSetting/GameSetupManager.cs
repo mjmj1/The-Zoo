@@ -8,12 +8,12 @@ public class GameSetupManager : MonoBehaviour
 {
     [SerializeField] private GameObject gameSetupPopup;
 
-    [SerializeField] private TMP_InputField roomNameIpf;
-    [SerializeField] private TMP_Dropdown headCountDrd;
-    [SerializeField] private TMP_Dropdown levelDrd;
-    [SerializeField] private TMP_Dropdown ratioDrd;
-    [SerializeField] private Button completeBtn;
-    [SerializeField] private Button cancelBtn;
+    [SerializeField] private TMP_InputField _roomNameInputfield;
+    [SerializeField] private TMP_Dropdown _headCountDropdown;
+    [SerializeField] private TMP_Dropdown _levelDropdown;
+    [SerializeField] private TMP_Dropdown _ratioDropdown;
+    [SerializeField] private Button completeButton;
+    [SerializeField] private Button cancelButton;
 
     GameObject[] players;
     private GameObject[] _gameObjects;
@@ -23,7 +23,7 @@ public class GameSetupManager : MonoBehaviour
         _gameObjects = GameObject.FindGameObjectsWithTag(Strings.PLAYER);
     }
 
-    public void OnSettingBtnClick()
+    public void OnSettingButtonClick()
     {
         Debug.Log("players.Length : " + players.Length);
 
@@ -39,12 +39,12 @@ public class GameSetupManager : MonoBehaviour
         }
     }
 
-    public void OnCompleteBtnClick()
+    public void OnCompleteButtonClick()
     {
         gameSetupPopup.SetActive(false);
     }
 
-    public void OnCancelBtnClick()
+    public void OnCancelButtonClick()
     {
         gameSetupPopup.SetActive(false);
     }
