@@ -16,7 +16,7 @@ public class GameSetupManager : MonoBehaviour
     [SerializeField] private TMP_Dropdown _ratioDropdown;
     [SerializeField] private Button _completeButton;
     [SerializeField] private Button _cancelButton;
-    [SerializeField] private GameObject _sessionPlayerList;
+    [SerializeField] private GameObject _warningPopup;
 
     GameObject[] players;
     private GameObject[] _gameObjects;
@@ -26,19 +26,6 @@ public class GameSetupManager : MonoBehaviour
     private void Start()
     {
         _gameObjects = GameObject.FindGameObjectsWithTag(Strings.PLAYER);
-    }
-
-    public void OnPlayerListButtonClick()
-    {
-        if(_sessionPlayerList.activeSelf)
-        {
-            _sessionPlayerList.SetActive(false);
-        }
-        else
-        {
-            _sessionPlayerList.SetActive(true);
-        }
-        
     }
 
     public void OnSettingButtonClick()
@@ -57,12 +44,12 @@ public class GameSetupManager : MonoBehaviour
 
     public void OnCompleteButtonClick()
     {
-        // complete을 누르면 인원변동 사항이 적용 되어야 함
+        // complete을 누르면 인원변동 사항이 적용 됨
         connectionManager = GameObject.Find("NetworkManager").GetComponent<ConnectionManager>();
         Debug.Log("limit player : " + _headCountDropdown.options[_headCountDropdown.value].text);
         int maxPlayers = int.Parse(_headCountDropdown.options[_headCountDropdown.value].text);
 
-        connectionManager.UpdateSession("test", maxPlayers);
+        connectionManager.UpdateSessionAsync("test", maxPlayers);
 
         _gameSetupPopup.SetActive(false);
     }
@@ -70,5 +57,10 @@ public class GameSetupManager : MonoBehaviour
     public void OnCancelButtonClick()
     {
         _gameSetupPopup.SetActive(false);
+    }
+
+    public void OnCheckButtonClick()
+    {
+        _warningPopup.SetActive(false);
     }
 }
