@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Static.Strings;
 
 namespace UI.Preferences
 {
@@ -10,36 +11,34 @@ namespace UI.Preferences
         [SerializeField] private TMP_InputField playerNameInputField;
         [SerializeField] private Button playerNameSaveButton;
         
-        private const string Playernamekey = "PlayerName";
-        
-        private void Start()
+        void Start()
         {
-            playerNameSaveButton.onClick.AddListener(OnProfileNameButtonClicked);
+            playerNameSaveButton.onClick.AddListener(OnProfileNameButtonClick);
         }
 
-        private void OnEnable()
+        void OnEnable()
         {
             playerNameInputField.placeholder.GetComponent<TextMeshProUGUI>().text = LoadProfileName();
         }
 
-        private void OnDisable()
+        void OnDisable()
         {
             playerNameInputField.text = "";
         }
         
-        private string LoadProfileName()
+        string LoadProfileName()
         {
-            return PlayerPrefs.GetString(Playernamekey);
+            return PlayerPrefs.GetString(PLAYERNAME);
         }
     
-        private void SaveProfileName(string profileName)
+        void SaveProfileName(string profileName)
         {
-            PlayerPrefs.SetString(Playernamekey, profileName);
+            PlayerPrefs.SetString(PLAYERNAME, profileName);
             
             PlayerPrefs.Save();
         }
 
-        public void OnProfileNameButtonClicked()
+        public void OnProfileNameButtonClick()
         {
             if (string.IsNullOrEmpty(playerNameInputField.text)) return;
 

@@ -1,6 +1,21 @@
+using System;
 using UnityEngine;
 
-public class Strings : MonoBehaviour
+namespace Static
 {
-    public static string PLAYER = "Player";
+    public class Strings : MonoBehaviour
+    {
+        public static string PLAYER = "Player";
+        public static string PLAYERNAME = "PlayerName";
+        
+        public static string GenerateRandomProfileName()
+        {
+            return "User_" + Guid.NewGuid().ToString("N")[..8];
+        }
+        
+        public static string GenerateRandomSessionId()
+        {
+            return "Session_" + Guid.NewGuid().ToString("N")[..8];
+        }
+    }
 }

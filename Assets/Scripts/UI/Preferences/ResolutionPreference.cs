@@ -33,14 +33,14 @@ namespace UI.Preferences
         
         void Start()
         {
-            InitResolutionList();
+            InitializeResolutionList();
             UpdateResolutionDropdown();
             
-            resolutionSaveButton.onClick.AddListener(OnResolutionSaveButtonClicked);
-            resolutionDropdown.onValueChanged.AddListener(DropboxOptionChanged);
+            resolutionSaveButton.onClick.AddListener(OnResolutionSaveButtonClick);
+            resolutionDropdown.onValueChanged.AddListener(OnDropboxOptionChanged);
         }
         
-        void InitResolutionList()
+        void InitializeResolutionList()
         {
             foreach (var t in Screen.resolutions)
             {
@@ -87,12 +87,12 @@ namespace UI.Preferences
             resolutionDropdown.RefreshShownValue();
         }
         
-        private void DropboxOptionChanged(int x)
+        void OnDropboxOptionChanged(int x)
         {
             _currentResolutionIndex = x;
         }
         
-        private void OnResolutionSaveButtonClicked()
+        void OnResolutionSaveButtonClick()
         {
             Screen.SetResolution(resolutions[_currentResolutionIndex].Resolution.width, resolutions[_currentResolutionIndex].Resolution.height, fullScreenToggle.isOn);
             TitleUIManager.OpenInformationPopup("해상도 변경이 완료되었습니다.");

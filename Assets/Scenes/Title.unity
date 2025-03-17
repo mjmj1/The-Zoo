@@ -1701,7 +1701,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 195934084}
         m_TargetAssemblyTypeName: UI.UIEventManager, Assembly-CSharp
-        m_MethodName: OnSessionListButtonClicked
+        m_MethodName: OnSessionListButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3897,7 +3897,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 195934084}
         m_TargetAssemblyTypeName: UI.UIEventManager, Assembly-CSharp
-        m_MethodName: OnPlayerNameSaveButtonClicked
+        m_MethodName: OnPlayerNameSaveButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6593,7 +6593,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 195934084}
         m_TargetAssemblyTypeName: UI.UIEventManager, Assembly-CSharp
-        m_MethodName: OnSessionListButtonClicked
+        m_MethodName: OnSessionListButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6802,7 +6802,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 195934084}
         m_TargetAssemblyTypeName: UI.UIManager, Assembly-CSharp
-        m_MethodName: OnPreferencesButtonClicked
+        m_MethodName: OnPreferencesButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8019,7 +8019,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 195934084}
         m_TargetAssemblyTypeName: UI.UIManager, Assembly-CSharp
-        m_MethodName: OnPreferencesButtonClicked
+        m_MethodName: OnPreferencesButtonClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
