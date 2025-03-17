@@ -18,20 +18,14 @@ public class GameSetupManager : MonoBehaviour
     [SerializeField] private Button _cancelButton;
     [SerializeField] private GameObject _warningPopup;
 
-    GameObject[] players;
-    private GameObject[] _gameObjects;
-
     private ConnectionManager connectionManager;
-
-    private void Start()
-    {
-        _gameObjects = GameObject.FindGameObjectsWithTag(Strings.PLAYER);
-    }
+    // map
+    public Transform _world;
+    // interactions
+    //[SerializeField] private GameObject inter
 
     public void OnSettingButtonClick()
     {
-        // roomNameIpf.text = GameManager.Instance.title;
-
         if (_gameSetupPopup.activeSelf)
         {
             _gameSetupPopup.SetActive(false);

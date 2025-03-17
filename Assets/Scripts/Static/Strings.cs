@@ -7,7 +7,8 @@ namespace Static
     {
         public static string PLAYER = "Player";
         public static string PLAYERNAME = "PlayerName";
-        
+        public static string WORLD = "World";
+
         public static string GenerateRandomProfileName()
         {
             return "User_" + Guid.NewGuid().ToString("N")[..8];
