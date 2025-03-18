@@ -44,6 +44,11 @@ namespace UI.GameSetting
             roomNameInputField.placeholder.GetComponent<TMP_Text>().text = roomName;
             
             gameObject.SetActive(false);
+
+            if (!GameManager.Instance.connectionManager.Session.IsHost)
+            {
+                gameSettingButton.gameObject.SetActive(false);
+            }
         }
 
         public void OnSettingButtonClick()

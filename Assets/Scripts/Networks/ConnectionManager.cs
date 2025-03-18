@@ -220,7 +220,7 @@ namespace Networks
                 print($"_session.Id: {Session.Id}");
                 print($"_session.Code: {Session.Code}");
                 print($"_session.MaxPlayers: {Session.MaxPlayers}");
-                print($"_session.MaxPlayers: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
+                print($"Player Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
             }
         }
         
