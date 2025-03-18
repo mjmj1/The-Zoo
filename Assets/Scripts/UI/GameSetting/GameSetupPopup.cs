@@ -29,7 +29,7 @@ namespace UI.GameSetting
         
         private void Start()
         {
-            sphereCollider = worldObject.GetComponent<SphereCollider>();
+            sphereCollider = worldObject.GetComponentInChildren<SphereCollider>();
 
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
 
@@ -65,11 +65,13 @@ namespace UI.GameSetting
             Vector3 originPosition = interactionObjects.transform.position;
             // 콜라이더의 사이즈를 가져오는 bound.size 사용
             float range_X = sphereCollider.bounds.size.x;
+            float range_Y = sphereCollider.bounds.size.y;
             float range_Z = sphereCollider.bounds.size.z;
 
             range_X = UnityEngine.Random.Range((range_X / 2) * -1, range_X / 2);
+            range_Y = UnityEngine.Random.Range((range_Y / 2) * -1, range_Y / 2);
             range_Z = UnityEngine.Random.Range((range_Z / 2) * -1, range_Z / 2);
-            Vector3 RandomPostion = new Vector3(range_X, 0f, range_Z);
+            Vector3 RandomPostion = new Vector3(range_X, range_Y, range_Z);
 
             Vector3 respawnPosition = originPosition + RandomPostion;
             return respawnPosition;
