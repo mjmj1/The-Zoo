@@ -7,7 +7,6 @@ using Unity.Services.Core;
 using Unity.Services.Lobbies;
 using Unity.Services.Multiplayer;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using WebSocketSharp;
 using static Static.Strings;
 
@@ -17,10 +16,10 @@ namespace Networks
     {
         public ISession Session {get; private set;}
         public NetworkManager NetworkManager {get; private set;}
-        
-        private string _sessionName;
-        private string _sessionCode;
-        private string _playerName;
+
+        string _sessionName;
+        string _sessionCode;
+        string _playerName;
         
         int _maxPlayers = 8;
         
@@ -41,17 +40,13 @@ namespace Networks
                 NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
                 NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
                 NetworkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
+                
                 await UnityServices.InitializeAsync();
             }
             catch (Exception e)
             {
                 print(e.Message);
             }
-        }
-
-        void Start()
-        {
-            NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
         }
 
         void Update()
@@ -78,19 +73,56 @@ namespace Networks
                 print(e.Message);
             }
         }
-
-        public async void Connect()
+        
+        public async void ConnectAsync()
         {
-            if (_sessionName.IsNullOrEmpty()) return;
+            try
+            {
+                _sessionName = GetRandomSessionName();
             
-            await CreateOrJoinSessionAsync();
+                await CreateOrJoinSessionAsync();
+                
+                Session.PlayerJoined += PlayerJoined;
+                Session.PlayerLeaving += PlayerLeaving;
+                Session.PlayerHasLeft += PlayerHasLeft;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+        
+        void PlayerJoined(string id)
+        {
+            print($"PlayerJoined: {id}");
+        }
+        
+        void PlayerLeaving(string id)
+        {
+            print($"PlayerLeaving: {id}");
+        }
+        
+        void PlayerHasLeft(string id)
+        {
+            print($"PlayerHasLeft: {id}");
         }
 
-        public async void Join()
+        public async void JoinAsync()
         {
-            if (_sessionCode.IsNullOrEmpty()) return;
+            try
+            {
+                if (_sessionCode.IsNullOrEmpty()) return;
             
-            await JoinSessionByCodeAsync(_sessionCode);
+                await JoinSessionByCodeAsync(_sessionCode);
+                
+                Session.PlayerJoined += PlayerJoined;
+                Session.PlayerLeaving += PlayerLeaving;
+                Session.PlayerHasLeft += PlayerHasLeft;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
         
         public async void SignInAnonymouslyAsync()
@@ -190,8 +222,6 @@ namespace Networks
                 
                 Session = await MultiplayerService.Instance.JoinSessionByCodeAsync(code, options);
                 
-                print($"{Session.Id} Joined");
-                
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)
@@ -217,8 +247,6 @@ namespace Networks
                 };
                 
                 Session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, options);
-                
-                print($"{Session.Id} Joined");
                 
                 _state = ConnectionState.Connected;
             }
@@ -259,11 +287,6 @@ namespace Networks
             }
         }
         
-        public void OnSessionNameInputFieldEndEdit(string arg0)
-        {
-            _sessionName = arg0;
-        }
-        
         public void OnSessionCodeInputFieldEndEdit(string arg0)
         {
             _sessionCode = arg0;
@@ -283,39 +306,17 @@ namespace Networks
             {
                 Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
             }
-            
-            if (NetworkManager.LocalClient.IsSessionOwner && SceneManager.GetActiveScene().name != "Lobby")
-            {
-                NetworkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
-            }
         }
         
         void OnOnClientDisconnectCallback(ulong clientId)
         {
             if (NetworkManager.LocalClientId == clientId)
             {
-                Debug.Log($"Client-{clientId} is disconnected");
-                
-                SceneManager.LoadScene("Title", LoadSceneMode.Single);
+                print($"Client-{clientId} is disconnected");
             
                 Session = null;
             
                 _state = ConnectionState.Disconnected;
-            }
-        }
-        
-        void OnOnLoadComplete(ulong clientid, string scenename, LoadSceneMode loadscenemode)
-        {
-            if(!scenename.Equals("Lobby")) return;
-            
-            switch (_state)
-            {
-                case ConnectionState.Connected:
-                    GameManager.Instance.GetLobbyCanvas().gameObject.SetActive(true);
-                    break;
-                case ConnectionState.Disconnected:
-                    GameManager.Instance.GetTitleCanvas().gameObject.SetActive(true);
-                    break;
             }
         }
     }

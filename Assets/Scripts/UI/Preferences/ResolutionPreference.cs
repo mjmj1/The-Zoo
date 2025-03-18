@@ -24,12 +24,12 @@ namespace UI.Preferences
             }
         }
         
-        [SerializeField] private TMP_Dropdown resolutionDropdown;
-        [SerializeField] private Toggle fullScreenToggle;
-        [SerializeField] private Button resolutionSaveButton;
+        [SerializeField] TMP_Dropdown resolutionDropdown;
+        [SerializeField] Toggle fullScreenToggle;
+        [SerializeField] Button resolutionSaveButton;
 
-        private readonly List<ResolutionData> resolutions = new ();
-        private int _currentResolutionIndex;
+        readonly List<ResolutionData> _resolutions = new ();
+        int _currentResolutionIndex;
         
         void Start()
         {
@@ -51,12 +51,12 @@ namespace UI.Preferences
                 if (t.width * 9 == t.height * 16)
                 {
                     ResolutionData data = new(t, (16, 9));
-                    resolutions.Add(data);
+                    _resolutions.Add(data);
                 }
                 else if (t.width * 10 == t.height * 16)
                 {
                     ResolutionData data = new(t, (16, 10));
-                    resolutions.Add(data);
+                    _resolutions.Add(data);
                 }
             }
         }
@@ -67,7 +67,7 @@ namespace UI.Preferences
 
             var currentIndex = 0;
             
-            foreach (var item in resolutions)
+            foreach (var item in _resolutions)
             {
                 var option = new TMP_Dropdown.OptionData
                 {
@@ -94,8 +94,9 @@ namespace UI.Preferences
         
         void OnResolutionSaveButtonClick()
         {
-            Screen.SetResolution(resolutions[_currentResolutionIndex].Resolution.width, resolutions[_currentResolutionIndex].Resolution.height, fullScreenToggle.isOn);
-            TitleUIManager.OpenInformationPopup("해상도 변경이 완료되었습니다.");
+            Screen.SetResolution(_resolutions[_currentResolutionIndex].Resolution.width, _resolutions[_currentResolutionIndex].Resolution.height, fullScreenToggle.isOn);
+            
+            UIManager.OpenInformationPopup("해상도 변경이 완료되었습니다.");
         }
         
     }

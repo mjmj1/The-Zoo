@@ -1,6 +1,7 @@
 using Networks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using WebSocketSharp;
 using static Static.Strings;
 
@@ -8,17 +9,15 @@ namespace UI
 {
     public class TitleUIManager : MonoBehaviour
     {
-        [SerializeField] private GameObject playerNameSetup;
-        [SerializeField] private GameObject gameStart;
+        [SerializeField] GameObject playerNameSetup;
+        [SerializeField] GameObject gameStart;
         
-        [SerializeField] private GameObject preferencesButton;
-        [SerializeField] private GameObject preferences;
+        [SerializeField] GameObject preferencesButton;
+        [SerializeField] GameObject preferences;
         
-        [SerializeField] private GameObject sessionsList;
-
-        private static InformationPopup _informationPopup;
+        [SerializeField] GameObject sessionsList;
         
-        private TMP_InputField _playerNameInputField;
+        TMP_InputField _playerNameInputField;
         
         private void Start()
         {
@@ -27,11 +26,8 @@ namespace UI
             preferences.SetActive(false);
             sessionsList.SetActive(false);
             
-            _informationPopup = GetComponent<InformationPopup>();
             _playerNameInputField = playerNameSetup.GetComponentInChildren<TMP_InputField>();
         }
-
-        
         public void OnPlayerNameSaveButtonClick()
         {
             if(_playerNameInputField.text.IsNullOrEmpty()) return;
@@ -53,11 +49,6 @@ namespace UI
         public void OnSessionListButtonClick()
         {
             sessionsList.SetActive(!sessionsList.activeSelf);
-        }
-        
-        public static void OpenInformationPopup(string msg)
-        {
-            _informationPopup.GetInformationPopup(msg);
         }
     }
 }
