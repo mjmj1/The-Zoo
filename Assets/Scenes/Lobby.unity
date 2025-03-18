@@ -2129,15 +2129,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameSettingButton: {fileID: 1216503344}
-  gameStartButton: {fileID: 1353917329}
   roomNameInputField: {fileID: 1431354395}
   maxPlayersDropdown: {fileID: 1748542409}
   aiLevelDropdown: {fileID: 368899019}
   npcRatioDropdown: {fileID: 918602347}
   confirmButton: {fileID: 1267875819}
   cancelButton: {fileID: 245786242}
-  worldObject: {fileID: 1403504790}
-  interactionObjects: {fileID: 2916209953044320258, guid: c12cbde9d83ad2e4e8d79d70910deba6, type: 3}
 --- !u!1 &659302852
 GameObject:
   m_ObjectHideFlags: 0
@@ -6237,6 +6234,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!1 &1724880256
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1724880258}
+  - component: {fileID: 1724880257}
+  m_Layer: 0
+  m_Name: Interaction Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1724880257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724880256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cfdcd389b5664b4089ae7418c4b4963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameStartButton: {fileID: 1353917329}
+  worldObject: {fileID: 1403504790}
+  interactionObjects: {fileID: 2916209953044320258, guid: c12cbde9d83ad2e4e8d79d70910deba6, type: 3}
+  SphereCollider: {fileID: 1634259118}
+--- !u!4 &1724880258
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1724880256}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -3.5058534, y: 13.89774, z: -15.056675}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1748542407
 GameObject:
   m_ObjectHideFlags: 0
@@ -7463,3 +7508,4 @@ SceneRoots:
   - {fileID: 1403504794}
   - {fileID: 2016768364}
   - {fileID: 417202331}
+  - {fileID: 1724880258}

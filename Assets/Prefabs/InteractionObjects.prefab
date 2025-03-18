@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 1198263875059743598}
   - component: {fileID: 3769053368870802577}
   - component: {fileID: 5693857160014754670}
-  - component: {fileID: 3928851530416497659}
   m_Layer: 0
   m_Name: InteractionObjects
   m_TagString: Untagged
@@ -151,16 +150,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   WorldCenter: {fileID: 0}
-  gravityStrength: 9.81
---- !u!114 &3928851530416497659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2916209953044320258}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cfdcd389b5664b4089ae7418c4b4963, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  GravityStrength: 9.81

@@ -6,7 +6,7 @@ using UnityEngine;
 public class CustomGravity : MonoBehaviour
 {
     public Transform WorldCenter;
-    public float gravityStrength = 9.81f;
+    public float GravityStrength = 9.81f;
 
     private Rigidbody _rb;
 
@@ -25,7 +25,7 @@ public class CustomGravity : MonoBehaviour
         else
         {
             var gravityDirection = (WorldCenter.position - transform.position).normalized;
-            var gravity = gravityDirection * gravityStrength;
+            var gravity = gravityDirection * GravityStrength;
 
             _rb.AddForce(gravity, ForceMode.Acceleration);
         }

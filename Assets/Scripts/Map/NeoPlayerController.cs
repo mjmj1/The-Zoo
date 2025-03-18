@@ -6,8 +6,8 @@ public class NeoPlayerController : MonoBehaviour
 {
     public Transform WorldCenter;
 
-    public float moveSpeed = 10f;
-    public float mouseSensitivity = 10f;
+    public float MoveSpeed = 10f;
+    public float MouseSensitivity = 10f;
 
     private Rigidbody _rb;
 
@@ -31,7 +31,7 @@ public class NeoPlayerController : MonoBehaviour
         {
             align_to_surface();
 
-            _yaw += Input.GetAxis("Mouse X") * mouseSensitivity; ;
+            _yaw += Input.GetAxis("Mouse X") * MouseSensitivity; ;
 
             _horizontal = Input.GetAxisRaw("Horizontal");
             _vertical = Input.GetAxisRaw("Vertical");
@@ -45,7 +45,7 @@ public class NeoPlayerController : MonoBehaviour
         handle_rotation();
 
         var moveDirection = (transform.forward * _vertical + transform.right * _horizontal).normalized;
-        _rb.MovePosition(_rb.position + moveDirection * (moveSpeed * Time.deltaTime));
+        _rb.MovePosition(_rb.position + moveDirection * (MoveSpeed * Time.deltaTime));
     }
 
     void handle_rotation()
