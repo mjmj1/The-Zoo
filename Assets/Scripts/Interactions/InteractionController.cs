@@ -15,21 +15,21 @@ public class InteractionController : MonoBehaviour
 
         gameStartButton.onClick.AddListener(OnGameStartButtonClick);
     }
-
+    
     public void OnGameStartButtonClick()
     {
-        GameObject objects = Instantiate(interactionObjects, Return_RandomPosition(), Quaternion.identity);
-        StartCoroutine(PauseObjects(objects));
+        GameObject objects = Instantiate(interactionObjects, RandomPosition(), Quaternion.identity);
+        StartCoroutine(PauseObjectsRoutine(objects));
     }
 
-    public IEnumerator PauseObjects(GameObject objects)
+    public IEnumerator PauseObjectsRoutine(GameObject objects)
     {
         yield return new WaitForSeconds(5);
         objects.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
     }
 
 
-    Vector3 Return_RandomPosition()
+    Vector3 RandomPosition()
     {
         Vector3 originPosition = interactionObjects.transform.position;
 
