@@ -42,7 +42,7 @@ namespace UI
             gameStart.SetActive(true);
             preferencesButton.SetActive(true);
 
-            ConnectionManager.SignInAnonymouslyAsync();
+            GameManager.Instance.connectionManager.SignInAnonymouslyAsync();
         }
         
         public void OnPreferencesButtonClick()

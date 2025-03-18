@@ -1,15 +1,17 @@
 using System;
 using Networks;
-using Unity.Netcode;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [SerializeField] private RectTransform titleCanvas;
+    [SerializeField] private RectTransform lobbyCanvas;
+    
     public ConnectionManager connectionManager;
     
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -22,8 +24,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    void Start()
     {
         connectionManager = FindAnyObjectByType<ConnectionManager>();
+        
+        titleCanvas.gameObject.SetActive(false);
+        lobbyCanvas.gameObject.SetActive(false);
+    }
+
+    public RectTransform GetTitleCanvas()
+    {
+        return titleCanvas;
+    }
+    
+    public RectTransform GetLobbyCanvas()
+    {
+        return lobbyCanvas;
     }
 }

@@ -105,7 +105,7 @@ namespace UI.Sessions
 
         private async Task UpdateSessionsAsync()
         {
-            sessions = await ConnectionManager.QuerySessionsAsync();
+            sessions = await GameManager.Instance.connectionManager.QuerySessionsAsync();
         }
     }
 }
