@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -26,6 +27,10 @@ namespace UI.GameSetting
             gameSettingButton.onClick.AddListener(OnSettingButtonClick);
             confirmButton.onClick.AddListener(OnConfirmButtonClick);
             cancelButton.onClick.AddListener(OnCancelButtonClick);
+            
+            maxPlayersDropdown.onValueChanged.AddListener(OnMaxPlayersDropdownValueChanged);
+            aiLevelDropdown.onValueChanged.AddListener(OnAiLevelDropdownValueChanged);
+            npcRatioDropdown.onValueChanged.AddListener(OnNpcRatioDropdownValueChanged);
 
             var maxPlayers = GameManager.Instance.connectionManager.Session.MaxPlayers.ToString();
 
@@ -46,12 +51,23 @@ namespace UI.GameSetting
             gameObject.SetActive(!gameObject.activeSelf);
         }
 
+        private void OnMaxPlayersDropdownValueChanged(int value)
+        {
+            _maxPlayersOptionValue = value;
+        }
+        
+        private void OnAiLevelDropdownValueChanged(int value)
+        {
+            _aiLevelOptionValue = value;
+        }
+        
+        private void OnNpcRatioDropdownValueChanged(int value)
+        {
+            _npcRatioOptionValue = value;
+        }
+        
         private void OnConfirmButtonClick()
         {
-            _maxPlayersOptionValue = maxPlayersDropdown.value;
-            _aiLevelOptionValue = aiLevelDropdown.value;
-            _npcRatioOptionValue = npcRatioDropdown.value;
-            
             var maxPlayers = int.Parse(maxPlayersDropdown.options[_maxPlayersOptionValue].text);
             
             GameManager.Instance.connectionManager.UpdateSessionAsync(roomNameInputField.text, maxPlayers);
