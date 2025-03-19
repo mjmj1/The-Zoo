@@ -16,6 +16,30 @@ namespace UI
             LobbyMenu.SetActive(false);
         }
 
+        void Start()
+        {
+            GameManager.Instance.connectionManager.NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
+            GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
+        }
+        
+        void OnClientConnectedCallback(ulong clientId)
+        {
+            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
+            {
+                TitleMenu.SetActive(false);
+                LobbyMenu.SetActive(true);
+            }
+        }
+        
+        void OnOnClientDisconnectCallback(ulong clientId)
+        {
+            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
+            {
+                TitleMenu.SetActive(true);
+                LobbyMenu.SetActive(false);
+            }
+        }
+
         public static void OpenInformationPopup(string massage)
         {
             _informationPopup.GetInformationPopup(massage);

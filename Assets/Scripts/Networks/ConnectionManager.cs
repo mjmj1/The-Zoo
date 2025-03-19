@@ -305,6 +305,8 @@ namespace Networks
             if (NetworkManager.LocalClientId == clientId)
             {
                 Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
+                
+                
             }
         }
         
