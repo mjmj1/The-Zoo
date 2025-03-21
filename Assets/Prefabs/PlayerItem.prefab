@@ -339,5 +339,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddda03374b564c4f9d5c1b4280201e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerNameText: {fileID: 4346033820788117880}
-  HostIcon: {fileID: 3974657172855420921}
+  playerNameText: {fileID: 4346033820788117880}
+  hostIcon: {fileID: 3974657172855420921}
