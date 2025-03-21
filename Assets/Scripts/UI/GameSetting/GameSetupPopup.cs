@@ -47,12 +47,6 @@ namespace UI.GameSetting
             gameObject.SetActive(false);
         }
 
-        public IEnumerator PauseObjects(GameObject objects)
-        {
-            yield return new WaitForSeconds(5);
-            objects.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeAll;
-        }
-
         public void OnSettingButtonClick()
         {
             gameObject.SetActive(!gameObject.activeSelf);
