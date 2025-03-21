@@ -14,6 +14,9 @@ namespace Networks
 {
     public class ConnectionManager : MonoBehaviour
     {
+        
+        public Action OnSessionStarted;
+        
         public ISession Session {get; private set;}
         public NetworkManager NetworkManager {get; private set;}
 
@@ -81,30 +84,11 @@ namespace Networks
                 _sessionName = GetRandomSessionName();
             
                 await CreateOrJoinSessionAsync();
-                
-                Session.PlayerJoined += PlayerJoined;
-                Session.PlayerLeaving += PlayerLeaving;
-                Session.PlayerHasLeft += PlayerHasLeft;
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
             }
-        }
-        
-        void PlayerJoined(string id)
-        {
-            print($"PlayerJoined: {id}");
-        }
-        
-        void PlayerLeaving(string id)
-        {
-            print($"PlayerLeaving: {id}");
-        }
-        
-        void PlayerHasLeft(string id)
-        {
-            print($"PlayerHasLeft: {id}");
         }
 
         public async void JoinAsync()
@@ -114,10 +98,6 @@ namespace Networks
                 if (_sessionCode.IsNullOrEmpty()) return;
             
                 await JoinSessionByCodeAsync(_sessionCode);
-                
-                Session.PlayerJoined += PlayerJoined;
-                Session.PlayerLeaving += PlayerLeaving;
-                Session.PlayerHasLeft += PlayerHasLeft;
             }
             catch (Exception e)
             {
@@ -174,7 +154,6 @@ namespace Networks
             }
             catch (Exception e)
             {
-                _state = ConnectionState.Disconnected;
                 Debug.LogException(e);
             }
         }
@@ -207,6 +186,8 @@ namespace Networks
         
         async Task JoinSessionByCodeAsync(string code)
         {
+            OnSessionStarted?.Invoke();
+            
             _playerName = PlayerPrefs.GetString(PLAYERNAME);
             
             _state = ConnectionState.Connecting;
@@ -233,6 +214,8 @@ namespace Networks
         
         public async Task JoinSessionByIdAsync(string id)
         {
+            OnSessionStarted?.Invoke();
+            
             _playerName = PlayerPrefs.GetString(PLAYERNAME);
             
             _state = ConnectionState.Connecting;
@@ -259,6 +242,8 @@ namespace Networks
         
         async Task CreateOrJoinSessionAsync()
         {
+            OnSessionStarted?.Invoke();
+            
             _playerName = PlayerPrefs.GetString(PLAYERNAME);
             
             _state = ConnectionState.Connecting;

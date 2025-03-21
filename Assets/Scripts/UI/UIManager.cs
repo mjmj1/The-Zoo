@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace UI
@@ -20,12 +21,12 @@ namespace UI
 
         void Start()
         {
-            GameManager.Instance.connectionManager.NetworkManager.OnClientStarted += OnOnClientStarted;
+            GameManager.Instance.connectionManager.OnSessionStarted += OnSessionStarted;
             GameManager.Instance.connectionManager.NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
             GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
         }
 
-        private void OnOnClientStarted()
+        void OnSessionStarted()
         {
             loadingScreen.gameObject.SetActive(true);
         }
