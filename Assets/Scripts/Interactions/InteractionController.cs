@@ -24,7 +24,7 @@ public class InteractionController : MonoBehaviour
         foreach(Vector3 point in points)
         {
             //Debug.Log("point : " + point);
-            Vector3 spawnPosition = SphereCollider.transform.position + point * SphereCollider.radius * Ints.NUMBER_OF_INTERACTION_OBJECTS; // becuase of 'scale of the world', it needs multiplication
+            Vector3 spawnPosition = SphereCollider.transform.position + point * SphereCollider.radius * Ints.SCALE_OF_WORLD; // becuase of 'scale of the world', it needs multiplication with actual radius scale
             //Debug.Log("spawnPosition : " + spawnPosition);
             Instantiate(interactionObjects, spawnPosition, Quaternion.LookRotation(point));
         }
