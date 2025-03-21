@@ -1,19 +1,20 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] GameObject TitleMenu;
-        [SerializeField] GameObject LobbyMenu;
+        [SerializeField] GameObject titleMenu;
+        [SerializeField] GameObject lobbyMenu;
         
         static InformationPopup _informationPopup;
 
         void Awake()
         {
             _informationPopup = GetComponent<InformationPopup>();
-            TitleMenu.SetActive(true);
-            LobbyMenu.SetActive(false);
+            titleMenu.SetActive(true);
+            lobbyMenu.SetActive(false);
         }
 
         void Start()
@@ -26,8 +27,8 @@ namespace UI
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
             {
-                TitleMenu.SetActive(false);
-                LobbyMenu.SetActive(true);
+                titleMenu.SetActive(false);
+                lobbyMenu.SetActive(true);
             }
         }
         
@@ -35,8 +36,8 @@ namespace UI
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
             {
-                TitleMenu.SetActive(true);
-                LobbyMenu.SetActive(false);
+                titleMenu.SetActive(true);
+                lobbyMenu.SetActive(false);
             }
         }
 

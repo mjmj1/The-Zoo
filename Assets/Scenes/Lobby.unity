@@ -1925,8 +1925,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 572a4140371c1b04c9b6c93a3d6cafe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TitleMenu: {fileID: 1799330338}
-  LobbyMenu: {fileID: 65195711}
+  titleMenu: {fileID: 1799330338}
+  lobbyMenu: {fileID: 65195711}
 --- !u!1 &201960787
 GameObject:
   m_ObjectHideFlags: 0
@@ -8967,7 +8967,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -20, y: -10}
+  m_SizeDelta: {x: -10, y: -10}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1087602665
 MonoBehaviour:
@@ -10601,7 +10601,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 130, y: -130}
-  m_SizeDelta: {x: 60, y: 40}
+  m_SizeDelta: {x: 50, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1280687798
 MonoBehaviour:
@@ -11304,6 +11304,7 @@ GameObject:
   - component: {fileID: 1485584501}
   - component: {fileID: 1485584500}
   - component: {fileID: 1485584503}
+  - component: {fileID: 1485584504}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -11429,6 +11430,21 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &1485584504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485584499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 979e32b03c498844ba0663f25c18fc38, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  offset: {x: 0, y: 5, z: -10}
+  smoothSpeed: 5
 --- !u!1 &1487912114
 GameObject:
   m_ObjectHideFlags: 0
@@ -11720,8 +11736,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: UI.UIManager, Assembly-CSharp
+      - m_Target: {fileID: 1799330340}
+        m_TargetAssemblyTypeName: UI.TitleUIManager, Assembly-CSharp
         m_MethodName: OnPreferencesButtonClick
         m_Mode: 1
         m_Arguments:

@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI
@@ -13,8 +14,9 @@ namespace UI
         void Start()
         {
             gameSetupButton.onClick.AddListener(OnSettingButtonClick);
+            gameStartButton.onClick.AddListener(OnGameStartButtonClick);
             
-            if (!GameManager.Instance.connectionManager.Session.IsHost)
+            if (!GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner)
             {
                 gameSetupButton.gameObject.SetActive(false);
                 gameStartButton.GetComponentInChildren<TMP_Text>().text = "Ready";
@@ -24,6 +26,15 @@ namespace UI
         void OnSettingButtonClick()
         {
             gameSetupPopup.SetActive(!gameSetupPopup.activeSelf);
+        }
+
+        void OnGameStartButtonClick()
+        {
+            if (GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner)
+            {
+                GameManager.Instance.connectionManager.NetworkManager.SceneManager.LoadScene("InGame",
+                    LoadSceneMode.Single);
+            }
         }
     }
 }
