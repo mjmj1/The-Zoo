@@ -9,14 +9,12 @@ namespace UI.GameSetting
 {
     public class GameSetupPopup : MonoBehaviour
     {
-        [SerializeField] private Button gameSettingButton;
-
-        [SerializeField] private TMP_InputField roomNameInputField;
-        [SerializeField] private TMP_Dropdown maxPlayersDropdown;
-        [SerializeField] private TMP_Dropdown aiLevelDropdown;
-        [SerializeField] private TMP_Dropdown npcRatioDropdown;
-        [SerializeField] private Button confirmButton;
-        [SerializeField] private Button cancelButton;
+        [SerializeField] TMP_InputField roomNameInputField;
+        [SerializeField] TMP_Dropdown maxPlayersDropdown;
+        [SerializeField] TMP_Dropdown aiLevelDropdown;
+        [SerializeField] TMP_Dropdown npcRatioDropdown;
+        [SerializeField] Button confirmButton;
+        [SerializeField] Button cancelButton;
 
         private int _maxPlayersOptionValue;
         private int _aiLevelOptionValue;
@@ -24,7 +22,6 @@ namespace UI.GameSetting
         
         private void Start()
         {
-            gameSettingButton.onClick.AddListener(OnSettingButtonClick);
             confirmButton.onClick.AddListener(OnConfirmButtonClick);
             cancelButton.onClick.AddListener(OnCancelButtonClick);
             
@@ -32,58 +29,55 @@ namespace UI.GameSetting
             aiLevelDropdown.onValueChanged.AddListener(OnAiLevelDropdownValueChanged);
             npcRatioDropdown.onValueChanged.AddListener(OnNpcRatioDropdownValueChanged);
 
-            var maxPlayers = GameManager.Instance.connectionManager.Session.MaxPlayers.ToString();
+            gameObject.SetActive(false);
+        }
 
+        void OnEnable()
+        {
+            var roomName = GameManager.Instance.connectionManager.Session.Name;
+            roomNameInputField.placeholder.GetComponent<TMP_Text>().text = roomName;
+            
+            var maxPlayers = GameManager.Instance.connectionManager.Session.MaxPlayers.ToString();
             _maxPlayersOptionValue = maxPlayersDropdown.options.FindIndex(data => data.text.Equals(maxPlayers));
             
             maxPlayersDropdown.value = _maxPlayersOptionValue;
             aiLevelDropdown.value = _aiLevelOptionValue;
             npcRatioDropdown.value = _npcRatioOptionValue;
-
-            var roomName = GameManager.Instance.connectionManager.Session.Name;
-            roomNameInputField.placeholder.GetComponent<TMP_Text>().text = roomName;
-            
-            gameObject.SetActive(false);
-
-            if (!GameManager.Instance.connectionManager.Session.IsHost)
-            {
-                gameSettingButton.gameObject.SetActive(false);
-            }
         }
-
-        public void OnSettingButtonClick()
-        {
-            gameObject.SetActive(!gameObject.activeSelf);
-        }
-
-        private void OnMaxPlayersDropdownValueChanged(int value)
+        
+        void OnMaxPlayersDropdownValueChanged(int value)
         {
             _maxPlayersOptionValue = value;
         }
         
-        private void OnAiLevelDropdownValueChanged(int value)
+        void OnAiLevelDropdownValueChanged(int value)
         {
             _aiLevelOptionValue = value;
         }
         
-        private void OnNpcRatioDropdownValueChanged(int value)
+        void OnNpcRatioDropdownValueChanged(int value)
         {
             _npcRatioOptionValue = value;
         }
         
-        private void OnConfirmButtonClick()
+        void OnConfirmButtonClick()
         {
             var maxPlayers = int.Parse(maxPlayersDropdown.options[_maxPlayersOptionValue].text);
             
             GameManager.Instance.connectionManager.UpdateSessionAsync(roomNameInputField.text, maxPlayers);
 
-            OnSettingButtonClick();
+            OnClose();
         }
 
-        private void OnCancelButtonClick()
+        void OnCancelButtonClick()
         {
+            OnClose();
+        }
+
+        private void OnClose()
+        {
+            gameObject.SetActive(false);
             roomNameInputField.text = string.Empty;
-            OnSettingButtonClick();
         }
     }
 }

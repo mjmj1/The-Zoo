@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Networks;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI.Sessions
@@ -13,17 +14,13 @@ namespace UI.Sessions
         [SerializeField]
         GameObject sessionItemPrefab;
         
-        [SerializeField]
-        GameObject contentParent;
+        [SerializeField] GameObject contentParent;
         
-        [SerializeField]
-        Button joinSessionButton;
+        [SerializeField] Button joinSessionButton;
         
-        [SerializeField]
-        Button createSessionButton;
+        [SerializeField] Button createSessionButton;
         
-        [SerializeField]
-        Button refreashSessionListButton;
+        [SerializeField] Button refreshSessionListButton;
         
         IList<GameObject> items = new List<GameObject>();
         IList<ISessionInfo> sessions;
@@ -38,14 +35,14 @@ namespace UI.Sessions
             
             joinSessionButton.onClick.AddListener(OnJoinButtonClick);
             createSessionButton.onClick.AddListener(OnCreateButtonClick);
-            refreashSessionListButton.onClick.AddListener(OnRefreshButtonClick);
+            refreshSessionListButton.onClick.AddListener(OnRefreshButtonClick);
         }
 
         private void OnDestroy()
         {
             joinSessionButton.onClick.RemoveListener(OnJoinButtonClick);
             createSessionButton.onClick.RemoveListener(OnCreateButtonClick);
-            refreashSessionListButton.onClick.RemoveListener(OnRefreshButtonClick);
+            refreshSessionListButton.onClick.RemoveListener(OnRefreshButtonClick);
         }
 
         public async void OnJoinButtonClick()
@@ -53,6 +50,10 @@ namespace UI.Sessions
             if (_selectedSessionInfo == null) return;
 
             await GameManager.Instance.connectionManager.JoinSessionByIdAsync(_selectedSessionInfo.Id);
+            
+            _selectedSessionInfo = null;
+            joinSessionButton.interactable = false;
+            gameObject.SetActive(false);
         }
 
         public void OnCreateButtonClick()
@@ -105,7 +106,7 @@ namespace UI.Sessions
 
         private async Task UpdateSessionsAsync()
         {
-            sessions = await ConnectionManager.QuerySessionsAsync();
+            sessions = await GameManager.Instance.connectionManager.QuerySessionsAsync();
         }
     }
 }

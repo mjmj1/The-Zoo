@@ -8,15 +8,15 @@ namespace UI
 {
     public class InformationPopup : MonoBehaviour
     {
-        [SerializeField] private GameObject informationPopupPrefab;
-        private readonly Queue<GameObject> informationPopups = new();
+        [SerializeField] GameObject informationPopupPrefab;
+        readonly Queue<GameObject> _informationPopups = new();
     
         void Start()
         {
             for (var i = 0; i < 3; i++)
             {
                 var item = Instantiate(informationPopupPrefab, transform);
-                informationPopups.Enqueue(item);
+                _informationPopups.Enqueue(item);
                 item.SetActive(false);
             }
         }
@@ -25,9 +25,9 @@ namespace UI
         {
             GameObject item;
             
-            if (informationPopups.Count > 0)
+            if (_informationPopups.Count > 0)
             {
-                item = informationPopups.Dequeue();
+                item = _informationPopups.Dequeue();
             }
             else
             {
@@ -48,7 +48,7 @@ namespace UI
             return () =>
             {
                 item.SetActive(false);
-                informationPopups.Enqueue(item);
+                _informationPopups.Enqueue(item);
             };
         }
     }
