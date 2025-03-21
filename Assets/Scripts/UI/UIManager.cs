@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UI
 {
@@ -7,6 +6,7 @@ namespace UI
     {
         [SerializeField] GameObject titleMenu;
         [SerializeField] GameObject lobbyMenu;
+        [SerializeField] GameObject loadingScreen;
         
         static InformationPopup _informationPopup;
 
@@ -15,20 +15,29 @@ namespace UI
             _informationPopup = GetComponent<InformationPopup>();
             titleMenu.SetActive(true);
             lobbyMenu.SetActive(false);
+            loadingScreen.SetActive(false);
         }
 
         void Start()
         {
+            GameManager.Instance.connectionManager.NetworkManager.OnClientStarted += OnOnClientStarted;
             GameManager.Instance.connectionManager.NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
             GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
         }
-        
+
+        private void OnOnClientStarted()
+        {
+            loadingScreen.gameObject.SetActive(true);
+        }
+
         void OnClientConnectedCallback(ulong clientId)
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
             {
                 titleMenu.SetActive(false);
                 lobbyMenu.SetActive(true);
+                
+                loadingScreen.gameObject.SetActive(false);
             }
         }
         
