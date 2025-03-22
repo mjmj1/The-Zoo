@@ -27,8 +27,8 @@ namespace Players
             {
                 cam.target = transform;
             }
-            
         }
+        
         void ConnectFollowCamera(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
             if (!IsOwner) return;
