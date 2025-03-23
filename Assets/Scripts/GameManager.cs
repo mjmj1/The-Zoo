@@ -1,15 +1,14 @@
 using System;
 using Networks;
-using Unity.Netcode;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
+    
     public ConnectionManager connectionManager;
     
-    private void Awake()
+    void Awake()
     {
         if (Instance == null)
         {
@@ -22,7 +21,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void Start()
+    void Start()
     {
         connectionManager = FindAnyObjectByType<ConnectionManager>();
     }

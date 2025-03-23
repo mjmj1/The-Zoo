@@ -38,13 +38,13 @@ namespace UI.Preferences
             PlayerPrefs.Save();
         }
 
-        public void OnProfileNameButtonClick()
+        void OnProfileNameButtonClick()
         {
             if (string.IsNullOrEmpty(playerNameInputField.text)) return;
 
             SaveProfileName(playerNameInputField.text);
 
-            TitleUIManager.OpenInformationPopup("닉네임 설정이 완료되었습니다.");
+            UIManager.OpenInformationPopup("닉네임 설정이 완료되었습니다.");
         }
     }
 }
