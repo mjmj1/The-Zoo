@@ -1,3 +1,4 @@
+using Players;
 using Unity.Netcode.Components;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -9,20 +10,23 @@ using UnityEditor;
 [CustomEditor(typeof(PlayerCubeController), true)]
 public class PlayerCubeControllerEditor : NetworkTransformEditor
 {
-    private SerializedProperty m_Speed;
-    private SerializedProperty m_ApplyVerticalInputToZAxis;
+    private SerializedProperty m_MoveSpeed;
+    private SerializedProperty m_RotationSpeed;
+    private SerializedProperty m_MouseSensitivity;
 
     public override void OnEnable()
     {
-        m_Speed = serializedObject.FindProperty(nameof(PlayerCubeController.Speed));
-        m_ApplyVerticalInputToZAxis = serializedObject.FindProperty(nameof(PlayerCubeController.ApplyVerticalInputToZAxis));
+        m_MoveSpeed = serializedObject.FindProperty(nameof(PlayerCubeController.moveSpeed));
+        m_RotationSpeed = serializedObject.FindProperty(nameof(PlayerCubeController.rotationSpeed));
+        m_MouseSensitivity = serializedObject.FindProperty(nameof(PlayerCubeController.mouseSensitivity));
         base.OnEnable();
     }
 
     private void DisplayPlayerCubeControllerProperties()
     {
-        EditorGUILayout.PropertyField(m_Speed);
-        EditorGUILayout.PropertyField(m_ApplyVerticalInputToZAxis);
+        EditorGUILayout.PropertyField(m_MoveSpeed);
+        EditorGUILayout.PropertyField(m_RotationSpeed);
+        EditorGUILayout.PropertyField(m_MouseSensitivity);
     }
 
     public override void OnInspectorGUI()
@@ -43,37 +47,95 @@ public class PlayerCubeController : NetworkTransform
     // asset/prefab is viewed.
     public bool PlayerCubeControllerPropertiesVisible;
 #endif
-    public float Speed = 10;
-    public bool ApplyVerticalInputToZAxis;
-    private Vector3 m_Motion;
+    public float moveSpeed = 5f;
+    public float rotationSpeed = 50f;
+    public float mouseSensitivity = 3f;
     
-    private void Update()
+    PlanetGravity _planetGravity;
+    Transform _plenetCenter;
+    Rigidbody _rb;
+    
+    Quaternion _previousRotation;
+    
+    
+    void Start()
     {
-        // If not spawned or we don't have authority, then don't update
-        if (!IsSpawned || !HasAuthority)
-        {
-            return;
-        }
+        _planetGravity = FindAnyObjectByType<PlanetGravity>();
+        _rb = GetComponent<Rigidbody>();
+        _rb.useGravity = false;
 
-        // Handle acquiring and applying player input
-        m_Motion = Vector3.zero;
-        m_Motion.x = Input.GetAxis("Horizontal");
+        ConnectFollowCamera();
+        
+        if (!_planetGravity) return;
+        
+        _plenetCenter = _planetGravity.gameObject.transform;
+        _planetGravity.Subscribe(_rb);
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+    
+    void Update()
+    {
+        if (!_planetGravity) return;
+        
+        LookAround();
+        AlignToSurface();
+    }
+    
+    void FixedUpdate()
+    {
+        if (!_planetGravity) return;
+        
+        CharacterMovement();
+    }
+    
+    private void OnDestroy()
+    {
+        _planetGravity.Unsubscribe(_rb);
+    }
+    
+    void ConnectFollowCamera()
+    {
+        var cam = FindAnyObjectByType<FollowCamera>();
 
-        // Determine whether the vertical input is applied to the Y or Z axis
-        if (!ApplyVerticalInputToZAxis)
+        if (cam != null)
         {
-            m_Motion.y = Input.GetAxis("Vertical");
+            cam.target = transform;
         }
-        else
-        {
-            m_Motion.z = Input.GetAxis("Vertical");
-        }
+    }
 
-        // If there is any player input magnitude, then apply that amount of
-        // motion to the transform
-        if (m_Motion.magnitude > 0)
+    void CharacterMovement()
+    {
+        var h = Input.GetAxisRaw("Horizontal");
+        var v = Input.GetAxisRaw("Vertical");
+        
+        var moveDirection = transform.forward * v + transform.right * h;
+        moveDirection.Normalize();
+
+        _rb.MovePosition(_rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
+        
+        if (h == 0 && v == 0)
         {
-            transform.position += m_Motion * (Speed * Time.deltaTime);
+            _rb.linearVelocity = Vector3.zero;
+            transform.rotation = _previousRotation;
         }
+    }
+    private void AlignToSurface()
+    {
+        var gravityDirection = (transform.position - _plenetCenter.position).normalized;
+        
+        var targetRotation = Quaternion.FromToRotation(
+            transform.up, gravityDirection) * transform.rotation;
+        _previousRotation = Quaternion.Slerp(
+            transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        transform.rotation = _previousRotation;
+    }
+    
+    void LookAround()
+    {
+        var mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        transform.Rotate(Vector3.up * mouseX);
     }
 }

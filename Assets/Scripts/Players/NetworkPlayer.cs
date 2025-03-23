@@ -5,13 +5,6 @@ namespace Players
 {
     public class NetworkPlayer : NetworkBehaviour
     {
-        /*public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
-
-            ConnectFollowCamera();
-        }*/
-
         void Awake()
         {
             NetworkManager.SceneManager.OnLoadComplete += ConnectFollowCamera;

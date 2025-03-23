@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Players
@@ -5,21 +6,57 @@ namespace Players
     public class FollowCamera : MonoBehaviour
     {
         public Transform target;
-        public Vector3 offset = new Vector3(0, 5, -10); // 카메라 위치 오프셋
-        public float smoothSpeed = 5f; // 이동 속도
+        
+        public float mouseSensitivity = 3f;
+        public float minPitch = -20f;
+        public float maxPitch = 30f;
+        
+        public float height = 5f;
+        public float distance = 10f;
+        public float rotationSmoothTime = 0.1f;
 
-        private void LateUpdate()
+        Transform _planetCenter;
+        Vector3 _defaultOffset;
+        
+        float _pitch = 10f;
+        Vector3 _currentVelocity = Vector3.zero;
+        
+        void Start()
+        {
+            /*Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;*/
+            
+            _planetCenter = FindAnyObjectByType<PlanetGravity>()?.transform;
+            
+            _defaultOffset = new Vector3(0, height, -distance);
+        }
+        
+        void FixedUpdate()
         {
             if (!target) return;
+            
+            RotateCamera();
+            FollowTarget();
+        }
+        
+        void RotateCamera()
+        {
+            var mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+            _pitch = Mathf.Clamp(_pitch - mouseY, minPitch, maxPitch);
+        }
+        
+        void FollowTarget()
+        {
+            var gravityDirection = (target.position - _planetCenter.position).normalized;
 
-            // 목표 위치 계산
-            var desiredPosition = target.position + offset;
+            var pitchRotation = Quaternion.AngleAxis(_pitch, target.right);
+            var localOffset = pitchRotation * (target.rotation * _defaultOffset);
 
-            // 부드러운 이동 적용
-            transform.position = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+            var targetPosition = target.position + localOffset;
 
-            // 항상 플레이어를 바라보도록 설정
-            transform.LookAt(target);
+            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _currentVelocity, rotationSmoothTime);
+            
+            transform.rotation = Quaternion.LookRotation(target.position - transform.position, gravityDirection);
         }
     }
 }
