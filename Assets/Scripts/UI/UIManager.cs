@@ -1,17 +1,50 @@
-using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UI
 {
     public class UIManager : MonoBehaviour
     {
-        [SerializeField] GameObject titleMenu;
-        [SerializeField] GameObject lobbyMenu;
-        [SerializeField] GameObject loadingScreen;
+        private static InformationPopup _informationPopup;
         
-        static InformationPopup _informationPopup;
+        [SerializeField] private GameObject titleMenu;
+        [SerializeField] private GameObject lobbyMenu;
+        [SerializeField] private GameObject loadingScreen;
+        
+        public static void OpenInformationPopup(string massage)
+        {
+            _informationPopup.GetInformationPopup(massage);
+        }
 
-        void Awake()
+        public static bool IsCursorLocked()
+        {
+            return Cursor.lockState != CursorLockMode.Locked;
+        }
+        
+        public static void HandleMouseLock()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
+            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
+            {
+                if (!IsPointerOverUI())
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+            }
+        }
+        
+        private static bool IsPointerOverUI()
+        {
+            return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
+        }
+        
+        private void Awake()
         {
             _informationPopup = GetComponent<InformationPopup>();
             titleMenu.SetActive(true);
@@ -19,41 +52,43 @@ namespace UI
             loadingScreen.SetActive(false);
         }
 
-        void Start()
+        public void Start()
         {
             GameManager.Instance.connectionManager.OnSessionStarted += OnSessionStarted;
-            GameManager.Instance.connectionManager.NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
-            GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
+            GameManager.Instance.connectionManager.NetworkManager.OnClientConnectedCallback +=
+                OnClientConnectedCallback;
+            GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback +=
+                OnOnClientDisconnectCallback;
         }
 
-        void OnSessionStarted()
+        public void Update()
+        {
+            HandleMouseLock();
+        }
+
+        private void OnSessionStarted()
         {
             loadingScreen.gameObject.SetActive(true);
         }
 
-        void OnClientConnectedCallback(ulong clientId)
+        private void OnClientConnectedCallback(ulong clientId)
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
             {
                 titleMenu.SetActive(false);
                 lobbyMenu.SetActive(true);
-                
+
                 loadingScreen.gameObject.SetActive(false);
             }
         }
-        
-        void OnOnClientDisconnectCallback(ulong clientId)
+
+        private void OnOnClientDisconnectCallback(ulong clientId)
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
             {
                 titleMenu.SetActive(true);
                 lobbyMenu.SetActive(false);
             }
-        }
-
-        public static void OpenInformationPopup(string massage)
-        {
-            _informationPopup.GetInformationPopup(massage);
         }
     }
 }
