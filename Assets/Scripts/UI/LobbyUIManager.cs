@@ -7,28 +7,27 @@ namespace UI
 {
     public class LobbyUIManager : MonoBehaviour
     {
-        [SerializeField] GameObject gameSetupPopup;
-        [SerializeField] Button gameSetupButton;
-        [SerializeField] Button gameStartButton;
-        
-        void Start()
+        [SerializeField] private GameObject gameSetupPopup;
+        [SerializeField] private Button gameSetupButton;
+        [SerializeField] private Button gameStartButton;
+
+        private void Start()
         {
-            gameSetupButton.onClick.AddListener(OnSettingButtonClick);
+            gameSetupButton.onClick.AddListener(OnSetupButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
-            
-            if (!GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner)
-            {
-                gameSetupButton.gameObject.SetActive(false);
-                gameStartButton.GetComponentInChildren<TMP_Text>().text = "Ready";
-            }
+
+            if (GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner) return;
+
+            gameSetupButton.gameObject.SetActive(false);
+            gameStartButton.GetComponentInChildren<TMP_Text>().text = "Ready";
         }
-        
-        void OnSettingButtonClick()
+
+        private void OnSetupButtonClick()
         {
             gameSetupPopup.SetActive(!gameSetupPopup.activeSelf);
         }
 
-        void OnGameStartButtonClick()
+        private void OnGameStartButtonClick()
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner)
             {

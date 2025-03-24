@@ -5988,6 +5988,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c14a8fc0724d3584ba3a23534b2ad600, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameSetupButton: {fileID: 541383320}
   roomNameInputField: {fileID: 631051468}
   maxPlayersDropdown: {fileID: 179906788}
   aiLevelDropdown: {fileID: 699621736}
