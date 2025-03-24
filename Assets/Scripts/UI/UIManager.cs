@@ -1,14 +1,26 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace UI
 {
     public class UIManager : MonoBehaviour
     {
         private static InformationPopup _informationPopup;
+        
         [SerializeField] private GameObject titleMenu;
         [SerializeField] private GameObject lobbyMenu;
         [SerializeField] private GameObject loadingScreen;
+        
+        public static void OpenInformationPopup(string massage)
+        {
+            _informationPopup.GetInformationPopup(massage);
+        }
 
+        public static bool IsCursorLocked()
+        {
+            return Cursor.lockState != CursorLockMode.Locked;
+        }
+        
         private void Awake()
         {
             _informationPopup = GetComponent<InformationPopup>();
@@ -26,7 +38,12 @@ namespace UI
                 OnOnClientDisconnectCallback;
         }
 
-        public void OnSessionStarted()
+        public void Update()
+        {
+            HandleMouseLock();
+        }
+
+        private void OnSessionStarted()
         {
             loadingScreen.gameObject.SetActive(true);
         }
@@ -51,9 +68,27 @@ namespace UI
             }
         }
 
-        public static void OpenInformationPopup(string massage)
+        private void HandleMouseLock()
         {
-            _informationPopup.GetInformationPopup(massage);
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
+            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
+            {
+                if (!IsPointerOverUI())
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+            }
+        }
+        
+        private bool IsPointerOverUI()
+        {
+            return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
         }
     }
 }

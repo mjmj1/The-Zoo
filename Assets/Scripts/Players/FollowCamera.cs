@@ -1,3 +1,5 @@
+using System;
+using UI;
 using UnityEngine;
 
 namespace Players
@@ -23,9 +25,6 @@ namespace Players
 
         private void Start()
         {
-            /*Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;*/
-
             _planetCenter = FindAnyObjectByType<PlanetGravity>()?.transform;
 
             _defaultOffset = new Vector3(0, height, -distance);
@@ -34,7 +33,8 @@ namespace Players
         private void FixedUpdate()
         {
             if (!target) return;
-
+            if (UIManager.IsCursorLocked()) return;
+            
             RotateCamera();
             FollowTarget();
         }

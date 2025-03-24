@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class PlanetGravity : MonoBehaviour
 {
+    private static readonly HashSet<Rigidbody> affectedBodies = new();
     public float gravityStrength = 9.81f;
-    static HashSet<Rigidbody> affectedBodies = new();
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         ApplyGravity();
     }
-    
-    void ApplyGravity()
+
+    private void ApplyGravity()
     {
         foreach (var rb in affectedBodies)
         {
