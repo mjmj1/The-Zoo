@@ -5,6 +5,7 @@ using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 /// <summary>
@@ -61,37 +62,27 @@ public class PlayerCubeController : NetworkTransform
     public float rotationSpeed = 50f;
     public float mouseSensitivity = 3f;
 
-    private PlanetGravity _planetGravity;
-    private Transform _plenetCenter;
+    public PlanetGravity planetGravity;
 
+    private Transform _plenetCenter;
     private Quaternion _previousRotation;
     private Rigidbody _rb;
 
 
     private void Start()
     {
-        if (!IsOwner) return;
-        
-        _planetGravity = FindAnyObjectByType<PlanetGravity>();
-        _rb = GetComponent<Rigidbody>();
-        _rb.useGravity = false;
-
-        ConnectFollowCamera();
-
-        if (!_planetGravity) return;
-
-        _plenetCenter = _planetGravity.gameObject.transform;
-        _planetGravity.Subscribe(_rb);
+        InitializePlayer();
+        NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
     }
 
     private void Update()
     {
         if (!IsOwner) return;
-        
-        if (!_planetGravity) return;
-        
+
+        if (!planetGravity) return;
+
         if (UIManager.IsCursorLocked()) return;
-        
+
         LookAround();
         AlignToSurface();
     }
@@ -99,26 +90,43 @@ public class PlayerCubeController : NetworkTransform
     private void FixedUpdate()
     {
         if (!IsOwner) return;
-        
-        if (!_planetGravity) return;
-        
+
+        if (!planetGravity) return;
+
         if (UIManager.IsCursorLocked()) return;
-        
+
         CharacterMovement();
     }
 
     public override void OnDestroy()
     {
-        base.OnDestroy();
-        
-        _planetGravity.Unsubscribe(_rb);
-    }
-    
-    private void ConnectFollowCamera()
-    {
-        var cam = FindAnyObjectByType<FollowCamera>();
+        planetGravity.Unsubscribe(_rb);
 
-        if (cam != null) cam.target = transform;
+        base.OnDestroy();
+    }
+
+    private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if (OwnerClientId != clientId) return;
+
+        InitializePlayer();
+    }
+
+    private void InitializePlayer()
+    {
+        if (!IsOwner) return;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
+        planetGravity = FindAnyObjectByType<PlanetGravity>();
+        _rb = GetComponent<Rigidbody>();
+        _rb.useGravity = false;
+
+        if (!planetGravity) return;
+
+        _plenetCenter = planetGravity.gameObject.transform;
+        planetGravity.Subscribe(_rb);
     }
 
     private void CharacterMovement()
@@ -132,7 +140,7 @@ public class PlayerCubeController : NetworkTransform
         _rb.MovePosition(_rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
 
         if (h != 0 || v != 0) return;
-        
+
         _rb.linearVelocity = Vector3.zero;
         transform.rotation = _previousRotation;
     }

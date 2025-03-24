@@ -21,6 +21,29 @@ namespace UI
             return Cursor.lockState != CursorLockMode.Locked;
         }
         
+        public static void HandleMouseLock()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
+            }
+
+            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
+            {
+                if (!IsPointerOverUI())
+                {
+                    Cursor.lockState = CursorLockMode.Locked;
+                    Cursor.visible = false;
+                }
+            }
+        }
+        
+        private static bool IsPointerOverUI()
+        {
+            return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
+        }
+        
         private void Awake()
         {
             _informationPopup = GetComponent<InformationPopup>();
@@ -66,29 +89,6 @@ namespace UI
                 titleMenu.SetActive(true);
                 lobbyMenu.SetActive(false);
             }
-        }
-
-        private void HandleMouseLock()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-
-            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
-            {
-                if (!IsPointerOverUI())
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-            }
-        }
-        
-        private bool IsPointerOverUI()
-        {
-            return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
         }
     }
 }
