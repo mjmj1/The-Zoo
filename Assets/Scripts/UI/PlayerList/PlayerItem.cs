@@ -16,7 +16,11 @@ namespace UI.PlayerList
         {
             playerNameText.text = playerName;
         }
-        
+
+        public void SetHostIcon(bool isHost)
+        {
+            hostIcon.gameObject.SetActive(isHost);
+        }
         
     }
 }

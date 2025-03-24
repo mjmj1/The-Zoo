@@ -11,7 +11,7 @@ namespace UI.PlayerList
         [SerializeField]
         GameObject playerItemPrefab;
     
-        IDictionary<string, GameObject> _playerDict = new Dictionary<string, GameObject>();
+        IDictionary<string, GameObject> _playerDictionary = new Dictionary<string, GameObject>();
         
         void Start()
         {
@@ -34,7 +34,7 @@ namespace UI.PlayerList
                     playerItem.SetPlayerName(player.Properties[PLAYERNAME].Value);
                 }
                 
-                _playerDict.Add(player.Id, item);
+                _playerDictionary.Add(player.Id, item);
             }
         }
         private void PlayerJoined(string playerId)
@@ -50,9 +50,10 @@ namespace UI.PlayerList
                 if (item.TryGetComponent<PlayerItem>(out var playerItem))
                 {
                     playerItem.SetPlayerName(player.Properties[PLAYERNAME].Value);
+                    playerItem.SetHostIcon(session.IsHost);
                 }
                 
-                _playerDict.Add(playerId, item);
+                _playerDictionary.Add(playerId, item);
                     
                 return;
             }
@@ -60,9 +61,9 @@ namespace UI.PlayerList
 
         private void PlayerLeft(string playerId)
         {
-            var item = _playerDict[playerId];
+            var item = _playerDictionary[playerId];
             Destroy(item);
-            _playerDict.Remove(playerId);
+            _playerDictionary.Remove(playerId);
         }
     }
 }
