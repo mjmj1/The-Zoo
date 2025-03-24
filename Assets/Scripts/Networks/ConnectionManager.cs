@@ -14,28 +14,20 @@ namespace Networks
 {
     public class ConnectionManager : MonoBehaviour
     {
-        
+        private readonly int _maxPlayers = 8;
+        private string _playerName;
+        private string _sessionCode;
+
+        private string _sessionName;
+
+        private ConnectionState _state = ConnectionState.Disconnected;
+
         public Action OnSessionStarted;
-        
-        public ISession Session {get; private set;}
-        public NetworkManager NetworkManager {get; private set;}
 
-        string _sessionName;
-        string _sessionCode;
-        string _playerName;
-        
-        int _maxPlayers = 8;
-        
-        ConnectionState _state = ConnectionState.Disconnected;
+        public ISession Session { get; private set; }
+        public NetworkManager NetworkManager { get; private set; }
 
-        private enum ConnectionState
-        {
-            Disconnected,
-            Connecting,
-            Connected,
-        }
-
-        async void Awake()
+        private async void Awake()
         {
             try
             {
@@ -43,7 +35,7 @@ namespace Networks
                 NetworkManager.OnClientConnectedCallback += OnClientConnectedCallback;
                 NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
                 NetworkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
-                
+
                 await UnityServices.InitializeAsync();
             }
             catch (Exception e)
@@ -52,7 +44,7 @@ namespace Networks
             }
         }
 
-        void Update()
+        private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Semicolon))
             {
@@ -63,8 +55,8 @@ namespace Networks
                 print($"Player Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
             }
         }
-        
-        async void OnDestroy()
+
+        private async void OnDestroy()
         {
             try
             {
@@ -76,13 +68,13 @@ namespace Networks
                 print(e.Message);
             }
         }
-        
+
         public async void ConnectAsync()
         {
             try
             {
                 _sessionName = GetRandomSessionName();
-            
+
                 await CreateOrJoinSessionAsync();
             }
             catch (Exception e)
@@ -96,7 +88,7 @@ namespace Networks
             try
             {
                 if (_sessionCode.IsNullOrEmpty()) return;
-            
+
                 await JoinSessionByCodeAsync(_sessionCode);
             }
             catch (Exception e)
@@ -104,7 +96,7 @@ namespace Networks
                 Debug.LogException(e);
             }
         }
-        
+
         public async void SignInAnonymouslyAsync()
         {
             try
@@ -118,24 +110,24 @@ namespace Networks
                 Debug.LogException(e);
             }
         }
-        
+
         public async Task<IList<ISessionInfo>> QuerySessionsAsync()
         {
             var sessionQueryOptions = new QuerySessionsOptions();
             var results = await MultiplayerService.Instance.QuerySessionsAsync(sessionQueryOptions);
             return results.Sessions;
         }
-        
+
         public async void UpdateSessionAsync(string sessionName, int maxPlayers)
         {
             try
             {
-                var options = new UpdateLobbyOptions()
+                var options = new UpdateLobbyOptions
                 {
                     Name = sessionName,
                     MaxPlayers = maxPlayers
                 };
-            
+
                 await LobbyService.Instance.UpdateLobbyAsync(Session.Id, options);
             }
             catch (Exception e)
@@ -149,7 +141,7 @@ namespace Networks
             try
             {
                 await Session.LeaveAsync();
-                
+
                 _state = ConnectionState.Disconnected;
             }
             catch (Exception e)
@@ -157,24 +149,25 @@ namespace Networks
                 Debug.LogException(e);
             }
         }
-        
-        async Task CreateSessionAsync()
+
+        private async Task CreateSessionAsync()
         {
             _state = ConnectionState.Connecting;
 
             try
             {
-                var options = new SessionOptions() {
+                var options = new SessionOptions
+                {
                     Name = _sessionName,
                     MaxPlayers = _maxPlayers,
-                    PlayerProperties = new()
+                    PlayerProperties = new Dictionary<string, PlayerProperty>
                     {
-                        {PLAYERNAME, new PlayerProperty(_playerName)}
+                        { PLAYERNAME, new PlayerProperty(_playerName) }
                     }
                 }.WithDistributedAuthorityNetwork();
-                
+
                 Session = await MultiplayerService.Instance.CreateSessionAsync(options);
-                
+
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)
@@ -183,26 +176,27 @@ namespace Networks
                 Debug.LogException(e);
             }
         }
-        
-        async Task JoinSessionByCodeAsync(string code)
+
+        private async Task JoinSessionByCodeAsync(string code)
         {
             OnSessionStarted?.Invoke();
-            
+
             _playerName = PlayerPrefs.GetString(PLAYERNAME);
-            
+
             _state = ConnectionState.Connecting;
 
             try
             {
-                var options = new JoinSessionOptions() {
-                    PlayerProperties = new()
+                var options = new JoinSessionOptions
+                {
+                    PlayerProperties = new Dictionary<string, PlayerProperty>
                     {
-                        {PLAYERNAME, new PlayerProperty(_playerName)}
+                        { PLAYERNAME, new PlayerProperty(_playerName) }
                     }
                 };
-                
+
                 Session = await MultiplayerService.Instance.JoinSessionByCodeAsync(code, options);
-                
+
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)
@@ -211,26 +205,27 @@ namespace Networks
                 Debug.LogException(e);
             }
         }
-        
+
         public async Task JoinSessionByIdAsync(string id)
         {
             OnSessionStarted?.Invoke();
-            
+
             _playerName = PlayerPrefs.GetString(PLAYERNAME);
-            
+
             _state = ConnectionState.Connecting;
 
             try
             {
-                var options = new JoinSessionOptions() {
-                    PlayerProperties = new()
+                var options = new JoinSessionOptions
+                {
+                    PlayerProperties = new Dictionary<string, PlayerProperty>
                     {
-                        {PLAYERNAME, new PlayerProperty(_playerName)}
+                        { PLAYERNAME, new PlayerProperty(_playerName) }
                     }
                 };
-                
+
                 Session = await MultiplayerService.Instance.JoinSessionByIdAsync(id, options);
-                
+
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)
@@ -239,30 +234,31 @@ namespace Networks
                 Debug.LogException(e);
             }
         }
-        
-        async Task CreateOrJoinSessionAsync()
+
+        private async Task CreateOrJoinSessionAsync()
         {
             OnSessionStarted?.Invoke();
-            
+
             _playerName = PlayerPrefs.GetString(PLAYERNAME);
-            
+
             _state = ConnectionState.Connecting;
 
             try
             {
-                var options = new SessionOptions() {
+                var options = new SessionOptions
+                {
                     Name = _sessionName,
                     MaxPlayers = _maxPlayers,
-                    PlayerProperties = new()
+                    PlayerProperties = new Dictionary<string, PlayerProperty>
                     {
-                        {PLAYERNAME, new PlayerProperty(_playerName)}
+                        { PLAYERNAME, new PlayerProperty(_playerName) }
                     }
                 }.WithDistributedAuthorityNetwork();
-                
+
                 var sessionId = GenerateRandomSessionId();
-                
+
                 Session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(sessionId, options);
-                
+
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)
@@ -271,13 +267,13 @@ namespace Networks
                 Debug.LogException(e);
             }
         }
-        
+
         public void OnSessionCodeInputFieldEndEdit(string arg0)
         {
             _sessionCode = arg0;
         }
 
-        void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
+        private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
         {
             if (NetworkManager.LocalClient.IsSessionOwner)
             {
@@ -285,26 +281,31 @@ namespace Networks
             }
         }
 
-        void OnClientConnectedCallback(ulong clientId)
+        private void OnClientConnectedCallback(ulong clientId)
         {
             if (NetworkManager.LocalClientId == clientId)
             {
                 Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
-                
-                
             }
         }
-        
-        void OnOnClientDisconnectCallback(ulong clientId)
+
+        private void OnOnClientDisconnectCallback(ulong clientId)
         {
             if (NetworkManager.LocalClientId == clientId)
             {
                 print($"Client-{clientId} is disconnected");
-            
+
                 Session = null;
-            
+
                 _state = ConnectionState.Disconnected;
             }
+        }
+
+        private enum ConnectionState
+        {
+            Disconnected,
+            Connecting,
+            Connected
         }
     }
 }

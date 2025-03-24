@@ -1,35 +1,50 @@
-using Unity.Netcode.Components;
-using UnityEngine;
 #if UNITY_EDITOR
+using Players;
+using UI;
+using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
+
 /// <summary>
-/// The custom editor for the <see cref="PlayerCubeController"/> component.
+///     The custom editor for the <see cref="PlayerCubeController" /> component.
 /// </summary>
 [CustomEditor(typeof(PlayerCubeController), true)]
 public class PlayerCubeControllerEditor : NetworkTransformEditor
 {
-    private SerializedProperty m_Speed;
-    private SerializedProperty m_ApplyVerticalInputToZAxis;
+    private SerializedProperty m_MouseSensitivity;
+    private SerializedProperty m_MoveSpeed;
+    private SerializedProperty m_RotationSpeed;
 
     public override void OnEnable()
     {
-        m_Speed = serializedObject.FindProperty(nameof(PlayerCubeController.Speed));
-        m_ApplyVerticalInputToZAxis = serializedObject.FindProperty(nameof(PlayerCubeController.ApplyVerticalInputToZAxis));
+        m_MoveSpeed = serializedObject.FindProperty(nameof(PlayerCubeController.moveSpeed));
+        m_RotationSpeed = serializedObject.FindProperty(nameof(PlayerCubeController.rotationSpeed));
+        m_MouseSensitivity = serializedObject.FindProperty(nameof(PlayerCubeController.mouseSensitivity));
         base.OnEnable();
     }
 
     private void DisplayPlayerCubeControllerProperties()
     {
-        EditorGUILayout.PropertyField(m_Speed);
-        EditorGUILayout.PropertyField(m_ApplyVerticalInputToZAxis);
+        EditorGUILayout.PropertyField(m_MoveSpeed);
+        EditorGUILayout.PropertyField(m_RotationSpeed);
+        EditorGUILayout.PropertyField(m_MouseSensitivity);
     }
 
     public override void OnInspectorGUI()
     {
         var playerCubeController = target as PlayerCubeController;
-        void SetExpanded(bool expanded) { playerCubeController.PlayerCubeControllerPropertiesVisible = expanded; };
-        DrawFoldOutGroup<PlayerCubeController>(playerCubeController.GetType(), DisplayPlayerCubeControllerProperties, playerCubeController.PlayerCubeControllerPropertiesVisible, SetExpanded);
+
+        void SetExpanded(bool expanded)
+        {
+            playerCubeController.playerCubeControllerPropertiesVisible = expanded;
+        }
+
+        ;
+        DrawFoldOutGroup<PlayerCubeController>(playerCubeController.GetType(), DisplayPlayerCubeControllerProperties,
+            playerCubeController.playerCubeControllerPropertiesVisible, SetExpanded);
         base.OnInspectorGUI();
     }
 }
@@ -41,39 +56,110 @@ public class PlayerCubeController : NetworkTransform
     // These bool properties ensure that any expanded or collapsed property views
     // within the inspector view will be saved and restored the next time the
     // asset/prefab is viewed.
-    public bool PlayerCubeControllerPropertiesVisible;
+    public bool playerCubeControllerPropertiesVisible;
 #endif
-    public float Speed = 10;
-    public bool ApplyVerticalInputToZAxis;
-    private Vector3 m_Motion;
-    
+    public float moveSpeed = 5f;
+    public float rotationSpeed = 50f;
+    public float mouseSensitivity = 3f;
+
+    public PlanetGravity planetGravity;
+
+    private Transform _plenetCenter;
+    private Quaternion _previousRotation;
+    private Rigidbody _rb;
+
+
+    private void Start()
+    {
+        InitializePlayer();
+        NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
+    }
+
     private void Update()
     {
-        // If not spawned or we don't have authority, then don't update
-        if (!IsSpawned || !HasAuthority)
-        {
-            return;
-        }
+        if (!IsOwner) return;
 
-        // Handle acquiring and applying player input
-        m_Motion = Vector3.zero;
-        m_Motion.x = Input.GetAxis("Horizontal");
+        if (!planetGravity) return;
 
-        // Determine whether the vertical input is applied to the Y or Z axis
-        if (!ApplyVerticalInputToZAxis)
-        {
-            m_Motion.y = Input.GetAxis("Vertical");
-        }
-        else
-        {
-            m_Motion.z = Input.GetAxis("Vertical");
-        }
+        if (UIManager.IsCursorLocked()) return;
 
-        // If there is any player input magnitude, then apply that amount of
-        // motion to the transform
-        if (m_Motion.magnitude > 0)
-        {
-            transform.position += m_Motion * (Speed * Time.deltaTime);
-        }
+        LookAround();
+        AlignToSurface();
+    }
+
+    private void FixedUpdate()
+    {
+        if (!IsOwner) return;
+
+        if (!planetGravity) return;
+
+        if (UIManager.IsCursorLocked()) return;
+
+        CharacterMovement();
+    }
+
+    public override void OnDestroy()
+    {
+        planetGravity.Unsubscribe(_rb);
+
+        base.OnDestroy();
+    }
+
+    private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+    {
+        if (OwnerClientId != clientId) return;
+
+        InitializePlayer();
+    }
+
+    private void InitializePlayer()
+    {
+        if (!IsOwner) return;
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+        
+        planetGravity = FindAnyObjectByType<PlanetGravity>();
+        _rb = GetComponent<Rigidbody>();
+        _rb.useGravity = false;
+
+        if (!planetGravity) return;
+
+        _plenetCenter = planetGravity.gameObject.transform;
+        planetGravity.Subscribe(_rb);
+    }
+
+    private void CharacterMovement()
+    {
+        var h = Input.GetAxisRaw("Horizontal");
+        var v = Input.GetAxisRaw("Vertical");
+
+        var moveDirection = transform.forward * v + transform.right * h;
+        moveDirection.Normalize();
+
+        _rb.MovePosition(_rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
+
+        if (h != 0 || v != 0) return;
+
+        _rb.linearVelocity = Vector3.zero;
+        transform.rotation = _previousRotation;
+    }
+
+    private void AlignToSurface()
+    {
+        var gravityDirection = (transform.position - _plenetCenter.position).normalized;
+
+        var targetRotation = Quaternion.FromToRotation(
+            transform.up, gravityDirection) * transform.rotation;
+        _previousRotation = Quaternion.Slerp(
+            transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        transform.rotation = _previousRotation;
+    }
+
+    private void LookAround()
+    {
+        var mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        transform.Rotate(Vector3.up * mouseX);
     }
 }
