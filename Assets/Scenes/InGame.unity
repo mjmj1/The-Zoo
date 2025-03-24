@@ -393,7 +393,7 @@ MonoBehaviour:
   ConnectionData:
     Address: 127.0.0.1
     Port: 7777
-    ServerListenAddress: 
+    ServerListenAddress: 127.0.0.1
   DebugSimulator:
     PacketDelayMS: 0
     PacketJitterMS: 0
@@ -486,7 +486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   planet: {fileID: 1581662733}
-  interactionObjects: {fileID: 2916209953044320258, guid: c12cbde9d83ad2e4e8d79d70910deba6, type: 3}
+  interactionObjects: {fileID: 3882984925916835374, guid: 9500c0d4fae8c354fb882f39ab50803c, type: 3}
 --- !u!224 &1058579712
 RectTransform:
   m_ObjectHideFlags: 0
@@ -503,8 +503,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 396.6667, y: -103.33333}
-  m_SizeDelta: {x: 230, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1581662733
 GameObject:
