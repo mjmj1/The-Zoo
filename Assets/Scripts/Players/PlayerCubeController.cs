@@ -64,7 +64,7 @@ public class PlayerCubeController : NetworkTransform
 
     public PlanetGravity planetGravity;
 
-    private Transform _plenetCenter;
+    private Transform _planetCenter;
     private Quaternion _previousRotation;
     private Rigidbody _rb;
 
@@ -79,11 +79,12 @@ public class PlayerCubeController : NetworkTransform
     {
         if (!IsOwner) return;
 
-        if (!planetGravity) return;
-
         if (UIManager.IsCursorLocked()) return;
 
         LookAround();
+        
+        if (!planetGravity) return;
+
         AlignToSurface();
     }
 
@@ -91,16 +92,14 @@ public class PlayerCubeController : NetworkTransform
     {
         if (!IsOwner) return;
 
-        if (!planetGravity) return;
-
         if (UIManager.IsCursorLocked()) return;
-
+        
         CharacterMovement();
     }
 
     public override void OnDestroy()
     {
-        planetGravity.Unsubscribe(_rb);
+        planetGravity?.Unsubscribe(_rb);
 
         base.OnDestroy();
     }
@@ -119,14 +118,13 @@ public class PlayerCubeController : NetworkTransform
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         
-        planetGravity = FindAnyObjectByType<PlanetGravity>();
         _rb = GetComponent<Rigidbody>();
-        _rb.useGravity = false;
+        planetGravity = FindAnyObjectByType<PlanetGravity>();
 
-        if (!planetGravity) return;
-
-        _plenetCenter = planetGravity.gameObject.transform;
-        planetGravity.Subscribe(_rb);
+        _rb.useGravity = !planetGravity;
+        
+        _planetCenter = planetGravity?.gameObject.transform;
+        planetGravity?.Subscribe(_rb);
     }
 
     private void CharacterMovement()
@@ -142,12 +140,14 @@ public class PlayerCubeController : NetworkTransform
         if (h != 0 || v != 0) return;
 
         _rb.linearVelocity = Vector3.zero;
+
+        if (!planetGravity) return;
         transform.rotation = _previousRotation;
     }
 
     private void AlignToSurface()
     {
-        var gravityDirection = (transform.position - _plenetCenter.position).normalized;
+        var gravityDirection = (transform.position - _planetCenter.position).normalized;
 
         var targetRotation = Quaternion.FromToRotation(
             transform.up, gravityDirection) * transform.rotation;
