@@ -17,7 +17,7 @@ namespace UI.PlayerList
             playerNameText.text = playerName;
         }
 
-        public void SetHostIcon(bool isHost)
+        public void SetHostIconActive(bool isHost)
         {
             hostIcon.gameObject.SetActive(isHost);
         }

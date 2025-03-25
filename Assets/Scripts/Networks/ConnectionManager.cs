@@ -295,8 +295,6 @@ namespace Networks
             {
                 print($"Client-{clientId} is disconnected");
 
-                Session = null;
-
                 _state = ConnectionState.Disconnected;
             }
         }

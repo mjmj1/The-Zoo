@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace UI
 {
@@ -10,6 +11,9 @@ namespace UI
         [SerializeField] private GameObject titleMenu;
         [SerializeField] private GameObject lobbyMenu;
         [SerializeField] private GameObject loadingScreen;
+        
+        public static TitleUIManager TitleUIManager;
+        public static LobbyUIManager LobbyUIManager;
         
         public static void OpenInformationPopup(string massage)
         {
@@ -59,6 +63,9 @@ namespace UI
                 OnClientConnectedCallback;
             GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback +=
                 OnOnClientDisconnectCallback;
+            
+            TitleUIManager = titleMenu.GetComponent<TitleUIManager>();
+            LobbyUIManager = lobbyMenu.GetComponent<LobbyUIManager>();
         }
 
         public void Update()

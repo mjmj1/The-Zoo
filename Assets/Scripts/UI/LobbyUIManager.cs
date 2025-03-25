@@ -15,11 +15,6 @@ namespace UI
         {
             gameSetupButton.onClick.AddListener(OnSetupButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
-
-            if (GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner) return;
-
-            gameSetupButton.gameObject.SetActive(false);
-            gameStartButton.GetComponentInChildren<TMP_Text>().text = "Ready";
         }
 
         private void OnSetupButtonClick()
@@ -33,6 +28,22 @@ namespace UI
             {
                 GameManager.Instance.connectionManager.NetworkManager.SceneManager.LoadScene("InGame",
                     LoadSceneMode.Single);
+            }
+        }
+
+        public void SettingUI()
+        {
+            print($"Owner: {GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner}");
+            
+            if (GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner)
+            {
+                gameSetupButton.gameObject.SetActive(true);
+                gameStartButton.GetComponentInChildren<TMP_Text>().text = "Game Start";
+            }
+            else
+            {
+                gameSetupButton.gameObject.SetActive(false);
+                gameStartButton.GetComponentInChildren<TMP_Text>().text = "Ready";
             }
         }
     }

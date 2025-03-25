@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
-using Networks;
-using Unity.Netcode;
+using System.Linq;
+using Unity.Services.Multiplayer;
 using UnityEngine;
 using static Static.Strings;
 
@@ -8,61 +9,116 @@ namespace UI.PlayerList
 {
     public class PlayerList : MonoBehaviour
     {
-        [SerializeField]
-        GameObject playerItemPrefab;
-    
-        IDictionary<string, GameObject> _playerDictionary = new Dictionary<string, GameObject>();
+        [SerializeField] private GameObject playerItemPrefab;
+        private readonly Stack<GameObject> _itemPool = new();
+
+        private readonly Dictionary<string, GameObject> _playerDictionary = new();
+
+        private ISession _session;
         
-        void Start()
+        private void OnEnable()
         {
-            InitializePlayers();
-            
-            GameManager.Instance.connectionManager.Session.PlayerJoined += PlayerJoined;
-            GameManager.Instance.connectionManager.Session.PlayerLeaving += PlayerLeft;
+            _session = GameManager.Instance.connectionManager.Session;
+
+            _session.PlayerJoined += OnPlayerJoined;
+            _session.PlayerHasLeft += OnPlayerLeft;
+
+            RefreshPlayerList();
         }
 
-        private void InitializePlayers()
+        private void OnDisable()
         {
-            var session = GameManager.Instance.connectionManager.Session;
-            
-            foreach (var player in session.Players)
+            Reset();
+        }
+
+        private void OnDestroy()
+        {
+            if (_session == null) return;
+
+            Reset();
+        }
+
+        private void OnPlayerJoined(string playerId)
+        {
+            RefreshPlayerList();
+        }
+
+        private void OnPlayerLeft(string playerId)
+        {
+            RefreshPlayerList();
+        }
+
+        private void Reset()
+        {
+            _session.PlayerJoined -= OnPlayerJoined;
+            _session.PlayerHasLeft -= OnPlayerLeft;
+        }
+
+        private void RefreshPlayerList()
+        {
+            if (_session == null) return;
+
+            var players = _session.Players;
+            var currentPlayerIds = players.Select(p => p.Id).ToHashSet();
+
+            RemoveObsoletePlayerItems(currentPlayerIds);
+
+            AddOrUpdatePlayerItems(players, _session.Host);
+
+            UIManager.LobbyUIManager.SettingUI();
+        }
+
+        private void RemoveObsoletePlayerItems(HashSet<string> currentPlayerIds)
+        {
+            var toRemove = _playerDictionary.Keys.Except(currentPlayerIds).ToList();
+
+            foreach (var id in toRemove) ReturnPlayerItem(id);
+        }
+
+        private void AddOrUpdatePlayerItems(IEnumerable<IReadOnlyPlayer> players, string currentHostId)
+        {
+            var siblingIndex = 0;
+
+            foreach (var player in players)
             {
-                var item = Instantiate(playerItemPrefab, transform);
-                
-                if (item.TryGetComponent<PlayerItem>(out var playerItem))
+                if (!_playerDictionary.ContainsKey(player.Id))
                 {
-                    playerItem.SetPlayerName(player.Properties[PLAYERNAME].Value);
+                    var item = GetPlayerItem();
+                    _playerDictionary[player.Id] = item;
                 }
-                
-                _playerDictionary.Add(player.Id, item);
+
+                var obj = _playerDictionary[player.Id];
+                obj.transform.SetSiblingIndex(siblingIndex++);
+
+                if (obj.TryGetComponent<PlayerItem>(out var playerItem))
+                {
+                    if (player.Properties.TryGetValue(PLAYERNAME, out var nameProperty))
+                        playerItem.SetPlayerName(nameProperty.Value);
+                    else
+                        playerItem.SetPlayerName("Unknown");
+
+                    playerItem.SetHostIconActive(player.Id == currentHostId);
+                }
             }
         }
-        private void PlayerJoined(string playerId)
-        {
-            var session = GameManager.Instance.connectionManager.Session;
 
-            foreach (var player in session.Players)
+        private GameObject GetPlayerItem()
+        {
+            if (_itemPool.Count > 0)
             {
-                if (player.Id != playerId) continue;
-                
-                var item = Instantiate(playerItemPrefab, transform);
-            
-                if (item.TryGetComponent<PlayerItem>(out var playerItem))
-                {
-                    playerItem.SetPlayerName(player.Properties[PLAYERNAME].Value);
-                    playerItem.SetHostIcon(session.IsHost);
-                }
-                
-                _playerDictionary.Add(playerId, item);
-                    
-                return;
+                var item = _itemPool.Pop();
+                item.SetActive(true);
+                return item;
             }
+
+            return Instantiate(playerItemPrefab, transform);
         }
 
-        private void PlayerLeft(string playerId)
+        private void ReturnPlayerItem(string playerId)
         {
-            var item = _playerDictionary[playerId];
-            Destroy(item);
+            var obj = _playerDictionary[playerId];
+            obj.SetActive(false);
+            _itemPool.Push(obj);
             _playerDictionary.Remove(playerId);
         }
     }
