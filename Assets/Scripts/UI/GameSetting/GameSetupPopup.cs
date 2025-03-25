@@ -1,8 +1,5 @@
-using System;
-using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -10,28 +7,25 @@ namespace UI.GameSetting
 {
     public class GameSetupPopup : MonoBehaviour
     {
-        [SerializeField] private Button gameSettingButton;
-
         [SerializeField] private TMP_InputField roomNameInputField;
         [SerializeField] private TMP_Dropdown maxPlayersDropdown;
         [SerializeField] private TMP_Dropdown aiLevelDropdown;
-        [SerializeField] private TMP_Dropdown npcRatioDropdown;
+        [SerializeField] private TMP_Dropdown npcPopulationDropdown;
         [SerializeField] private Button confirmButton;
         [SerializeField] private Button cancelButton;
+        private int _aiLevelOptionValue;
 
         private int _maxPlayersOptionValue;
-        private int _aiLevelOptionValue;
         private int _npcRatioOptionValue;
 
         private void Start()
         {
-            gameSettingButton.onClick.AddListener(OnSettingButtonClick);
             confirmButton.onClick.AddListener(OnConfirmButtonClick);
             cancelButton.onClick.AddListener(OnCancelButtonClick);
 
             maxPlayersDropdown.onValueChanged.AddListener(OnMaxPlayersDropdownValueChanged);
             aiLevelDropdown.onValueChanged.AddListener(OnAiLevelDropdownValueChanged);
-            npcRatioDropdown.onValueChanged.AddListener(OnNpcRatioDropdownValueChanged);
+            npcPopulationDropdown.onValueChanged.AddListener(OnNpcPopulationDropdownValueChanged);
 
             var maxPlayers = GameManager.Instance.connectionManager.Session.MaxPlayers.ToString();
 
@@ -39,17 +33,12 @@ namespace UI.GameSetting
 
             maxPlayersDropdown.value = _maxPlayersOptionValue;
             aiLevelDropdown.value = _aiLevelOptionValue;
-            npcRatioDropdown.value = _npcRatioOptionValue;
+            npcPopulationDropdown.value = _npcRatioOptionValue;
 
             var roomName = GameManager.Instance.connectionManager.Session.Name;
             roomNameInputField.placeholder.GetComponent<TMP_Text>().text = roomName;
 
             gameObject.SetActive(false);
-        }
-
-        public void OnSettingButtonClick()
-        {
-            gameObject.SetActive(!gameObject.activeSelf);
         }
 
         private void OnMaxPlayersDropdownValueChanged(int value)
@@ -62,7 +51,7 @@ namespace UI.GameSetting
             _aiLevelOptionValue = value;
         }
 
-        private void OnNpcRatioDropdownValueChanged(int value)
+        private void OnNpcPopulationDropdownValueChanged(int value)
         {
             _npcRatioOptionValue = value;
         }
@@ -72,14 +61,15 @@ namespace UI.GameSetting
             var maxPlayers = int.Parse(maxPlayersDropdown.options[_maxPlayersOptionValue].text);
 
             GameManager.Instance.connectionManager.UpdateSessionAsync(roomNameInputField.text, maxPlayers);
-
-            OnSettingButtonClick();
+            
+            gameObject.SetActive(false);
         }
 
         private void OnCancelButtonClick()
         {
             roomNameInputField.text = string.Empty;
-            OnSettingButtonClick();
+            
+            gameObject.SetActive(false);
         }
     }
 }
