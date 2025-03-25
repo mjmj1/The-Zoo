@@ -36,7 +36,15 @@ namespace Players
             if (UIManager.IsCursorLocked()) return;
             
             RotateCamera();
-            FollowTarget();
+
+            if (!_planetCenter)
+            {
+                FollowTargetInFlat();
+
+                return;
+            }
+            
+            FollowTargetInPlanet();
         }
 
         private void RotateCamera()
@@ -45,7 +53,20 @@ namespace Players
             _pitch = Mathf.Clamp(_pitch - mouseY, minPitch, maxPitch);
         }
 
-        private void FollowTarget()
+        private void FollowTargetInFlat()
+        {
+            var pitchRotation = Quaternion.AngleAxis(_pitch, target.right);
+            var localOffset = pitchRotation * (target.rotation * _defaultOffset);
+
+            var targetPosition = target.position + localOffset;
+            
+            transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _currentVelocity,
+                rotationSmoothTime);
+
+            transform.rotation = Quaternion.LookRotation(target.position - transform.position, target.up);
+        }
+        
+        private void FollowTargetInPlanet()
         {
             var gravityDirection = (target.position - _planetCenter.position).normalized;
 
