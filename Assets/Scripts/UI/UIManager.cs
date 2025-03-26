@@ -82,10 +82,10 @@ namespace UI
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
             {
-                titleMenu.SetActive(false);
-                lobbyMenu.SetActive(true);
+                titleMenu?.SetActive(false);
+                lobbyMenu?.SetActive(true);
 
-                loadingScreen.gameObject.SetActive(false);
+                loadingScreen.gameObject?.SetActive(false);
             }
         }
 
@@ -93,8 +93,8 @@ namespace UI
         {
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
             {
-                titleMenu.SetActive(true);
-                lobbyMenu.SetActive(false);
+                titleMenu?.SetActive(true);
+                lobbyMenu?.SetActive(false);
             }
         }
     }
