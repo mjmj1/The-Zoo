@@ -40,7 +40,6 @@ namespace UI.PlayerList
                 .OrderByDescending(p => p.Id == _session.Host)
                 .ToList();
 
-            print($"PlayerListController::UpdateView::{sortedPlayers.Count}");
             _playerListView.Players = sortedPlayers;
             
             UIManager.LobbyUIManager.SettingUI();

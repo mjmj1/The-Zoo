@@ -33,8 +33,6 @@ namespace UI
 
         public void SettingUI()
         {
-            print($"Owner: {GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner}");
-            
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner)
             {
                 gameSetupButton.gameObject.SetActive(true);

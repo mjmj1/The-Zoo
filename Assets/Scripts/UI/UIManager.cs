@@ -80,22 +80,20 @@ namespace UI
 
         private void OnClientConnectedCallback(ulong clientId)
         {
-            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
-            {
-                titleMenu?.SetActive(false);
-                lobbyMenu?.SetActive(true);
+            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId != clientId) return;
+            
+            titleMenu?.SetActive(false);
+            lobbyMenu?.SetActive(true);
 
-                loadingScreen.gameObject?.SetActive(false);
-            }
+            loadingScreen.gameObject?.SetActive(false);
         }
 
         private void OnOnClientDisconnectCallback(ulong clientId)
         {
-            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
-            {
-                titleMenu?.SetActive(true);
-                lobbyMenu?.SetActive(false);
-            }
+            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId != clientId) return;
+            
+            titleMenu?.SetActive(true);
+            lobbyMenu?.SetActive(false);
         }
     }
 }

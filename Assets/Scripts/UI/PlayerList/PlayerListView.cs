@@ -8,13 +8,13 @@ namespace UI.PlayerList
     public class PlayerListView : MonoBehaviour
     {
         [SerializeField] private GameObject itemPrefab;
+        [SerializeField] private List<Sprite> icons;
 
-        private Action _onPlayersChanged;
-        
+        // private Action _onPlayersChanged;
+
         private readonly Queue<GameObject> _itemPool = new();
         
         private List<IReadOnlyPlayer> _players = new();
-        
         public List<IReadOnlyPlayer> Players
         {
             set
@@ -27,23 +27,20 @@ namespace UI.PlayerList
 
         private void Refresh()
         {
-            foreach (Transform child in transform)
-            {
-                ReturnItem(child.gameObject);
-            }
-            
+            foreach (Transform child in transform) ReturnItem(child.gameObject);
+
             foreach (var player in _players)
             {
                 var item = GetItem();
-        
+
                 if (item.TryGetComponent<PlayerView>(out var view))
                 {
                     var session = GameManager.Instance.connectionManager.Session;
-                    view.Set(session.IsHost, player);
+                    view.Set(session.Host, player);
                 }
             }
         }
-        
+
         private GameObject GetItem()
         {
             if (_itemPool.Count > 0)
@@ -55,7 +52,7 @@ namespace UI.PlayerList
 
             return Instantiate(itemPrefab, transform);
         }
-        
+
         private void ReturnItem(GameObject obj)
         {
             obj.SetActive(false);

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d707a9113247bf8468bedf574f049dbb
+guid: dbe00039b02c7ed418122b762f27fa15
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: close_0
+      name: pets
       rect:
         serializedVersion: 2
-        x: 215
-        y: 215
-        width: 594
-        height: 594
+        x: 85
+        y: 80
+        width: 854
+        height: 811
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c788688c3e37dab449c92f306b79b5c8
-      internalID: -1808621891
+      spriteID: c5b588799726a464b81d2e8c52a7f1dd
+      internalID: 864109623
       vertices: []
       indices: 
       edges: []
@@ -122,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 97c94d1d82760b0449d4cea86dc83505
+    spriteID: 43d89d9f1d4a5af419f2e4dff47f6353
     internalID: 0
     vertices: []
     indices: 
@@ -132,7 +132,11 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      close_0: -1808621891
+      pets: 864109623
+      pets_0: -1332897072
+      pets_1: 1315810674
+      pets_2: 911534490
+      pets_3: 1555819662
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
