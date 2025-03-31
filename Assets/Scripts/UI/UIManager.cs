@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
@@ -59,9 +60,9 @@ namespace UI
         public void Start()
         {
             GameManager.Instance.connectionManager.OnSessionStarted += OnSessionStarted;
-            GameManager.Instance.connectionManager.NetworkManager.OnClientConnectedCallback +=
+            NetworkManager.Singleton.OnClientConnectedCallback +=
                 OnClientConnectedCallback;
-            GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback +=
+            NetworkManager.Singleton.OnClientDisconnectCallback +=
                 OnOnClientDisconnectCallback;
             
             TitleUIManager = titleMenu.GetComponent<TitleUIManager>();
@@ -80,7 +81,7 @@ namespace UI
 
         private void OnClientConnectedCallback(ulong clientId)
         {
-            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId != clientId) return;
+            if (NetworkManager.Singleton.LocalClientId != clientId) return;
             
             titleMenu?.SetActive(false);
             lobbyMenu?.SetActive(true);
@@ -90,7 +91,7 @@ namespace UI
 
         private void OnOnClientDisconnectCallback(ulong clientId)
         {
-            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId != clientId) return;
+            if (NetworkManager.Singleton.LocalClientId != clientId) return;
             
             titleMenu?.SetActive(true);
             lobbyMenu?.SetActive(false);

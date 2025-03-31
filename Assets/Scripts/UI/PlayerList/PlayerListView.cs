@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 
@@ -7,56 +8,78 @@ namespace UI.PlayerList
 {
     public class PlayerListView : MonoBehaviour
     {
-        [SerializeField] private GameObject itemPrefab;
-        [SerializeField] private List<Sprite> icons;
+        [SerializeField] private GameObject playerViewPrefab;
 
-        // private Action _onPlayersChanged;
+        private readonly Dictionary<string, GameObject> _playerMap = new();
 
-        private readonly Queue<GameObject> _itemPool = new();
+        private readonly Queue<GameObject> _pool = new();
+
+        private PlayerListController _controller;
         
-        private List<IReadOnlyPlayer> _players = new();
-        public List<IReadOnlyPlayer> Players
+        private void OnEnable()
         {
-            set
+            _controller = new PlayerListController(this);
+        }
+
+        private void OnDisable()
+        {
+            Clear();
+        }
+
+        public void AddPlayerView(string hostId, IReadOnlyPlayer player)
+        {
+            var obj = GetView();
+
+            obj.GetComponent<PlayerView>().Bind(hostId, player);
+
+            _playerMap.Add(player.Id, obj);
+        }
+
+        public void RemovePlayerView(string id)
+        {
+            var obj = _playerMap[id];
+            _playerMap.Remove(id);
+            ReturnView(obj);
+        }
+
+        public void PromoteOwner(string ownerId)
+        {
+            foreach (var player in _playerMap.Values)
             {
-                _players = value;
-                Refresh();
-                // _onPlayersChanged?.Invoke();
+                player.GetComponent<PlayerView>().SetHost(ownerId);    
             }
         }
 
-        private void Refresh()
+        private void Clear()
         {
-            foreach (Transform child in transform) ReturnItem(child.gameObject);
+            foreach (Transform child in transform) ReturnView(child.gameObject);
 
-            foreach (var player in _players)
-            {
-                var item = GetItem();
-
-                if (item.TryGetComponent<PlayerView>(out var view))
-                {
-                    var session = GameManager.Instance.connectionManager.Session;
-                    view.Set(session.Host, player);
-                }
-            }
+            _playerMap.Clear();
         }
 
-        private GameObject GetItem()
+        private GameObject GetView()
         {
-            if (_itemPool.Count > 0)
+            GameObject obj;
+
+            if (_pool.Count > 0)
             {
-                var item = _itemPool.Dequeue();
-                item.SetActive(true);
-                return item;
+                obj = _pool.Dequeue();
+                obj.SetActive(true);
+            }
+            else
+            {
+                obj = Instantiate(playerViewPrefab, transform);
             }
 
-            return Instantiate(itemPrefab, transform);
+            obj.transform.SetAsLastSibling();
+
+            return obj;
         }
 
-        private void ReturnItem(GameObject obj)
+        private void ReturnView(GameObject obj)
         {
             obj.SetActive(false);
-            _itemPool.Enqueue(obj);
+            _pool.Enqueue(obj);
         }
     }
 }

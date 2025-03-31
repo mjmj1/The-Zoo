@@ -1,5 +1,4 @@
 using Unity.Netcode;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Players

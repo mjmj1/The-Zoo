@@ -60,7 +60,7 @@ namespace Networks
         {
             try
             {
-                await Session?.LeaveAsync();
+                await Session.LeaveAsync();
                 AuthenticationService.Instance.SignOut();
             }
             catch (Exception e)
@@ -148,6 +148,23 @@ namespace Networks
             {
                 Debug.LogException(e);
             }
+        }
+
+        public async void KickPlayerAsync(string playerId)
+        {
+            try
+            {
+                await Session.AsHost().RemovePlayerAsync(playerId);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+        public void ChangeHostAsync(string newHostId)
+        {
+            Session.AsHost().Host = newHostId;
         }
 
         private async Task CreateSessionAsync()

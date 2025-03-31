@@ -342,9 +342,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ddda03374b564c4f9d5c1b4280201e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  hostSprite: {fileID: 729590611, guid: c23880626fa7a064396010028fbf4265, type: 3}
   stateIcon: {fileID: 3974657172855420921}
   playerNameText: {fileID: 4346033820788117880}
   actionButtons: {fileID: 4092240616362498042}
+  promoteHostButton: {fileID: 3536773780872060463}
+  kickButton: {fileID: 8324357628660584840}
 --- !u!114 &6666176865253386655
 MonoBehaviour:
   m_ObjectHideFlags: 0

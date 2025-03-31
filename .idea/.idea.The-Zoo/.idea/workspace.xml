@@ -8,15 +8,43 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/The-Zoo.sln.DotSettings" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/PlayerItem.prefab" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/PlayerItem.prefab.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/close.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/close.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/crown.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/crown.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/exit.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/exit.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/give_host.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/give_host.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/kick.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/kick.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/loading.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/loading.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/person_check.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/person_check.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/pets.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/pets.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/refresh.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/refresh.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/remove.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/remove.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/settings.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Images/settings.png.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/PlayerView.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/PlayerView.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerItem.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerList.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/NetworkPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/NetworkPlayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/LobbyUIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/LobbyUIManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/DisconnectButton.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/DisconnectButton.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/UIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/UIManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,11 +70,17 @@
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/13c0c460649d4ce49f991e2c222fa63546ae00/42/f2e9b377/ExceptionDispatchInfo.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/02/350775c1/UnityEvent.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/13/78240289/SceneManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/14/02cbac66/QualitySettings.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/29/27dfb565/Vector2Int.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/2c/562262f2/FullScreenMode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/32/62b8c2a5/LoadSceneMode.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/58/449b6c31/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/62/38266096/PlayerPrefs.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/65/7b2d1fc1/UnityAction.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/2431722e3e3e41d78b6718bb39ab91111df400/aa/d5328037/ShadowQuality.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4d93bf70afa94fe3a683aa9105c6abce95200/12/9b5b55c1/ISession.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4d93bf70afa94fe3a683aa9105c6abce95200/4f/e9dee25f/FilterOperation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4d93bf70afa94fe3a683aa9105c6abce95200/98/efdbf836/IMultiplayerService.cs" root0="FORCE_HIGHLIGHTING" />
@@ -62,7 +96,6 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/d422a20b2f8c411d89b921d5be932771a5000/32/a133c873/ISession.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ea01e77be99618395f448b16bd7cc2bd4248bd9e5d8474964b2d97f39c5d74/System.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListPresenter.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Preferences/PlayerNamePreference.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Preferences/ResolutionPreference.cs" root0="FORCE_HIGHLIGHTING" />
@@ -113,21 +146,22 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "Unity 에디터에 연결.Unity 에디터에 연결.executor": "Debug",
-    "git-widget-placeholder": "LB/ST/007에 #14개",
-    "ignore.virus.scanning.warn.message": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Unity 에디터에 연결.Unity 에디터에 연결.executor&quot;: &quot;Debug&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.68524593&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LB/ST/007에 #14개&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Unity 에디터에 연결.Unity 에디터에 연결">
     <configuration name="유닛 테스트(배치 모드)" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\6000.0.41f1\Editor\Unity.exe" />
@@ -205,6 +239,10 @@
       <workItem from="1742822159244" duration="776000" />
       <workItem from="1742905558970" duration="14739000" />
       <workItem from="1743004945969" duration="5651000" />
+      <workItem from="1743178417981" duration="4559000" />
+      <workItem from="1743222092608" duration="1196000" />
+      <workItem from="1743225755771" duration="621000" />
+      <workItem from="1743415424441" duration="895000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />
