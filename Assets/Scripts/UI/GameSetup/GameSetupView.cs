@@ -5,20 +5,27 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace UI.GameSetting
+namespace UI.GameSetup
 {
-    public class GameSetup : MonoBehaviour, IPointerClickHandler
+    public class GameSetupView : MonoBehaviour, IPointerClickHandler
     {
         [SerializeField] private List<RectTransform> contents = new();
 
+        [Header("Input Fields")]
         [SerializeField] private Button copyCodeButton;
         [SerializeField] private Toggle privateToggle;
         [SerializeField] private TMP_InputField sessionNameInput;
+        [Header("Password")]
+        [SerializeField] private Sprite visibleOn;
+        [SerializeField] private Sprite visibleOff;
+        [SerializeField] private Image targetImage;
         [SerializeField] private TMP_InputField passwordInput;
         [SerializeField] private Toggle passwordVisible;
+        [Header("Dropdowns")]
         [SerializeField] private TMP_Dropdown maxPlayersDropdown;
         [SerializeField] private TMP_Dropdown aiLevelDropdown;
         [SerializeField] private TMP_Dropdown npcPopulationDropdown;
+        [Header("Buttons")]
         [SerializeField] private Button applyButton;
         [SerializeField] private Button cancelButton;
 
@@ -61,9 +68,9 @@ namespace UI.GameSetting
 
             SetupOpenSequence();
             SetupCloseSequence();
-
-
+            
             cancelButton.onClick.AddListener(OnCancelButtonClick);
+            passwordVisible.onValueChanged.AddListener(OnPasswordVisibilityChanged);
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -73,6 +80,20 @@ namespace UI.GameSetting
             if (_isOpen || (_openSequence?.IsPlaying() ?? false)) return;
 
             _openSequence.Restart();
+        }
+
+        private void OnPasswordVisibilityChanged(bool arg0)
+        {
+            targetImage.sprite = !arg0 ? visibleOn : visibleOff;
+            passwordInput.inputType = !arg0 ? TMP_InputField.InputType.Password : TMP_InputField.InputType.Standard;
+            passwordInput.ForceLabelUpdate();
+        }
+        
+        private void OnCancelButtonClick()
+        {
+            if (!_isOpen || (_closeSequence?.IsPlaying() ?? false)) return;
+
+            _closeSequence.Restart();
         }
 
         private void SetupOpenSequence()
@@ -115,13 +136,6 @@ namespace UI.GameSetting
             }
 
             _closeSequence.OnComplete(() => _isOpen = false);
-        }
-
-        private void OnCancelButtonClick()
-        {
-            if (!_isOpen || (_closeSequence?.IsPlaying() ?? false)) return;
-
-            _closeSequence.Restart();
         }
     }
 }
