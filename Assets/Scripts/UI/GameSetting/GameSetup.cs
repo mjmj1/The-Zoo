@@ -1,0 +1,127 @@
+using System.Collections.Generic;
+using DG.Tweening;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+namespace UI.GameSetting
+{
+    public class GameSetup : MonoBehaviour, IPointerClickHandler
+    {
+        [SerializeField] private List<RectTransform> contents = new();
+
+        [SerializeField] private Button copyCodeButton;
+        [SerializeField] private Toggle privateToggle;
+        [SerializeField] private TMP_InputField sessionNameInput;
+        [SerializeField] private TMP_InputField passwordInput;
+        [SerializeField] private Toggle passwordVisible;
+        [SerializeField] private TMP_Dropdown maxPlayersDropdown;
+        [SerializeField] private TMP_Dropdown aiLevelDropdown;
+        [SerializeField] private TMP_Dropdown npcPopulationDropdown;
+        [SerializeField] private Button applyButton;
+        [SerializeField] private Button cancelButton;
+
+        private readonly float _duration = 0.3f;
+        private Sequence _closeSequence;
+
+        private Vector2 _closeSize;
+
+        private bool _isOpen;
+
+        private Sequence _openSequence;
+        private Vector2 _openSize;
+        private RectTransform _rectTransform;
+
+        private float _stepDuration;
+
+        private void Start()
+        {
+            _rectTransform = GetComponent<RectTransform>();
+
+            _openSize = _rectTransform.sizeDelta;
+            _closeSize = new Vector2(200f, 25f);
+
+            _rectTransform.sizeDelta = _closeSize;
+
+            foreach (var child in contents)
+            {
+                child.localScale = Vector3.zero;
+                child.gameObject.SetActive(false);
+
+                var cg = child.GetComponent<CanvasGroup>();
+                if (cg == null) child.gameObject.AddComponent<CanvasGroup>().alpha = 0;
+                else cg.alpha = 0;
+            }
+
+            _stepDuration = _duration / contents.Count;
+
+            _openSequence = DOTween.Sequence().Pause().SetAutoKill(false).SetRecyclable(true);
+            _closeSequence = DOTween.Sequence().Pause().SetAutoKill(false).SetRecyclable(true);
+
+            SetupOpenSequence();
+            SetupCloseSequence();
+
+
+            cancelButton.onClick.AddListener(OnCancelButtonClick);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (eventData.button != PointerEventData.InputButton.Left) return;
+
+            if (_isOpen || (_openSequence?.IsPlaying() ?? false)) return;
+
+            _openSequence.Restart();
+        }
+
+        private void SetupOpenSequence()
+        {
+            _openSequence.Insert(0f, _rectTransform.DOSizeDelta(_openSize, _duration));
+
+            for (var i = 0; i < contents.Count; i++)
+            {
+                var child = contents[i];
+                var delay = i * _stepDuration;
+
+                var cg = child.GetComponent<CanvasGroup>();
+
+                _openSequence.Insert(delay, DOTween.Sequence()
+                    .AppendCallback(() => child.gameObject.SetActive(true))
+                    .Join(cg.DOFade(1, 0.2f))
+                    .Join(child.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack))
+                );
+            }
+
+            _openSequence.OnComplete(() => _isOpen = true);
+        }
+
+        private void SetupCloseSequence()
+        {
+            _closeSequence.Insert(0.15f, _rectTransform.DOSizeDelta(_closeSize, _duration));
+
+            for (var i = contents.Count - 1; i >= 0; i--)
+            {
+                var child = contents[i];
+                var cg = child.GetComponent<CanvasGroup>();
+
+                var delay = (contents.Count - 1 - i) * _stepDuration;
+
+                _closeSequence.Insert(delay, DOTween.Sequence()
+                    .Join(cg.DOFade(0f, 0.15f))
+                    .Join(child.DOScale(Vector3.zero, 0.15f).SetEase(Ease.InBack))
+                    .AppendCallback(() => child.gameObject.SetActive(false))
+                );
+            }
+
+            _closeSequence.OnComplete(() => _isOpen = false);
+        }
+
+        private void OnCancelButtonClick()
+        {
+            if (!_isOpen || (_closeSequence?.IsPlaying() ?? false)) return;
+
+            _closeSequence.Restart();
+        }
+    }
+}
