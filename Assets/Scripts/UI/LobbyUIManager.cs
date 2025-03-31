@@ -7,24 +7,17 @@ namespace UI
 {
     public class LobbyUIManager : MonoBehaviour
     {
-        [SerializeField] private GameObject gameSetupPopup;
-        [SerializeField] private Button gameSetupButton;
+        [SerializeField] private GameObject gameSetup;
         [SerializeField] private Button gameStartButton;
 
         private void Start()
         {
-            gameSetupButton.onClick.AddListener(OnSetupButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
 
             if (GameManager.Instance.connectionManager.NetworkManager.LocalClient.IsSessionOwner) return;
 
-            gameSetupButton.gameObject.SetActive(false);
+            gameSetup.gameObject.SetActive(false);
             gameStartButton.GetComponentInChildren<TMP_Text>().text = "Ready";
-        }
-
-        private void OnSetupButtonClick()
-        {
-            gameSetupPopup.SetActive(!gameSetupPopup.activeSelf);
         }
 
         private void OnGameStartButtonClick()
