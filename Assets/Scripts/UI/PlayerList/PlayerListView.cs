@@ -15,6 +15,8 @@ namespace UI.PlayerList
         private readonly Queue<GameObject> _pool = new();
 
         private PlayerListController _controller;
+
+        private string _currentHostId;
         
         private void OnEnable()
         {
@@ -42,8 +44,18 @@ namespace UI.PlayerList
             ReturnView(obj);
         }
 
+        public void SetOwner(string hostId)
+        {
+            _currentHostId = hostId;
+        }
         public void PromoteOwner(string ownerId)
         {
+            print($"owner id: {ownerId}");
+            foreach (var kvp in _playerMap)
+            {
+                print($"{kvp.Key}: {kvp.Value}");
+            }
+            
             foreach (var player in _playerMap.Values)
             {
                 player.GetComponent<PlayerView>().SetHost(ownerId);    

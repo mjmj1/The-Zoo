@@ -27,6 +27,7 @@ namespace UI.PlayerList
             _session.PlayerJoined += OnPlayerJoined;
             _session.PlayerHasLeft += OnPlayerLeft;
             NetworkManager.Singleton.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnect;
         }
 
         ~PlayerListController()
@@ -50,6 +51,11 @@ namespace UI.PlayerList
         private void OnSessionOwnerPromoted(ulong ownerId)
         {
             Debug.Log($"OnSessionOwnerPromoted: {ownerId} {_session.Host}");
+            _view.PromoteOwner(_session.Host);
+        }
+        
+        private void OnClientDisconnect(ulong obj)
+        {
             _view.PromoteOwner(_session.Host);
         }
     }
