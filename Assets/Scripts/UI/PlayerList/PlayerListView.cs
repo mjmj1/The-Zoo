@@ -1,8 +1,9 @@
-using System;
 using System.Collections.Generic;
-using Unity.Netcode;
+using System.Linq;
+using Static;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+
 
 namespace UI.PlayerList
 {
@@ -14,13 +15,16 @@ namespace UI.PlayerList
 
         private readonly Queue<GameObject> _pool = new();
 
-        private PlayerListController _controller;
-
-        private string _currentHostId;
-        
         private void OnEnable()
         {
-            _controller = new PlayerListController(this);
+            var session = Manage.Session();
+
+            session.PlayerJoined += OnPlayerJoined;
+            session.PlayerHasLeft += OnPlayerLeft;
+
+            foreach (var player in session.Players) AddPlayerView(player);
+
+            _playerMap[session.Host].GetComponent<PlayerView>().SetHost();
         }
 
         private void OnDisable()
@@ -28,42 +32,54 @@ namespace UI.PlayerList
             Clear();
         }
 
-        public void AddPlayerView(string hostId, IReadOnlyPlayer player)
+        private void OnPlayerJoined(string obj)
         {
+            print($"Player {obj} was join in the session");
+
+            var session = Manage.Session();
+
+            var joined = session.Players.FirstOrDefault(x => x.Id == obj);
+
+            AddPlayerView(joined);
+        }
+
+        private void OnPlayerLeft(string obj)
+        {
+            print($"Player {obj} was left in the session");
+
+            RemovePlayerView(obj);
+
+            var session = Manage.Session();
+
+            _playerMap[session.Host].GetComponent<PlayerView>().SetHost();
+        }
+
+        private void AddPlayerView(IReadOnlyPlayer player)
+        {
+            print($"PlayerView Added {player.Id}");
+
             var obj = GetView();
 
-            obj.GetComponent<PlayerView>().Bind(hostId, player);
+            obj.GetComponent<PlayerView>().Bind(player);
 
             _playerMap.Add(player.Id, obj);
         }
 
-        public void RemovePlayerView(string id)
+        private void RemovePlayerView(string id)
         {
+            print($"PlayerView Removed {id}");
             var obj = _playerMap[id];
             _playerMap.Remove(id);
             ReturnView(obj);
         }
 
-        public void SetOwner(string hostId)
-        {
-            _currentHostId = hostId;
-        }
-        public void PromoteOwner(string ownerId)
-        {
-            print($"owner id: {ownerId}");
-            foreach (var kvp in _playerMap)
-            {
-                print($"{kvp.Key}: {kvp.Value}");
-            }
-            
-            foreach (var player in _playerMap.Values)
-            {
-                player.GetComponent<PlayerView>().SetHost(ownerId);    
-            }
-        }
-
         private void Clear()
         {
+            var session = Manage.Session();
+
+            session.PlayerJoined -= OnPlayerJoined;
+            session.PlayerHasLeft -= OnPlayerLeft;
+
             foreach (Transform child in transform) ReturnView(child.gameObject);
 
             _playerMap.Clear();

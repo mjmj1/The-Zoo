@@ -34,14 +34,12 @@ namespace UI
                 Cursor.visible = true;
             }
 
-            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
-            {
-                if (!IsPointerOverUI())
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-            }
+            if (!Input.GetMouseButtonDown(0) || Cursor.lockState == CursorLockMode.Locked) return;
+            
+            if (IsPointerOverUI()) return;
+            
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         
         private static bool IsPointerOverUI()

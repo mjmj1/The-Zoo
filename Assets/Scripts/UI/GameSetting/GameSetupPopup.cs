@@ -1,3 +1,4 @@
+using Static;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -27,7 +28,7 @@ namespace UI.GameSetting
             aiLevelDropdown.onValueChanged.AddListener(OnAiLevelDropdownValueChanged);
             npcPopulationDropdown.onValueChanged.AddListener(OnNpcPopulationDropdownValueChanged);
 
-            var maxPlayers = GameManager.Instance.connectionManager.Session.MaxPlayers.ToString();
+            var maxPlayers = Manage.Session().MaxPlayers.ToString();
 
             _maxPlayersOptionValue = maxPlayersDropdown.options.FindIndex(data => data.text.Equals(maxPlayers));
 
@@ -35,7 +36,7 @@ namespace UI.GameSetting
             aiLevelDropdown.value = _aiLevelOptionValue;
             npcPopulationDropdown.value = _npcRatioOptionValue;
 
-            var roomName = GameManager.Instance.connectionManager.Session.Name;
+            var roomName = Manage.Session().Name;
             roomNameInputField.placeholder.GetComponent<TMP_Text>().text = roomName;
 
             gameObject.SetActive(false);

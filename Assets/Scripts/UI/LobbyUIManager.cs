@@ -1,4 +1,4 @@
-using System;
+using Static;
 using TMPro;
 using UI.PlayerList;
 using Unity.Netcode;
@@ -16,33 +16,29 @@ namespace UI
         [SerializeField] private Button gameSetupButton;
         [SerializeField] private Button gameStartButton;
 
-        private void Awake()
-        {
-            GameManager.Instance.connectionManager.NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
-        }
-
         private void Start()
         {
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameSetupButton.onClick.AddListener(OnSetupButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
+            GameManager.Instance.connectionManager.Session.Changed += OnSessionChanged;
         }
-        
-        private void OnSessionOwnerPromoted(ulong owerId)
+
+        private void OnSessionChanged()
         {
-            Setup();
+            SetupLobbyControl(Manage.Session().IsHost);
         }
 
         private void OnEnable()
         {
-            Setup();
+            SetupLobbyControl(Manage.Session().IsHost);
         }
 
         private void OnQuitButtonClick()
         {
             GameManager.Instance.connectionManager.DisconnectSessionAsync();
         }
-        
+
         private void OnSetupButtonClick()
         {
             gameSetupPopup.SetActive(!gameSetupPopup.activeSelf);
@@ -50,28 +46,13 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
-            if (NetworkManager.Singleton.LocalClient.IsSessionOwner)
-            {
-                NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
-            }
-            else
-            {
-                
-            }
+            NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
         }
 
-        private void Setup()
+        private void SetupLobbyControl(bool isHost)
         {
-            if (NetworkManager.Singleton.LocalClient.IsSessionOwner)
-            {
-                gameSetupButton.gameObject.SetActive(true);
-                gameStartButton.GetComponentInChildren<TMP_Text>().text = "Game Start";
-            }
-            else
-            {
-                gameSetupButton.gameObject.SetActive(false);
-                gameStartButton.GetComponentInChildren<TMP_Text>().text = "Ready";
-            }
+            gameSetupButton.gameObject.SetActive(isHost);
+            gameStartButton.GetComponentInChildren<TMP_Text>().text = isHost ? "Game Start" : "Ready";
         }
     }
 }

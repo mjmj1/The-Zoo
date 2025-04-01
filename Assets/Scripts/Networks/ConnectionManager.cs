@@ -48,11 +48,10 @@ namespace Networks
         {
             if (Input.GetKeyDown(KeyCode.Semicolon))
             {
-                print($"_session.Name: {Session.Name}");
-                print($"_session.Id: {Session.Id}");
                 print($"_session.Code: {Session.Code}");
                 print($"_session.MaxPlayers: {Session.MaxPlayers}");
-                print($"Player Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
+                print($"Player.Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
+                print($"Player.Id: {Session.CurrentPlayer.Id}");
             }
         }
 
@@ -275,7 +274,7 @@ namespace Networks
                 var sessionId = GenerateRandomSessionId();
 
                 Session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(sessionId, options);
-
+                
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)

@@ -8,43 +8,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/The-Zoo.sln.DotSettings" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Static/Manage.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Static/Manage.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/close.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/close.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/crown.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/crown.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/exit.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/exit.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/give_host.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/give_host.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/kick.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/kick.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/loading.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/loading.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/person_check.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/person_check.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/pets.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/pets.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/refresh.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/refresh.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/remove.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/remove.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/settings.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Images/settings.png.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/PlayerView.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/PlayerView.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/NetworkPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/NetworkPlayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetting/GameSetupPopup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetting/GameSetupPopup.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/LobbyUIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/LobbyUIManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListController.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/DisconnectButton.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/Sessions/DisconnectButton.cs.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/UIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/UIManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/QualitySettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +63,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/509fdfd020bf45b8b36624349f7e1eb391a00/20/6841d42f/ConnectionEvent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/509fdfd020bf45b8b36624349f7e1eb391a00/86/83448b6e/ConnectionEventData.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/5780850fc704417799e38550144b43932ac00/11/5c596158/ContactPair.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6976dfc57fcf4c88b7a5611f2c7a00b895200/1f/96bd8b9f/IMultiplayerService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6976dfc57fcf4c88b7a5611f2c7a00b895200/38/436d68a2/ISession.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6976dfc57fcf4c88b7a5611f2c7a00b895200/86/0bc3d61e/IHostSession.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/7878115525854df7993c2f050b5b11541fa200/ff/ed5dfc26/LayoutDataStore.cs" root0="FORCE_HIGHLIGHTING" />
@@ -243,6 +219,7 @@
       <workItem from="1743222092608" duration="1196000" />
       <workItem from="1743225755771" duration="621000" />
       <workItem from="1743415424441" duration="895000" />
+      <workItem from="1743514564806" duration="9342000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

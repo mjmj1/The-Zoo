@@ -3,7 +3,6 @@ using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using static Static.Strings;
 
@@ -12,7 +11,7 @@ namespace UI.PlayerList
     public class PlayerView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Sprite hostSprite;
-        
+
         [SerializeField] private Image stateIcon;
         [SerializeField] private TMP_Text playerNameText;
 
@@ -20,8 +19,7 @@ namespace UI.PlayerList
         [SerializeField] private Button promoteHostButton;
         [SerializeField] private Button kickButton;
         private IReadOnlyPlayer _data;
-
-        private string _hostId;
+        private bool _isHost;
 
         private void Start()
         {
@@ -30,44 +28,49 @@ namespace UI.PlayerList
             kickButton.onClick.AddListener(OnKickButtonClick);
         }
 
+        private void OnEnable()
+        {
+            stateIcon.sprite = null;
+            SetAlpha(0f);
+            _isHost = false;
+        }
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
 
-            if (_data.Id.Equals(_hostId)) return;
+            if (_isHost) return;
 
             actionButtons.SetActive(true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
+            if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
+
             actionButtons.SetActive(false);
         }
-        
-        public void Bind(string hostId, IReadOnlyPlayer data)
+
+        public void Bind(IReadOnlyPlayer data)
         {
             _data = data;
-            
+
             playerNameText.text =
                 _data.Properties.TryGetValue(PLAYERNAME, out var nameProperty) ? nameProperty.Value : "Unknown";
-
-            SetHost(hostId);
         }
 
-        public void SetHost(string hostId)
+        public void SetHost()
         {
-            _hostId = hostId;
+            stateIcon.sprite = hostSprite;
+            SetAlpha(255f);
+            _isHost = true;
+        }
 
-            if (_data.Id.Equals(_hostId))
-            {
-                stateIcon.sprite = hostSprite;
-                stateIcon.color = new Color(255, 224, 0, 255);
-            }
-            else
-            {
-                stateIcon.sprite = null;
-                stateIcon.color = new Color(255, 255, 255, 0);
-            }
+        private void SetAlpha(float alpha)
+        {
+            var color = stateIcon.color;
+            color.a = alpha;
+            stateIcon.color = color;
         }
 
         private void OnPromoteHostButtonClick()
