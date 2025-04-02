@@ -1,3 +1,4 @@
+using Static;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Multiplayer;
@@ -59,11 +60,17 @@ namespace UI.PlayerList
                 _data.Properties.TryGetValue(PLAYERNAME, out var nameProperty) ? nameProperty.Value : "Unknown";
         }
 
-        public void SetHost()
+        public void MarkHostIcon()
         {
             stateIcon.sprite = hostSprite;
             SetAlpha(255f);
             _isHost = true;
+        }
+        
+        public void HighlightView()
+        {
+            playerNameText.text += " [ME]";
+            playerNameText.color = Color.cyan;
         }
 
         private void SetAlpha(float alpha)

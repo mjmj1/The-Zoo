@@ -149,6 +149,11 @@ namespace Networks
             }
         }
 
+        public async void ChangeHostAsync(string newHost)
+        {
+                       
+        }
+        
         public async void KickPlayerAsync(string playerId)
         {
             try
@@ -159,11 +164,6 @@ namespace Networks
             {
                 Debug.LogException(e);
             }
-        }
-
-        public void ChangeHostAsync(string newHostId)
-        {
-            Session.AsHost().Host = newHostId;
         }
 
         private async Task CreateSessionAsync()

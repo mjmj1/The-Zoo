@@ -4,7 +4,6 @@ using Static;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 
-
 namespace UI.PlayerList
 {
     public class PlayerListView : MonoBehaviour
@@ -24,7 +23,9 @@ namespace UI.PlayerList
 
             foreach (var player in session.Players) AddPlayerView(player);
 
-            _playerMap[session.Host].GetComponent<PlayerView>().SetHost();
+            MarkHost(session.Host);
+            
+            MarkLocalPlayer();
         }
 
         private void OnDisable()
@@ -45,23 +46,31 @@ namespace UI.PlayerList
 
         private void OnPlayerLeft(string obj)
         {
-            print($"Player {obj} was left in the session");
-
             RemovePlayerView(obj);
 
             var session = Manage.Session();
 
-            _playerMap[session.Host].GetComponent<PlayerView>().SetHost();
+            MarkHost(session.Host);
         }
 
+        private void MarkHost(string host)
+        {
+            _playerMap[host].TryGetComponent<PlayerView>(out var view);
+            view.MarkHostIcon();
+        }
+        
+        private void MarkLocalPlayer()
+        {
+            _playerMap[Manage.LocalPlayerId()].TryGetComponent<PlayerView>(out var view);
+            view.HighlightView();
+        }
+        
         private void AddPlayerView(IReadOnlyPlayer player)
         {
-            print($"PlayerView Added {player.Id}");
-
             var obj = GetView();
 
-            obj.GetComponent<PlayerView>().Bind(player);
-
+            var view = obj.GetComponent<PlayerView>();
+            view.Bind(player);
             _playerMap.Add(player.Id, obj);
         }
 
