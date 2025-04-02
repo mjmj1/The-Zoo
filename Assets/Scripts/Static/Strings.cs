@@ -6,9 +6,7 @@ namespace Static
 {
     public class Strings : MonoBehaviour
     {
-        public static string PLAYER = "Player";
         public static string PLAYERNAME = "PlayerName";
-        public static string WORLD = "World";
 
         private static string[] SESSIONNAMES =
         {

@@ -1,5 +1,7 @@
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 
 namespace UI
 {
@@ -10,6 +12,9 @@ namespace UI
         [SerializeField] private GameObject titleMenu;
         [SerializeField] private GameObject lobbyMenu;
         [SerializeField] private GameObject loadingScreen;
+        
+        public static TitleUIManager TitleUIManager;
+        public static LobbyUIManager LobbyUIManager;
         
         public static void OpenInformationPopup(string massage)
         {
@@ -29,14 +34,12 @@ namespace UI
                 Cursor.visible = true;
             }
 
-            if (Input.GetMouseButtonDown(0) && Cursor.lockState != CursorLockMode.Locked)
-            {
-                if (!IsPointerOverUI())
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-            }
+            if (!Input.GetMouseButtonDown(0) || Cursor.lockState == CursorLockMode.Locked) return;
+            
+            if (IsPointerOverUI()) return;
+            
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         
         private static bool IsPointerOverUI()
@@ -55,10 +58,13 @@ namespace UI
         public void Start()
         {
             GameManager.Instance.connectionManager.OnSessionStarted += OnSessionStarted;
-            GameManager.Instance.connectionManager.NetworkManager.OnClientConnectedCallback +=
+            NetworkManager.Singleton.OnClientConnectedCallback +=
                 OnClientConnectedCallback;
-            GameManager.Instance.connectionManager.NetworkManager.OnClientDisconnectCallback +=
+            NetworkManager.Singleton.OnClientDisconnectCallback +=
                 OnOnClientDisconnectCallback;
+            
+            TitleUIManager = titleMenu.GetComponent<TitleUIManager>();
+            LobbyUIManager = lobbyMenu.GetComponent<LobbyUIManager>();
         }
 
         public void Update()
@@ -73,22 +79,20 @@ namespace UI
 
         private void OnClientConnectedCallback(ulong clientId)
         {
-            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
-            {
-                titleMenu.SetActive(false);
-                lobbyMenu.SetActive(true);
+            if (NetworkManager.Singleton.LocalClientId != clientId) return;
+            
+            titleMenu?.SetActive(false);
+            lobbyMenu?.SetActive(true);
 
-                loadingScreen.gameObject.SetActive(false);
-            }
+            loadingScreen.gameObject?.SetActive(false);
         }
 
         private void OnOnClientDisconnectCallback(ulong clientId)
         {
-            if (GameManager.Instance.connectionManager.NetworkManager.LocalClientId == clientId)
-            {
-                titleMenu.SetActive(true);
-                lobbyMenu.SetActive(false);
-            }
+            if (NetworkManager.Singleton.LocalClientId != clientId) return;
+            
+            titleMenu?.SetActive(true);
+            lobbyMenu?.SetActive(false);
         }
     }
 }

@@ -48,11 +48,10 @@ namespace Networks
         {
             if (Input.GetKeyDown(KeyCode.Semicolon))
             {
-                print($"_session.Name: {Session.Name}");
-                print($"_session.Id: {Session.Id}");
                 print($"_session.Code: {Session.Code}");
                 print($"_session.MaxPlayers: {Session.MaxPlayers}");
-                print($"Player Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
+                print($"Player.Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
+                print($"Player.Id: {Session.CurrentPlayer.Id}");
             }
         }
 
@@ -60,7 +59,7 @@ namespace Networks
         {
             try
             {
-                await Session?.LeaveAsync();
+                await Session.LeaveAsync();
                 AuthenticationService.Instance.SignOut();
             }
             catch (Exception e)
@@ -143,6 +142,23 @@ namespace Networks
                 await Session.LeaveAsync();
 
                 _state = ConnectionState.Disconnected;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+        public async void ChangeHostAsync(string newHost)
+        {
+                       
+        }
+        
+        public async void KickPlayerAsync(string playerId)
+        {
+            try
+            {
+                await Session.AsHost().RemovePlayerAsync(playerId);
             }
             catch (Exception e)
             {
@@ -258,7 +274,7 @@ namespace Networks
                 var sessionId = GenerateRandomSessionId();
 
                 Session = await MultiplayerService.Instance.CreateOrJoinSessionAsync(sessionId, options);
-
+                
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)
@@ -294,8 +310,6 @@ namespace Networks
             if (NetworkManager.LocalClientId == clientId)
             {
                 print($"Client-{clientId} is disconnected");
-
-                Session = null;
 
                 _state = ConnectionState.Disconnected;
             }

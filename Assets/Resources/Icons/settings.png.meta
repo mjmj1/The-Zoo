@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0881b929f1bc2644ba580b742f9d12d9
+guid: 122ae3cac4b91af4fb12b78b9206bcad
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -48,7 +48,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 1
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: person_check_0
+      name: fill_setting
       rect:
         serializedVersion: 2
-        x: 10
-        y: 129
-        width: 992
-        height: 773
+        x: 65
+        y: 58
+        width: 894
+        height: 909
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -112,8 +112,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a7111db77542d2f40997ac4c9e20a19c
-      internalID: -38057964
+      spriteID: de4fda7376ac05445b4ad858b0f8436c
+      internalID: 1042606540
       vertices: []
       indices: 
       edges: []
@@ -122,7 +122,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: add99b2c009f2204fba16c9b595ef2e5
+    spriteID: 14daf3acbc42b684e9b27a296c2f873d
     internalID: 0
     vertices: []
     indices: 
@@ -132,7 +132,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      person_check_0: -38057964
+      fill_setting: 1042606540
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
