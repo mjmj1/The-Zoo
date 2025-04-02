@@ -19,19 +19,16 @@ namespace UI
         {
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
-            
+
             GameManager.Instance.connectionManager.Session.Changed += OnSessionChanged;
-            
-            SetupLobbyControl(Manage.Session().Host == Manage.LocalPlayerId());
         }
 
-        private void OnSessionChanged()
+        private void OnEnable()
         {
             SetupLobbyControl(Manage.Session().IsHost);
         }
 
-            
-        private void OnEnable()
+        private void OnSessionChanged()
         {
             SetupLobbyControl(Manage.Session().IsHost);
         }

@@ -570,8 +570,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerListView: {fileID: 348274217}
-  gameSetup: {fileID: 75688877}
   quitButton: {fileID: 1280687801}
+  gameSetup: {fileID: 75688877}
   gameStartButton: {fileID: 1187354060}
 --- !u!1 &75688877
 GameObject:
@@ -723,8 +723,8 @@ MonoBehaviour:
   copyCodeButton: {fileID: 140554205}
   privateToggle: {fileID: 417167953}
   sessionNameInput: {fileID: 2072645795}
-  visibleOn: {fileID: 2125485757, guid: ac9c4e4d45af22d4a8b817053a0bb14e, type: 3}
-  visibleOff: {fileID: 2063595476, guid: 4a58a33d14125794390afed7c314386e, type: 3}
+  visibleOn: {fileID: 1896275593, guid: 41ef396e09d758047b78e563ee90e90e, type: 3}
+  visibleOff: {fileID: -626849194, guid: b537749512ab4c34d8107f049c50603a, type: 3}
   targetImage: {fileID: 1686945203}
   passwordInput: {fileID: 1488779845}
   passwordVisible: {fileID: 758304315}
@@ -3630,8 +3630,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 220, y: 5}
-  m_SizeDelta: {x: 200, y: 0}
+  m_SizeDelta: {x: 220, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &348274215
 MonoBehaviour:
@@ -10222,7 +10221,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1504563151, guid: ef6de77d112f6494a9aa5b279ea031d3, type: 3}
+  m_Sprite: {fileID: 1983277497, guid: 4ef4dff5880788f44bfdd1e045785276, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -13249,7 +13248,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: -10}
+  m_SizeDelta: {x: -8, y: -8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1686945203
 MonoBehaviour:
@@ -13271,9 +13270,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2125485757, guid: ac9c4e4d45af22d4a8b817053a0bb14e, type: 3}
+  m_Sprite: {fileID: 1896275593, guid: 41ef396e09d758047b78e563ee90e90e, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1
