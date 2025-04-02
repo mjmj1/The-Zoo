@@ -117,16 +117,18 @@ namespace Networks
             return results.Sessions;
         }
 
-        public async void UpdateSessionAsync(string sessionName, int maxPlayers)
+        public async void UpdateSessionAsync(string sessionName, string password = null, int maxPlayers = 8, bool isPrivate = false)
         {
             try
             {
                 var options = new UpdateLobbyOptions
                 {
                     Name = sessionName,
-                    MaxPlayers = maxPlayers
+                    Password = password,
+                    MaxPlayers = maxPlayers,
+                    IsPrivate = isPrivate
                 };
-
+                
                 await LobbyService.Instance.UpdateLobbyAsync(Session.Id, options);
             }
             catch (Exception e)

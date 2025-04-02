@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
+using Static;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -15,24 +16,29 @@ namespace UI.GameSetup
         [SerializeField] private Button copyCodeButton;
         [SerializeField] private Toggle privateToggle;
         [SerializeField] private TMP_InputField sessionNameInput;
-        [Header("Password")]
+
+        [Header("Password")] 
         [SerializeField] private Sprite visibleOn;
         [SerializeField] private Sprite visibleOff;
         [SerializeField] private Image targetImage;
         [SerializeField] private TMP_InputField passwordInput;
         [SerializeField] private Toggle passwordVisible;
+
         [Header("Dropdowns")]
         [SerializeField] private TMP_Dropdown maxPlayersDropdown;
         [SerializeField] private TMP_Dropdown aiLevelDropdown;
         [SerializeField] private TMP_Dropdown npcPopulationDropdown;
-        [Header("Buttons")]
+
+        [Header("Buttons")] 
         [SerializeField] private Button applyButton;
         [SerializeField] private Button cancelButton;
-
+        
         private readonly float _duration = 0.3f;
         private Sequence _closeSequence;
 
         private Vector2 _closeSize;
+
+        private GameSetupController _gameSetupController;
 
         private bool _isOpen;
 
@@ -44,6 +50,7 @@ namespace UI.GameSetup
 
         private void Start()
         {
+            _gameSetupController = GetComponent<GameSetupController>();
             _rectTransform = GetComponent<RectTransform>();
 
             _openSize = _rectTransform.sizeDelta;
@@ -68,18 +75,60 @@ namespace UI.GameSetup
 
             SetupOpenSequence();
             SetupCloseSequence();
-            
-            cancelButton.onClick.AddListener(OnCancelButtonClick);
+
+            copyCodeButton.onClick.AddListener(OnCopyCodeButtonClick);
+
+            privateToggle.onValueChanged.AddListener(OnPrivateToggleChanged);
+            sessionNameInput.onValueChanged.AddListener(OnSessionNameInputChanged);
+            passwordInput.onValueChanged.AddListener(OnPasswordInputChanged);
             passwordVisible.onValueChanged.AddListener(OnPasswordVisibilityChanged);
+            maxPlayersDropdown.onValueChanged.AddListener(OnMaxPlayersDropdownChanged);
+            applyButton.onClick.AddListener(OnApplyButtonClick);
+            cancelButton.onClick.AddListener(OnCancelButtonClick);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (eventData.button != PointerEventData.InputButton.Left) return;
 
-            if (_isOpen || (_openSequence?.IsPlaying() ?? false)) return;
+            if (_isOpen || _openSequence.IsPlaying()) return;
 
             _openSequence.Restart();
+
+            Clear();
+        }
+
+        private void Clear()
+        {
+            var session = Manage.Session();
+
+            copyCodeButton.GetComponentInChildren<TMP_Text>().text = session.Code;
+            sessionNameInput.placeholder.GetComponent<TMP_Text>().text = session.Name;
+
+            applyButton.interactable = false;
+        }
+
+        private void OnCopyCodeButtonClick()
+        {
+            GUIUtility.systemCopyBuffer = copyCodeButton.GetComponentInChildren<TMP_Text>().text;
+        }
+        
+        private void OnPrivateToggleChanged(bool arg0)
+        {
+            applyButton.interactable = true;
+            _gameSetupController.IsPrivate = arg0;
+        }
+        
+        private void OnSessionNameInputChanged(string arg0)
+        {
+            applyButton.interactable = true;
+            _gameSetupController.SessionName = arg0;
+        }
+        
+        private void OnPasswordInputChanged(string arg0)
+        {
+            applyButton.interactable = true;
+            _gameSetupController.Password = arg0;
         }
 
         private void OnPasswordVisibilityChanged(bool arg0)
@@ -89,6 +138,21 @@ namespace UI.GameSetup
             passwordInput.ForceLabelUpdate();
         }
         
+        private void OnMaxPlayersDropdownChanged(int arg0)
+        {
+            applyButton.interactable = true;
+            _gameSetupController.MaxPlayers = arg0;
+        }
+
+        private void OnApplyButtonClick()
+        {
+            _gameSetupController.Save();
+            
+            if (!_isOpen || (_closeSequence?.IsPlaying() ?? false)) return;
+
+            _closeSequence.Restart();
+        }
+
         private void OnCancelButtonClick()
         {
             if (!_isOpen || (_closeSequence?.IsPlaying() ?? false)) return;

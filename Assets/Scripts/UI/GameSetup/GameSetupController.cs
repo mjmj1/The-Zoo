@@ -1,16 +1,18 @@
+using Static;
 using UnityEngine;
 
-public class GameSetupController : MonoBehaviour
+namespace UI.GameSetup
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public class GameSetupController : MonoBehaviour
     {
-        
-    }
+        public string SessionName {get; set;}
+        public string Password { get; set; }
+        public bool IsPrivate { get; set; }
+        public int MaxPlayers { get; set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public void Save()
+        {
+            Manage.ConnectionManager().UpdateSessionAsync(SessionName, Password, MaxPlayers, IsPrivate);
+        }
     }
 }

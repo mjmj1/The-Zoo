@@ -61,7 +61,7 @@ namespace UI.GameSetting
         {
             var maxPlayers = int.Parse(maxPlayersDropdown.options[_maxPlayersOptionValue].text);
 
-            GameManager.Instance.connectionManager.UpdateSessionAsync(roomNameInputField.text, maxPlayers);
+            // GameManager.Instance.connectionManager.UpdateSessionAsync(roomNameInputField.text, maxPlayers);
             
             gameObject.SetActive(false);
         }
