@@ -48,10 +48,10 @@ namespace Networks
         {
             if (Input.GetKeyDown(KeyCode.Semicolon))
             {
-                print($"_session.Code: {Session.Code}");
-                print($"_session.MaxPlayers: {Session.MaxPlayers}");
-                print($"Player.Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
-                print($"Player.Id: {Session.CurrentPlayer.Id}");
+                print($"session.Code: {Session.Code}");
+                print($"session.MaxPlayers: {Session.MaxPlayers}");
+                print($"session.Name: {Session.Name}");
+                print($"session.IsPrivate: {Session.IsPrivate}");
             }
         }
 
@@ -128,6 +128,11 @@ namespace Networks
                     MaxPlayers = maxPlayers,
                     IsPrivate = isPrivate
                 };
+
+                /*Session.AsHost().Name = sessionName;
+                Session.AsHost().Password = password;
+                Session.AsHost().IsPrivate = isPrivate;
+                await Session.AsHost().RefreshAsync();*/
                 
                 await LobbyService.Instance.UpdateLobbyAsync(Session.Id, options);
             }

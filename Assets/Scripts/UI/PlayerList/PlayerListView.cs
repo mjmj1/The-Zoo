@@ -35,8 +35,6 @@ namespace UI.PlayerList
 
         private void OnPlayerJoined(string obj)
         {
-            print($"Player {obj} was join in the session");
-
             var session = Manage.Session();
 
             var joined = session.Players.FirstOrDefault(x => x.Id == obj);
@@ -76,7 +74,6 @@ namespace UI.PlayerList
 
         private void RemovePlayerView(string id)
         {
-            print($"PlayerView Removed {id}");
             var obj = _playerMap[id];
             _playerMap.Remove(id);
             ReturnView(obj);

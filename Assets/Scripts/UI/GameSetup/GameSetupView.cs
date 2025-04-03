@@ -93,18 +93,20 @@ namespace UI.GameSetup
 
             if (_isOpen || _openSequence.IsPlaying()) return;
 
-            _openSequence.Restart();
-
             Clear();
+            
+            _openSequence.Restart();
         }
 
         private void Clear()
         {
             var session = Manage.Session();
 
+            sessionNameInput.text = null;
+            
             copyCodeButton.GetComponentInChildren<TMP_Text>().text = session.Code;
             sessionNameInput.placeholder.GetComponent<TMP_Text>().text = session.Name;
-
+            privateToggle.isOn = session.IsPrivate;
             applyButton.interactable = false;
         }
 
