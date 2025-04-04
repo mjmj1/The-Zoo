@@ -48,10 +48,10 @@ namespace Networks
         {
             if (Input.GetKeyDown(KeyCode.Semicolon))
             {
-                print($"_session.Code: {Session.Code}");
-                print($"_session.MaxPlayers: {Session.MaxPlayers}");
-                print($"Player.Name: {Session.CurrentPlayer.Properties[PLAYERNAME].Value}");
-                print($"Player.Id: {Session.CurrentPlayer.Id}");
+                print($"session.Code: {Session.Code}");
+                print($"session.MaxPlayers: {Session.MaxPlayers}");
+                print($"session.Name: {Session.Name}");
+                print($"session.IsPrivate: {Session.IsPrivate}");
             }
         }
 
@@ -117,17 +117,15 @@ namespace Networks
             return results.Sessions;
         }
 
-        public async void UpdateSessionAsync(string sessionName, int maxPlayers)
+        public async void UpdateSessionAsync(string sessionName, string password = null, int maxPlayers = 8, bool isPrivate = false)
         {
             try
             {
-                var options = new UpdateLobbyOptions
-                {
-                    Name = sessionName,
-                    MaxPlayers = maxPlayers
-                };
-
-                await LobbyService.Instance.UpdateLobbyAsync(Session.Id, options);
+                Session.AsHost().Name = sessionName;
+                Session.AsHost().Password = password;
+                Session.AsHost().IsPrivate = isPrivate;
+                
+                await Session.AsHost().SavePropertiesAsync();
             }
             catch (Exception e)
             {

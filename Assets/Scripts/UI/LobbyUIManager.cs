@@ -11,25 +11,24 @@ namespace UI
     public class LobbyUIManager : MonoBehaviour
     {
         [SerializeField] private PlayerListView playerListView;
-        [SerializeField] private GameObject gameSetupPopup;
         [SerializeField] private Button quitButton;
-        [SerializeField] private Button gameSetupButton;
+        [SerializeField] private GameObject gameSetup;
         [SerializeField] private Button gameStartButton;
 
         private void Start()
         {
             quitButton.onClick.AddListener(OnQuitButtonClick);
-            gameSetupButton.onClick.AddListener(OnSetupButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
+
             GameManager.Instance.connectionManager.Session.Changed += OnSessionChanged;
         }
 
-        private void OnSessionChanged()
+        private void OnEnable()
         {
             SetupLobbyControl(Manage.Session().IsHost);
         }
 
-        private void OnEnable()
+        private void OnSessionChanged()
         {
             SetupLobbyControl(Manage.Session().IsHost);
         }
@@ -39,11 +38,6 @@ namespace UI
             GameManager.Instance.connectionManager.DisconnectSessionAsync();
         }
 
-        private void OnSetupButtonClick()
-        {
-            gameSetupPopup.SetActive(!gameSetupPopup.activeSelf);
-        }
-
         private void OnGameStartButtonClick()
         {
             NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
@@ -51,7 +45,7 @@ namespace UI
 
         private void SetupLobbyControl(bool isHost)
         {
-            gameSetupButton.gameObject.SetActive(isHost);
+            gameSetup.gameObject.SetActive(isHost);
             gameStartButton.GetComponentInChildren<TMP_Text>().text = isHost ? "Game Start" : "Ready";
         }
     }
