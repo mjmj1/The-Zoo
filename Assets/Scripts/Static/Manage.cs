@@ -15,7 +15,7 @@ namespace Static
         
         public static ISession Session()
         {
-            return GameManager.Instance.connectionManager.Session;
+            return GameManager.Instance.connectionManager.ActiveSession;
         }
 
         public static string LocalPlayerId()

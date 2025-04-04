@@ -20,7 +20,7 @@ namespace UI
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
 
-            GameManager.Instance.connectionManager.Session.Changed += OnSessionChanged;
+            GameManager.Instance.connectionManager.ActiveSession.Changed += OnActiveSessionChanged;
         }
 
         private void OnEnable()
@@ -28,14 +28,14 @@ namespace UI
             SetupLobbyControl(Manage.Session().IsHost);
         }
 
-        private void OnSessionChanged()
+        private void OnActiveSessionChanged()
         {
             SetupLobbyControl(Manage.Session().IsHost);
         }
 
         private void OnQuitButtonClick()
         {
-            GameManager.Instance.connectionManager.DisconnectSessionAsync();
+            Manage.ConnectionManager().DisconnectSessionAsync();
         }
 
         private void OnGameStartButtonClick()

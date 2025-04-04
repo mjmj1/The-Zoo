@@ -7,6 +7,7 @@ namespace Static
     public class Strings : MonoBehaviour
     {
         public static string PLAYERNAME = "PlayerName";
+        public static string PASSWORD = "Password";
 
         private static string[] SESSIONNAMES =
         {
@@ -24,12 +25,12 @@ namespace Static
         
         public static string GenerateRandomProfileName()
         {
-            return "User_" + Guid.NewGuid().ToString("N")[..8];
+            return $"User_{Guid.NewGuid().ToString("N")[..8]}";
         }
         
         public static string GenerateRandomSessionId()
         {
-            return "Session_" + Guid.NewGuid().ToString("N")[..8];
+            return $"Session_{Guid.NewGuid().ToString("N")[..8]}";
         }
         
         public static string GetRandomSessionName()

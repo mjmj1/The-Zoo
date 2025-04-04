@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Static;
@@ -5,6 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using static Static.Strings;
 
 namespace UI.GameSetup
 {
@@ -12,12 +14,13 @@ namespace UI.GameSetup
     {
         [SerializeField] private List<RectTransform> contents = new();
 
-        [Header("Input Fields")]
+        [Header("Input Fields")] 
         [SerializeField] private Button copyCodeButton;
+
         [SerializeField] private Toggle privateToggle;
         [SerializeField] private TMP_InputField sessionNameInput;
 
-        [Header("Password")] 
+        [Header("Password")]
         [SerializeField] private Sprite visibleOn;
         [SerializeField] private Sprite visibleOff;
         [SerializeField] private Image targetImage;
@@ -29,10 +32,10 @@ namespace UI.GameSetup
         [SerializeField] private TMP_Dropdown aiLevelDropdown;
         [SerializeField] private TMP_Dropdown npcPopulationDropdown;
 
-        [Header("Buttons")] 
+        [Header("Buttons")]
         [SerializeField] private Button applyButton;
         [SerializeField] private Button cancelButton;
-        
+
         private readonly float _duration = 0.3f;
         private Sequence _closeSequence;
 
@@ -94,7 +97,7 @@ namespace UI.GameSetup
             if (_isOpen || _openSequence.IsPlaying()) return;
 
             Clear();
-            
+
             _openSequence.Restart();
         }
 
@@ -103,34 +106,17 @@ namespace UI.GameSetup
             var session = Manage.Session();
 
             sessionNameInput.text = null;
-            
+
             copyCodeButton.GetComponentInChildren<TMP_Text>().text = session.Code;
-            sessionNameInput.placeholder.GetComponent<TMP_Text>().text = session.Name;
             privateToggle.isOn = session.IsPrivate;
+            sessionNameInput.placeholder.GetComponent<TMP_Text>().text = session.Name;
+            passwordInput.text = session.AsHost().Properties[PASSWORD].Value;
             applyButton.interactable = false;
         }
 
         private void OnCopyCodeButtonClick()
         {
             GUIUtility.systemCopyBuffer = copyCodeButton.GetComponentInChildren<TMP_Text>().text;
-        }
-        
-        private void OnPrivateToggleChanged(bool arg0)
-        {
-            applyButton.interactable = true;
-            _gameSetupController.IsPrivate = arg0;
-        }
-        
-        private void OnSessionNameInputChanged(string arg0)
-        {
-            applyButton.interactable = true;
-            _gameSetupController.SessionName = arg0;
-        }
-        
-        private void OnPasswordInputChanged(string arg0)
-        {
-            applyButton.interactable = true;
-            _gameSetupController.Password = arg0;
         }
 
         private void OnPasswordVisibilityChanged(bool arg0)
@@ -139,17 +125,37 @@ namespace UI.GameSetup
             passwordInput.inputType = !arg0 ? TMP_InputField.InputType.Password : TMP_InputField.InputType.Standard;
             passwordInput.ForceLabelUpdate();
         }
-        
-        private void OnMaxPlayersDropdownChanged(int arg0)
+
+        private void TrackChange<T>(T value, Action<T> setter)
         {
             applyButton.interactable = true;
-            _gameSetupController.MaxPlayers = arg0;
+            setter.Invoke(value);
+        }
+
+        private void OnPrivateToggleChanged(bool value)
+        {
+            TrackChange(value, v => _gameSetupController.IsPrivate = value);
+        }
+
+        private void OnSessionNameInputChanged(string value)
+        {
+            TrackChange(value, v => _gameSetupController.SessionName = value);
+        }
+
+        private void OnPasswordInputChanged(string value)
+        {
+            TrackChange(value, v => _gameSetupController.Password = value);
+        }
+
+        private void OnMaxPlayersDropdownChanged(int value)
+        {
+            TrackChange(value, v => _gameSetupController.PlayerSlot = value);
         }
 
         private void OnApplyButtonClick()
         {
             _gameSetupController.Save();
-            
+
             if (!_isOpen || (_closeSequence?.IsPlaying() ?? false)) return;
 
             _closeSequence.Restart();
@@ -157,6 +163,8 @@ namespace UI.GameSetup
 
         private void OnCancelButtonClick()
         {
+            _gameSetupController.Clear();
+
             if (!_isOpen || (_closeSequence?.IsPlaying() ?? false)) return;
 
             _closeSequence.Restart();

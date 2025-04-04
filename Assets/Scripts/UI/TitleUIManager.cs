@@ -1,4 +1,5 @@
 using Networks;
+using Static;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,46 +10,72 @@ namespace UI
 {
     public class TitleUIManager : MonoBehaviour
     {
-        [SerializeField] GameObject playerNameSetup;
-        [SerializeField] GameObject gameStart;
+        [Header("Buttons")]
+        [SerializeField] private Button enterButton;
+        [SerializeField] private Button quickStartButton;
+        [SerializeField] private Button joinByCodeButton;
+        [SerializeField] private Button sessionListButton;
+        [SerializeField] private Button preferencesButton;
         
-        [SerializeField] GameObject preferencesButton;
-        [SerializeField] GameObject preferences;
-        
-        [SerializeField] GameObject sessionsList;
-        
-        TMP_InputField _playerNameInputField;
-        
+        [Header("Input Fields")]
+        [SerializeField] private TMP_InputField playerNameInput;
+        [SerializeField] private TMP_InputField codeInput;
+
+        [Header("Objects")]
+        [SerializeField] private GameObject entrance;
+        [SerializeField] private GameObject gameLobby;
+        [SerializeField] private GameObject preferences;
+        [SerializeField] private GameObject sessionsList;
+
         private void Start()
         {
-            gameStart.SetActive(false);
-            preferencesButton.SetActive(false);
-            preferences.SetActive(false);
+            gameLobby.SetActive(false);
             sessionsList.SetActive(false);
-            
-            _playerNameInputField = playerNameSetup.GetComponentInChildren<TMP_InputField>();
-        }
-        public void OnPlayerNameSaveButtonClick()
-        {
-            if(_playerNameInputField.text.IsNullOrEmpty()) return;
-            
-            PlayerPrefs.SetString(PLAYERNAME, _playerNameInputField.text);
-            
-            playerNameSetup.SetActive(false);
-            gameStart.SetActive(true);
-            preferencesButton.SetActive(true);
+            preferences.SetActive(false);
+            preferencesButton.gameObject.SetActive(false);
 
-            GameManager.Instance.connectionManager.SignInAnonymouslyAsync();
+            enterButton.onClick.AddListener(OnEnterButtonClick);
+            quickStartButton.onClick.AddListener(OnQuickStartButtonClick);
+            joinByCodeButton.onClick.AddListener(OnJoinByCodeButtonClick);
+            sessionListButton.onClick.AddListener(OnSessionListButtonClick);
+            preferencesButton.onClick.AddListener(OnPreferencesButtonClick);
+        }
+
+        private void OnEnterButtonClick()
+        {
+            if (playerNameInput.text.IsNullOrEmpty()) return;
+
+            PlayerPrefs.SetString(PLAYERNAME, playerNameInput.text);
+
+            gameLobby.SetActive(true);
+            entrance.SetActive(false);
+            preferencesButton.gameObject.SetActive(true);
+
+            Manage.ConnectionManager().SignInAnonymouslyAsync();
         }
         
-        public void OnPreferencesButtonClick()
+        private void OnQuickStartButtonClick()
         {
-            preferences.SetActive(!preferences.activeSelf);
+            var data = new ConnectionData(ConnectionData.ConnectionType.Quick);
+
+            Manage.ConnectionManager().ConnectAsync(data);
         }
 
-        public void OnSessionListButtonClick()
+        private void OnJoinByCodeButtonClick()
+        {
+            var data = new ConnectionData(ConnectionData.ConnectionType.JoinByCode, codeInput.text);
+
+            Manage.ConnectionManager().ConnectAsync(data);
+        }
+        
+        private void OnSessionListButtonClick()
         {
             sessionsList.SetActive(!sessionsList.activeSelf);
+        }
+        
+        private void OnPreferencesButtonClick()
+        {
+            preferences.SetActive(!preferences.activeSelf);
         }
     }
 }
