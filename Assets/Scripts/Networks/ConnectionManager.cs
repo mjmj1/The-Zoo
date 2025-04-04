@@ -121,20 +121,11 @@ namespace Networks
         {
             try
             {
-                var options = new UpdateLobbyOptions
-                {
-                    Name = sessionName,
-                    Password = password,
-                    MaxPlayers = maxPlayers,
-                    IsPrivate = isPrivate
-                };
-
-                /*Session.AsHost().Name = sessionName;
+                Session.AsHost().Name = sessionName;
                 Session.AsHost().Password = password;
                 Session.AsHost().IsPrivate = isPrivate;
-                await Session.AsHost().RefreshAsync();*/
                 
-                await LobbyService.Instance.UpdateLobbyAsync(Session.Id, options);
+                await Session.AsHost().SavePropertiesAsync();
             }
             catch (Exception e)
             {
