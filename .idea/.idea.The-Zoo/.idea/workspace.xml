@@ -8,8 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupPopup.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupPopup.cs.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,6 +100,7 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@124598b145d4/Runtime/Multiplayer/MultiplayerService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@124598b145d4/Runtime/Multiplayer/Session/Models/Player/IPlayer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@124598b145d4/Runtime/Multiplayer/Session/Models/Player/IReadOnlyPlayer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@124598b145d4/Runtime/Multiplayer/Session/Options/JoinSessionOptions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@124598b145d4/Runtime/Multiplayer/Session/SessionHandler.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@124598b145d4/Runtime/Multiplayer/Session/SessionState.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@22ebcc83720a/Runtime/TMP/TMP_InputField.cs" root0="SKIP_HIGHLIGHTING" />
@@ -119,7 +120,7 @@
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;Unity 에디터에 연결.Unity 에디터에 연결.executor&quot;: &quot;Debug&quot;,
     &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.68524593&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;LB/ST/007에 #14개&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;LB/ST/016-connectionmanager-전반-수정&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -212,6 +213,8 @@
       <workItem from="1743415424441" duration="895000" />
       <workItem from="1743514564806" duration="9584000" />
       <workItem from="1743593810816" duration="3848000" />
+      <workItem from="1743922025907" duration="1249000" />
+      <workItem from="1743924098576" duration="728000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

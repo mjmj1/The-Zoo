@@ -8,10 +8,10 @@ namespace UI
 {
     public class InformationPopup : MonoBehaviour
     {
-        [SerializeField] GameObject informationPopupPrefab;
-        readonly Queue<GameObject> _informationPopups = new();
-    
-        void Start()
+        [SerializeField] private GameObject informationPopupPrefab;
+        private readonly Queue<GameObject> _informationPopups = new();
+
+        private void Start()
         {
             for (var i = 0; i < 3; i++)
             {
@@ -20,26 +20,19 @@ namespace UI
                 item.SetActive(false);
             }
         }
-        
+
         public void GetInformationPopup(string massage = "")
         {
-            GameObject item;
-            
-            if (_informationPopups.Count > 0)
-            {
-                item = _informationPopups.Dequeue();
-            }
-            else
-            {
-                item = Instantiate(informationPopupPrefab, transform);
-            }
+            var item = _informationPopups.Count > 0
+                ? _informationPopups.Dequeue()
+                : Instantiate(informationPopupPrefab, transform);
 
             var msg = item.GetComponentInChildren<TextMeshProUGUI>();
             var btn = item.GetComponentInChildren<Button>();
 
             msg.text = massage;
             btn.onClick.AddListener(ReleaseInformationPopup(item));
-            
+
             item.SetActive(true);
         }
 
