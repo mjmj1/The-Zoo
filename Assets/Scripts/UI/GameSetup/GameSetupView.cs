@@ -107,10 +107,13 @@ namespace UI.GameSetup
 
             sessionNameInput.text = null;
 
-            copyCodeButton.GetComponentInChildren<TMP_Text>().text = session.Code;
             privateToggle.isOn = session.IsPrivate;
+            copyCodeButton.GetComponentInChildren<TMP_Text>().text = session.Code;
             sessionNameInput.placeholder.GetComponent<TMP_Text>().text = session.Name;
-            passwordInput.text = session.AsHost().Properties[PASSWORD].Value;
+            
+            session.AsHost().Properties.TryGetValue(PASSWORD, out var passwordValue);
+            if (passwordValue != null) passwordInput.text = passwordValue.Value;
+            
             applyButton.interactable = false;
         }
 

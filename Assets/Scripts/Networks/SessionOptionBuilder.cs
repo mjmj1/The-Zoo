@@ -30,8 +30,14 @@ namespace Networks
         {
             _password = password;
 
-            if (password != null)
-                _sessionProperties.Add(PASSWORD, new SessionProperty(password, VisibilityPropertyOptions.Private));
+            if (password == null) return this;
+            
+            if (_sessionProperties.TryAdd(PASSWORD,
+                    new SessionProperty(password, VisibilityPropertyOptions.Private)))
+            {
+                _sessionProperties[PASSWORD] = new SessionProperty(password, VisibilityPropertyOptions.Private);
+            }
+
             return this;
         }
 
@@ -61,7 +67,8 @@ namespace Networks
                 MaxPlayers = _maxPlayers,
                 Password = _password,
                 IsPrivate = _isPrivate,
-                PlayerProperties = _playerProperties
+                PlayerProperties = _playerProperties,
+                SessionProperties = _sessionProperties,
             }.WithDistributedAuthorityNetwork();
         }
 
@@ -70,7 +77,7 @@ namespace Networks
             return new JoinSessionOptions
             {
                 Password = _password,
-                PlayerProperties = _playerProperties
+                PlayerProperties = _playerProperties,
             };
         }
     }
