@@ -245,19 +245,22 @@ namespace Networks
                         host.Name = sessionName;
                         changed = true;
                     }
-
+                    
                     if (password != null)
                     {
                         host.Password = password;
+
+                        host.SetProperty(PASSWORD, new SessionProperty(password, VisibilityPropertyOptions.Private));
+
                         changed = true;
                     }
-
+                    
                     if (isPrivate != null)
                     {
                         host.IsPrivate = (bool)isPrivate;
                         changed = true;
                     }
-
+                    
                     if (changed)
                         await host.SavePropertiesAsync();
                 });

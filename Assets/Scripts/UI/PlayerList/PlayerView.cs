@@ -31,8 +31,7 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
-            stateIcon.sprite = null;
-            SetAlpha(0f);
+            stateIcon.enabled = false;
             _isHost = false;
         }
 
@@ -62,8 +61,7 @@ namespace UI.PlayerList
 
         public void MarkHostIcon()
         {
-            stateIcon.sprite = hostSprite;
-            SetAlpha(255f);
+            stateIcon.enabled = true;
             _isHost = true;
         }
         

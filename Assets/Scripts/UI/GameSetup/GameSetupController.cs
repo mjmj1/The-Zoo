@@ -26,7 +26,7 @@ namespace UI.GameSetup
             get => _password;
             set
             {
-                if (string.IsNullOrEmpty(value)) return;
+                if (value == null) return;
 
                 _password = value;
             }

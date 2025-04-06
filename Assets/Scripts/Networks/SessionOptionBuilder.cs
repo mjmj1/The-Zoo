@@ -30,9 +30,7 @@ namespace Networks
         {
             _password = password;
 
-            if (password == null) return this;
-            
-            if (_sessionProperties.TryAdd(PASSWORD,
+            if (!_sessionProperties.TryAdd(PASSWORD,
                     new SessionProperty(password, VisibilityPropertyOptions.Private)))
             {
                 _sessionProperties[PASSWORD] = new SessionProperty(password, VisibilityPropertyOptions.Private);
