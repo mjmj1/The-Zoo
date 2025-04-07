@@ -821,7 +821,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -286}
+  m_SizeDelta: {x: 0, y: -226}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &86657355
 MonoBehaviour:
@@ -3504,8 +3504,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 150, y: -175}
-  m_SizeDelta: {x: 290, y: 296}
+  m_AnchoredPosition: {x: 150, y: -145}
+  m_SizeDelta: {x: 290, y: 236}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &346409481
 MonoBehaviour:
@@ -3970,10 +3970,10 @@ RectTransform:
   - {fileID: 615045521}
   m_Father: {fileID: 1799330339}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 149.3, y: 0}
-  m_SizeDelta: {x: 300, y: 360}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 300, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &390516376
 MonoBehaviour:
@@ -4052,7 +4052,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sessionViewPrefab: {fileID: 4636040949162402222, guid: 2203b92080803484d95a812f481d9fee, type: 3}
-  contentParent: {fileID: 86657352}
+  contentParent: {fileID: 86657354}
   joinButton: {fileID: 1570592482}
   createButton: {fileID: 1060083974}
   refreshButton: {fileID: 542996881}
@@ -5448,7 +5448,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 150, y: -340}
+  m_AnchoredPosition: {x: 150, y: -280}
   m_SizeDelta: {x: 290, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &615045522
@@ -16108,7 +16108,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2020336354
 RectTransform:
   m_ObjectHideFlags: 0
