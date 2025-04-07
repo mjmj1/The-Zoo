@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using Networks;
 using Static;
 using Unity.Services.Multiplayer;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace UI.Sessions
@@ -13,25 +12,30 @@ namespace UI.Sessions
     public class SessionListView : MonoBehaviour
     {
         [SerializeField] private GameObject sessionViewPrefab;
-        [SerializeField] private GameObject contentParent;
+        [SerializeField] private Transform contentParent;
         [SerializeField] private Button joinButton;
         [SerializeField] private Button createButton;
         [SerializeField] private Button refreshButton;
 
+        private readonly List<SessionView> views = new();
         private readonly List<GameObject> items = new();
 
         private ISessionInfo _selectedSessionInfo;
         private IList<ISessionInfo> sessions;
 
-        private void Start()
+        private void Awake()
         {
-            RefreshAsync();
-
-            joinButton.interactable = false;
-
             joinButton.onClick.AddListener(OnJoinButtonClick);
             createButton.onClick.AddListener(OnCreateButtonClick);
             refreshButton.onClick.AddListener(OnRefreshButtonClick);
+        }
+
+        private void Start()
+        {
+            for (var i = 0; i < 10; i++)
+            {
+                
+            }
         }
 
         private void OnDestroy()
@@ -41,13 +45,20 @@ namespace UI.Sessions
             refreshButton.onClick.RemoveListener(OnRefreshButtonClick);
         }
 
+        private void OnEnable()
+        {
+            joinButton.interactable = false;
+            
+            RefreshAsync();
+        }
+
         private void OnCreateButtonClick()
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.Create);
 
             Manage.ConnectionManager().ConnectAsync(data);
         }
-        
+
         private void OnJoinButtonClick()
         {
             if (_selectedSessionInfo == null) return;
@@ -100,6 +111,25 @@ namespace UI.Sessions
             _selectedSessionInfo = sessionInfo;
             if (_selectedSessionInfo != null)
                 joinButton.interactable = true;
+        }
+
+        private SessionView GetSessionView()
+        {
+            var view = views.FirstOrDefault(v => !v.gameObject.activeSelf);
+            if (view == null)
+            {
+                /*view = Instantiate(sessionViewPrefab, contentParent);
+                views.Add(view);*/
+            }
+
+            view.gameObject.SetActive(true);
+            
+            return view.GetComponent<SessionView>();
+        }
+
+        private void ReturnSessionView(SessionView sessionView)
+        {
+            
         }
     }
 }
