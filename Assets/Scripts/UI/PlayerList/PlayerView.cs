@@ -31,8 +31,20 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
+            actionButtons.SetActive(false);
+            
+            promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
+            kickButton.onClick.AddListener(OnKickButtonClick);
+            
             stateIcon.enabled = false;
             _isHost = false;
+            playerNameText.color = Color.white;
+        }
+
+        private void OnDisable()
+        {
+            promoteHostButton.onClick.RemoveListener(OnPromoteHostButtonClick);
+            kickButton.onClick.RemoveListener(OnKickButtonClick);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -69,13 +81,6 @@ namespace UI.PlayerList
         {
             playerNameText.text += " [ME]";
             playerNameText.color = Color.cyan;
-        }
-
-        private void SetAlpha(float alpha)
-        {
-            var color = stateIcon.color;
-            color.a = alpha;
-            stateIcon.color = color;
         }
 
         private void OnPromoteHostButtonClick()

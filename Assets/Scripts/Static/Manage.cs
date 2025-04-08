@@ -23,9 +23,9 @@ namespace Static
             return AuthenticationService.Instance.PlayerId;
         }
         
-        public static ulong LocalClientId()
+        public static NetworkClient LocalClient()
         {
-            return NetworkManager.Singleton.LocalClientId;
+            return NetworkManager.Singleton.LocalClient;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace UI.PlayerList
 
             MarkHost(session.Host);
             
-            MarkLocalPlayer();
+            MarkMe();
         }
 
         private void OnDisable()
@@ -57,7 +57,7 @@ namespace UI.PlayerList
             view.MarkHostIcon();
         }
         
-        private void MarkLocalPlayer()
+        private void MarkMe()
         {
             _playerMap[Manage.LocalPlayerId()].TryGetComponent<PlayerView>(out var view);
             view.HighlightView();

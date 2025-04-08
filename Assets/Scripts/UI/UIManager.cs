@@ -92,14 +92,14 @@ namespace UI
         
         private void OnClientConnectedCallback(ulong clientId)
         {
-            if(Manage.LocalClientId() != clientId) return;
+            if(Manage.LocalClient().ClientId != clientId) return;
             
             SetupUI(true);
         }
         
         private void OnClientDisconnectCallback(ulong clientId)
         {
-            if(Manage.LocalClientId() != clientId) return;
+            if(Manage.LocalClient().ClientId != clientId) return;
             
             SetupUI(false);
         }

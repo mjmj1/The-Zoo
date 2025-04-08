@@ -20,7 +20,7 @@ namespace UI
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
 
-            GameManager.Instance.connectionManager.ActiveSession.Changed += OnActiveSessionChanged;
+            Manage.ConnectionManager().ActiveSession.Changed += OnActiveSessionChanged;
         }
 
         private void OnEnable()
@@ -30,6 +30,7 @@ namespace UI
 
         private void OnActiveSessionChanged()
         {
+            print("Session Properties Changed");
             SetupLobbyControl(Manage.Session().IsHost);
         }
 

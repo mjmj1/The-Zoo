@@ -5,9 +5,10 @@ using Networks;
 using Static;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using UnityEngine.Pool;
 using UnityEngine.UI;
 
-namespace UI.Sessions
+namespace UI.SessionList
 {
     public class SessionListView : MonoBehaviour
     {
@@ -16,21 +17,29 @@ namespace UI.Sessions
         [SerializeField] private Button joinButton;
         [SerializeField] private Button createButton;
         [SerializeField] private Button refreshButton;
-        private readonly List<GameObject> items = new();
 
-        
-        private readonly List<SessionView> views = new();
-
-        private readonly Queue<SessionView> _pool = new();
+        private IObjectPool<SessionView> _pool;
+        private readonly LinkedList<SessionView> _activeViews = new();
         
         private ISessionInfo _selectedSession;
-        private IList<ISessionInfo> sessions;
 
         private void Awake()
         {
             joinButton.onClick.AddListener(OnJoinButtonClick);
             createButton.onClick.AddListener(OnCreateButtonClick);
             refreshButton.onClick.AddListener(OnRefreshButtonClick);
+        }
+
+        private void Start()
+        {
+            _pool = new ObjectPool<SessionView>
+            (
+                createFunc: OnCreatePooledObjects,
+                actionOnGet: OnGetPooledObjects,
+                actionOnRelease: OnReturnPooledObjects,
+                actionOnDestroy: OnDestroyPooledObjects,
+                true, 5, 100
+            );
         }
 
         private void OnEnable()
@@ -76,23 +85,23 @@ namespace UI.Sessions
         {
             try
             {
-                sessions = await Manage.ConnectionManager().QuerySessionsAsync();
+                foreach (var view in _activeViews)
+                {
+                    _pool.Release(view);
+                }
+                
+                _activeViews.Clear();
 
-                foreach (var listItem in items) Destroy(listItem);
+                var sessions = await Manage.ConnectionManager().QuerySessionsAsync();
 
-                if (sessions == null)
-                    return;
+                sessions = sessions.OrderBy<ISessionInfo, object>(s => s.HasPassword).ToList();
 
                 foreach (var sessionInfo in sessions)
                 {
-                    var itemPrefab = Instantiate(sessionViewPrefab, contentParent.transform);
-                    if (itemPrefab.TryGetComponent<SessionView>(out var sessionView))
-                    {
-                        sessionView.Bind(sessionInfo);
-                        sessionView.onSessionSelected.AddListener(SelectSession);
-                    }
-
-                    items.Add(itemPrefab);
+                    var view = _pool.Get();
+                    view.Bind(sessionInfo);
+                    
+                    _activeViews.AddLast(view);
                 }
             }
             catch (Exception e)
@@ -101,31 +110,35 @@ namespace UI.Sessions
             }
         }
 
-        private void SelectSession(ISessionInfo sessionInfo)
+        private void OnSelect(ISessionInfo sessionInfo)
         {
             _selectedSession = sessionInfo;
             if (_selectedSession != null)
                 joinButton.interactable = true;
         }
 
-        private SessionView GetSessionView()
+        private SessionView OnCreatePooledObjects()
         {
-            var view = _pool.Dequeue();
-            
-            if (view == null)
-            {
-                view = Instantiate(sessionViewPrefab, contentParent).GetComponent<SessionView>();
-                _pool.Enqueue(view);
-            }
-
-            view.gameObject.SetActive(true);
-            return view;
+            return Instantiate(sessionViewPrefab, contentParent).GetComponent<SessionView>();
         }
 
-        private void ReturnSessionView(SessionView view)
+        private void OnGetPooledObjects(SessionView sessionView)
         {
-            view.gameObject.SetActive(false);
-            _pool.Enqueue(view);
+            sessionView.gameObject.SetActive(true);
+            sessionView.onSelect.AddListener(OnSelect);
+            sessionView.transform.SetAsLastSibling();
+        }
+
+        private void OnReturnPooledObjects(SessionView sessionView)
+        {
+            sessionView.gameObject.SetActive(false);
+            sessionView.onSelect.RemoveAllListeners();
+        }
+
+        private void OnDestroyPooledObjects(SessionView sessionView)
+        {
+            sessionView.onSelect.RemoveAllListeners();
+            Destroy(sessionView.gameObject);
         }
     }
 }
