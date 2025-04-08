@@ -16,11 +16,14 @@ namespace UI.Sessions
         [SerializeField] private Button joinButton;
         [SerializeField] private Button createButton;
         [SerializeField] private Button refreshButton;
-
-        private readonly List<SessionView> views = new();
         private readonly List<GameObject> items = new();
 
-        private ISessionInfo _selectedSessionInfo;
+        
+        private readonly List<SessionView> views = new();
+
+        private readonly Queue<SessionView> _pool = new();
+        
+        private ISessionInfo _selectedSession;
         private IList<ISessionInfo> sessions;
 
         private void Awake()
@@ -30,12 +33,11 @@ namespace UI.Sessions
             refreshButton.onClick.AddListener(OnRefreshButtonClick);
         }
 
-        private void Start()
+        private void OnEnable()
         {
-            for (var i = 0; i < 10; i++)
-            {
-                
-            }
+            joinButton.interactable = false;
+
+            RefreshAsync();
         }
 
         private void OnDestroy()
@@ -43,13 +45,6 @@ namespace UI.Sessions
             joinButton.onClick.RemoveListener(OnJoinButtonClick);
             createButton.onClick.RemoveListener(OnCreateButtonClick);
             refreshButton.onClick.RemoveListener(OnRefreshButtonClick);
-        }
-
-        private void OnEnable()
-        {
-            joinButton.interactable = false;
-            
-            RefreshAsync();
         }
 
         private void OnCreateButtonClick()
@@ -61,13 +56,13 @@ namespace UI.Sessions
 
         private void OnJoinButtonClick()
         {
-            if (_selectedSessionInfo == null) return;
+            if (_selectedSession == null) return;
 
-            var data = new ConnectionData(ConnectionData.ConnectionType.JoinById, _selectedSessionInfo.Id);
+            var data = new ConnectionData(ConnectionData.ConnectionType.JoinById, _selectedSession.Id);
 
             Manage.ConnectionManager().ConnectAsync(data);
 
-            _selectedSessionInfo = null;
+            _selectedSession = null;
             joinButton.interactable = false;
             gameObject.SetActive(false);
         }
@@ -108,28 +103,29 @@ namespace UI.Sessions
 
         private void SelectSession(ISessionInfo sessionInfo)
         {
-            _selectedSessionInfo = sessionInfo;
-            if (_selectedSessionInfo != null)
+            _selectedSession = sessionInfo;
+            if (_selectedSession != null)
                 joinButton.interactable = true;
         }
 
         private SessionView GetSessionView()
         {
-            var view = views.FirstOrDefault(v => !v.gameObject.activeSelf);
+            var view = _pool.Dequeue();
+            
             if (view == null)
             {
-                /*view = Instantiate(sessionViewPrefab, contentParent);
-                views.Add(view);*/
+                view = Instantiate(sessionViewPrefab, contentParent).GetComponent<SessionView>();
+                _pool.Enqueue(view);
             }
 
             view.gameObject.SetActive(true);
-            
-            return view.GetComponent<SessionView>();
+            return view;
         }
 
-        private void ReturnSessionView(SessionView sessionView)
+        private void ReturnSessionView(SessionView view)
         {
-            
+            view.gameObject.SetActive(false);
+            _pool.Enqueue(view);
         }
     }
 }
