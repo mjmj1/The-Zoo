@@ -242,14 +242,16 @@ namespace Networks
 
                     if (!sessionName.IsNullOrEmpty())
                     {
+                        print($"name changed");
                         host.Name = sessionName;
                         changed = true;
                     }
                     
                     if (password != null)
                     {
+                        print($"password changed");
                         host.Password = password;
-
+                        
                         host.SetProperty(PASSWORD, new SessionProperty(password, VisibilityPropertyOptions.Private));
 
                         changed = true;
@@ -257,6 +259,7 @@ namespace Networks
                     
                     if (isPrivate != null)
                     {
+                        print($"private changed");
                         host.IsPrivate = (bool)isPrivate;
                         changed = true;
                     }

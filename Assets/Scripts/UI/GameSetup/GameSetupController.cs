@@ -1,72 +1,29 @@
 using Static;
 using UnityEngine;
+using static Static.Strings;
 
 namespace UI.GameSetup
 {
     public class GameSetupController : MonoBehaviour
     {
-        private bool? _isPrivate;
-        private string _password;
-        private int? _playerSlot;
-        private string _sessionName;
-
-        public string SessionName
-        {
-            get => _sessionName;
-            set
-            {
-                if (string.IsNullOrEmpty(value)) return;
-
-                _sessionName = value;
-            }
-        }
-
-        public string Password
-        {
-            get => _password;
-            set
-            {
-                if (value == null) return;
-
-                _password = value;
-            }
-        }
-
-        public bool? IsPrivate
-        {
-            get => _isPrivate;
-            set
-            {
-                if (value == null) return;
-
-                _isPrivate = value;
-            }
-        }
-
-        public int? PlayerSlot
-        {
-            get => _playerSlot;
-            set
-            {
-                if (value == null) return;
-
-                _playerSlot = value;
-            }
-        }
+        public string SessionName { get; set; }
+        public string Password { get; set; }
+        public bool IsPrivate { get; set; }
+        public int PlayerSlot { get; set; }
 
         private void Start()
         {
             var session = Manage.Session();
-
-            _sessionName = session.Name;
+            
+            SessionName = session.Name;
+            Password = session.Properties[PASSWORD].Value;
             IsPrivate = session.IsPrivate;
+            PlayerSlot = session.MaxPlayers;
         }
 
         public void Clear()
         {
-            _sessionName = null;
-            IsPrivate = null;
-            PlayerSlot = null;
+            SessionName = null;
             Password = null;
         }
 

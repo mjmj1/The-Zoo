@@ -8,6 +8,7 @@ namespace Static
     {
         public static string PLAYERNAME = "PlayerName";
         public static string PASSWORD = "Password";
+        public static string PLAYERSLOT = "PlayerSlot";
 
         private static string[] SESSIONNAMES =
         {

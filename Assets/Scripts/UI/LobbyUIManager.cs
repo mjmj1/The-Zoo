@@ -20,12 +20,17 @@ namespace UI
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
 
-            Manage.ConnectionManager().ActiveSession.Changed += OnActiveSessionChanged;
+            NetworkManager.Singleton.OnSessionOwnerPromoted += OnSessionOwnerChanged;
         }
 
         private void OnEnable()
         {
             SetupLobbyControl(Manage.Session().IsHost);
+        }
+        
+        private void OnSessionOwnerChanged(ulong sessionownerpromoted)
+        {
+            SetupLobbyControl(Manage.LocalClient().IsSessionOwner);
         }
 
         private void OnActiveSessionChanged()

@@ -23,6 +23,11 @@ namespace Networks
         public SessionOptionBuilder MaxPlayers(int maxPlayers)
         {
             _maxPlayers = maxPlayers;
+
+            if (!_sessionProperties.TryAdd(PLAYERSLOT,
+                    new SessionProperty(maxPlayers.ToString())))
+                _sessionProperties[PLAYERSLOT] = new SessionProperty(maxPlayers.ToString());
+
             return this;
         }
 
@@ -32,9 +37,7 @@ namespace Networks
 
             if (!_sessionProperties.TryAdd(PASSWORD,
                     new SessionProperty(password, VisibilityPropertyOptions.Private)))
-            {
                 _sessionProperties[PASSWORD] = new SessionProperty(password, VisibilityPropertyOptions.Private);
-            }
 
             return this;
         }
@@ -66,7 +69,7 @@ namespace Networks
                 Password = _password,
                 IsPrivate = _isPrivate,
                 PlayerProperties = _playerProperties,
-                SessionProperties = _sessionProperties,
+                SessionProperties = _sessionProperties
             }.WithDistributedAuthorityNetwork();
         }
 
@@ -75,7 +78,7 @@ namespace Networks
             return new JoinSessionOptions
             {
                 Password = _password,
-                PlayerProperties = _playerProperties,
+                PlayerProperties = _playerProperties
             };
         }
     }
