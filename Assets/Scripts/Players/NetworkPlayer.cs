@@ -26,7 +26,7 @@ namespace Players
         {
             if (!IsOwner) return;
             
-            SetupMyPlayerNameRpc(Manage.Session().CurrentPlayer.Properties[PLAYERNAME].Value);
+            SetupPlayerNameRpc(Manage.Session().CurrentPlayer.Properties[PLAYERNAME].Value);
         }
         
         private void ConnectFollowCamera()
@@ -44,7 +44,7 @@ namespace Players
         }
 
         [Rpc(SendTo.Authority)]
-        private void SetupMyPlayerNameRpc(string playername)
+        private void SetupPlayerNameRpc(string playername)
         {
             playerName.Value = playername;
         }
