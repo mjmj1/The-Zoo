@@ -79,8 +79,7 @@ namespace UI.PlayerList
         
         public void HighlightView()
         {
-            playerNameText.text += " [ME]";
-            playerNameText.color = Color.cyan;
+            playerNameText.color = Color.green;
         }
 
         private void OnPromoteHostButtonClick()
