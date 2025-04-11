@@ -236,13 +236,14 @@ namespace Networks
         {
             try
             {
+                print($"Updating session {sessionName} {password} {isPrivate} {playerSlot}");
                 await WithHostSessionAsync(async host =>
                 {
                     var changed = false;
 
-                    if (!sessionName.IsNullOrEmpty())
+                    if (!string.IsNullOrEmpty(sessionName))
                     {
-                        print($"name changed");
+                        print($"session name changed");
                         host.Name = sessionName;
                         changed = true;
                     }
@@ -257,10 +258,17 @@ namespace Networks
                         changed = true;
                     }
                     
-                    if (isPrivate != null)
+                    if (isPrivate.HasValue)
                     {
                         print($"private changed");
                         host.IsPrivate = (bool)isPrivate;
+                        changed = true;
+                    }
+                    
+                    if (playerSlot.HasValue)
+                    {
+                        print($"player slot changed");
+                        host.SetProperty(PLAYERSLOT, new SessionProperty(playerSlot.Value.ToString()));
                         changed = true;
                     }
                     

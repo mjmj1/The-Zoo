@@ -14,9 +14,8 @@ namespace UI.GameSetup
     {
         [SerializeField] private List<RectTransform> contents = new();
 
-        [Header("Input Fields")] 
+        [Header("Input Fields")]
         [SerializeField] private Button copyCodeButton;
-
         [SerializeField] private Toggle privateToggle;
         [SerializeField] private TMP_InputField sessionNameInput;
 
@@ -81,11 +80,13 @@ namespace UI.GameSetup
 
             copyCodeButton.onClick.AddListener(OnCopyCodeButtonClick);
 
-            privateToggle.onValueChanged.AddListener(OnPrivateToggleChanged);
             sessionNameInput.onValueChanged.AddListener(OnSessionNameInputChanged);
             passwordInput.onValueChanged.AddListener(OnPasswordInputChanged);
+
+            privateToggle.onValueChanged.AddListener(OnPrivateToggleChanged);
             passwordVisible.onValueChanged.AddListener(OnPasswordVisibilityChanged);
             maxPlayersDropdown.onValueChanged.AddListener(OnMaxPlayersDropdownChanged);
+
             applyButton.onClick.AddListener(OnApplyButtonClick);
             cancelButton.onClick.AddListener(OnCancelButtonClick);
         }
@@ -95,7 +96,7 @@ namespace UI.GameSetup
             if (eventData.button != PointerEventData.InputButton.Left) return;
 
             if (_isOpen || _openSequence.IsPlaying()) return;
-
+            
             Clear();
 
             _openSequence.Restart();
@@ -103,18 +104,20 @@ namespace UI.GameSetup
 
         private void Clear()
         {
-            var session = Manage.Session();
+            privateToggle.isOn = _gameSetupController.IsPrivate.Origin;
 
             sessionNameInput.text = null;
-
-            privateToggle.isOn = session.IsPrivate;
-            copyCodeButton.GetComponentInChildren<TMP_Text>().text = session.Code;
-            sessionNameInput.placeholder.GetComponent<TMP_Text>().text = session.Name;
+            sessionNameInput.placeholder.GetComponent<TMP_Text>().text = _gameSetupController.SessionName.Origin;
             
-            session.AsHost().Properties.TryGetValue(PASSWORD, out var passwordValue);
-            if (passwordValue != null) passwordInput.text = passwordValue.Value;
+            copyCodeButton.GetComponentInChildren<TMP_Text>().text = _gameSetupController.Code;
+            
+            passwordInput.text = _gameSetupController.Password.Origin;
+            
+            maxPlayersDropdown.value = _gameSetupController.PlayerSlot.Origin;
             
             applyButton.interactable = false;
+            
+            _gameSetupController.Clear();
         }
 
         private void OnCopyCodeButtonClick()
@@ -122,37 +125,37 @@ namespace UI.GameSetup
             GUIUtility.systemCopyBuffer = copyCodeButton.GetComponentInChildren<TMP_Text>().text;
         }
 
-        private void OnPasswordVisibilityChanged(bool arg0)
+        private void OnPasswordVisibilityChanged(bool value)
         {
-            targetImage.sprite = !arg0 ? visibleOn : visibleOff;
-            passwordInput.inputType = !arg0 ? TMP_InputField.InputType.Password : TMP_InputField.InputType.Standard;
+            targetImage.sprite = !value ? visibleOn : visibleOff;
+            passwordInput.inputType = !value ? TMP_InputField.InputType.Password : TMP_InputField.InputType.Standard;
             passwordInput.ForceLabelUpdate();
         }
 
-        private void TrackChange<T>(T value, Action<T> setter)
+        private void TrackChange<T>(T value, SetupData<T> data)
         {
-            applyButton.interactable = true;
-            setter.Invoke(value);
+            applyButton.interactable = _gameSetupController.HasDirty;
+            data.Set(value);
         }
 
         private void OnPrivateToggleChanged(bool value)
         {
-            TrackChange(value, v => _gameSetupController.IsPrivate = value);
+            TrackChange(value, _gameSetupController.IsPrivate);
         }
 
         private void OnSessionNameInputChanged(string value)
         {
-            TrackChange(value, v => _gameSetupController.SessionName = value);
+            TrackChange(value, _gameSetupController.SessionName);
         }
 
         private void OnPasswordInputChanged(string value)
         {
-            TrackChange(value, v => _gameSetupController.Password = value);
+            TrackChange(value, _gameSetupController.Password);
         }
 
         private void OnMaxPlayersDropdownChanged(int value)
         {
-            TrackChange(value, v => _gameSetupController.PlayerSlot = value);
+            TrackChange(value, _gameSetupController.PlayerSlot);
         }
 
         private void OnApplyButtonClick()
