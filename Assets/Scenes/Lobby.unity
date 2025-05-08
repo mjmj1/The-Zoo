@@ -709,15 +709,17 @@ MonoBehaviour:
   - {fileID: 1390387576}
   - {fileID: 1172860309}
   - {fileID: 442433551}
-  copyCodeButton: {fileID: 140554205}
   privateToggle: {fileID: 417167953}
+  codeCopyButton: {fileID: 140554205}
+  codeCopyText: {fileID: 1962513307}
   sessionNameInput: {fileID: 2072645795}
+  sessionNamePlaceholder: {fileID: 253669980}
   visibleOn: {fileID: 1896275593, guid: 41ef396e09d758047b78e563ee90e90e, type: 3}
   visibleOff: {fileID: -626849194, guid: b537749512ab4c34d8107f049c50603a, type: 3}
   targetImage: {fileID: 1686945203}
-  passwordInput: {fileID: 1488779845}
   passwordVisible: {fileID: 758304315}
-  maxPlayersDropdown: {fileID: 1644967755}
+  passwordInput: {fileID: 1488779845}
+  playerSlotDropdown: {fileID: 1644967755}
   aiLevelDropdown: {fileID: 1994789347}
   npcPopulationDropdown: {fileID: 1546207031}
   applyButton: {fileID: 149885425}
@@ -12576,7 +12578,7 @@ GameObject:
   - component: {fileID: 1644967756}
   - component: {fileID: 1644967755}
   m_Layer: 5
-  m_Name: Max Players Dropdown
+  m_Name: Player Slot Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12655,13 +12657,19 @@ MonoBehaviour:
   m_MultiSelect: 0
   m_Options:
     m_Options:
-    - m_Text: 8
+    - m_Text: 4
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: 5
+      m_Image: {fileID: 0}
+      m_Color: {r: 1, g: 1, b: 1, a: 1}
+    - m_Text: 6
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
     - m_Text: 7
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
-    - m_Text: 6
+    - m_Text: 8
       m_Image: {fileID: 0}
       m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_OnValueChanged:
@@ -14166,7 +14174,7 @@ GameObject:
   - component: {fileID: 1813284087}
   - component: {fileID: 1813284086}
   m_Layer: 5
-  m_Name: Max Players Label
+  m_Name: Player Slot Label
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15303,7 +15311,7 @@ GameObject:
   - component: {fileID: 1918784329}
   - component: {fileID: 1918784330}
   m_Layer: 5
-  m_Name: Max Players
+  m_Name: Player Slot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

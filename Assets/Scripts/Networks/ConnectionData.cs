@@ -10,27 +10,27 @@ namespace Networks
             Quick,
             Create,
             JoinById,
-            JoinByCode,
+            JoinByCode
         }
-        
-        public ConnectionType Type;
-        public string Code;
-        public string Password;
-        public string SessionName;
-        public string PlayerName;
 
-        public ConnectionData(ConnectionType type, string code = null, string password = null, string sessionName = null)
+        public ConnectionType Type { get; private set; }
+        public string SessionName { get; private set; }
+        public string PlayerName { get; private set; }
+        public string Code { get; private set; }
+        public string Password { get; private set; }
+        public bool IsPrivate { get; private set; }
+        public int PlayerSlot { get; private set; }
+
+        public ConnectionData(ConnectionType type, string code = null, string password = null,
+            string sessionName = null, bool isPrivate = false, int playerSlot = 8)
         {
             Type = type;
-            Code = code;
-            Password = password;
             SessionName = sessionName ?? GetRandomSessionName();
             PlayerName = PlayerPrefs.GetString(PLAYERNAME);
-        }
-
-        public override string ToString()
-        {
-            return $"{Type}-{Code}-{Password}-{SessionName}-{PlayerName}";
+            Code = code;
+            Password = password;
+            IsPrivate = isPrivate;
+            PlayerSlot = playerSlot;
         }
     }
 }

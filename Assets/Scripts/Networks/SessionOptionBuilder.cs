@@ -10,7 +10,7 @@ namespace Networks
         private readonly Dictionary<string, SessionProperty> _sessionProperties = new();
         private bool _isLock;
         private bool _isPrivate;
-        private int _maxPlayers = 8;
+        private int _playerSlot = 8;
         private string _name = GetRandomSessionName();
         private string _password;
 
@@ -20,13 +20,13 @@ namespace Networks
             return this;
         }
 
-        public SessionOptionBuilder MaxPlayers(int maxPlayers)
+        public SessionOptionBuilder PlayerSlot(int playerSlot)
         {
-            _maxPlayers = maxPlayers;
+            _playerSlot = playerSlot;
 
             if (!_sessionProperties.TryAdd(PLAYERSLOT,
-                    new SessionProperty(maxPlayers.ToString())))
-                _sessionProperties[PLAYERSLOT] = new SessionProperty(maxPlayers.ToString());
+                    new SessionProperty(playerSlot.ToString())))
+                _sessionProperties[PLAYERSLOT] = new SessionProperty(playerSlot.ToString());
 
             return this;
         }
@@ -65,7 +65,7 @@ namespace Networks
             return new SessionOptions
             {
                 Name = _name,
-                MaxPlayers = _maxPlayers,
+                MaxPlayers = 8,
                 Password = _password,
                 IsPrivate = _isPrivate,
                 PlayerProperties = _playerProperties,
