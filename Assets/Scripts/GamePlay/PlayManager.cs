@@ -9,6 +9,8 @@ namespace GamePlay
         
         public override void OnNetworkSpawn()
         {
+            if (!IsSessionOwner) return;
+            
             MoveAllPlayersToRandomSpawn();
         }
         
@@ -18,10 +20,21 @@ namespace GamePlay
             {
                 if (value.PlayerObject != null)
                 {
-                    var randomPos = GetRandomPosition();
-                    Debug.Log($"Client {clientId}: Position = {randomPos}");
+                    MovePlayerRpc(clientId);
+                    // value.PlayerObject.transform.position = randomPos;
                 }
             }
+        }
+        
+        [Rpc(SendTo.Server)]
+        private void MovePlayerRpc(ulong clientId)
+        {
+            var randomPos = GetRandomPosition();
+            
+            var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
+            obj.transform.position = randomPos;
+            
+            Debug.Log($"Client {clientId}: Position = {randomPos}");
         }
         
         private Vector3 GetRandomPosition()

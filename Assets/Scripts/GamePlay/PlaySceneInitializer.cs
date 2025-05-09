@@ -10,6 +10,8 @@ namespace GamePlay
 
         private void Start()
         {
+            if (!NetworkManager.Singleton.IsConnectedClient) return;
+            
             if (!Manage.LocalClient().IsSessionOwner) return;
             
             if (FindFirstObjectByType<PlayManager>() != null)
