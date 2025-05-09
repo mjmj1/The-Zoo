@@ -159,7 +159,8 @@ namespace UI.GameSetup
             sessionNameInput.text = "";
             sessionNamePlaceholder.text = session.Name;
 
-            passwordInput.text = session.Properties[PASSWORD].Value;
+            session.Properties.TryGetValue(PASSWORD, out var prof);
+            passwordInput.text = prof?.Value;
             
             playerSlotDropdown.value = int.Parse(session.Properties[PLAYERSLOT].Value) - 4;
 
