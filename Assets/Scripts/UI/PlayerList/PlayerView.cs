@@ -31,9 +31,20 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
-            stateIcon.sprite = null;
-            SetAlpha(0f);
+            actionButtons.SetActive(false);
+            
+            promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
+            kickButton.onClick.AddListener(OnKickButtonClick);
+            
+            stateIcon.enabled = false;
             _isHost = false;
+            playerNameText.color = Color.white;
+        }
+
+        private void OnDisable()
+        {
+            promoteHostButton.onClick.RemoveListener(OnPromoteHostButtonClick);
+            kickButton.onClick.RemoveListener(OnKickButtonClick);
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -62,22 +73,13 @@ namespace UI.PlayerList
 
         public void MarkHostIcon()
         {
-            stateIcon.sprite = hostSprite;
-            SetAlpha(255f);
+            stateIcon.enabled = true;
             _isHost = true;
         }
         
         public void HighlightView()
         {
-            playerNameText.text += " [ME]";
-            playerNameText.color = Color.cyan;
-        }
-
-        private void SetAlpha(float alpha)
-        {
-            var color = stateIcon.color;
-            color.a = alpha;
-            stateIcon.color = color;
+            playerNameText.color = Color.green;
         }
 
         private void OnPromoteHostButtonClick()

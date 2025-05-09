@@ -10,7 +10,7 @@ namespace Networks
         private readonly Dictionary<string, SessionProperty> _sessionProperties = new();
         private bool _isLock;
         private bool _isPrivate;
-        private int _maxPlayers = 8;
+        private int _playerSlot = 8;
         private string _name = GetRandomSessionName();
         private string _password;
 
@@ -20,9 +20,14 @@ namespace Networks
             return this;
         }
 
-        public SessionOptionBuilder MaxPlayers(int maxPlayers)
+        public SessionOptionBuilder PlayerSlot(int playerSlot)
         {
-            _maxPlayers = maxPlayers;
+            _playerSlot = playerSlot;
+
+            if (!_sessionProperties.TryAdd(PLAYERSLOT,
+                    new SessionProperty(playerSlot.ToString())))
+                _sessionProperties[PLAYERSLOT] = new SessionProperty(playerSlot.ToString());
+
             return this;
         }
 
@@ -30,13 +35,9 @@ namespace Networks
         {
             _password = password;
 
-            if (password == null) return this;
-            
-            if (_sessionProperties.TryAdd(PASSWORD,
+            if (!_sessionProperties.TryAdd(PASSWORD,
                     new SessionProperty(password, VisibilityPropertyOptions.Private)))
-            {
                 _sessionProperties[PASSWORD] = new SessionProperty(password, VisibilityPropertyOptions.Private);
-            }
 
             return this;
         }
@@ -64,11 +65,11 @@ namespace Networks
             return new SessionOptions
             {
                 Name = _name,
-                MaxPlayers = _maxPlayers,
+                MaxPlayers = 8,
                 Password = _password,
                 IsPrivate = _isPrivate,
                 PlayerProperties = _playerProperties,
-                SessionProperties = _sessionProperties,
+                SessionProperties = _sessionProperties
             }.WithDistributedAuthorityNetwork();
         }
 
@@ -77,7 +78,7 @@ namespace Networks
             return new JoinSessionOptions
             {
                 Password = _password,
-                PlayerProperties = _playerProperties,
+                PlayerProperties = _playerProperties
             };
         }
     }

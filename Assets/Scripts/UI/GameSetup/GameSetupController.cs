@@ -1,80 +1,31 @@
+using System;
+using System.Collections.Generic;
 using Static;
+using TMPro;
 using UnityEngine;
+using static Static.Strings;
 
 namespace UI.GameSetup
 {
     public class GameSetupController : MonoBehaviour
     {
-        private bool? _isPrivate;
-        private string _password;
-        private int? _playerSlot;
-        private string _sessionName;
-
-        public string SessionName
-        {
-            get => _sessionName;
-            set
-            {
-                if (string.IsNullOrEmpty(value)) return;
-
-                _sessionName = value;
-            }
-        }
-
-        public string Password
-        {
-            get => _password;
-            set
-            {
-                if (string.IsNullOrEmpty(value)) return;
-
-                _password = value;
-            }
-        }
-
-        public bool? IsPrivate
-        {
-            get => _isPrivate;
-            set
-            {
-                if (value == null) return;
-
-                _isPrivate = value;
-            }
-        }
-
-        public int? PlayerSlot
-        {
-            get => _playerSlot;
-            set
-            {
-                if (value == null) return;
-
-                _playerSlot = value;
-            }
-        }
-
-        private void Start()
-        {
-            var session = Manage.Session();
-
-            _sessionName = session.Name;
-            IsPrivate = session.IsPrivate;
-        }
-
-        public void Clear()
-        {
-            _sessionName = null;
-            IsPrivate = null;
-            PlayerSlot = null;
-            Password = null;
-        }
+        public string Code { get; set; }
+        public bool? IsPrivate { get; set; }
+        public string Password { get; set; }
+        public int PlayerSlot { get; set; }
+        public string SessionName { get; set; }
 
         public void Save()
         {
             Manage.ConnectionManager().UpdateSessionAsync(SessionName, Password, IsPrivate, PlayerSlot);
+        }
 
-            Clear();
+        public void Reset()
+        {
+            IsPrivate = null;
+            Password = string.Empty;
+            SessionName = string.Empty;
+            PlayerSlot = -1;
         }
     }
 }

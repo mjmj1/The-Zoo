@@ -14,7 +14,7 @@ namespace Networks
 {
     public class ConnectionManager : MonoBehaviour, IConnectionHandler
     {
-        private const int MaxPlayers = 10;
+        private const int MaxPlayers = 8;
 
         private ConnectionState _state = ConnectionState.Disconnected;
 
@@ -105,14 +105,14 @@ namespace Networks
         {
             try
             {
-                print(data.ToString());
                 switch (data.Type)
                 {
                     case ConnectionType.Quick:
                         await CreateOrJoinSessionAsync(data.PlayerName, data.SessionName);
                         break;
                     case ConnectionType.Create:
-                        await CreateSessionAsync(data.PlayerName, data.SessionName, data.Password);
+                        await CreateSessionAsync(data.PlayerName, data.SessionName, data.Password, data.IsPrivate,
+                            data.PlayerSlot);
                         break;
                     case ConnectionType.JoinById:
                         await JoinSessionByIdAsync(data.Code, data.PlayerName);
@@ -158,11 +158,11 @@ namespace Networks
         }
 
         private async Task CreateSessionAsync(string playerName, string sessionName = null, string password = null,
-            int playerSlot = MaxPlayers)
+            bool isPrivate = false, int playerSlot = MaxPlayers)
         {
             var options = new SessionOptionBuilder()
                 .Name(sessionName)
-                .MaxPlayers(MaxPlayers)
+                .PlayerSlot(playerSlot)
                 .Password(password)
                 .IsPrivate(true)
                 .PlayerProperty(PLAYERNAME, new PlayerProperty(playerName))
@@ -170,14 +170,14 @@ namespace Networks
 
             await HandleSessionFlowAsync(async () => await MultiplayerService.Instance.CreateSessionAsync(options));
 
-            PublicSessionAsync();
+            if (!isPrivate) PublicSessionAsync();
         }
 
         private async Task CreateOrJoinSessionAsync(string playerName, string sessionName)
         {
             var options = new SessionOptionBuilder()
                 .Name(sessionName)
-                .MaxPlayers(MaxPlayers)
+                .PlayerSlot(MaxPlayers)
                 .Password()
                 .IsPrivate(true)
                 .PlayerProperty(PLAYERNAME, new PlayerProperty(playerName))
@@ -214,7 +214,7 @@ namespace Networks
         }
 
         // <-------------------Host------------------->
-        
+
         private async Task WithHostSessionAsync(Func<IHostSession, Task> action)
         {
             if (ActiveSession is not { IsHost: true })
@@ -231,35 +231,39 @@ namespace Networks
             }
         }
 
-        public async void UpdateSessionAsync(string sessionName = null, string password = null, bool? isPrivate = null,
-            int? playerSlot = null)
+        public async void UpdateSessionAsync(string sessionName = "", string password = "", bool? isPrivate = null,
+            int playerSlot = -1)
         {
             try
             {
                 await WithHostSessionAsync(async host =>
                 {
-                    var changed = false;
-
                     if (!sessionName.IsNullOrEmpty())
                     {
+                        print($"sessionName {sessionName}");
                         host.Name = sessionName;
-                        changed = true;
                     }
 
-                    if (password != null)
+                    if (!password.IsNullOrEmpty())
                     {
+                        print($"password {password}");
                         host.Password = password;
-                        changed = true;
+                        host.SetProperty(PASSWORD, new SessionProperty(password, VisibilityPropertyOptions.Private));
                     }
 
                     if (isPrivate != null)
                     {
-                        host.IsPrivate = (bool)isPrivate;
-                        changed = true;
+                        print($"isPrivate {isPrivate}");
+                        host.IsPrivate = isPrivate.Value;
                     }
 
-                    if (changed)
-                        await host.SavePropertiesAsync();
+                    if (playerSlot != -1)
+                    {
+                        print($"playerSlot {playerSlot}");
+                        host.SetProperty(PLAYERSLOT, new SessionProperty(playerSlot.ToString()));
+                    }
+
+                    await host.SavePropertiesAsync();
                 });
             }
             catch (Exception e)

@@ -1,20 +1,34 @@
+using Static;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
+using static Static.Strings;
 
 namespace Players
 {
     public class NetworkPlayer : NetworkBehaviour
     {
+        public NetworkVariable<FixedString64Bytes> playerName = new("");
+
         private void Awake()
         {
-            NetworkManager.SceneManager.OnLoadComplete += ConnectFollowCamera;
+            NetworkManager.Singleton.SceneManager.OnLoadComplete += ConnectFollowCamera;
         }
 
         private void Start()
         {
             ConnectFollowCamera();
+
+            name = $"Player_{Manage.LocalClient().ClientId}";
         }
 
+        public override void OnNetworkSpawn()
+        {
+            if (!IsOwner) return;
+            
+            SetupPlayerNameRpc(Manage.Session().CurrentPlayer.Properties[PLAYERNAME].Value);
+        }
+        
         private void ConnectFollowCamera()
         {
             if (!IsOwner) return;
@@ -26,9 +40,13 @@ namespace Players
 
         private void ConnectFollowCamera(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
-            if (OwnerClientId != clientId) return;
-
             ConnectFollowCamera();
+        }
+
+        [Rpc(SendTo.Authority)]
+        private void SetupPlayerNameRpc(string playername)
+        {
+            playerName.Value = playername;
         }
     }
 }
