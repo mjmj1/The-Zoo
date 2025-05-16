@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -8,7 +8,12 @@ namespace GamePlay
     public class PlayManager : NetworkBehaviour
     {
         [SerializeField] private float spawnRadius = 7.5f;
-
+        
+        public static readonly NetworkVariable<int> CurrentTime = new();
+        
+        private bool _isGameStarted;
+        private WaitForSeconds _wait;
+        
         public void Update()
         {
             if (IsClient)
@@ -32,7 +37,13 @@ namespace GamePlay
         {
             if (!IsSessionOwner) return;
 
-            MoveAllPlayersToRandomSpawn();
+            _isGameStarted = true;
+            
+            _wait = new WaitForSeconds(1.0f);
+            
+            MoveRandomPositionRpc();
+            
+            StartCoroutine(CountTime());
         }
 
         [Rpc(SendTo.Authority)]
@@ -59,9 +70,14 @@ namespace GamePlay
             print($"Ping SendTo.Everyone from Client {NetworkManager.Singleton.LocalClientId}");
         }
 
-        private void MoveAllPlayersToRandomSpawn()
+        private IEnumerator CountTime()
         {
-            MoveRandomPositionRpc();
+            while (_isGameStarted)
+            {
+                yield return _wait;
+
+                CurrentTime.Value += 1;
+            }
         }
 
         [Rpc(SendTo.Everyone)]
