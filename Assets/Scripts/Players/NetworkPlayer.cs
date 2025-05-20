@@ -10,6 +10,7 @@ namespace Players
     public class NetworkPlayer : NetworkBehaviour
     {
         public NetworkVariable<FixedString64Bytes> playerName = new("");
+        public Event OnPlayerSpawned;
 
         private void Awake()
         {
