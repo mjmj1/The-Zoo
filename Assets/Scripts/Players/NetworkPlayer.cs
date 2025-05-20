@@ -10,7 +10,6 @@ namespace Players
     public class NetworkPlayer : NetworkBehaviour
     {
         public NetworkVariable<FixedString64Bytes> playerName = new("");
-        public Event OnPlayerSpawned;
 
         private void Awake()
         {
@@ -29,6 +28,8 @@ namespace Players
             if (!IsOwner) return;
             
             SetupPlayerNameRpc(Manage.Session().CurrentPlayer.Properties[PLAYERNAME].Value);
+            
+            AnimalSelector.Instance.SetAnimals(transform);
         }
         
         private void ConnectFollowCamera()
