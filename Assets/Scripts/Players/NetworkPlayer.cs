@@ -1,7 +1,6 @@
 using Static;
 using Unity.Collections;
 using Unity.Netcode;
-using UnityEngine;
 using UnityEngine.SceneManagement;
 using static Static.Strings;
 
@@ -10,6 +9,7 @@ namespace Players
     public class NetworkPlayer : NetworkBehaviour
     {
         public NetworkVariable<FixedString64Bytes> playerName = new("");
+        public NetworkVariable<int> animalModel = new();
 
         private void Awake()
         {
@@ -29,7 +29,8 @@ namespace Players
             
             SetupPlayerNameRpc(Manage.Session().CurrentPlayer.Properties[PLAYERNAME].Value);
             
-            AnimalSelector.Instance.SetAnimals(transform);
+            animalModel.Value = AnimalSelector.Instance.GetRandomAnimal();
+            AnimalSelector.Instance.SetAnimalRpc(animalModel.Value, transform);
         }
         
         private void ConnectFollowCamera()

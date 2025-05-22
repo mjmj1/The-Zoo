@@ -23,11 +23,15 @@ public class AnimalSelector : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    
-    public void SetAnimals(Transform player)
+
+    public int GetRandomAnimal()
     {
-        var v = Random.Range(0, animals.Count);
-        
-        Instantiate(animals[v], player);
+        return Random.Range(0, animals.Count);
+    }
+    
+    [Rpc(SendTo.Everyone)]
+    public void SetAnimalRpc(int index, Transform player)
+    {
+        Instantiate(animals[index], player);
     }
 }
