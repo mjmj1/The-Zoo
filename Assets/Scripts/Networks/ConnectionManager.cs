@@ -108,17 +108,16 @@ namespace Networks
                 switch (data.Type)
                 {
                     case ConnectionType.Quick:
-                        await CreateOrJoinSessionAsync(data.PlayerName, data.SessionName);
+                        await CreateOrJoinSessionAsync(data.SessionName);
                         break;
                     case ConnectionType.Create:
-                        await CreateSessionAsync(data.PlayerName, data.SessionName, data.Password, data.IsPrivate,
-                            data.PlayerSlot);
+                        await CreateSessionAsync(data.SessionName, data.Password, data.IsPrivate, data.PlayerSlot);
                         break;
                     case ConnectionType.JoinById:
-                        await JoinSessionByIdAsync(data.Code, data.PlayerName);
+                        await JoinSessionByIdAsync(data.Code);
                         break;
                     case ConnectionType.JoinByCode:
-                        await JoinSessionByCodeAsync(data.Code, data.PlayerName);
+                        await JoinSessionByCodeAsync(data.Code);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -157,7 +156,7 @@ namespace Networks
             return results.Sessions;
         }
 
-        private async Task CreateSessionAsync(string playerName, string sessionName = null, string password = null,
+        private async Task CreateSessionAsync(string sessionName = null, string password = null,
             bool isPrivate = false, int playerSlot = MaxPlayers)
         {
             var options = new SessionOptionBuilder()
@@ -165,7 +164,6 @@ namespace Networks
                 .PlayerSlot(playerSlot)
                 .Password(password)
                 .IsPrivate(true)
-                .PlayerProperty(PLAYERNAME, new PlayerProperty(playerName))
                 .BuildCreate();
 
             await HandleSessionFlowAsync(async () => await MultiplayerService.Instance.CreateSessionAsync(options));
@@ -173,14 +171,13 @@ namespace Networks
             if (!isPrivate) PublicSessionAsync();
         }
 
-        private async Task CreateOrJoinSessionAsync(string playerName, string sessionName)
+        private async Task CreateOrJoinSessionAsync(string sessionName)
         {
             var options = new SessionOptionBuilder()
                 .Name(sessionName)
                 .PlayerSlot(MaxPlayers)
                 .Password()
                 .IsPrivate(true)
-                .PlayerProperty(PLAYERNAME, new PlayerProperty(playerName))
                 .BuildCreate();
 
             var sessionId = GenerateRandomSessionId();
@@ -191,22 +188,20 @@ namespace Networks
             PublicSessionAsync();
         }
 
-        private async Task JoinSessionByCodeAsync(string code, string playerName, string password = null)
+        private async Task JoinSessionByCodeAsync(string code, string password = null)
         {
             var options = new SessionOptionBuilder()
                 .Password(password)
-                .PlayerProperty(PLAYERNAME, new PlayerProperty(playerName))
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>
                 await MultiplayerService.Instance.JoinSessionByCodeAsync(code, options));
         }
 
-        private async Task JoinSessionByIdAsync(string id, string playerName, string password = null)
+        private async Task JoinSessionByIdAsync(string id, string password = null)
         {
             var options = new SessionOptionBuilder()
                 .Password(password)
-                .PlayerProperty(PLAYERNAME, new PlayerProperty(playerName))
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>

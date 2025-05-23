@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Characters;
 using Static;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 
@@ -21,7 +23,10 @@ namespace UI.PlayerList
             session.PlayerJoined += OnPlayerJoined;
             session.PlayerHasLeft += OnPlayerLeft;
 
-            foreach (var player in session.Players) AddPlayerView(player);
+            foreach (var player in session.Players)
+            {
+                AddPlayerView(player);
+            }
 
             MarkHost(session.Host);
             
