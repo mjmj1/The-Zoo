@@ -1,11 +1,12 @@
 using Networks;
+using UI.PlayerList;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
-    public ConnectionManager connectionManager;
+    
+    [SerializeField] private PlayerListView playerListView;
 
     private void Awake()
     {
@@ -18,10 +19,5 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    private void Start()
-    {
-        connectionManager = FindAnyObjectByType<ConnectionManager>();
     }
 }

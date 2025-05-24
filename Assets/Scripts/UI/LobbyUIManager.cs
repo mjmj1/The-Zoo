@@ -30,7 +30,7 @@ namespace UI
         
         private void OnSessionOwnerChanged(ulong sessionownerpromoted)
         {
-            SetupLobbyControl(Manage.LocalClient().IsSessionOwner);
+            SetupLobbyControl(NetworkManager.Singleton.LocalClient.IsSessionOwner);
         }
 
         private void OnActiveSessionChanged()

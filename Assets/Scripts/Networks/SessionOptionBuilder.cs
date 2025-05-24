@@ -8,11 +8,13 @@ namespace Networks
     {
         private readonly Dictionary<string, PlayerProperty> _playerProperties = new();
         private readonly Dictionary<string, SessionProperty> _sessionProperties = new();
-        private bool _isLock;
+
         private bool _isPrivate;
-        private int _playerSlot = 8;
-        private string _name = GetRandomSessionName();
+
+        private string _name;
         private string _password;
+
+        private int _playerSlot = 8;
 
         public SessionOptionBuilder Name(string name)
         {
@@ -20,24 +22,24 @@ namespace Networks
             return this;
         }
 
-        public SessionOptionBuilder PlayerSlot(int playerSlot)
-        {
-            _playerSlot = playerSlot;
-
-            if (!_sessionProperties.TryAdd(PLAYERSLOT,
-                    new SessionProperty(playerSlot.ToString())))
-                _sessionProperties[PLAYERSLOT] = new SessionProperty(playerSlot.ToString());
-
-            return this;
-        }
-
         public SessionOptionBuilder Password(string password = null)
         {
             _password = password;
 
-            if (!_sessionProperties.TryAdd(PASSWORD,
-                    new SessionProperty(password, VisibilityPropertyOptions.Private)))
-                _sessionProperties[PASSWORD] = new SessionProperty(password, VisibilityPropertyOptions.Private);
+            var prop = new SessionProperty(password, VisibilityPropertyOptions.Private);
+
+            if (!_sessionProperties.TryAdd(PASSWORD, prop)) _sessionProperties[PASSWORD] = prop;
+
+            return this;
+        }
+
+        public SessionOptionBuilder PlayerSlot(int playerSlot)
+        {
+            _playerSlot = playerSlot;
+
+            var prop = new SessionProperty(playerSlot.ToString());
+
+            if (!_sessionProperties.TryAdd(PLAYERSLOT, prop)) _sessionProperties[PLAYERSLOT] = prop;
 
             return this;
         }
@@ -48,15 +50,12 @@ namespace Networks
             return this;
         }
 
-        public SessionOptionBuilder IsLock(bool isLock = false)
+        public SessionOptionBuilder PlayerProperty(string key, string value)
         {
-            _isLock = isLock;
-            return this;
-        }
+            var prop = new PlayerProperty(value, VisibilityPropertyOptions.Member);
 
-        public SessionOptionBuilder PlayerProperty(string key, PlayerProperty property)
-        {
-            _playerProperties.Add(key, property);
+            _playerProperties.Add(key, prop);
+
             return this;
         }
 
@@ -65,8 +64,8 @@ namespace Networks
             return new SessionOptions
             {
                 Name = _name,
-                MaxPlayers = 8,
                 Password = _password,
+                MaxPlayers = 8,
                 IsPrivate = _isPrivate,
                 PlayerProperties = _playerProperties,
                 SessionProperties = _sessionProperties

@@ -12,7 +12,7 @@ namespace GamePlay
         {
             if (!NetworkManager.Singleton.IsConnectedClient) return;
             
-            if (!Manage.LocalClient().IsSessionOwner) return;
+            if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
             
             if (FindFirstObjectByType<PlayManager>() != null)
                 return;

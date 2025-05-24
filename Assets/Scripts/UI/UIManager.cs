@@ -26,7 +26,7 @@ namespace UI
 
         public void Start()
         {
-            Manage.ConnectionManager().OnSessionConnecting += OnSessionConnecting;
+            Manage.ConnectionManager().OnSessionConnect += OnSessionConnect;
             Manage.ConnectionManager().OnSessionDisconnected += OnSessionDisconnected;
 
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
@@ -80,7 +80,7 @@ namespace UI
             loadingScreen.gameObject.SetActive(false);
         }
 
-        private void OnSessionConnecting()
+        private void OnSessionConnect()
         {
             loadingScreen.gameObject.SetActive(true);
         }
@@ -92,14 +92,14 @@ namespace UI
         
         private void OnClientConnectedCallback(ulong clientId)
         {
-            if(Manage.LocalClient().ClientId != clientId) return;
+            if(NetworkManager.Singleton.LocalClientId != clientId) return;
             
             SetupUI(true);
         }
         
         private void OnClientDisconnectCallback(ulong clientId)
         {
-            if(Manage.LocalClient().ClientId != clientId) return;
+            if(NetworkManager.Singleton.LocalClientId != clientId) return;
             
             SetupUI(false);
         }

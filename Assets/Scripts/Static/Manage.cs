@@ -1,8 +1,6 @@
 using Networks;
-using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
-using UnityEngine;
 
 namespace Static
 {
@@ -10,22 +8,17 @@ namespace Static
     {
         public static ConnectionManager ConnectionManager()
         {
-            return GameManager.Instance.connectionManager;            
+            return Networks.ConnectionManager.Instance;
         }
-        
+
         public static ISession Session()
         {
-            return GameManager.Instance.connectionManager.ActiveSession;
+            return Networks.ConnectionManager.Instance.ActiveSession;
         }
 
         public static string LocalPlayerId()
         {
             return AuthenticationService.Instance.PlayerId;
-        }
-        
-        public static NetworkClient LocalClient()
-        {
-            return NetworkManager.Singleton.LocalClient;
         }
     }
 }

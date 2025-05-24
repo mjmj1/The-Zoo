@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Characters;
@@ -5,6 +6,7 @@ using Static;
 using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using Utils;
 
 namespace UI.PlayerList
 {
@@ -19,41 +21,39 @@ namespace UI.PlayerList
         private void OnEnable()
         {
             var session = Manage.Session();
+            
+            session.PlayerJoined += OnJoined;
+            session.PlayerHasLeft += OnLeft;
+            session.SessionHostChanged += OnHostChanged;
 
-            session.PlayerJoined += OnPlayerJoined;
-            session.PlayerHasLeft += OnPlayerLeft;
-
-            foreach (var player in session.Players)
+            /*foreach (var player in session.Players)
             {
                 AddPlayerView(player);
             }
 
             MarkHost(session.Host);
             
-            MarkMe();
+            MarkMe();*/
         }
 
         private void OnDisable()
         {
             Clear();
         }
-
-        private void OnPlayerJoined(string obj)
+        
+        private void OnJoined(string obj)
         {
-            var session = Manage.Session();
-
-            var joined = session.Players.FirstOrDefault(x => x.Id == obj);
-
-            AddPlayerView(joined);
+            MyLogger.Print(this, $"{obj}");
         }
 
-        private void OnPlayerLeft(string obj)
+        private void OnLeft(string obj)
         {
-            RemovePlayerView(obj);
-
-            var session = Manage.Session();
-
-            MarkHost(session.Host);
+            MyLogger.Print(this, $"{obj}");
+        }
+        
+        private void OnHostChanged(string obj)
+        {
+            MyLogger.Print(this, $"{obj}");
         }
 
         private void MarkHost(string host)
@@ -88,8 +88,8 @@ namespace UI.PlayerList
         {
             var session = Manage.Session();
 
-            session.PlayerJoined -= OnPlayerJoined;
-            session.PlayerHasLeft -= OnPlayerLeft;
+            session.PlayerJoined -= OnJoined;
+            session.PlayerHasLeft -= OnLeft;
 
             foreach (Transform child in transform) ReturnView(child.gameObject);
 

@@ -84,12 +84,12 @@ namespace UI.PlayerList
 
         private void OnPromoteHostButtonClick()
         {
-            GameManager.Instance.connectionManager.ChangeHostAsync(_data.Id);
+            Manage.ConnectionManager().ChangeHostAsync(_data.Id);
         }
 
         private void OnKickButtonClick()
         {
-            GameManager.Instance.connectionManager.KickPlayerAsync(_data.Id);
+            Manage.ConnectionManager().KickPlayerAsync(_data.Id);
         }
     }
 }
