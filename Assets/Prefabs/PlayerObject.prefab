@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3155749932161914919}
   - component: {fileID: 2736765177486910086}
   - component: {fileID: -553120260605898663}
+  - component: {fileID: 7429428461745239663}
   - component: {fileID: 5100048763366486770}
   - component: {fileID: 6934204017717181489}
   m_Layer: 0
@@ -141,6 +142,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  animalId:
+    m_InternalValue: 2
+--- !u!114 &7429428461745239663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978094491091307183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c89df5d343d63b44b259be824d7de25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animalPrefabs:
+  - {fileID: 6842458599697738422, guid: cefda5744f2acb54d8f08973a10bee1e, type: 3}
+  - {fileID: 4950779065795438720, guid: 8cb75dc2fdd63734988b8358f1314d25, type: 3}
+  - {fileID: 6788538757290762323, guid: ad4137f595ec8e2449cacca9df7d3735, type: 3}
 --- !u!54 &5100048763366486770
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -339,7 +358,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3014366151647966411
 Transform:
   m_ObjectHideFlags: 0
