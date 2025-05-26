@@ -1,7 +1,10 @@
+using System;
 using Static;
 using TMPro;
 using UI.PlayerList;
 using Unity.Netcode;
+using Unity.Services.Authentication;
+using Unity.Services.Multiplay.Authoring.Editor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,24 +22,19 @@ namespace UI
         {
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
-
-            NetworkManager.Singleton.OnSessionOwnerPromoted += OnSessionOwnerChanged;
+            
+            var session = Manage.Session();
+            session.SessionHostChanged += OnSessionHostChanged;
         }
 
         private void OnEnable()
         {
-            SetupLobbyControl(Manage.Session().IsHost);
+            ChangeLobbyUI(Manage.Session().IsHost);
         }
         
-        private void OnSessionOwnerChanged(ulong sessionownerpromoted)
+        private void OnSessionHostChanged(string obj)
         {
-            SetupLobbyControl(NetworkManager.Singleton.LocalClient.IsSessionOwner);
-        }
-
-        private void OnActiveSessionChanged()
-        {
-            print("Session Properties Changed");
-            SetupLobbyControl(Manage.Session().IsHost);
+            ChangeLobbyUI(Manage.Session().IsHost);
         }
 
         private void OnQuitButtonClick()
@@ -49,7 +47,7 @@ namespace UI
             NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
         }
 
-        private void SetupLobbyControl(bool isHost)
+        private void ChangeLobbyUI(bool isHost)
         {
             gameSetup.gameObject.SetActive(isHost);
             gameStartButton.GetComponentInChildren<TMP_Text>().text = isHost ? "Game Start" : "Ready";

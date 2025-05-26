@@ -56,7 +56,7 @@ namespace UI
         
         private void OnQuickStartButtonClick()
         {
-            var data = new ConnectionData(ConnectionData.ConnectionType.Quick);
+            var data = new ConnectionData(ConnectionData.ConnectionType.Quick, null, null, GetRandomSessionName());
 
             Manage.ConnectionManager().ConnectAsync(data);
         }
