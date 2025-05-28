@@ -6,46 +6,47 @@ namespace Characters
 {
     public class PlayerEntity : NetworkBehaviour
     {
-        private readonly NetworkVariable<int> _animalId = new(-1);
-
-        private PlayerPrefabLoader _loader;
+        private CharacterNetworkAnimator _networkAnimator;
 
         private void Awake()
         {
-            _loader = GetComponent<PlayerPrefabLoader>();
-            
-            _animalId.OnValueChanged += OnAnimalIdChanged;
+            _networkAnimator = GetComponent<CharacterNetworkAnimator>();
         }
 
         public override void OnNetworkSpawn()
         {
-            if (IsOwner)
-            {
-                var index = Random.Range(0, _loader.Count());
-                _animalId.Value = index;
-
-                PrintRpc(NetworkManager.LocalClientId);
-            }
-            else
-            {
-                OnAnimalIdChanged(0, _animalId.Value);
-            }
-        }
-
-        public override void OnNetworkDespawn()
-        {
-            _loader.Unload();
-        }
-
-        private void OnAnimalIdChanged(int previousValue, int newValue)
-        {
-            _loader.Load(transform, newValue);
+            if (!IsOwner) return;
+            
+            PrintRpc(NetworkManager.LocalClientId);
+            
+            MyLogger.Trace();
         }
 
         [Rpc(SendTo.Everyone)]
         private void PrintRpc(ulong clientId)
         {
-            MyLogger.Print(this, $"Client-{clientId}: {_animalId.Value}");
+            MyLogger.Print(this, $"Client-{clientId}");
+            name = $"Client-{clientId}";
+        }
+
+        public void SetTrigger(int id)
+        {
+            _networkAnimator.SetTrigger(id);
+        }
+
+        public void ResetTrigger(int id)
+        {
+            _networkAnimator.ResetTrigger(id);
+        }
+
+        public void SetBool(int id, bool value)
+        {
+            _networkAnimator.SetBool(id, value);
+        }
+
+        public void SetFloat(int id, float value)
+        {
+            _networkAnimator.SetFloat(id, value);
         }
     }
 }

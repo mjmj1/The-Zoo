@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using UI;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
@@ -73,6 +74,10 @@ namespace Characters
 
         private Rigidbody _rb;
 
+        private PlayerEntity _entity;
+
+        private static readonly int MoveId = Animator.StringToHash("Move");
+        
         public float Pitch { get; private set; }
 
         private void Start()
@@ -80,11 +85,24 @@ namespace Characters
             if (!IsOwner) return;
 
             MyLogger.Print(this);
+        }
 
+        public override void OnNetworkSpawn()
+        {
+            base.OnNetworkSpawn();
+            
+            if (!IsOwner) return;
+            
             Init();
             InitCamera();
-            
             Subscribe();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+            
+            NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
         }
 
         private void Update()
@@ -126,6 +144,12 @@ namespace Characters
             MyLogger.Print(this);
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
+
+            _input.InputActions.Player.Move.performed += ctx => _entity.SetBool(MoveId, true);
+            _input.InputActions.Player.Move.canceled += ctx => _entity.SetBool(MoveId, false);;
+            
+            /*_input.InputActions.Player.Sprint.performed += ctx => _entity.SetTrigger("Sprint");
+            _input.InputActions.Player.Sprint.canceled += ctx => _entity.ResetTrigger("Sprint");*/
         }
 
         private void Init()
@@ -139,6 +163,7 @@ namespace Characters
 
             _rb = GetComponent<Rigidbody>();
             _input = GetComponent<InputHandler>();
+            _entity = GetComponent<PlayerEntity>();
         }
 
         private void InitCamera()
@@ -169,7 +194,7 @@ namespace Characters
         private void HandleMovement()
         {
             var moveInput = _input.MoveInput;
-
+            
             if (moveInput == Vector2.zero) return;
             
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;

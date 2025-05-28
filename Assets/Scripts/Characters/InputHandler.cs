@@ -7,24 +7,28 @@ namespace Characters
         public Vector2 MoveInput { get; private set; }
         public Vector2 LookInput { get; private set; }
         public bool InteractPressed { get; private set; }
+        public bool SprintPressed { get; private set; }
 
-        private PlayerInputActions _inputActions;
+        public PlayerInputActions InputActions { get; private set; }
         
         private void Awake()
         {
-            _inputActions = new PlayerInputActions();
+            InputActions = new PlayerInputActions();
 
-            _inputActions.Player.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
-            _inputActions.Player.Move.canceled += ctx => MoveInput = Vector2.zero;
+            InputActions.Player.Move.performed += ctx => MoveInput = ctx.ReadValue<Vector2>();
+            InputActions.Player.Move.canceled += ctx => MoveInput = Vector2.zero;
 
-            _inputActions.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
-            _inputActions.Player.Look.canceled += ctx => LookInput = Vector2.zero;
+            InputActions.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
+            InputActions.Player.Look.canceled += ctx => LookInput = Vector2.zero;
 
-            _inputActions.Player.Interact.performed += ctx => InteractPressed = true;
+            InputActions.Player.Interact.performed += ctx => InteractPressed = true;
+            
+            InputActions.Player.Sprint.performed += ctx => SprintPressed = true;
+            InputActions.Player.Sprint.canceled += ctx => SprintPressed = false;
         }
 
-        private void OnEnable() => _inputActions.Enable();
-        private void OnDisable() => _inputActions.Disable();
+        private void OnEnable() => InputActions.Enable();
+        private void OnDisable() => InputActions.Disable();
 
         private void LateUpdate()
         {

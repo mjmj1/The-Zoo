@@ -18,10 +18,11 @@ namespace Networks
 
         public static ConnectionManager Instance;
 
-        private ConnectionState _state = ConnectionState.Disconnected;
-
         public ISession ActiveSession { get; private set; }
-        private NetworkManager NetworkManager { get; set; }
+        
+        private NetworkManager _networkManager;
+        
+        private ConnectionState _state = ConnectionState.Disconnected;
 
         private async void Awake()
         {
@@ -31,7 +32,7 @@ namespace Networks
                 {
                     Instance = this;
                     DontDestroyOnLoad(gameObject);
-                    NetworkManager = GetComponent<NetworkManager>();
+                    _networkManager = GetComponent<NetworkManager>();
                 
                     RegisterNetworkEvents();
                 
@@ -78,9 +79,9 @@ namespace Networks
 
         private void RegisterNetworkEvents()
         {
-            NetworkManager.OnClientConnectedCallback += OnClientConnectCallback;
-            NetworkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
-            NetworkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
+            _networkManager.OnClientConnectedCallback += OnClientConnectCallback;
+            _networkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
+            _networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
 
         }
         
@@ -395,19 +396,19 @@ namespace Networks
         // <-------------------Event------------------->
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
         {
-            if (NetworkManager.LocalClient.IsSessionOwner)
-                Debug.Log($"Client-{NetworkManager.LocalClientId} is the session owner!");
+            if (_networkManager.LocalClient.IsSessionOwner)
+                Debug.Log($"Client-{_networkManager.LocalClientId} is the session owner!");
         }
 
         private void OnClientConnectCallback(ulong clientId)
         {
-            if (NetworkManager.LocalClientId == clientId)
+            if (_networkManager.LocalClientId == clientId)
                 Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
         }
 
         private void OnOnClientDisconnectCallback(ulong clientId)
         {
-            if (NetworkManager.LocalClientId == clientId)
+            if (_networkManager.LocalClientId == clientId)
             {
                 print($"Client-{clientId} is disconnected");
 
