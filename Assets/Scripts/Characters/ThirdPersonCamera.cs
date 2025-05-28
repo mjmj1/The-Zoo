@@ -7,9 +7,9 @@ namespace Characters
     {
         public float height = 5f;
         public float distance = 10f;
-        public float rotationSmoothTime = 0.1f;
+        // public float rotationSmoothTime = 0.1f;
         
-        private Vector3 _currentVelocity = Vector3.zero;
+        // private Vector3 _currentVelocity = Vector3.zero;
         private Vector3 _defaultOffset;
 
         private Transform _target;
@@ -43,9 +43,8 @@ namespace Characters
             var pitchRot = Quaternion.AngleAxis(_characterHandler.Pitch, _target.right);
             var offset = pitchRot * (_target.rotation * _defaultOffset);
             var targetPos = _target.position + offset;
-            
-            transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref _currentVelocity,
-                rotationSmoothTime);
+
+            transform.position = targetPos; //Vector3.SmoothDamp(transform.position, targetPos, ref _currentVelocity, rotationSmoothTime);
 
             transform.rotation = Quaternion.LookRotation(_target.position - transform.position, gravityDir);
         }

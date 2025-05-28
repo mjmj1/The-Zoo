@@ -5,6 +5,7 @@ using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
 
@@ -17,12 +18,14 @@ namespace Characters
     public class CharacterControllerEditor : NetworkTransformEditor
     {
         private SerializedProperty _mouseSensitivity;
-        private SerializedProperty _moveSpeed;
+        private SerializedProperty _walkSpeed;
+        private SerializedProperty _sprintSpeed;
         private SerializedProperty _rotationSpeed;
 
         public override void OnEnable()
         {
-            _moveSpeed = serializedObject.FindProperty(nameof(CharacterHandler.moveSpeed));
+            _walkSpeed = serializedObject.FindProperty(nameof(CharacterHandler.walkSpeed));
+            _sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.sprintSpeed));
             _rotationSpeed = serializedObject.FindProperty(nameof(CharacterHandler.rotationSpeed));
             _mouseSensitivity = serializedObject.FindProperty(nameof(CharacterHandler.mouseSensitivity));
             base.OnEnable();
@@ -30,7 +33,8 @@ namespace Characters
 
         private void DisplayCharacterControllerProperties()
         {
-            EditorGUILayout.PropertyField(_moveSpeed);
+            EditorGUILayout.PropertyField(_walkSpeed);
+            EditorGUILayout.PropertyField(_sprintSpeed);
             EditorGUILayout.PropertyField(_rotationSpeed);
             EditorGUILayout.PropertyField(_mouseSensitivity);
         }
@@ -61,9 +65,10 @@ namespace Characters
         // asset/prefab is viewed.
         public bool controllerPropertiesVisible;
 #endif
-        public float moveSpeed = 5f;
+        public float walkSpeed = 4f;
+        public float sprintSpeed = 7f;
         public float rotationSpeed = 50f;
-        public float mouseSensitivity = 0.25f;
+        public float mouseSensitivity = 0.1f;
         public float minPitch = -10f;
         public float maxPitch = 20f;
 
@@ -76,7 +81,10 @@ namespace Characters
 
         private PlayerEntity _entity;
 
+        private float _moveSpeed;
+        
         private static readonly int MoveId = Animator.StringToHash("Move");
+        private static readonly int SprintId = Animator.StringToHash("Sprint");
         
         public float Pitch { get; private set; }
 
@@ -85,6 +93,8 @@ namespace Characters
             if (!IsOwner) return;
 
             MyLogger.Print(this);
+            
+            _moveSpeed = walkSpeed;
         }
 
         public override void OnNetworkSpawn()
@@ -101,16 +111,18 @@ namespace Characters
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
-            
-            NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
+
+            Unsubscribe();
+            _gravity?.Unsubscribe(_rb);
         }
 
         private void Update()
         {
             if (!IsOwner) return;
             if (UIManager.IsCursorLocked()) return;
-
-            if (!_gravity) return;
+            
+            HandleLook();
+            
             AlignToSurface();
         }
 
@@ -119,14 +131,7 @@ namespace Characters
             if (!IsOwner) return;
             if (UIManager.IsCursorLocked()) return;
 
-            HandleLook();
             HandleMovement();
-        }
-
-        public override void OnDestroy()
-        {
-            _gravity?.Unsubscribe(_rb);
-            base.OnDestroy();
         }
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
@@ -145,11 +150,24 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            _input.InputActions.Player.Move.performed += ctx => _entity.SetBool(MoveId, true);
-            _input.InputActions.Player.Move.canceled += ctx => _entity.SetBool(MoveId, false);;
+            _input.InputActions.Player.Move.performed += AnimateMovement;
+            _input.InputActions.Player.Move.canceled += AnimateMovement;
             
-            /*_input.InputActions.Player.Sprint.performed += ctx => _entity.SetTrigger("Sprint");
-            _input.InputActions.Player.Sprint.canceled += ctx => _entity.ResetTrigger("Sprint");*/
+            _input.InputActions.Player.Sprint.performed += AnimateSprint;
+            _input.InputActions.Player.Sprint.canceled += AnimateSprint;
+        }
+        
+        private void Unsubscribe()
+        {
+            MyLogger.Print(this);
+
+            NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
+
+            _input.InputActions.Player.Move.performed -= AnimateMovement;
+            _input.InputActions.Player.Move.canceled -= AnimateMovement;
+            
+            _input.InputActions.Player.Sprint.performed -= AnimateSprint;
+            _input.InputActions.Player.Sprint.canceled -= AnimateSprint;
         }
 
         private void Init()
@@ -199,17 +217,38 @@ namespace Characters
             
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
-            _rb.MovePosition(_rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
+            _rb.MovePosition(_rb.position + moveDirection * (_moveSpeed * Time.fixedDeltaTime));
         }
 
         private void AlignToSurface()
         {
+            if (!_gravity) return;
+
             var gravityDirection = (transform.position - _planet.position).normalized;
 
             var targetRotation = Quaternion.FromToRotation(
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        private void AnimateMovement(InputAction.CallbackContext ctx)
+        {
+            _entity.SetBool(MoveId, ctx.performed);
+        }
+
+        private void AnimateSprint(InputAction.CallbackContext ctx)
+        {
+            _entity.SetBool(SprintId, ctx.performed);
+            
+            if (ctx.performed)
+            {
+                _moveSpeed = sprintSpeed;
+            }
+            else if (ctx.canceled)
+            {
+                _moveSpeed = walkSpeed;
+            }
         }
     }
 }
