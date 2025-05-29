@@ -110,7 +110,8 @@ MonoBehaviour:
   Interpolate: 1
   SlerpPosition: 0
   controllerPropertiesVisible: 1
-  moveSpeed: 2
+  walkSpeed: 4
+  sprintSpeed: 7
   rotationSpeed: 50
   mouseSensitivity: 0.25
   minPitch: -10
@@ -140,7 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  _networkAnimator: {fileID: 0}
+  playerNameText: {fileID: 2518985482572109005}
 --- !u!54 &5100048763366486770
 Rigidbody:
   m_ObjectHideFlags: 0

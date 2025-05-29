@@ -1,11 +1,20 @@
+using Static;
+using TMPro;
+using Unity.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
+using static Static.Strings;
 
 namespace Characters
 {
     public class PlayerEntity : NetworkBehaviour
     {
+        [SerializeField] private TMP_Text playerNameText;
+
+        public NetworkVariable<FixedString32Bytes> playerName = new();
+        public NetworkVariable<ulong> clientId = new();
+        
         private CharacterNetworkAnimator _networkAnimator;
 
         private void Awake()
@@ -15,16 +24,34 @@ namespace Characters
 
         public override void OnNetworkSpawn()
         {
-            if (!IsOwner) return;
+            playerName.OnValueChanged += OnPlayerNameChanged;
+            clientId.OnValueChanged += OnClientIdChanged;
             
-            SetObjectNameRpc(NetworkManager.LocalClientId);
+            OnPlayerNameChanged("", playerName.Value);
+            OnClientIdChanged(0, clientId.Value);
+            
+            if (!IsOwner) return;
+
+            playerName.Value = Manage.Session().CurrentPlayer.Properties[PLAYERNAME].Value;
+            clientId.Value = NetworkManager.LocalClientId;
         }
 
-        [Rpc(SendTo.Everyone)]
-        private void SetObjectNameRpc(ulong clientId)
+        public override void OnNetworkDespawn()
         {
-            MyLogger.Print(this, $"Client-{clientId}");
-            name = $"Client-{clientId}";
+            playerName.OnValueChanged -= OnPlayerNameChanged;
+            clientId.OnValueChanged -= OnClientIdChanged;
+            
+            base.OnNetworkDespawn();
+        }
+
+        private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)
+        {
+            playerNameText.text = current.ToString();
+        }
+        
+        private void OnClientIdChanged(ulong prev, ulong current)
+        {
+            name = $"Client-{current}";
         }
 
         public void SetTrigger(int id)
