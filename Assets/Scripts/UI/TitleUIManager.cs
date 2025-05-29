@@ -1,3 +1,4 @@
+using System;
 using Networks;
 using Static;
 using TMPro;
@@ -39,6 +40,15 @@ namespace UI
             joinByCodeButton.onClick.AddListener(OnJoinByCodeButtonClick);
             sessionListButton.onClick.AddListener(OnSessionListButtonClick);
             preferencesButton.onClick.AddListener(OnPreferencesButtonClick);
+        }
+
+        private void OnDestroy()
+        {
+            enterButton.onClick.RemoveAllListeners();
+            quickStartButton.onClick.RemoveAllListeners();
+            joinByCodeButton.onClick.RemoveAllListeners();
+            sessionListButton.onClick.RemoveAllListeners();
+            preferencesButton.onClick.RemoveAllListeners();
         }
 
         private void OnEnterButtonClick()

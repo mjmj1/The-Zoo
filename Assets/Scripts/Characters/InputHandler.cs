@@ -1,11 +1,15 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using Utils;
 
 namespace Characters
 {
     internal class InputHandler : MonoBehaviour
     {
         private bool _attackPressed;
+        private bool _isOverUI;
         private bool _spinPressed;
         private bool _sprintPressed;
         public Vector2 MoveInput { get; private set; }
@@ -61,6 +65,15 @@ namespace Characters
 
             InputActions.Player.Spin.performed += ctx => SpinPressed = true;
             InputActions.Player.Spin.canceled += ctx => SpinPressed = false;
+
+            InputActions.UI.Escape.performed += EscapePressed;
+            InputActions.UI.Click.performed += MouseLeftClicked;
+        }
+
+        private void Update()
+        {
+            if(!InputActions.Player.enabled)
+                _isOverUI = IsPointerOverUI();
         }
 
         private void OnEnable()
@@ -71,6 +84,39 @@ namespace Characters
         private void OnDisable()
         {
             InputActions.Disable();
+        }
+
+        private void OnDestroy()
+        {
+            InputActions.UI.Escape.performed -= EscapePressed;
+            InputActions.UI.Click.performed -= MouseLeftClicked;
+        }
+
+        private void EscapePressed(InputAction.CallbackContext ctx)
+        {
+            MyLogger.Print(this, $"{ctx.phase}");
+
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+
+            InputActions.Player.Disable();
+        }
+
+        private void MouseLeftClicked(InputAction.CallbackContext ctx)
+        {
+            if (_isOverUI) return;
+
+            MyLogger.Print(this, $"{ctx.phase}");
+
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            InputActions.Player.Enable();
+        }
+
+        private bool IsPointerOverUI()
+        {
+            return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
         }
 
         public event Action<bool> OnAttackPressed;

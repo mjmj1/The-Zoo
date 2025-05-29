@@ -17,13 +17,11 @@ namespace Characters
         {
             if (!IsOwner) return;
             
-            PrintRpc(NetworkManager.LocalClientId);
-            
-            MyLogger.Trace();
+            SetObjectNameRpc(NetworkManager.LocalClientId);
         }
 
         [Rpc(SendTo.Everyone)]
-        private void PrintRpc(ulong clientId)
+        private void SetObjectNameRpc(ulong clientId)
         {
             MyLogger.Print(this, $"Client-{clientId}");
             name = $"Client-{clientId}";

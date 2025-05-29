@@ -27,6 +27,15 @@ namespace UI
             session.SessionHostChanged += OnSessionHostChanged;
         }
 
+        private void OnDestroy()
+        {
+            quitButton.onClick.RemoveAllListeners();
+            gameStartButton.onClick.RemoveAllListeners();
+            
+            var session = Manage.Session();
+            session.SessionHostChanged -= OnSessionHostChanged;
+        }
+
         private void OnEnable()
         {
             ChangeLobbyUI(Manage.Session().IsHost);

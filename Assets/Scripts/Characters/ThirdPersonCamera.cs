@@ -26,7 +26,6 @@ namespace Characters
         private void FixedUpdate()
         {
             if (!_target) return;
-            if (UIManager.IsCursorLocked()) return;
 
             UpdateCameraPosition();
         }
@@ -41,7 +40,7 @@ namespace Characters
         {
             var gravityDir = _planetCenter ? (_target.position - _planetCenter.position).normalized : Vector3.up;
             var pitchRot = Quaternion.AngleAxis(_characterHandler.Pitch, _target.right);
-            var offset = pitchRot * (_target.rotation * new Vector3(0, height, -distance));
+            var offset = pitchRot * (_target.rotation * _defaultOffset);
             var targetPos = _target.position + offset;
 
             transform.position = targetPos; //Vector3.SmoothDamp(transform.position, targetPos, ref _currentVelocity, rotationSmoothTime);

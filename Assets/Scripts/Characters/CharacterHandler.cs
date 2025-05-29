@@ -121,7 +121,6 @@ namespace Characters
         private void Update()
         {
             if (!IsOwner) return;
-            if (UIManager.IsCursorLocked()) return;
             
             HandleLook();
             
@@ -131,7 +130,6 @@ namespace Characters
         private void FixedUpdate()
         {
             if (!IsOwner) return;
-            if (UIManager.IsCursorLocked()) return;
 
             HandleMovement();
         }
