@@ -85,6 +85,8 @@ namespace Characters
         
         private static readonly int MoveId = Animator.StringToHash("Move");
         private static readonly int SprintId = Animator.StringToHash("Sprint");
+        private static readonly int SpinId = Animator.StringToHash("Spin");
+        private static readonly int ClickedId = Animator.StringToHash("Clicked");
         
         public float Pitch { get; private set; }
 
@@ -150,11 +152,11 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            _input.InputActions.Player.Move.performed += AnimateMovement;
-            _input.InputActions.Player.Move.canceled += AnimateMovement;
-            
-            _input.InputActions.Player.Sprint.performed += AnimateSprint;
-            _input.InputActions.Player.Sprint.canceled += AnimateSprint;
+            _input.InputActions.Player.Move.performed += MovementAction;
+            _input.InputActions.Player.Move.canceled += MovementAction;
+
+            _input.OnSprintPressed += SprintAction;
+            _input.OnSpinPressed += SpinAction;
         }
         
         private void Unsubscribe()
@@ -163,11 +165,11 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            _input.InputActions.Player.Move.performed -= AnimateMovement;
-            _input.InputActions.Player.Move.canceled -= AnimateMovement;
+            _input.InputActions.Player.Move.performed -= MovementAction;
+            _input.InputActions.Player.Move.canceled -= MovementAction;
             
-            _input.InputActions.Player.Sprint.performed -= AnimateSprint;
-            _input.InputActions.Player.Sprint.canceled -= AnimateSprint;
+            _input.OnSprintPressed -= SprintAction;
+            _input.OnSpinPressed -= SpinAction;
         }
 
         private void Init()
@@ -211,6 +213,8 @@ namespace Characters
 
         private void HandleMovement()
         {
+            if (_input.SpinPressed) return;
+            
             var moveInput = _input.MoveInput;
             
             if (moveInput == Vector2.zero) return;
@@ -232,23 +236,30 @@ namespace Characters
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        private void AnimateMovement(InputAction.CallbackContext ctx)
+        private void MovementAction(InputAction.CallbackContext ctx)
         {
             _entity.SetBool(MoveId, ctx.performed);
         }
 
-        private void AnimateSprint(InputAction.CallbackContext ctx)
+        private void SprintAction(bool value)
         {
-            _entity.SetBool(SprintId, ctx.performed);
+            _entity.SetBool(SprintId, value);
+
+            _moveSpeed = value ? sprintSpeed : walkSpeed;
             
-            if (ctx.performed)
-            {
-                _moveSpeed = sprintSpeed;
-            }
-            else if (ctx.canceled)
-            {
-                _moveSpeed = walkSpeed;
-            }
+            MyLogger.Print(this, $"{value}");
+        }
+
+        private void SpinAction(bool value)
+        {
+            _entity.SetBool(SpinId, value);
+            
+            MyLogger.Print(this, $"{value}");
+        }
+        
+        private void ClickedAction(InputAction.CallbackContext ctx)
+        {
+            _entity.SetTrigger(ClickedId);
         }
     }
 }

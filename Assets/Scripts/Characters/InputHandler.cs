@@ -1,16 +1,37 @@
+using System;
 using UnityEngine;
 
 namespace Characters
 {
     internal class InputHandler : MonoBehaviour
     {
+        private bool _spinPressed;
+        private bool _sprintPressed;
         public Vector2 MoveInput { get; private set; }
         public Vector2 LookInput { get; private set; }
-        public bool InteractPressed { get; private set; }
-        public bool SprintPressed { get; private set; }
+
+        public bool SpinPressed
+        {
+            get => _spinPressed;
+            private set
+            {
+                _spinPressed = value;
+                OnSpinPressed?.Invoke(value);
+            }
+        }
+
+        public bool SprintPressed
+        {
+            get => _sprintPressed;
+            private set
+            {
+                _sprintPressed = value;
+                OnSprintPressed?.Invoke(value);
+            }
+        }
 
         public PlayerInputActions InputActions { get; private set; }
-        
+
         private void Awake()
         {
             InputActions = new PlayerInputActions();
@@ -21,18 +42,24 @@ namespace Characters
             InputActions.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
             InputActions.Player.Look.canceled += ctx => LookInput = Vector2.zero;
 
-            InputActions.Player.Interact.performed += ctx => InteractPressed = true;
-            
             InputActions.Player.Sprint.performed += ctx => SprintPressed = true;
             InputActions.Player.Sprint.canceled += ctx => SprintPressed = false;
+
+            InputActions.Player.Spin.performed += ctx => SpinPressed = true;
+            InputActions.Player.Spin.canceled += ctx => SpinPressed = false;
         }
 
-        private void OnEnable() => InputActions.Enable();
-        private void OnDisable() => InputActions.Disable();
-
-        private void LateUpdate()
+        private void OnEnable()
         {
-            InteractPressed = false; // Reset every frame
+            InputActions.Enable();
         }
+
+        private void OnDisable()
+        {
+            InputActions.Disable();
+        }
+
+        public event Action<bool> OnSprintPressed;
+        public event Action<bool> OnSpinPressed;
     }
 }
