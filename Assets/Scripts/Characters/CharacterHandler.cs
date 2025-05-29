@@ -155,6 +155,7 @@ namespace Characters
             _input.InputActions.Player.Move.performed += MovementAction;
             _input.InputActions.Player.Move.canceled += MovementAction;
 
+            _input.OnAttackPressed += ClickedAction;
             _input.OnSprintPressed += SprintAction;
             _input.OnSpinPressed += SpinAction;
         }
@@ -218,9 +219,10 @@ namespace Characters
             var moveInput = _input.MoveInput;
             
             if (moveInput == Vector2.zero) return;
-            
+
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
+            
             _rb.MovePosition(_rb.position + moveDirection * (_moveSpeed * Time.fixedDeltaTime));
         }
 
@@ -257,9 +259,12 @@ namespace Characters
             MyLogger.Print(this, $"{value}");
         }
         
-        private void ClickedAction(InputAction.CallbackContext ctx)
+        private void ClickedAction(bool value)
         {
-            _entity.SetTrigger(ClickedId);
+            MyLogger.Print(this, $"{value}");
+            
+            if(value) _entity.SetTrigger(ClickedId);
+            else _entity.ResetTrigger(ClickedId);
         }
     }
 }

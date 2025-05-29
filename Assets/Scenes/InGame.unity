@@ -555,7 +555,7 @@ Camera:
   far clip plane: 50
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -642,13 +642,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 979e32b03c498844ba0663f25c18fc38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  mouseSensitivity: 3
-  minPitch: -20
-  maxPitch: 30
   height: 3
   distance: 10
-  rotationSmoothTime: 0.1
 --- !u!1 &1295311492
 GameObject:
   m_ObjectHideFlags: 0

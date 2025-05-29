@@ -1923,7 +1923,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2387924095
+  GlobalObjectIdHash: 2540070967
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -10596,7 +10596,7 @@ Camera:
   far clip plane: 50
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -10683,9 +10683,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 979e32b03c498844ba0663f25c18fc38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  height: 5
+  height: 3
   distance: 10
-  rotationSmoothTime: 0.1
 --- !u!1 &1486804495
 GameObject:
   m_ObjectHideFlags: 0

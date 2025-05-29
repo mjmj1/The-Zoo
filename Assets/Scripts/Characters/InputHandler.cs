@@ -5,6 +5,7 @@ namespace Characters
 {
     internal class InputHandler : MonoBehaviour
     {
+        private bool _attackPressed;
         private bool _spinPressed;
         private bool _sprintPressed;
         public Vector2 MoveInput { get; private set; }
@@ -30,6 +31,16 @@ namespace Characters
             }
         }
 
+        public bool AttackPressed
+        {
+            get => _attackPressed;
+            private set
+            {
+                _attackPressed = value;
+                OnAttackPressed?.Invoke(value);
+            }
+        }
+
         public PlayerInputActions InputActions { get; private set; }
 
         private void Awake()
@@ -41,6 +52,9 @@ namespace Characters
 
             InputActions.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
             InputActions.Player.Look.canceled += ctx => LookInput = Vector2.zero;
+
+            InputActions.Player.Attack.performed += ctx => AttackPressed = true;
+            InputActions.Player.Attack.canceled += ctx => AttackPressed = false;
 
             InputActions.Player.Sprint.performed += ctx => SprintPressed = true;
             InputActions.Player.Sprint.canceled += ctx => SprintPressed = false;
@@ -59,6 +73,7 @@ namespace Characters
             InputActions.Disable();
         }
 
+        public event Action<bool> OnAttackPressed;
         public event Action<bool> OnSprintPressed;
         public event Action<bool> OnSpinPressed;
     }
