@@ -215,6 +215,7 @@ namespace Characters
         private void HandleMovement()
         {
             if (_input.SpinPressed) return;
+            if (_input.AttackPressed) return;
             
             var moveInput = _input.MoveInput;
             
@@ -263,8 +264,7 @@ namespace Characters
         {
             MyLogger.Print(this, $"{value}");
             
-            if(value) _entity.SetTrigger(ClickedId);
-            else _entity.ResetTrigger(ClickedId);
+            _entity.SetBool(ClickedId, value);
         }
     }
 }

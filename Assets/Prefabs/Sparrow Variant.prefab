@@ -824,7 +824,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6605717164732790000, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.02007
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6605717164732790000, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       propertyPath: m_LocalPosition.y
@@ -832,7 +832,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6605717164732790000, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.22567
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6605717164732790000, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       propertyPath: m_LocalRotation.w
@@ -948,14 +948,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: -164406681
-    DestinationState: 765711723
-    TransitionDuration: 0.25
-    TriggerNameHash: -27727268
-    TransitionIndex: 0
+  TransitionStateInfoList: []
   m_Animator: {fileID: 2356574264590048573}
 --- !u!95 &2356574264590048573
 Animator:
