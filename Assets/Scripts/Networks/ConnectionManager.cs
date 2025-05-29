@@ -34,7 +34,7 @@ namespace Networks
                     DontDestroyOnLoad(gameObject);
                     _networkManager = GetComponent<NetworkManager>();
                 
-                    RegisterNetworkEvents();
+                    RegisterEvents();
                 
                     await UnityServices.InitializeAsync();
                 }
@@ -72,17 +72,27 @@ namespace Networks
             {
                 print(e.Message);
             }
+            finally
+            {
+                UnregisterEvents();
+            }
         }
 
         public event Action OnSessionConnect;
         public event Action OnSessionDisconnected;
 
-        private void RegisterNetworkEvents()
+        private void RegisterEvents()
         {
             _networkManager.OnClientConnectedCallback += OnClientConnectCallback;
             _networkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
             _networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
-
+        }
+        
+        private void UnregisterEvents()
+        {
+            _networkManager.OnClientConnectedCallback -= OnClientConnectCallback;
+            _networkManager.OnClientDisconnectCallback -= OnOnClientDisconnectCallback;
+            _networkManager.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
         }
         
         // <-------------------Connection------------------->

@@ -112,19 +112,19 @@ namespace Characters
 
         public override void OnNetworkDespawn()
         {
-            base.OnNetworkDespawn();
-
             Unsubscribe();
             _gravity?.Unsubscribe(_rb);
+            
+            base.OnNetworkDespawn();
         }
 
         private void Update()
         {
             if (!IsOwner) return;
             
-            HandleLook();
-            
             AlignToSurface();
+            
+            HandleLook();
         }
 
         private void FixedUpdate()

@@ -8,20 +8,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/InputSystem_Actions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/InputSystem_Actions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/InputSystem_Actions.inputactions" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/InputSystem_Actions.inputactions" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/ThirdPersonCamera.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/ThirdPersonCamera.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUIManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/LobbyUIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/LobbyUIManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/TitleUIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/TitleUIManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/UIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/UIManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -211,7 +199,7 @@
       <workItem from="1747760430136" duration="1875000" />
       <workItem from="1747936027291" duration="2737000" />
       <workItem from="1748425638573" duration="10972000" />
-      <workItem from="1748531171685" duration="6532000" />
+      <workItem from="1748531171685" duration="6998000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />
