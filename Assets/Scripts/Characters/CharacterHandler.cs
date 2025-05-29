@@ -167,6 +167,7 @@ namespace Characters
             _input.InputActions.Player.Move.performed -= MovementAction;
             _input.InputActions.Player.Move.canceled -= MovementAction;
             
+            _input.OnAttackPressed -= ClickedAction;
             _input.OnSprintPressed -= SprintAction;
             _input.OnSpinPressed -= SpinAction;
         }
