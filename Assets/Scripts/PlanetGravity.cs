@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class PlanetGravity : MonoBehaviour
 {
-    private readonly HashSet<Rigidbody> _affectedBodies = new();
     public float gravityStrength = 9.81f;
+    private readonly HashSet<Rigidbody> _affectedBodies = new();
 
     private void FixedUpdate()
     {
@@ -29,13 +29,13 @@ public class PlanetGravity : MonoBehaviour
 
     public void Subscribe(Rigidbody rb)
     {
-        if (rb != null)
+        if (rb)
             _affectedBodies.Add(rb);
     }
 
     public void Unsubscribe(Rigidbody rb)
     {
-        if (rb != null)
+        if (rb)
             _affectedBodies.Remove(rb);
     }
 }
