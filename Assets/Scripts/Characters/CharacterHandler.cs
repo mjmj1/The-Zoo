@@ -83,10 +83,10 @@ namespace Characters
 
         private float _moveSpeed;
         
-        private static readonly int MoveId = Animator.StringToHash("Move");
-        private static readonly int SprintId = Animator.StringToHash("Sprint");
-        private static readonly int SpinId = Animator.StringToHash("Spin");
-        private static readonly int ClickedId = Animator.StringToHash("Clicked");
+        public static readonly int MoveId = Animator.StringToHash("Move");
+        public static readonly int SprintId = Animator.StringToHash("Sprint");
+        public static readonly int SpinId = Animator.StringToHash("Spin");
+        public static readonly int ClickedId = Animator.StringToHash("Clicked");
         
         public float Pitch { get; private set; }
 
