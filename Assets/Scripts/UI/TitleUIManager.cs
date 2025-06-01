@@ -1,3 +1,4 @@
+using System;
 using Networks;
 using Static;
 using TMPro;
@@ -41,6 +42,15 @@ namespace UI
             preferencesButton.onClick.AddListener(OnPreferencesButtonClick);
         }
 
+        private void OnDestroy()
+        {
+            enterButton.onClick.RemoveAllListeners();
+            quickStartButton.onClick.RemoveAllListeners();
+            joinByCodeButton.onClick.RemoveAllListeners();
+            sessionListButton.onClick.RemoveAllListeners();
+            preferencesButton.onClick.RemoveAllListeners();
+        }
+
         private void OnEnterButtonClick()
         {
             if (playerNameInput.text.IsNullOrEmpty()) return;
@@ -56,7 +66,7 @@ namespace UI
         
         private void OnQuickStartButtonClick()
         {
-            var data = new ConnectionData(ConnectionData.ConnectionType.Quick);
+            var data = new ConnectionData(ConnectionData.ConnectionType.Quick, null, null, GetRandomSessionName());
 
             Manage.ConnectionManager().ConnectAsync(data);
         }

@@ -1,4 +1,4 @@
-using Players;
+using Characters;
 using UnityEngine;
 
 public class TestPlayer : MonoBehaviour
@@ -45,9 +45,8 @@ public class TestPlayer : MonoBehaviour
 
     private void ConnectFollowCamera()
     {
-        var cam = FindAnyObjectByType<FollowCamera>();
-
-        if (cam != null) cam.target = transform;
+        var cam = FindAnyObjectByType<ThirdPersonCamera>();
+        cam?.ConnectToTarget(transform);
     }
 
     private void CharacterMovement()

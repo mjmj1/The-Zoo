@@ -1,8 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Static;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using Utils;
 
 namespace UI.PlayerList
 {
@@ -16,39 +19,67 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
-            var session = Manage.Session();
-
-            session.PlayerJoined += OnPlayerJoined;
-            session.PlayerHasLeft += OnPlayerLeft;
-
-            foreach (var player in session.Players) AddPlayerView(player);
-
-            MarkHost(session.Host);
-            
-            MarkMe();
+            Initialize();
+            RegisterEvent();
         }
 
         private void OnDisable()
         {
             Clear();
+            UnregisterEvent();
         }
 
-        private void OnPlayerJoined(string obj)
+        private void RegisterEvent()
         {
             var session = Manage.Session();
 
-            var joined = session.Players.FirstOrDefault(x => x.Id == obj);
-
-            AddPlayerView(joined);
+            session.PlayerJoined += OnJoined;
+            session.PlayerHasLeft += OnLeft;
+            session.SessionHostChanged += OnHostChanged;
         }
 
-        private void OnPlayerLeft(string obj)
+        private void UnregisterEvent()
+        {
+            var session = Manage.Session();
+
+            session.PlayerJoined -= OnJoined;
+            session.PlayerHasLeft -= OnLeft;
+            session.SessionHostChanged -= OnHostChanged;
+        }
+
+        private void Initialize()
+        {
+            var session = Manage.Session();
+
+            foreach (var player in session.Players)
+            {
+                AddPlayerView(player);
+            }
+            
+            MarkMe();
+            
+            MarkHost(session.Host);
+        }
+
+        private void OnJoined(string obj)
+        {
+            var session = Manage.Session();
+
+            var player = session.Players.First(x => x.Id.Equals(obj));
+
+            AddPlayerView(player);
+        }
+
+        private void OnLeft(string obj)
         {
             RemovePlayerView(obj);
+        }
 
-            var session = Manage.Session();
+        private void OnHostChanged(string obj)
+        {
+            MyLogger.Print(this, $"{obj}");
 
-            MarkHost(session.Host);
+            MarkHost(obj);
         }
 
         private void MarkHost(string host)
@@ -56,18 +87,18 @@ namespace UI.PlayerList
             _playerMap[host].TryGetComponent<PlayerView>(out var view);
             view.MarkHostIcon();
         }
-        
+
         private void MarkMe()
         {
             _playerMap[Manage.LocalPlayerId()].TryGetComponent<PlayerView>(out var view);
             view.HighlightView();
         }
-        
+
         private void AddPlayerView(IReadOnlyPlayer player)
         {
             var obj = GetView();
-
             var view = obj.GetComponent<PlayerView>();
+
             view.Bind(player);
             _playerMap.Add(player.Id, obj);
         }
@@ -81,11 +112,6 @@ namespace UI.PlayerList
 
         private void Clear()
         {
-            var session = Manage.Session();
-
-            session.PlayerJoined -= OnPlayerJoined;
-            session.PlayerHasLeft -= OnPlayerLeft;
-
             foreach (Transform child in transform) ReturnView(child.gameObject);
 
             _playerMap.Clear();

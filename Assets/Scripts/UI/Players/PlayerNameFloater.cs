@@ -1,5 +1,5 @@
-using Players;
 using TMPro;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace UI.Players
@@ -7,19 +7,11 @@ namespace UI.Players
     public class PlayerNameFloater : MonoBehaviour
     {
         [SerializeField] private TMP_Text playerNameText;
-        [SerializeField] private NetworkPlayer player;
 
-        private void Start()
+        [Rpc(SendTo.Everyone)]
+        public void SetName(string playerName)
         {
-            if (player == null)
-                player = GetComponentInParent<NetworkPlayer>();
-
-            playerNameText.text = player.playerName.Value.ToString();
-
-            player.playerName.OnValueChanged += (_, newName) =>
-            {
-                playerNameText.text = newName.ToString();
-            };
+            playerNameText.text = playerName;
         }
     }
 }

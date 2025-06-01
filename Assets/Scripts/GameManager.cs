@@ -1,17 +1,16 @@
 using Networks;
-using Unity.Netcode;
+using UI.PlayerList;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-
-    public ConnectionManager connectionManager;
     
+    [SerializeField] private PlayerListView playerListView;
+
     private void Awake()
     {
-        if (Instance == null)
+        if (!Instance)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
@@ -20,10 +19,5 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    private void Start()
-    {
-        connectionManager = FindAnyObjectByType<ConnectionManager>();
     }
 }

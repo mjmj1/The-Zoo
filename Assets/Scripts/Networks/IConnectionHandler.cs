@@ -4,7 +4,7 @@ namespace Networks
 {
     public interface IConnectionHandler
     {
-        event Action OnSessionConnecting;
+        event Action OnSessionConnect;
         event Action OnSessionDisconnected;
     }
 }
