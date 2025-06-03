@@ -35,6 +35,15 @@ namespace AI
             AlignToSurface();
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            var agent = other.GetComponent<AgentBehaviour>();
+            if (!agent) return;
+
+            agent.FindTarget();
+            agent.EndEpisode();
+        }
+
         private void AlignToSurface()
         {
             if (!_gravity) return;
