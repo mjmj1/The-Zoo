@@ -1,19 +1,22 @@
+using System;
 using Characters;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace AI
 {
     public class AgentBehaviour : Agent
     {
+        private const float AlignmentRewardWeight = 0.005f;
+        private const float Reward = 1f;
+
         public Vector2 moveInput;
         public bool turnLeft;
         public bool turnRight;
-        public bool spinPressed;
 
         [SerializeField] private float moveSpeed = 4f;
         [SerializeField] private float rotationSpeed = 200f;
@@ -22,12 +25,35 @@ namespace AI
         private Animator _animator;
         private PlanetGravity _gravity;
         private PlayerInputActions _inputActions;
+
+
         private Transform _planet;
         private Rigidbody _rb;
 
-        private const float AlignmentRewardWeight = 0.005f;
-        private const float Reward = 1f;
         private float _stepReward;
+
+        private bool _spinPressed;
+
+        private bool SpinPressed
+        {
+            get => _spinPressed;
+            set
+            {
+                _spinPressed = value;
+                OnSpinPressed?.Invoke(_spinPressed);
+            }
+        }
+
+        private bool _movePressed;
+        private bool MovePressed
+        {
+            get => _movePressed;
+            set
+            {
+                _movePressed = value;
+                OnMovePressed?.Invoke(_movePressed);
+            }
+        }
 
         private void Update()
         {
@@ -44,6 +70,9 @@ namespace AI
             _gravity?.Unsubscribe(_rb);
             _inputActions.Disable();
         }
+
+        public event Action<bool> OnMovePressed;
+        public event Action<bool> OnSpinPressed;
 
         public override void Initialize()
         {
@@ -82,18 +111,19 @@ namespace AI
 
         public override void OnActionReceived(ActionBuffers actionBuffers)
         {
-            var moveX = actionBuffers.ContinuousActions[0];
-            var moveZ = actionBuffers.ContinuousActions[1];
-            var rotateAction = actionBuffers.DiscreteActions[0];
-            var r = actionBuffers.DiscreteActions[1];
-            var f = actionBuffers.DiscreteActions[2];
+            var moveX = actionBuffers.DiscreteActions[0];
+            var moveZ = actionBuffers.DiscreteActions[1];
+            var rot = actionBuffers.DiscreteActions[2];
+            var r = actionBuffers.DiscreteActions[3];
+            var f = actionBuffers.DiscreteActions[4];
 
             Movement(moveX, moveZ);
-            Rotation(rotateAction);
+            Rotation(rot);
 
+            // TODO: F
             if (f == 1)
             {
-                // TODO: F
+                // SpinPressed = f == 1;
             }
 
             if (r == 1)
@@ -107,30 +137,39 @@ namespace AI
 
             var alignToTarget = Mathf.Clamp01(Vector3.Dot(transform.forward.normalized, toTarget));
 
-            if (alignToTarget > 0.9f)
-            {
-                AddReward(_stepReward * alignToTarget);
-            }
+            if (alignToTarget > 0.9f) AddReward(_stepReward * alignToTarget);
         }
 
         public override void Heuristic(in ActionBuffers actionsOut)
         {
-            var c = actionsOut.ContinuousActions;
             var d = actionsOut.DiscreteActions;
 
-            c[0] = moveInput.x;
-            c[1] = moveInput.y;
-            
-            // Branch 0: rotate
-            if (turnLeft) d[0] = 1;
-            else if (turnRight) d[0] = 2;
-            else d[0] = 0;
+            // Branch 0: move z
+            d[0] = moveInput.y switch
+            {
+                > 0 => 1, // forward
+                < 0 => 2, // backward
+                _ => 0
+            };
 
-            // Branch 1: R
-            d[1] = _inputActions.Player.Interact.IsPressed() ? 1 : 0;
+            // Branch 0: move x
+            d[1] = moveInput.x switch
+            {
+                < 0 => 1, // left
+                > 0 => 2, // right
+                _ => 0
+            };
 
-            // Branch 2: F
-            d[2] = _inputActions.Player.Spin.IsPressed() ? 1 : 0;
+            // Branch 2: rotate
+            if (turnLeft) d[2] = 1;
+            else if (turnRight) d[2] = 2;
+            else d[2] = 0;
+
+            // Branch 3: R
+            d[3] = _inputActions.Player.Interact.IsPressed() ? 1 : 0;
+
+            // Branch 4: F
+            d[4] = _inputActions.Player.Spin.IsPressed() ? 1 : 0;
         }
 
         public void FindTarget()
@@ -149,40 +188,29 @@ namespace AI
             _inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-            _inputActions.Player.Move.performed += MovementAction;
-            _inputActions.Player.Move.canceled += MovementAction;
-
             _inputActions.Player.TurnLeft.performed += _ => turnLeft = true;
             _inputActions.Player.TurnLeft.canceled += _ => turnLeft = false;
 
             _inputActions.Player.TurnRight.performed += _ => turnRight = true;
             _inputActions.Player.TurnRight.canceled += _ => turnRight = false;
 
-            _inputActions.Player.Spin.performed += ctx =>
-            {
-                spinPressed = true;
-                SpinAction(spinPressed);
-            };
+            _inputActions.Player.Spin.performed += ctx => SpinPressed = true;
+            _inputActions.Player.Spin.canceled += ctx => SpinPressed = false;
 
-            _inputActions.Player.Spin.canceled += ctx =>
-            {
-                spinPressed = false;
-                SpinAction(spinPressed);
-            };
+            OnMovePressed += MovementAction;
+            OnSpinPressed += SpinAction;
 
             _inputActions.Enable();
         }
 
-        private void MovementAction(InputAction.CallbackContext ctx)
+        private void MovementAction(bool value)
         {
-            _animator.SetBool(CharacterHandler.MoveId, ctx.performed);
+            _animator.SetBool(CharacterHandler.MoveId, value);
         }
 
         private void SpinAction(bool value)
         {
             _animator.SetBool(CharacterHandler.SpinId, value);
-
-            MyLogger.Print(this, $"{value}");
         }
 
         private void AlignToSurface()
@@ -197,9 +225,25 @@ namespace AI
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        private void Movement(float moveX, float moveZ)
+        private void Movement(int z, int x)
         {
-            if (spinPressed) return;
+            if (SpinPressed) return;
+
+            MovePressed = z + x > 0;
+
+            var moveZ = z switch
+            {
+                1 => 1f, // forward
+                2 => -1f, // backward
+                _ => 0f
+            };
+
+            var moveX = x switch
+            {
+                1 => -1f, // left
+                2 => 1f, // right
+                _ => 0f
+            };
 
             var moveDir = transform.forward * moveZ + transform.right * moveX;
             moveDir.Normalize();
