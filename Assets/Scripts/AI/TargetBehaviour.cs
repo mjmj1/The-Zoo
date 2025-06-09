@@ -40,7 +40,7 @@ namespace AI
             var agent = other.GetComponent<AgentBehaviour>();
             if (!agent) return;
 
-            agent.FindTarget();
+            agent.FindTarget(transform);
             agent.EndEpisode();
         }
 
