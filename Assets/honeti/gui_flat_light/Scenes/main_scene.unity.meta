@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: ab9ac397d263a8440a5bbc635933b54b
+timeCreated: 1518709758
+licenseType: Store
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 116155
+  packageName: Flat white, minimalistic GUI - 4k, over 200 PNG files!
+  packageVersion: 1.1
+  assetPath: Assets/honeti/gui_flat_light/Scenes/main_scene.unity
+  uploadId: 604352
