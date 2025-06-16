@@ -60,7 +60,7 @@ namespace UI.GameSetup
             _rectTransform = GetComponent<RectTransform>();
 
             _openSize = _rectTransform.sizeDelta;
-            _closeSize = new Vector2(200f, 25f);
+            _closeSize = new Vector2(_openSize.x, 25f);
 
             _rectTransform.sizeDelta = _closeSize;
 
@@ -70,7 +70,7 @@ namespace UI.GameSetup
                 child.gameObject.SetActive(false);
 
                 var cg = child.GetComponent<CanvasGroup>();
-                if (cg == null) child.gameObject.AddComponent<CanvasGroup>().alpha = 0;
+                if (!cg) child.gameObject.AddComponent<CanvasGroup>().alpha = 0;
                 else cg.alpha = 0;
             }
 
