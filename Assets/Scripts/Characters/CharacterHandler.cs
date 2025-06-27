@@ -150,6 +150,8 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
+            if (!_input) return;
+            
             _input.InputActions.Player.Move.performed += MovementAction;
             _input.InputActions.Player.Move.canceled += MovementAction;
 
@@ -164,6 +166,8 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
+            if (!_input) return;
+            
             _input.InputActions.Player.Move.performed -= MovementAction;
             _input.InputActions.Player.Move.canceled -= MovementAction;
             
