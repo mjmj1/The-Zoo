@@ -95,19 +95,17 @@ namespace Characters
             if (!IsOwner) return;
 
             MyLogger.Print(this);
-            
+
             _moveSpeed = walkSpeed;
         }
 
         public override void OnNetworkSpawn()
         {
-            base.OnNetworkSpawn();
-            
-            if (!IsOwner) return;
-            
-            Init();
-            InitCamera();
+            InitializeComponent();
+            InitializeFollowCamera();
             Subscribe();
+
+            base.OnNetworkSpawn();
         }
 
         public override void OnNetworkDespawn()
@@ -138,20 +136,16 @@ namespace Characters
         {
             if (OwnerClientId != clientId) return;
 
-            MyLogger.Print(this);
-
-            InitCamera();
-            InitSceneLoaded();
+            InitializeFollowCamera();
+            InitializeGravity();
         }
 
         private void Subscribe()
         {
-            MyLogger.Print(this);
+            if (!IsOwner) return;
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            if (!_input) return;
-            
             _input.InputActions.Player.Move.performed += MovementAction;
             _input.InputActions.Player.Move.canceled += MovementAction;
 
@@ -162,12 +156,10 @@ namespace Characters
         
         private void Unsubscribe()
         {
-            MyLogger.Print(this);
+            if (!IsOwner) return;
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            if (!_input) return;
-            
             _input.InputActions.Player.Move.performed -= MovementAction;
             _input.InputActions.Player.Move.canceled -= MovementAction;
             
@@ -176,11 +168,9 @@ namespace Characters
             _input.OnSpinPressed -= SpinAction;
         }
 
-        private void Init()
+        private void InitializeComponent()
         {
             if (!IsOwner) return;
-
-            MyLogger.Print(this);
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -190,14 +180,18 @@ namespace Characters
             _entity = GetComponent<PlayerEntity>();
         }
 
-        private void InitCamera()
+        private void InitializeFollowCamera()
         {
+            if (!IsOwner) return;
+
             var cam = FindAnyObjectByType<ThirdPersonCamera>();
             cam?.ConnectToTarget(transform);
         }
 
-        private void InitSceneLoaded()
+        private void InitializeGravity()
         {
+            if (!IsOwner) return;
+
             _gravity = FindAnyObjectByType<PlanetGravity>();
 
             _rb.useGravity = !_gravity;
@@ -252,21 +246,15 @@ namespace Characters
             _entity.SetBool(SprintId, value);
 
             _moveSpeed = value ? sprintSpeed : walkSpeed;
-            
-            MyLogger.Print(this, $"{value}");
         }
 
         private void SpinAction(bool value)
         {
             _entity.SetBool(SpinId, value);
-            
-            MyLogger.Print(this, $"{value}");
         }
         
         private void ClickedAction(bool value)
         {
-            MyLogger.Print(this, $"{value}");
-            
             _entity.SetBool(ClickedId, value);
         }
     }

@@ -1,11 +1,11 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Static;
+using Characters;
+using Networks;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
 using UnityEngine;
-using Utils;
+using UnityEngine.Pool;
 
 namespace UI.PlayerList
 {
@@ -13,133 +13,138 @@ namespace UI.PlayerList
     {
         [SerializeField] private GameObject playerViewPrefab;
 
-        private readonly Dictionary<string, GameObject> _playerMap = new();
+        private readonly Dictionary<string, PlayerView> map = new();
 
-        private readonly Queue<GameObject> _pool = new();
+        private IObjectPool<PlayerView> pool;
+
+        private ISession session;
+
+        private void Awake()
+        {
+            pool = new ObjectPool<PlayerView>
+            (
+                CreatePoolObj,
+                GetPoolObj,
+                ReleasePoolObj,
+                DestroyPoolObj,
+                true, 4, 8
+            );
+        }
 
         private void OnEnable()
         {
             Initialize();
-            RegisterEvent();
+
+            session.PlayerHasLeft += OnHasLeft;
+            session.SessionHostChanged += OnHostChanged;
         }
 
         private void OnDisable()
         {
             Clear();
-            UnregisterEvent();
-        }
 
-        private void RegisterEvent()
-        {
-            var session = Manage.Session();
-
-            session.PlayerJoined += OnJoined;
-            session.PlayerHasLeft += OnLeft;
-            session.SessionHostChanged += OnHostChanged;
-        }
-
-        private void UnregisterEvent()
-        {
-            var session = Manage.Session();
-
-            session.PlayerJoined -= OnJoined;
-            session.PlayerHasLeft -= OnLeft;
+            session.PlayerHasLeft -= OnHasLeft;
             session.SessionHostChanged -= OnHostChanged;
         }
 
         private void Initialize()
         {
-            var session = Manage.Session();
+            session = ConnectionManager.instance.CurrentSession;
 
             foreach (var player in session.Players)
             {
-                AddPlayerView(player);
+                JoinPlayer(player.Id);
             }
-            
-            MarkMe();
-            
-            MarkHost(session.Host);
+
+            foreach (var player in map)
+            {
+                print($"{player.Key} - {player.Value}");
+            }
+
+            SetPlayerNameRpc(session.CurrentPlayer.Id);
+
+            map[AuthenticationService.Instance.PlayerId].Highlight();
+
+            map[session.Host].Host();
         }
 
         private void OnJoined(string obj)
         {
-            var session = Manage.Session();
+            JoinPlayer(obj);
 
-            var player = session.Players.First(x => x.Id.Equals(obj));
-
-            AddPlayerView(player);
+            SetPlayerNameRpc(obj);
         }
 
-        private void OnLeft(string obj)
+        private void OnHasLeft(string obj)
         {
-            RemovePlayerView(obj);
+            LeftPlayerRpc(obj);
         }
 
         private void OnHostChanged(string obj)
         {
-            MyLogger.Print(this, $"{obj}");
-
-            MarkHost(obj);
-        }
-
-        private void MarkHost(string host)
-        {
-            _playerMap[host].TryGetComponent<PlayerView>(out var view);
-            view.MarkHostIcon();
-        }
-
-        private void MarkMe()
-        {
-            _playerMap[Manage.LocalPlayerId()].TryGetComponent<PlayerView>(out var view);
-            view.HighlightView();
-        }
-
-        private void AddPlayerView(IReadOnlyPlayer player)
-        {
-            var obj = GetView();
-            var view = obj.GetComponent<PlayerView>();
-
-            view.Bind(player);
-            _playerMap.Add(player.Id, obj);
-        }
-
-        private void RemovePlayerView(string id)
-        {
-            var obj = _playerMap[id];
-            _playerMap.Remove(id);
-            ReturnView(obj);
+            ChangeHostRpc(obj);
         }
 
         private void Clear()
         {
-            foreach (Transform child in transform) ReturnView(child.gameObject);
+            pool.Clear();
 
-            _playerMap.Clear();
+            map.Clear();
         }
 
-        private GameObject GetView()
+        private PlayerView CreatePoolObj()
         {
-            GameObject obj;
+            return Instantiate(playerViewPrefab, transform).GetComponent<PlayerView>();
+        }
 
-            if (_pool.Count > 0)
-            {
-                obj = _pool.Dequeue();
-                obj.SetActive(true);
-            }
-            else
-            {
-                obj = Instantiate(playerViewPrefab, transform);
-            }
-
+        private void GetPoolObj(PlayerView obj)
+        {
+            obj.gameObject.SetActive(true);
             obj.transform.SetAsLastSibling();
-
-            return obj;
         }
 
-        private void ReturnView(GameObject obj)
+        private void ReleasePoolObj(PlayerView obj)
         {
-            obj.SetActive(false);
-            _pool.Enqueue(obj);
+            obj.gameObject.SetActive(false);
+        }
+
+        private void DestroyPoolObj(PlayerView obj)
+        {
+            Destroy(obj.gameObject);
+        }
+
+        private void JoinPlayer(string obj)
+        {
+            var item = pool.Get();
+
+            map.Add(obj, item);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void SetPlayerNameRpc(string obj)
+        {
+            if (AuthenticationService.Instance.PlayerId != obj) return;
+
+            var client = NetworkManager.Singleton.LocalClient.PlayerObject;
+
+            var playerName = client.GetComponent<PlayerEntity>().playerName.Value.ToString();
+
+            print($"{playerName}");
+
+            map[obj].SetPlayerName(playerName);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void LeftPlayerRpc(string obj)
+        {
+            pool.Release(map[obj]);
+            map.Remove(obj);
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void ChangeHostRpc(string obj)
+        {
+            map[obj].Host();
         }
     }
 }

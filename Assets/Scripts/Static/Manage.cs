@@ -6,14 +6,9 @@ namespace Static
 {
     public abstract class Manage
     {
-        public static ConnectionManager ConnectionManager()
-        {
-            return Networks.ConnectionManager.Instance;
-        }
-
         public static ISession Session()
         {
-            return Networks.ConnectionManager.Instance.ActiveSession;
+            return ConnectionManager.instance.CurrentSession;
         }
 
         public static string LocalPlayerId()

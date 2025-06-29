@@ -94,8 +94,6 @@ namespace Characters
 
         private void EscapePressed(InputAction.CallbackContext ctx)
         {
-            MyLogger.Print(this, $"{ctx.phase}");
-
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
@@ -106,15 +104,13 @@ namespace Characters
         {
             if (_isOverUI) return;
 
-            MyLogger.Print(this, $"{ctx.phase}");
-
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
             InputActions.Player.Enable();
         }
 
-        private bool IsPointerOverUI()
+        private static bool IsPointerOverUI()
         {
             return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
         }

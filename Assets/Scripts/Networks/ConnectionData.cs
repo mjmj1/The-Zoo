@@ -11,6 +11,7 @@ namespace Networks
         }
 
         public ConnectionType Type { get; private set; }
+        public string PlayerName { get; private set; }
         public string Code { get; private set; }
         public string Password { get; private set; }
         public string SessionName { get; private set; }
@@ -21,6 +22,7 @@ namespace Networks
             string sessionName = null, int playerSlot = 8, bool isPrivate = false)
         {
             Type = type;
+            PlayerName = "";
             Code = code;
             Password = password;
             SessionName = sessionName;

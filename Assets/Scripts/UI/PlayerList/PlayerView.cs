@@ -1,11 +1,11 @@
-using Static;
+using Networks;
 using TMPro;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static Static.Strings;
 
 namespace UI.PlayerList
 {
@@ -19,8 +19,10 @@ namespace UI.PlayerList
         [SerializeField] private GameObject actionButtons;
         [SerializeField] private Button promoteHostButton;
         [SerializeField] private Button kickButton;
-        private IReadOnlyPlayer _data;
-        private bool _isHost;
+        private IReadOnlyPlayer player;
+        private bool isHost;
+
+        private string playerId;
 
         private void Start()
         {
@@ -32,12 +34,12 @@ namespace UI.PlayerList
         private void OnEnable()
         {
             actionButtons.SetActive(false);
-            
+
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
-            
+
             stateIcon.enabled = false;
-            _isHost = false;
+            isHost = false;
             playerNameText.color = Color.white;
         }
 
@@ -51,7 +53,7 @@ namespace UI.PlayerList
         {
             if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
 
-            if (_isHost) return;
+            if (isHost) return;
 
             actionButtons.SetActive(true);
         }
@@ -63,33 +65,30 @@ namespace UI.PlayerList
             actionButtons.SetActive(false);
         }
 
-        public void Bind(IReadOnlyPlayer data)
+        public void SetPlayerName(string playerName)
         {
-            _data = data;
-
-            playerNameText.text =
-                _data.Properties.TryGetValue(PLAYERNAME, out var nameProperty) ? nameProperty.Value : "Unknown";
+            playerNameText.SetText(playerName);
         }
 
-        public void MarkHostIcon()
+        public void Host()
         {
             stateIcon.enabled = true;
-            _isHost = true;
+            isHost = true;
         }
-        
-        public void HighlightView()
+
+        public void Highlight()
         {
             playerNameText.color = Color.green;
         }
 
         private void OnPromoteHostButtonClick()
         {
-            Manage.ConnectionManager().ChangeHostAsync(_data.Id);
+            ConnectionManager.instance.ChangeHostAsync(player.Id);
         }
 
         private void OnKickButtonClick()
         {
-            Manage.ConnectionManager().KickPlayerAsync(_data.Id);
+            ConnectionManager.instance.KickPlayerAsync(player.Id);
         }
     }
 }

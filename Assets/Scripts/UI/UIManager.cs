@@ -1,3 +1,4 @@
+using Networks;
 using Static;
 using Unity.Netcode;
 using UnityEngine;
@@ -26,17 +27,20 @@ namespace UI
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             
-            Manage.ConnectionManager().OnSessionConnect += OnSessionConnect;
-            Manage.ConnectionManager().OnSessionDisconnected += OnSessionDisconnected;
+            ConnectionManager.instance.OnSessionConnect += OnSessionConnect;
+            ConnectionManager.instance.OnSessionDisconnected += OnSessionDisconnected;
         }
 
         private void OnDestroy()
         {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-            
-            Manage.ConnectionManager().OnSessionConnect -= OnSessionConnect;
-            Manage.ConnectionManager().OnSessionDisconnected -= OnSessionDisconnected;
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+            }
+
+            ConnectionManager.instance.OnSessionConnect -= OnSessionConnect;
+            ConnectionManager.instance.OnSessionDisconnected -= OnSessionDisconnected;
 
         }
 

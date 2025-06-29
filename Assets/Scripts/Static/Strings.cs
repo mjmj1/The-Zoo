@@ -24,14 +24,9 @@ namespace Static
             "승자의 법칙"
         };
         
-        public static string GenerateRandomProfileName()
+        public static string GetRandomString(int length)
         {
-            return $"User_{Guid.NewGuid().ToString("N")[..8]}";
-        }
-        
-        public static string GenerateRandomSessionId()
-        {
-            return $"Session_{Guid.NewGuid().ToString("N")[..8]}";
+            return Guid.NewGuid().ToString("N")[..length];
         }
         
         public static string GetRandomSessionName()

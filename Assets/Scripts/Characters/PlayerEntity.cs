@@ -2,6 +2,7 @@ using Static;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine;
 using Utils;
 using static Static.Strings;
@@ -29,19 +30,22 @@ namespace Characters
             
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
-            
-            if (!IsOwner) return;
 
-            playerName.Value = Manage.Session().CurrentPlayer.Properties[PLAYERNAME].Value;
-            clientId.Value = NetworkManager.LocalClientId;
+            if (IsOwner)
+            {
+                playerName.Value = AuthenticationService.Instance.PlayerName;
+                clientId.Value = NetworkManager.LocalClientId;
+            }
+
+            base.OnNetworkSpawn();
         }
 
         public override void OnNetworkDespawn()
         {
+            base.OnNetworkDespawn();
+
             playerName.OnValueChanged -= OnPlayerNameChanged;
             clientId.OnValueChanged -= OnClientIdChanged;
-            
-            base.OnNetworkDespawn();
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)

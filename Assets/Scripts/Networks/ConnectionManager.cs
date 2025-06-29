@@ -6,6 +6,7 @@ using Unity.Services.Authentication;
 using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using Utils;
 using WebSocketSharp;
 using static Networks.ConnectionData;
 using static Static.Strings;
@@ -15,28 +16,22 @@ namespace Networks
     public class ConnectionManager : MonoBehaviour, IConnectionHandler
     {
         private const int MaxPlayers = 8;
+        private bool initialLoad;
 
-        public static ConnectionManager Instance;
+        public static ConnectionManager instance;
 
-        public ISession ActiveSession { get; private set; }
-        
-        private NetworkManager _networkManager;
-        
+        public ISession CurrentSession { get; private set; }
+
         private ConnectionState _state = ConnectionState.Disconnected;
 
-        private async void Awake()
+        private void Awake()
         {
             try
             {
-                if (!Instance)
+                if (!instance)
                 {
-                    Instance = this;
+                    instance = this;
                     DontDestroyOnLoad(gameObject);
-                    _networkManager = GetComponent<NetworkManager>();
-                
-                    RegisterEvents();
-                
-                    await UnityServices.InitializeAsync();
                 }
                 else
                 {
@@ -49,53 +44,45 @@ namespace Networks
             }
         }
 
-        // test
-        private void Update()
+        async void Start()
         {
-            if (Input.GetKeyDown(KeyCode.Semicolon))
+            UnityServices.Initialized += OnUnityServicesInitialized;
+            await UnityServices.InitializeAsync();
+
+            if (!initialLoad)
             {
-                print($"session.Code: {ActiveSession.Code}");
-                print($"session.MaxPlayers: {ActiveSession.MaxPlayers}");
-                print($"session.Name: {ActiveSession.Name}");
-                print($"session.IsPrivate: {ActiveSession.IsPrivate}");
+                initialLoad = true;
+                GameplayEventHandler.LoadLobbyScene();
             }
+
+            NetworkManager.Singleton.OnClientStopped += OnClientStopped;
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectCallback;
+            NetworkManager.Singleton.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
+            NetworkManager.Singleton.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
         }
 
-        private async void OnDestroy()
+        private async void OnUnityServicesInitialized()
         {
-            try
+            UnityServices.Initialized -= OnUnityServicesInitialized;
+            await SignInAsync();
+        }
+
+        private void OnDestroy()
+        {
+            if (NetworkManager.Singleton)
             {
-                await ActiveSession.LeaveAsync();
-                AuthenticationService.Instance.SignOut();
-            }
-            catch (Exception e)
-            {
-                print(e.Message);
-            }
-            finally
-            {
-                UnregisterEvents();
+                NetworkManager.Singleton.OnClientStopped -= OnClientStopped;
+                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectCallback;
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnOnClientDisconnectCallback;
+                NetworkManager.Singleton.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
             }
         }
 
         public event Action OnSessionConnect;
         public event Action OnSessionDisconnected;
 
-        private void RegisterEvents()
-        {
-            _networkManager.OnClientConnectedCallback += OnClientConnectCallback;
-            _networkManager.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
-            _networkManager.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
-        }
-        
-        private void UnregisterEvents()
-        {
-            _networkManager.OnClientConnectedCallback -= OnClientConnectCallback;
-            _networkManager.OnClientDisconnectCallback -= OnOnClientDisconnectCallback;
-            _networkManager.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
-        }
-        
         // <-------------------Connection------------------->
+
         private async Task HandleSessionFlowAsync(Func<Task<ISession>> sessionFunc)
         {
             try
@@ -104,7 +91,7 @@ namespace Networks
 
                 OnSessionConnect?.Invoke();
 
-                ActiveSession = await sessionFunc.Invoke();
+                CurrentSession = await sessionFunc.Invoke();
 
                 _state = ConnectionState.Connected;
             }
@@ -114,16 +101,16 @@ namespace Networks
                 
                 _state = ConnectionState.Disconnected;
                 
-                print(e.Message);
+                Debug.LogError(e);
             }
         }
 
-        public async void SignInAnonymouslyAsync()
+        private async Task SignInAsync()
         {
             try
             {
-                var profileName = GenerateRandomProfileName();
-                AuthenticationService.Instance.SwitchProfile(profileName);
+                AuthenticationService.Instance.SignInFailed += SignInFailed;
+                AuthenticationService.Instance.SwitchProfile(GetRandomString(5));
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
             catch (Exception e)
@@ -132,10 +119,17 @@ namespace Networks
             }
         }
 
+        private void SignInFailed(RequestFailedException e)
+        {
+            AuthenticationService.Instance.SignInFailed -= SignInFailed;
+            Debug.LogWarning($"Sign in via Authentication failed: e.ErrorCode {e.ErrorCode}");
+        }
+
         public async void ConnectAsync(ConnectionData data)
         {
             try
             {
+
                 switch (data.Type)
                 {
                     case ConnectionType.Quick:
@@ -162,11 +156,11 @@ namespace Networks
 
         public async void DisconnectSessionAsync()
         {
+            if (CurrentSession == null && _state == ConnectionState.Disconnected) return;
+
             try
             {
-                await ActiveSession.LeaveAsync();
-
-                ActiveSession = null;
+                await CurrentSession.LeaveAsync();
             }
             catch (Exception e)
             {
@@ -177,6 +171,8 @@ namespace Networks
                 OnSessionDisconnected?.Invoke();
 
                 _state = ConnectionState.Disconnected;
+
+                CurrentSession = null;
             }
         }
 
@@ -190,14 +186,11 @@ namespace Networks
         private async Task CreateSessionAsync(string sessionName = null, string password = null,
             bool isPrivate = false, int playerSlot = MaxPlayers)
         {
-            var playerName = PlayerPrefs.GetString(PLAYERNAME);
-            
             var options = new SessionOptionBuilder()
                 .Name(sessionName)
                 .PlayerSlot(playerSlot)
                 .Password(password)
                 .IsPrivate(true)
-                .PlayerProperty(PLAYERNAME, playerName)
                 .BuildCreate();
 
             await HandleSessionFlowAsync(async () => await MultiplayerService.Instance.CreateSessionAsync(options));
@@ -207,17 +200,14 @@ namespace Networks
 
         private async Task QuickSessionAsync(string sessionName)
         {
-            var playerName = PlayerPrefs.GetString(PLAYERNAME);
-            
             var options = new SessionOptionBuilder()
                 .Name(sessionName)
                 .PlayerSlot(MaxPlayers)
                 .Password()
                 .IsPrivate(true)
-                .PlayerProperty(PLAYERNAME, playerName)
                 .BuildCreate();
 
-            var sessionId = GenerateRandomSessionId();
+            var sessionId = $"Session_{GetRandomString(5)}";
 
             await HandleSessionFlowAsync(async () =>
                 await MultiplayerService.Instance.CreateOrJoinSessionAsync(sessionId, options));
@@ -227,11 +217,8 @@ namespace Networks
 
         private async Task JoinSessionByCodeAsync(string code, string password = null)
         {
-            var playerName = PlayerPrefs.GetString(PLAYERNAME);
-            
             var options = new SessionOptionBuilder()
                 .Password(password)
-                .PlayerProperty(PLAYERNAME, playerName)
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>
@@ -240,11 +227,8 @@ namespace Networks
 
         private async Task JoinSessionByIdAsync(string id, string password = null)
         {
-            var playerName = PlayerPrefs.GetString(PLAYERNAME);
-            
             var options = new SessionOptionBuilder()
                 .Password(password)
-                .PlayerProperty(PLAYERNAME, playerName)
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>
@@ -255,12 +239,12 @@ namespace Networks
 
         private async Task WithHostSessionAsync(Func<IHostSession, Task> action)
         {
-            if (ActiveSession is not { IsHost: true })
+            if (CurrentSession is not { IsHost: true })
                 return;
 
             try
             {
-                var host = ActiveSession.AsHost();
+                var host = CurrentSession.AsHost();
                 await action.Invoke(host);
             }
             catch (Exception e)
@@ -402,28 +386,50 @@ namespace Networks
             }
         }
 
-
         // <-------------------Event------------------->
+
+        private void OnClientStopped(bool obj)
+        {
+            DisconnectSessionAsync();
+        }
+
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
         {
-            if (_networkManager.LocalClient.IsSessionOwner)
-                Debug.Log($"Client-{_networkManager.LocalClientId} is the session owner!");
+            if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
+
+            Debug.Log($"Client-{NetworkManager.Singleton.LocalClientId} is the session owner!");
         }
 
         private void OnClientConnectCallback(ulong clientId)
         {
-            if (_networkManager.LocalClientId == clientId)
+            if (NetworkManager.Singleton.LocalClientId == clientId)
                 Debug.Log($"Client-{clientId} is connected and can spawn {nameof(NetworkObject)}s.");
         }
 
         private void OnOnClientDisconnectCallback(ulong clientId)
         {
-            if (_networkManager.LocalClientId == clientId)
+            if (NetworkManager.Singleton.LocalClientId == clientId)
             {
                 print($"Client-{clientId} is disconnected");
 
                 _state = ConnectionState.Disconnected;
             }
+        }
+
+
+        public async Task OnEnterButtonPressed(string playerName)
+        {
+            if (AuthenticationService.Instance == null)
+            {
+                return;
+            }
+
+            if (!AuthenticationService.Instance.IsSignedIn)
+            {
+                await SignInAsync();
+            }
+
+            await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
         }
 
         private enum ConnectionState

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Networks;
 using Static;
 using TMPro;
 using UnityEngine;
@@ -17,7 +18,7 @@ namespace UI.GameSetup
 
         public void Save()
         {
-            Manage.ConnectionManager().UpdateSessionAsync(SessionName, Password, IsPrivate, PlayerSlot);
+            ConnectionManager.instance.UpdateSessionAsync(SessionName, Password, IsPrivate, PlayerSlot);
         }
 
         public void Reset()

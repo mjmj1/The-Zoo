@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Networks;
-using Static;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -18,9 +17,10 @@ namespace UI.SessionList
         [SerializeField] private Button createButton;
         [SerializeField] private Button refreshButton;
 
-        private IObjectPool<SessionView> _pool;
         private readonly LinkedList<SessionView> _activeViews = new();
-        
+
+        private IObjectPool<SessionView> _pool;
+
         private ISessionInfo _selectedSession;
 
         private void Awake()
@@ -34,10 +34,10 @@ namespace UI.SessionList
         {
             _pool = new ObjectPool<SessionView>
             (
-                createFunc: OnCreatePooledObjects,
-                actionOnGet: OnGetPooledObjects,
-                actionOnRelease: OnReturnPooledObjects,
-                actionOnDestroy: OnDestroyPooledObjects,
+                OnCreatePooledObjects,
+                OnGetPooledObjects,
+                OnReturnPooledObjects,
+                OnDestroyPooledObjects,
                 true, 5, 100
             );
         }
@@ -60,16 +60,17 @@ namespace UI.SessionList
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.Create);
 
-            Manage.ConnectionManager().ConnectAsync(data);
+            ConnectionManager.instance.ConnectAsync(data);
         }
 
         private void OnJoinButtonClick()
         {
             if (_selectedSession == null) return;
 
-            var data = new ConnectionData(ConnectionData.ConnectionType.JoinById, _selectedSession.Id);
+            var data = new ConnectionData(ConnectionData.ConnectionType.JoinById,
+                _selectedSession.Id);
 
-            Manage.ConnectionManager().ConnectAsync(data);
+            ConnectionManager.instance.ConnectAsync(data);
 
             _selectedSession = null;
             joinButton.interactable = false;
@@ -85,14 +86,11 @@ namespace UI.SessionList
         {
             try
             {
-                foreach (var view in _activeViews)
-                {
-                    _pool.Release(view);
-                }
-                
+                foreach (var view in _activeViews) _pool.Release(view);
+
                 _activeViews.Clear();
 
-                var sessions = await Manage.ConnectionManager().QuerySessionsAsync();
+                var sessions = await ConnectionManager.instance.QuerySessionsAsync();
 
                 sessions = sessions.OrderBy<ISessionInfo, object>(s => s.HasPassword).ToList();
 
@@ -100,7 +98,7 @@ namespace UI.SessionList
                 {
                     var view = _pool.Get();
                     view.Bind(sessionInfo);
-                    
+
                     _activeViews.AddLast(view);
                 }
             }
