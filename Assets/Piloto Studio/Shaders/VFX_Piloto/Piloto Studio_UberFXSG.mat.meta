@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 4fae4444fc6bff14091078217eb52112
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 258376
+  packageName: Piloto Studio Shaders
+  packageVersion: 1.5
+  assetPath: Assets/Piloto Studio/Shaders/VFX_Piloto/Piloto Studio_UberFXSG.mat
+  uploadId: 767916
