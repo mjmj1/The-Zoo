@@ -8,6 +8,9 @@ TagManager:
   - Hider
   - Seeker
   - Target
+  - Tree
+  - Rock
+  - Flower
   layers:
   - Default
   - TransparentFX
