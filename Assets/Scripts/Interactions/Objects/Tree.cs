@@ -17,6 +17,6 @@ public class Tree : InteractionObject
         Debug.Log("³ª¹« Èçµé±â + ¿­¸Å ¶³±À");
 
 
-        Instantiate(FruitPrefab, FruitSpawnPoint.position, InteractionController.spawnRotation);
+        //Instantiate(FruitPrefab, FruitSpawnPoint.position, InteractionController.spawnRotation);
     }
 }

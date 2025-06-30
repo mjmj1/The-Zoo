@@ -16,7 +16,7 @@ public class Interactions : MonoBehaviour
     {
         if (InteractionObjects.Length == 0)
         {
-            InteractionObjects = GameObject.FindGameObjectsWithTag("Tree"); // 충돌시 충돌 대상과의 상호작용
+            InteractionObjects = GameObject.FindGameObjectsWithTag("Tree"); // 가까운 대상만 충돌시 충돌 대상과의 상호작용
             _interactionObjects = new InteractionObject[InteractionObjects.Length];
             for (int i = 0; i < InteractionObjects.Length; i++)
             {
