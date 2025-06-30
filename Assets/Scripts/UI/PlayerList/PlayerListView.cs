@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Characters;
 using Networks;
@@ -19,6 +20,8 @@ namespace UI.PlayerList
 
         private ISession session;
 
+        public event Action OnPlayerSpawned;
+
         private void Awake()
         {
             pool = new ObjectPool<PlayerView>
@@ -33,56 +36,76 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
-            Initialize();
+            session = ConnectionManager.instance.CurrentSession;
 
-            session.PlayerHasLeft += OnHasLeft;
-            session.SessionHostChanged += OnHostChanged;
+            foreach (var player in session.Players)
+            {
+                var item = pool.Get();
+
+                map.Add(player.Id, item);
+
+                if (player.Id == session.CurrentPlayer.Id)
+                {
+                    item.Highlight();
+                }
+            }
+
+            map[session.Host].Host();
+
+            session.PlayerJoined += SessionOnPlayerJoined;
+            session.PlayerHasLeft += SessionOnPlayerHasLeft;
+            session.SessionHostChanged += SessionOnSessionHostChanged;
+
+            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
         }
 
         private void OnDisable()
         {
             Clear();
-
-            session.PlayerHasLeft -= OnHasLeft;
-            session.SessionHostChanged -= OnHostChanged;
         }
 
-        private void Initialize()
+        public void AddPlayerView(string playerId, string playerName)
         {
-            session = ConnectionManager.instance.CurrentSession;
+            var item = pool.Get();
 
-            foreach (var player in session.Players)
-            {
-                JoinPlayer(player.Id);
-            }
+            map.Add(playerId, item);
 
-            foreach (var player in map)
-            {
-                print($"{player.Key} - {player.Value}");
-            }
-
-            SetPlayerNameRpc(session.CurrentPlayer.Id);
-
-            map[AuthenticationService.Instance.PlayerId].Highlight();
-
-            map[session.Host].Host();
+            item.SetPlayerName(playerName);
         }
 
-        private void OnJoined(string obj)
+        private void SessionOnSessionHostChanged(string obj)
         {
-            JoinPlayer(obj);
+            print($"{obj} is Host");
 
-            SetPlayerNameRpc(obj);
+            map[obj].Host();
         }
 
-        private void OnHasLeft(string obj)
+        private void SessionOnPlayerHasLeft(string obj)
         {
-            LeftPlayerRpc(obj);
+            print($"{obj} has Left");
+
+            map.Remove(obj, out var player);
+            pool.Release(player);
+
+            session.PlayerJoined -= SessionOnPlayerJoined;
+            session.PlayerHasLeft -= SessionOnPlayerHasLeft;
+            session.SessionHostChanged -= SessionOnSessionHostChanged;
+
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
 
-        private void OnHostChanged(string obj)
+        private void SessionOnPlayerJoined(string obj)
         {
-            ChangeHostRpc(obj);
+            print($"{obj} Joined");
+
+            var item = pool.Get();
+
+            map.Add(obj, item);
+        }
+
+        private void OnClientConnected(ulong clientId)
+        {
+            print($"client-{clientId} OnClientConnected");
         }
 
         private void Clear()
@@ -111,40 +134,6 @@ namespace UI.PlayerList
         private void DestroyPoolObj(PlayerView obj)
         {
             Destroy(obj.gameObject);
-        }
-
-        private void JoinPlayer(string obj)
-        {
-            var item = pool.Get();
-
-            map.Add(obj, item);
-        }
-
-        [Rpc(SendTo.Everyone)]
-        private void SetPlayerNameRpc(string obj)
-        {
-            if (AuthenticationService.Instance.PlayerId != obj) return;
-
-            var client = NetworkManager.Singleton.LocalClient.PlayerObject;
-
-            var playerName = client.GetComponent<PlayerEntity>().playerName.Value.ToString();
-
-            print($"{playerName}");
-
-            map[obj].SetPlayerName(playerName);
-        }
-
-        [Rpc(SendTo.Everyone)]
-        private void LeftPlayerRpc(string obj)
-        {
-            pool.Release(map[obj]);
-            map.Remove(obj);
-        }
-
-        [Rpc(SendTo.Everyone)]
-        private void ChangeHostRpc(string obj)
-        {
-            map[obj].Host();
         }
     }
 }

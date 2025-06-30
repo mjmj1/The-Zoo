@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Static;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -10,24 +9,24 @@ namespace Networks
     {
         [SerializeField] private List<NetworkObject> animalPrefabs;
 
-        private NetworkVariable<int> _nextAnimalIndex = new();
+        private readonly NetworkVariable<int> nextAnimalIndex = new();
         
-        private List<int> _animalIndexes;
+        private List<int> animalIndexes;
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            _animalIndexes = Enumerable.Range(0, animalPrefabs.Count).OrderBy(_ => Random.value).ToList();
+            animalIndexes = Enumerable.Range(0, animalPrefabs.Count).OrderBy(_ => Random.value).ToList();
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
             if (IsSessionOwner)
             {
-                _nextAnimalIndex.Value += 1 % _animalIndexes.Count;
+                nextAnimalIndex.Value += 1 % animalIndexes.Count;
             
-                var index = _animalIndexes[_nextAnimalIndex.Value];
+                var index = animalIndexes[nextAnimalIndex.Value];
                 
                 AssignAnimalPrefab(index);
             }
@@ -39,14 +38,23 @@ namespace Networks
             base.OnNetworkSessionSynchronized();
         }
 
+        private Vector3 GetCirclePositions(Vector3 center, int index, float radius, int count)
+        {
+            var angle = index * Mathf.PI * 2f / count;
+            var x = center.x + radius * Mathf.Cos(angle);
+            var z = center.z + radius * Mathf.Sin(angle);
+
+            return new Vector3(x, center.y, z);
+        }
+
         [Rpc(SendTo.Owner)]
         private void AssignAnimalPrefabRpc(ulong clientId)
         {
             print($"Send to owner from client-{clientId}");
             
-            _nextAnimalIndex.Value += 1 % _animalIndexes.Count;
+            nextAnimalIndex.Value += 1 % animalIndexes.Count;
             
-            var index = _animalIndexes[_nextAnimalIndex.Value];
+            var index = animalIndexes[nextAnimalIndex.Value];
             
             AssignAnimalPrefabRpc(index, new RpcParams
             {
@@ -65,10 +73,13 @@ namespace Networks
         private void AssignAnimalPrefab(int index)
         {
             var prefab = animalPrefabs[index];
-            
+
+            var pos = GetCirclePositions(Vector3.zero, index, 5f, 8);
+
             prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,
-                isPlayerObject: true);
+                isPlayerObject: true,
+                position: pos);
         }
     }
 }

@@ -1,21 +1,22 @@
-using Networks;
 using UI.PlayerList;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
-    
+    public static GameManager instance;
+
     [SerializeField] private PlayerListView playerListView;
+
+    public PlayerListView PlayerListView => playerListView;
 
     private void Awake()
     {
-        if (!Instance)
+        if (!instance)
         {
-            Instance = this;
+            instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (Instance != this)
+        else if (instance != this)
         {
             Destroy(gameObject);
         }

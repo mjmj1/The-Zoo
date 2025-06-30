@@ -94,8 +94,6 @@ namespace Characters
         {
             if (!IsOwner) return;
 
-            MyLogger.Print(this);
-
             _moveSpeed = walkSpeed;
         }
 

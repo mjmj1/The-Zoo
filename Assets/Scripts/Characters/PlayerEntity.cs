@@ -16,11 +16,11 @@ namespace Characters
         public NetworkVariable<FixedString32Bytes> playerName = new();
         public NetworkVariable<ulong> clientId = new();
         
-        private CharacterNetworkAnimator _networkAnimator;
+        private CharacterNetworkAnimator networkAnimator;
 
         private void Awake()
         {
-            _networkAnimator = GetComponent<CharacterNetworkAnimator>();
+            networkAnimator = GetComponent<CharacterNetworkAnimator>();
         }
 
         public override void OnNetworkSpawn()
@@ -60,22 +60,22 @@ namespace Characters
 
         public void SetTrigger(int id)
         {
-            _networkAnimator.SetTrigger(id);
+            networkAnimator.SetTrigger(id);
         }
 
         public void ResetTrigger(int id)
         {
-            _networkAnimator.ResetTrigger(id);
+            networkAnimator.ResetTrigger(id);
         }
 
         public void SetBool(int id, bool value)
         {
-            _networkAnimator.SetBool(id, value);
+            networkAnimator.SetBool(id, value);
         }
 
         public void SetFloat(int id, float value)
         {
-            _networkAnimator.SetFloat(id, value);
+            networkAnimator.SetFloat(id, value);
         }
     }
 }
