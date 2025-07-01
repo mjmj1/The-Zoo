@@ -191,6 +191,7 @@ namespace Networks
                 .PlayerSlot(playerSlot)
                 .Password(password)
                 .IsPrivate(true)
+                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
                 .BuildCreate();
 
             await HandleSessionFlowAsync(async () => await MultiplayerService.Instance.CreateSessionAsync(options));
@@ -205,6 +206,7 @@ namespace Networks
                 .PlayerSlot(MaxPlayers)
                 .Password()
                 .IsPrivate(true)
+                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
                 .BuildCreate();
 
             var sessionId = $"Session_{GetRandomString(5)}";
@@ -219,6 +221,7 @@ namespace Networks
         {
             var options = new SessionOptionBuilder()
                 .Password(password)
+                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>
@@ -229,6 +232,7 @@ namespace Networks
         {
             var options = new SessionOptionBuilder()
                 .Password(password)
+                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>

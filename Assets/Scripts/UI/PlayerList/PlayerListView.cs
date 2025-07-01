@@ -1,12 +1,12 @@
-using System;
 using System.Collections.Generic;
-using Characters;
+using System.Linq;
 using Networks;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
+using static Static.Strings;
 
 namespace UI.PlayerList
 {
@@ -19,8 +19,6 @@ namespace UI.PlayerList
         private IObjectPool<PlayerView> pool;
 
         private ISession session;
-
-        public event Action OnPlayerSpawned;
 
         private void Awake()
         {
@@ -42,21 +40,22 @@ namespace UI.PlayerList
             {
                 var item = pool.Get();
 
+                player.Properties.TryGetValue(PLAYERNAME, out var prop);
+
+                var playerName = prop == null ? "UNKNOWN" : prop.Value;
+                
+                item.SetPlayerName(playerName);
+                
                 map.Add(player.Id, item);
 
-                if (player.Id == session.CurrentPlayer.Id)
-                {
-                    item.Highlight();
-                }
+                if (player.Id == session.CurrentPlayer.Id) item.Highlight();
             }
-
-            map[session.Host].Host();
 
             session.PlayerJoined += SessionOnPlayerJoined;
             session.PlayerHasLeft += SessionOnPlayerHasLeft;
             session.SessionHostChanged += SessionOnSessionHostChanged;
 
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnected;
+            map[session.Host].Host();
         }
 
         private void OnDisable()
@@ -64,48 +63,34 @@ namespace UI.PlayerList
             Clear();
         }
 
-        public void AddPlayerView(string playerId, string playerName)
-        {
-            var item = pool.Get();
-
-            map.Add(playerId, item);
-
-            item.SetPlayerName(playerName);
-        }
-
         private void SessionOnSessionHostChanged(string obj)
         {
-            print($"{obj} is Host");
-
             map[obj].Host();
         }
 
         private void SessionOnPlayerHasLeft(string obj)
         {
-            print($"{obj} has Left");
-
             map.Remove(obj, out var player);
             pool.Release(player);
 
             session.PlayerJoined -= SessionOnPlayerJoined;
             session.PlayerHasLeft -= SessionOnPlayerHasLeft;
             session.SessionHostChanged -= SessionOnSessionHostChanged;
-
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnected;
         }
 
         private void SessionOnPlayerJoined(string obj)
         {
-            print($"{obj} Joined");
-
             var item = pool.Get();
 
-            map.Add(obj, item);
-        }
+            var player = session.Players.First(player => player.Id == obj);
+            
+            player.Properties.TryGetValue(PLAYERNAME, out var prop);
 
-        private void OnClientConnected(ulong clientId)
-        {
-            print($"client-{clientId} OnClientConnected");
+            var playerName = prop == null ? "UNKNOWN" : prop.Value;
+                
+            item.SetPlayerName(playerName);
+            
+            map.Add(obj, item);
         }
 
         private void Clear()
