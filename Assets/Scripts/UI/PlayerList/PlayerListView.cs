@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Networks;
-using Unity.Netcode;
-using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -61,6 +59,12 @@ namespace UI.PlayerList
         private void OnDisable()
         {
             Clear();
+            
+            session.PlayerJoined -= SessionOnPlayerJoined;
+            session.PlayerHasLeft -= SessionOnPlayerHasLeft;
+            session.SessionHostChanged -= SessionOnSessionHostChanged;
+
+            session = null;
         }
 
         private void SessionOnSessionHostChanged(string obj)
@@ -72,10 +76,6 @@ namespace UI.PlayerList
         {
             map.Remove(obj, out var player);
             pool.Release(player);
-
-            session.PlayerJoined -= SessionOnPlayerJoined;
-            session.PlayerHasLeft -= SessionOnPlayerHasLeft;
-            session.SessionHostChanged -= SessionOnSessionHostChanged;
         }
 
         private void SessionOnPlayerJoined(string obj)
