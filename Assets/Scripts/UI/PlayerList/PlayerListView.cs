@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Networks;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
+using Unity.Services.Matchmaker.Models;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -44,7 +46,8 @@ namespace UI.PlayerList
                 player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
 
                 var playerName = prop == null ? "UNKNOWN" : prop.Value;
-                
+
+                item.SetPlayerId(player.Id);
                 item.SetPlayerName(playerName);
                 
                 map.Add(player.Id, item);
@@ -90,8 +93,10 @@ namespace UI.PlayerList
             player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
 
             var playerName = prop == null ? "UNKNOWN" : prop.Value;
-                
+            
             item.SetPlayerName(playerName);
+            
+            item.SetPlayerId(obj);
             
             map.Add(obj, item);
         }

@@ -300,10 +300,9 @@ namespace Networks
         {
             try
             {
-                await WithHostSessionAsync(_ =>
+                await WithHostSessionAsync(async host =>
                 {
-                    print("Change Host Function is not Developed");
-                    return Task.CompletedTask;
+                    host.Host = newHost;
                 });
             }
             catch (Exception e)

@@ -19,7 +19,7 @@ namespace UI.PlayerList
         [SerializeField] private GameObject actionButtons;
         [SerializeField] private Button promoteHostButton;
         [SerializeField] private Button kickButton;
-        private IReadOnlyPlayer player;
+        
         private bool isHost;
 
         private string playerId;
@@ -39,8 +39,10 @@ namespace UI.PlayerList
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
 
-            stateIcon.enabled = false;
             isHost = false;
+            
+            stateIcon.enabled = false;
+            
             playerNameText.color = Color.white;
         }
 
@@ -66,6 +68,11 @@ namespace UI.PlayerList
             actionButtons.SetActive(false);
         }
 
+        public void SetPlayerId(string pId)
+        {
+            playerId = pId;
+        }
+
         public void SetPlayerName(string playerName)
         {
             playerNameText.SetText(playerName);
@@ -84,12 +91,12 @@ namespace UI.PlayerList
 
         private void OnPromoteHostButtonClick()
         {
-            ConnectionManager.instance.ChangeHostAsync(player.Id);
+            ConnectionManager.instance.ChangeHostAsync(playerId);
         }
 
         private void OnKickButtonClick()
         {
-            ConnectionManager.instance.KickPlayerAsync(player.Id);
+            ConnectionManager.instance.KickPlayerAsync(playerId);
         }
     }
 }

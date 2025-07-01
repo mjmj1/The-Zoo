@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Networks;
 using TMPro;
 using UI.PlayerList;
@@ -50,7 +51,15 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
+            GameStartRpc(NetworkManager.Singleton.RpcTarget.Single(
+                NetworkManager.Singleton.CurrentSessionOwner, RpcTargetUse.Temp));
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void GameStartRpc(RpcParams rpcParams = default)
+        {
+            print("GameStartRpc called");
+            // NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
         }
 
         private void ChangeLobbyUI(bool isHost)

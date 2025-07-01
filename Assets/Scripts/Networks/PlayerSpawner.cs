@@ -56,10 +56,7 @@ namespace Networks
             
             var index = animalIndexes[nextAnimalIndex.Value];
             
-            AssignAnimalPrefabRpc(index, new RpcParams
-            {
-                Send = RpcTarget.Single(clientId, RpcTargetUse.Temp)
-            });
+            AssignAnimalPrefabRpc(index, RpcTarget.Single(clientId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
