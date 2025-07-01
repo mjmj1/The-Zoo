@@ -17,7 +17,7 @@ namespace Networks
         private const int MaxPlayers = 8;
         private bool initialLoad;
 
-        public static ConnectionManager instance;
+        public static ConnectionManager Instance { get; private set; }
 
         public ISession CurrentSession { get; private set; }
 
@@ -25,25 +25,11 @@ namespace Networks
 
         private void Awake()
         {
-            try
-            {
-                if (!instance)
-                {
-                    instance = this;
-                    DontDestroyOnLoad(gameObject);
-                }
-                else
-                {
-                    Destroy(gameObject);
-                }
-            }
-            catch (Exception e)
-            {
-                print(e.Message);
-            }
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
         }
 
-        async void Start()
+        private async void Start()
         {
             UnityServices.Initialized += OnUnityServicesInitialized;
             await UnityServices.InitializeAsync();
@@ -51,7 +37,7 @@ namespace Networks
             if (!initialLoad)
             {
                 initialLoad = true;
-                GameplayEventHandler.LoadLobbyScene();
+                GameManager.Instance.LoadLobbyScene();
             }
 
             NetworkManager.Singleton.OnClientStopped += OnClientStopped;
@@ -68,13 +54,12 @@ namespace Networks
 
         private void OnDestroy()
         {
-            if (NetworkManager.Singleton)
-            {
-                NetworkManager.Singleton.OnClientStopped -= OnClientStopped;
-                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectCallback;
-                NetworkManager.Singleton.OnClientDisconnectCallback -= OnOnClientDisconnectCallback;
-                NetworkManager.Singleton.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
-            }
+            if (!NetworkManager.Singleton) return;
+
+            NetworkManager.Singleton.OnClientStopped -= OnClientStopped;
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectCallback;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnOnClientDisconnectCallback;
+            NetworkManager.Singleton.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
         }
 
         public event Action OnSessionConnect;
@@ -91,6 +76,16 @@ namespace Networks
                 OnSessionConnect?.Invoke();
 
                 CurrentSession = await sessionFunc.Invoke();
+
+                var clientId = NetworkManager.Singleton.LocalClientId;
+                var playerId = AuthenticationService.Instance.PlayerId;
+                var playerName = AuthenticationService.Instance.PlayerName;
+
+                print($"{clientId}");
+                print($"{playerId}");
+                print($"{playerName}");
+
+                GameManager.Instance.AddRpc(clientId);
 
                 _state = ConnectionState.Connected;
             }
@@ -303,6 +298,7 @@ namespace Networks
                 await WithHostSessionAsync(async host =>
                 {
                     host.Host = newHost;
+                    await host.SavePropertiesAsync();
                 });
             }
             catch (Exception e)

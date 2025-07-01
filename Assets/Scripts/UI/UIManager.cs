@@ -25,8 +25,8 @@ namespace UI
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             
-            ConnectionManager.instance.OnSessionConnect += OnSessionConnect;
-            ConnectionManager.instance.OnSessionDisconnected += OnSessionDisconnected;
+            ConnectionManager.Instance.OnSessionConnect += OnSessionConnect;
+            ConnectionManager.Instance.OnSessionDisconnected += OnSessionDisconnected;
         }
 
         private void OnDestroy()
@@ -37,8 +37,8 @@ namespace UI
                 NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
             }
 
-            ConnectionManager.instance.OnSessionConnect -= OnSessionConnect;
-            ConnectionManager.instance.OnSessionDisconnected -= OnSessionDisconnected;
+            ConnectionManager.Instance.OnSessionConnect -= OnSessionConnect;
+            ConnectionManager.Instance.OnSessionDisconnected -= OnSessionDisconnected;
 
         }
 

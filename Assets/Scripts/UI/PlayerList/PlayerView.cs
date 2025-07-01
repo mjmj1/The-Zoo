@@ -91,12 +91,12 @@ namespace UI.PlayerList
 
         private void OnPromoteHostButtonClick()
         {
-            ConnectionManager.instance.ChangeHostAsync(playerId);
+            ConnectionManager.Instance.ChangeHostAsync(playerId);
         }
 
         private void OnKickButtonClick()
         {
-            ConnectionManager.instance.KickPlayerAsync(playerId);
+            ConnectionManager.Instance.KickPlayerAsync(playerId);
         }
     }
 }

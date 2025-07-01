@@ -21,13 +21,13 @@ namespace UI
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
 
-            var session = ConnectionManager.instance.CurrentSession;
+            var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged += OnSessionHostChanged;
         }
 
         private void OnEnable()
         {
-            ChangeLobbyUI(ConnectionManager.instance.CurrentSession.IsHost);
+            ChangeLobbyUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
         private void OnDestroy()
@@ -35,31 +35,34 @@ namespace UI
             quitButton.onClick.RemoveAllListeners();
             gameStartButton.onClick.RemoveAllListeners();
 
-            var session = ConnectionManager.instance.CurrentSession;
+            var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged -= OnSessionHostChanged;
         }
 
         private void OnSessionHostChanged(string obj)
         {
-            ChangeLobbyUI(ConnectionManager.instance.CurrentSession.IsHost);
+            ChangeLobbyUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
         private void OnQuitButtonClick()
         {
-            ConnectionManager.instance.DisconnectSessionAsync();
+            ConnectionManager.Instance.DisconnectSessionAsync();
         }
 
         private void OnGameStartButtonClick()
         {
-            GameStartRpc(NetworkManager.Singleton.RpcTarget.Single(
-                NetworkManager.Singleton.CurrentSessionOwner, RpcTargetUse.Temp));
-        }
-        
-        [Rpc(SendTo.SpecifiedInParams)]
-        private void GameStartRpc(RpcParams rpcParams = default)
-        {
-            print("GameStartRpc called");
-            // NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
+            if (NetworkManager.Singleton.CurrentSessionOwner ==
+                NetworkManager.Singleton.LocalClientId)
+            {
+                if (!ConnectionManager.Instance.CurrentSession.IsHost)
+                {
+                    GameManager.Instance.LoadSceneRpc("InGame");
+                }
+                else
+                {
+
+                }
+            }
         }
 
         private void ChangeLobbyUI(bool isHost)

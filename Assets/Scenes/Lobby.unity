@@ -1337,8 +1337,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 194974663}
-  - component: {fileID: 194974664}
   - component: {fileID: 194974665}
+  - component: {fileID: 194974664}
   - component: {fileID: 194974666}
   m_Layer: 0
   m_Name: GameManager
@@ -1374,7 +1374,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6c96312d14352c4f91ba534c891d04c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerListView: {fileID: 0}
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &194974665
 MonoBehaviour:
   m_ObjectHideFlags: 0

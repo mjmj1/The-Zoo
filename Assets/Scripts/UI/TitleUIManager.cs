@@ -59,7 +59,7 @@ namespace UI
 
             var playerName = playerNameInput.text;
 
-            var task = ConnectionManager.instance.OnEnterButtonPressed(playerName);
+            var task = ConnectionManager.Instance.OnEnterButtonPressed(playerName);
 
             await task;
         }
@@ -68,14 +68,14 @@ namespace UI
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.Quick, code: null, password: null, Util.GetRandomSessionName());
 
-            ConnectionManager.instance.ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
         }
 
         private void OnJoinByCodeButtonClick()
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.JoinByCode, codeInput.text);
 
-            ConnectionManager.instance.ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
         }
         
         private void OnSessionListButtonClick()

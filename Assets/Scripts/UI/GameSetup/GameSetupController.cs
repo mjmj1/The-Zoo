@@ -13,7 +13,7 @@ namespace UI.GameSetup
 
         public void Save()
         {
-            ConnectionManager.instance.UpdateSessionAsync(SessionName, Password, IsPrivate, PlayerSlot);
+            ConnectionManager.Instance.UpdateSessionAsync(SessionName, Password, IsPrivate, PlayerSlot);
         }
 
         public void Reset()

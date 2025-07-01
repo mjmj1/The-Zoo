@@ -35,10 +35,8 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
-            session = ConnectionManager.instance.CurrentSession;
+            session = ConnectionManager.Instance.CurrentSession;
 
-            print($"session.Players.Count: {session.Players.Count}");
-            
             foreach (var player in session.Players)
             {
                 var item = pool.Get();

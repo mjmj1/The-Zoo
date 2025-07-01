@@ -60,7 +60,7 @@ namespace UI.SessionList
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.Create);
 
-            ConnectionManager.instance.ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
         }
 
         private void OnJoinButtonClick()
@@ -70,7 +70,7 @@ namespace UI.SessionList
             var data = new ConnectionData(ConnectionData.ConnectionType.JoinById,
                 _selectedSession.Id);
 
-            ConnectionManager.instance.ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
 
             _selectedSession = null;
             joinButton.interactable = false;
@@ -90,7 +90,7 @@ namespace UI.SessionList
 
                 _activeViews.Clear();
 
-                var sessions = await ConnectionManager.instance.QuerySessionsAsync();
+                var sessions = await ConnectionManager.Instance.QuerySessionsAsync();
 
                 sessions = sessions.OrderBy<ISessionInfo, object>(s => s.HasPassword).ToList();
 

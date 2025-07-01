@@ -151,7 +151,7 @@ namespace UI.GameSetup
 
         private void Clear()
         {
-            var session = ConnectionManager.instance.CurrentSession;
+            var session = ConnectionManager.Instance.CurrentSession;
 
             codeCopyText.text = session.Code;
             privateToggle.isOn = session.IsPrivate;
