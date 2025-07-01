@@ -1,11 +1,8 @@
-using Static;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
-using Utils;
-using static Static.Strings;
 
 namespace Characters
 {
@@ -15,7 +12,7 @@ namespace Characters
 
         public NetworkVariable<FixedString32Bytes> playerName = new();
         public NetworkVariable<ulong> clientId = new();
-        
+
         private CharacterNetworkAnimator networkAnimator;
 
         private void Awake()
@@ -27,7 +24,7 @@ namespace Characters
         {
             playerName.OnValueChanged += OnPlayerNameChanged;
             clientId.OnValueChanged += OnClientIdChanged;
-            
+
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
 
@@ -50,9 +47,10 @@ namespace Characters
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)
         {
-            playerNameText.text = current.ToString();
+            var str = current.Value.Split('#')[0];
+            playerNameText.text = str;
         }
-        
+
         private void OnClientIdChanged(ulong prev, ulong current)
         {
             name = $"Client-{current}";

@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using Static;
+using Networks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static Static.Strings;
+using Utils;
 
 namespace UI.GameSetup
 {
@@ -151,7 +151,7 @@ namespace UI.GameSetup
 
         private void Clear()
         {
-            var session = Manage.Session();
+            var session = ConnectionManager.instance.CurrentSession;
 
             codeCopyText.text = session.Code;
             privateToggle.isOn = session.IsPrivate;
@@ -159,10 +159,10 @@ namespace UI.GameSetup
             sessionNameInput.text = "";
             sessionNamePlaceholder.text = session.Name;
 
-            session.Properties.TryGetValue(PASSWORD, out var prof);
+            session.Properties.TryGetValue(Util.PASSWORD, out var prof);
             passwordInput.text = prof?.Value;
             
-            playerSlotDropdown.value = int.Parse(session.Properties[PLAYERSLOT].Value) - 4;
+            playerSlotDropdown.value = int.Parse(session.Properties[Util.PLAYERSLOT].Value) - 4;
 
             applyButton.interactable = false;
             

@@ -347,33 +347,9 @@ namespace AI
 
         private void MoveRandomPosition()
         {
-			transform.position = GetRandomPosition();
-            seeker.transform.position = GetRandomPosition();
-            target.transform.position = GetRandomPosition();
-
-            /*var arcAngle = Random.Range(10f, 40f);
-            var baseAngle = Random.Range(0f, 360f);
-
-            var baseDir = Quaternion.Euler(0f, baseAngle, 0f) * Vector3.forward;
-
-            transform.position = PositionOnArc(-arcAngle);
-            seeker.transform.position = PositionOnArc(0f);
-            target.transform.position = PositionOnArc(+arcAngle);
-
-            return;
-
-            // 위치 계산 함수
-            Vector3 PositionOnArc(float angleOffset)
-            {
-                var rotation = Quaternion.AngleAxis(angleOffset, Vector3.up);
-                var dir = rotation * baseDir;
-                return _planet.position + dir.normalized * spawnRadius;
-            }*/
+			transform.position = Util.GetRandomPositionInSphere(spawnRadius);
+            seeker.transform.position = Util.GetRandomPositionInSphere(spawnRadius);
+            target.transform.position = Util.GetRandomPositionInSphere(spawnRadius);
         }
-
-		private Vector3 GetRandomPosition()
-        {
-            return Random.onUnitSphere.normalized * spawnRadius;
-		}
     }
 }

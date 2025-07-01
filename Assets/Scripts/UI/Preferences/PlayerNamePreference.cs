@@ -1,9 +1,7 @@
-using System;
 using TMPro;
 using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.UI;
-using static Static.Strings;
 
 namespace UI.Preferences
 {

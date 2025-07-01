@@ -27,6 +27,7 @@ namespace UI.PlayerList
         private void Start()
         {
             actionButtons.SetActive(false);
+            
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
         }

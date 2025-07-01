@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Networks;
-using Static;
-using TMPro;
 using UnityEngine;
-using static Static.Strings;
 
 namespace UI.GameSetup
 {

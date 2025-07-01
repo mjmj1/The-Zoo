@@ -1,5 +1,4 @@
 using Networks;
-using Static;
 using TMPro;
 using UI.PlayerList;
 using Unity.Netcode;
@@ -21,13 +20,13 @@ namespace UI
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
 
-            var session = Manage.Session();
+            var session = ConnectionManager.instance.CurrentSession;
             session.SessionHostChanged += OnSessionHostChanged;
         }
 
         private void OnEnable()
         {
-            ChangeLobbyUI(Manage.Session().IsHost);
+            ChangeLobbyUI(ConnectionManager.instance.CurrentSession.IsHost);
         }
 
         private void OnDestroy()
@@ -35,13 +34,13 @@ namespace UI
             quitButton.onClick.RemoveAllListeners();
             gameStartButton.onClick.RemoveAllListeners();
 
-            var session = Manage.Session();
+            var session = ConnectionManager.instance.CurrentSession;
             session.SessionHostChanged -= OnSessionHostChanged;
         }
 
         private void OnSessionHostChanged(string obj)
         {
-            ChangeLobbyUI(Manage.Session().IsHost);
+            ChangeLobbyUI(ConnectionManager.instance.CurrentSession.IsHost);
         }
 
         private void OnQuitButtonClick()

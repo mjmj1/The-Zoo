@@ -1,16 +1,17 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Static
+namespace Utils
 {
-    public class Strings : MonoBehaviour
+    public static class Util
     {
-        public static string PLAYERNAME = "PlayerName";
-        public static string PASSWORD = "Password";
-        public static string PLAYERSLOT = "PlayerSlot";
-
-        private static string[] SESSIONNAMES =
+        public static readonly string PLAYERNAME = "에러가 발생했습니다.";
+        public static readonly string PASSWORD = "Password";
+        public static readonly string PLAYERSLOT = "PlayerSlot";
+        
+        private static readonly string[] SESSIONNAMES =
         {
             "숨바꼭질 챔피언",
             "보일 듯 말 듯 챔피언",
@@ -32,6 +33,11 @@ namespace Static
         public static string GetRandomSessionName()
         {
             return SESSIONNAMES[Random.Range(0, SESSIONNAMES.Length)];
+        }
+        
+        public static Vector3 GetRandomPositionInSphere(float radius)
+        {
+            return Random.onUnitSphere.normalized * radius;
         }
     }
 }

@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using Networks;
+using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
-using static Static.Strings;
+using Utils;
 
 namespace UI.PlayerList
 {
@@ -34,11 +35,13 @@ namespace UI.PlayerList
         {
             session = ConnectionManager.instance.CurrentSession;
 
+            print($"session.Players.Count: {session.Players.Count}");
+            
             foreach (var player in session.Players)
             {
                 var item = pool.Get();
 
-                player.Properties.TryGetValue(PLAYERNAME, out var prop);
+                player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
 
                 var playerName = prop == null ? "UNKNOWN" : prop.Value;
                 
@@ -49,42 +52,42 @@ namespace UI.PlayerList
                 if (player.Id == session.CurrentPlayer.Id) item.Highlight();
             }
 
-            session.PlayerJoined += SessionOnPlayerJoined;
-            session.PlayerHasLeft += SessionOnPlayerHasLeft;
-            session.SessionHostChanged += SessionOnSessionHostChanged;
-
+            session.PlayerJoined += OnPlayerJoined;
+            session.PlayerHasLeft += OnPlayerHasLeft;
+            session.SessionHostChanged += OnSessionHostChanged;
+            
             map[session.Host].Host();
         }
 
         private void OnDisable()
         {
             Clear();
-            
-            session.PlayerJoined -= SessionOnPlayerJoined;
-            session.PlayerHasLeft -= SessionOnPlayerHasLeft;
-            session.SessionHostChanged -= SessionOnSessionHostChanged;
+
+            session.PlayerJoined -= OnPlayerJoined;
+            session.PlayerHasLeft -= OnPlayerHasLeft;
+            session.SessionHostChanged -= OnSessionHostChanged;
 
             session = null;
         }
 
-        private void SessionOnSessionHostChanged(string obj)
+        private void OnSessionHostChanged(string obj)
         {
             map[obj].Host();
         }
 
-        private void SessionOnPlayerHasLeft(string obj)
+        private void OnPlayerHasLeft(string obj)
         {
             map.Remove(obj, out var player);
             pool.Release(player);
         }
 
-        private void SessionOnPlayerJoined(string obj)
+        private void OnPlayerJoined(string obj)
         {
             var item = pool.Get();
 
             var player = session.Players.First(player => player.Id == obj);
             
-            player.Properties.TryGetValue(PLAYERNAME, out var prop);
+            player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
 
             var playerName = prop == null ? "UNKNOWN" : prop.Value;
                 
@@ -95,6 +98,11 @@ namespace UI.PlayerList
 
         private void Clear()
         {
+            foreach (var kvp in map)
+            {
+                pool.Release(kvp.Value);    
+            }
+            
             pool.Clear();
 
             map.Clear();

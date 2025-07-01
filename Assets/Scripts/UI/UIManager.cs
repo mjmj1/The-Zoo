@@ -1,8 +1,6 @@
 using Networks;
-using Static;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace UI
 {

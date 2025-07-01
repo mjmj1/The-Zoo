@@ -9,7 +9,6 @@ using UnityEngine;
 using Utils;
 using WebSocketSharp;
 using static Networks.ConnectionData;
-using static Static.Strings;
 
 namespace Networks
 {
@@ -110,7 +109,7 @@ namespace Networks
             try
             {
                 AuthenticationService.Instance.SignInFailed += SignInFailed;
-                AuthenticationService.Instance.SwitchProfile(GetRandomString(5));
+                AuthenticationService.Instance.SwitchProfile(Util.GetRandomString(5));
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
             catch (Exception e)
@@ -129,7 +128,6 @@ namespace Networks
         {
             try
             {
-
                 switch (data.Type)
                 {
                     case ConnectionType.Quick:
@@ -191,7 +189,7 @@ namespace Networks
                 .PlayerSlot(playerSlot)
                 .Password(password)
                 .IsPrivate(true)
-                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
+                .PlayerProperty(Util.PLAYERNAME, AuthenticationService.Instance.PlayerName.Split('#')[0])
                 .BuildCreate();
 
             await HandleSessionFlowAsync(async () => await MultiplayerService.Instance.CreateSessionAsync(options));
@@ -206,10 +204,10 @@ namespace Networks
                 .PlayerSlot(MaxPlayers)
                 .Password()
                 .IsPrivate(true)
-                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
+                .PlayerProperty(Util.PLAYERNAME, AuthenticationService.Instance.PlayerName.Split('#')[0])
                 .BuildCreate();
 
-            var sessionId = $"Session_{GetRandomString(5)}";
+            var sessionId = $"Session_{Util.GetRandomString(5)}";
 
             await HandleSessionFlowAsync(async () =>
                 await MultiplayerService.Instance.CreateOrJoinSessionAsync(sessionId, options));
@@ -221,7 +219,7 @@ namespace Networks
         {
             var options = new SessionOptionBuilder()
                 .Password(password)
-                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
+                .PlayerProperty(Util.PLAYERNAME, AuthenticationService.Instance.PlayerName.Split('#')[0])
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>
@@ -232,7 +230,7 @@ namespace Networks
         {
             var options = new SessionOptionBuilder()
                 .Password(password)
-                .PlayerProperty(PLAYERNAME, AuthenticationService.Instance.PlayerName)
+                .PlayerProperty(Util.PLAYERNAME, AuthenticationService.Instance.PlayerName.Split('#')[0])
                 .BuildJoin();
 
             await HandleSessionFlowAsync(async () =>
@@ -274,7 +272,7 @@ namespace Networks
                     {
                         print($"password {password}");
                         host.Password = password;
-                        host.SetProperty(PASSWORD, new SessionProperty(password, VisibilityPropertyOptions.Private));
+                        host.SetProperty(Util.PASSWORD, new SessionProperty(password, VisibilityPropertyOptions.Private));
                     }
 
                     if (isPrivate != null)
@@ -286,7 +284,7 @@ namespace Networks
                     if (playerSlot != -1)
                     {
                         print($"playerSlot {playerSlot}");
-                        host.SetProperty(PLAYERSLOT, new SessionProperty(playerSlot.ToString()));
+                        host.SetProperty(Util.PLAYERSLOT, new SessionProperty(playerSlot.ToString()));
                     }
 
                     await host.SavePropertiesAsync();

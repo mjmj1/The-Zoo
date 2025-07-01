@@ -1,11 +1,9 @@
-using System;
 using Networks;
-using Static;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 using WebSocketSharp;
-using static Static.Strings;
 
 namespace UI
 {
@@ -68,7 +66,7 @@ namespace UI
         
         private void OnQuickStartButtonClick()
         {
-            var data = new ConnectionData(ConnectionData.ConnectionType.Quick, code: null, password: null, GetRandomSessionName());
+            var data = new ConnectionData(ConnectionData.ConnectionType.Quick, code: null, password: null, Util.GetRandomSessionName());
 
             ConnectionManager.instance.ConnectAsync(data);
         }
