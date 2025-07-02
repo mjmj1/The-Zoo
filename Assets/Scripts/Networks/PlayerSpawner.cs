@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
 
 namespace Networks
 {
@@ -38,20 +39,9 @@ namespace Networks
             base.OnNetworkSessionSynchronized();
         }
 
-        private Vector3 GetCirclePositions(Vector3 center, int index, float radius, int count)
-        {
-            var angle = index * Mathf.PI * 2f / count;
-            var x = center.x + radius * Mathf.Cos(angle);
-            var z = center.z + radius * Mathf.Sin(angle);
-
-            return new Vector3(x, center.y, z);
-        }
-
         [Rpc(SendTo.Owner)]
         private void AssignAnimalPrefabRpc(ulong clientId)
         {
-            print($"Send to owner from client-{clientId}");
-            
             nextAnimalIndex.Value += 1 % animalIndexes.Count;
             
             var index = animalIndexes[nextAnimalIndex.Value];
@@ -62,8 +52,6 @@ namespace Networks
         [Rpc(SendTo.SpecifiedInParams)]
         private void AssignAnimalPrefabRpc(int index, RpcParams rpcParams = default)
         {
-            print($"Received index: {index}");
-
             AssignAnimalPrefab(index);
         }
 
@@ -71,7 +59,7 @@ namespace Networks
         {
             var prefab = animalPrefabs[index];
 
-            var pos = GetCirclePositions(Vector3.zero, index, 5f, 8);
+            var pos = Util.GetCirclePositions(Vector3.zero, index, 5f, 8);
 
             prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,

@@ -35,7 +35,16 @@ namespace Utils
         {
             return SESSIONNAMES[Random.Range(0, SESSIONNAMES.Length)];
         }
-        
+
+        public static Vector3 GetCirclePositions(Vector3 center, int index, float radius, int count)
+        {
+            var angle = index * Mathf.PI * 2f / count;
+            var x = center.x + radius * Mathf.Cos(angle);
+            var z = center.z + radius * Mathf.Sin(angle);
+
+            return new Vector3(x, center.y, z);
+        }
+
         public static Vector3 GetRandomPositionInSphere(float radius)
         {
             return Random.onUnitSphere.normalized * radius;
