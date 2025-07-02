@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using Characters;
 using Networks;
+using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Lobbies.Models;
 using Unity.Services.Matchmaker.Models;
@@ -21,6 +23,8 @@ namespace UI.PlayerList
 
         private ISession session;
 
+        public static PlayerListView Instance { get; private set; }
+
         private void Awake()
         {
             pool = new ObjectPool<PlayerView>
@@ -31,6 +35,9 @@ namespace UI.PlayerList
                 DestroyPoolObj,
                 true, 4, 8
             );
+
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
         }
 
         private void OnEnable()
@@ -47,7 +54,7 @@ namespace UI.PlayerList
 
                 item.SetPlayerId(player.Id);
                 item.SetPlayerName(playerName);
-                
+
                 map.Add(player.Id, item);
 
                 if (player.Id == session.CurrentPlayer.Id) item.Highlight();
@@ -56,8 +63,9 @@ namespace UI.PlayerList
             session.PlayerJoined += OnPlayerJoined;
             session.PlayerHasLeft += OnPlayerHasLeft;
             session.SessionHostChanged += OnSessionHostChanged;
+            session.SessionHostChanged += GameManager.Instance.PromotedSessionHost;
             
-            map[session.Host].Host();
+            map[session.Host].Host(true);
         }
 
         private void OnDisable()
@@ -67,13 +75,19 @@ namespace UI.PlayerList
             session.PlayerJoined -= OnPlayerJoined;
             session.PlayerHasLeft -= OnPlayerHasLeft;
             session.SessionHostChanged -= OnSessionHostChanged;
+            session.SessionHostChanged -= GameManager.Instance.PromotedSessionHost;
 
             session = null;
         }
 
+        public void OnPlayerReady(string id, bool value)
+        {
+            map[id].Ready(value);
+        }
+
         private void OnSessionHostChanged(string obj)
         {
-            map[obj].Host();
+            map[obj].Host(true);
         }
 
         private void OnPlayerHasLeft(string obj)

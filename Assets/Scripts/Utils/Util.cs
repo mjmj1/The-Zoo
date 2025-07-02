@@ -10,7 +10,8 @@ namespace Utils
         public static readonly string PLAYERNAME = "에러가 발생했습니다.";
         public static readonly string PASSWORD = "Password";
         public static readonly string PLAYERSLOT = "PlayerSlot";
-        
+        public static readonly string PLAYERREADY = "PlayerReady";
+
         private static readonly string[] SESSIONNAMES =
         {
             "숨바꼭질 챔피언",

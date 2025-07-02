@@ -1,4 +1,6 @@
+using Networks;
 using TMPro;
+using UI.PlayerList;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
@@ -11,7 +13,9 @@ namespace Characters
         [SerializeField] private TMP_Text playerNameText;
 
         public NetworkVariable<FixedString32Bytes> playerName = new();
+        public NetworkVariable<FixedString32Bytes> playerId = new();
         public NetworkVariable<ulong> clientId = new();
+        public NetworkVariable<bool> isReady = new();
 
         private CharacterNetworkAnimator networkAnimator;
 
@@ -31,7 +35,10 @@ namespace Characters
             if (IsOwner)
             {
                 playerName.Value = AuthenticationService.Instance.PlayerName;
+                playerId.Value = AuthenticationService.Instance.PlayerId;
                 clientId.Value = NetworkManager.LocalClientId;
+
+                isReady.Value = ConnectionManager.Instance.CurrentSession.IsHost;
             }
 
             base.OnNetworkSpawn();

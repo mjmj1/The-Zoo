@@ -1,8 +1,6 @@
 using Networks;
 using TMPro;
 using Unity.Netcode;
-using Unity.Services.Authentication;
-using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,15 +9,15 @@ namespace UI.PlayerList
 {
     public class PlayerView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private Sprite hostSprite;
+        [SerializeField] private GameObject hostIcon;
+        [SerializeField] private GameObject readyIcon;
 
-        [SerializeField] private Image stateIcon;
         [SerializeField] private TMP_Text playerNameText;
 
         [SerializeField] private GameObject actionButtons;
         [SerializeField] private Button promoteHostButton;
         [SerializeField] private Button kickButton;
-        
+
         private bool isHost;
 
         private string playerId;
@@ -27,7 +25,7 @@ namespace UI.PlayerList
         private void Start()
         {
             actionButtons.SetActive(false);
-            
+
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
         }
@@ -40,9 +38,11 @@ namespace UI.PlayerList
             kickButton.onClick.AddListener(OnKickButtonClick);
 
             isHost = false;
-            
-            stateIcon.enabled = false;
-            
+
+            hostIcon.SetActive(false);
+
+            readyIcon.SetActive(false);
+
             playerNameText.color = Color.white;
         }
 
@@ -78,10 +78,16 @@ namespace UI.PlayerList
             playerNameText.SetText(playerName);
         }
 
-        public void Host()
+        public void Host(bool value)
         {
-            stateIcon.enabled = true;
-            isHost = true;
+            hostIcon.SetActive(value);
+
+            isHost = value;
+        }
+
+        public void Ready(bool value)
+        {
+            readyIcon.SetActive(value);
         }
 
         public void Highlight()

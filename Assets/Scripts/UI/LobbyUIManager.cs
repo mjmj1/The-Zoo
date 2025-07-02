@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+using Characters;
 using Networks;
 using TMPro;
 using UI.PlayerList;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI
@@ -51,18 +51,22 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
-            if (NetworkManager.Singleton.CurrentSessionOwner ==
-                NetworkManager.Singleton.LocalClientId)
+            if (ConnectionManager.Instance.CurrentSession.IsHost)
             {
-                if (!ConnectionManager.Instance.CurrentSession.IsHost)
-                {
-                    GameManager.Instance.LoadSceneRpc("InGame");
-                }
-                else
-                {
+                if (!GameManager.Instance.CanGameStart()) return;
 
-                }
+                GameManager.Instance.LoadSceneRpc("InGame");
+
+                return;
             }
+
+            var entity = NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerEntity>();
+            var isReady = entity.isReady.Value;
+
+            entity.isReady.Value = !isReady;
+
+            GameManager.Instance.ReadyRpc(AuthenticationService.Instance.PlayerId, entity.isReady.Value);
         }
 
         private void ChangeLobbyUI(bool isHost)

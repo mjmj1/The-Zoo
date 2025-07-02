@@ -77,16 +77,6 @@ namespace Networks
 
                 CurrentSession = await sessionFunc.Invoke();
 
-                var clientId = NetworkManager.Singleton.LocalClientId;
-                var playerId = AuthenticationService.Instance.PlayerId;
-                var playerName = AuthenticationService.Instance.PlayerName;
-
-                print($"{clientId}");
-                print($"{playerId}");
-                print($"{playerName}");
-
-                GameManager.Instance.AddRpc(clientId);
-
                 _state = ConnectionState.Connected;
             }
             catch (Exception e)

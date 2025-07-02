@@ -1,51 +1,14 @@
-using System;
+using System.Linq;
+using Characters;
+using UI.PlayerList;
 using Unity.Collections;
 using Unity.Netcode;
+using Unity.Services.Authentication;
 using UnityEngine.SceneManagement;
 
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
-
-    private NetworkList<ClientInfo> clientInfoList;
-
-    private struct ClientInfo : INetworkSerializable, IEquatable<ClientInfo>
-    {
-        public ulong ClientId;
-        public int Standby;
-
-        public ClientInfo(ulong clientId, int standby)
-        {
-            ClientId = clientId;
-            Standby = standby;
-        }
-
-        public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref ClientId);
-            serializer.SerializeValue(ref Standby);
-        }
-
-        public bool Equals(ClientInfo other)
-        {
-            return ClientId == other.ClientId && Standby == other.Standby;
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is ClientInfo other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(ClientId, Standby);
-        }
-
-        public override string ToString()
-        {
-            return $"{ClientId}-{Standby}";
-        }
-    }
 
     private void Awake()
     {
@@ -60,76 +23,30 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public override void OnNetworkSpawn()
+    [Rpc(SendTo.Everyone)]
+    internal void ReadyRpc(FixedString32Bytes playerId, bool isReady)
     {
-        clientInfoList = new NetworkList<ClientInfo>();
+        PlayerListView.Instance.OnPlayerReady(playerId.Value, isReady);
+    }
 
-        clientInfoList.OnListChanged += e =>
+    internal void PromotedSessionHost(string playerId)
+    {
+        if (playerId == AuthenticationService.Instance.PlayerId)
         {
-            print($"[ClientInfoList] {e.Type}: {e.Value}");
-        };
-
-        base.OnNetworkSpawn();
-    }
-
-    [Rpc(SendTo.Owner)]
-    internal void AddRpc(ulong clientId, int standby = 0)
-    {
-        var info = new ClientInfo(clientId, standby);
-
-        clientInfoList.Add(info);
-    }
-
-    [Rpc(SendTo.Owner)]
-    internal void RemoveRpc(ulong clientId)
-    {
-        var info = Find(clientId);
-
-        if (info != null) clientInfoList.Remove(info.Value);
-    }
-
-    [Rpc(SendTo.Owner)]
-    internal void UpdateStandbyRpc(ulong clientId)
-    {
-        var index = GetIndex(clientId);
-
-        var info = clientInfoList[index];
-
-        info.Standby = 1;
-
-        clientInfoList[index] = info;
-    }
-
-    private ClientInfo? Find(ulong clientId)
-    {
-        foreach (var info in clientInfoList)
-        {
-            if (info.ClientId != clientId) continue;
-
-            return info;
-        }
-
-        return null;
-    }
-
-    public void Print()
-    {
-        foreach (var info in clientInfoList)
-        {
-            print(info.ToString());
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
+                true;
         }
     }
 
-    private int GetIndex(ulong clientId)
+    internal bool CanGameStart()
     {
-        for (var i = 0; i < clientInfoList.Count; i++)
+        foreach (var client in NetworkManager.ConnectedClientsList)
         {
-            if (clientInfoList[i].ClientId != clientId) continue;
-
-            return i;
+            if (client.PlayerObject == null) return false;
+            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity)) return false;
+            if (!entity.isReady.Value) return false;
         }
-
-        return -1;
+        return true;
     }
 
     internal void LoadLobbyScene()
