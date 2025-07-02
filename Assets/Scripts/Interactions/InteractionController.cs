@@ -2,6 +2,7 @@ using Unity.Netcode;
 using UnityEngine;
 using System.Collections;
 using Utils;
+using TMPro.EditorUtilities;
 
 public class InteractionController : NetworkBehaviour
 {
@@ -11,34 +12,30 @@ public class InteractionController : NetworkBehaviour
     private SphereCollider _planetCollider;
 
     // Tree.cs에서 사용하기 위한 변수
-    public NetworkVariable<Vector3> SpawnPositon;
+    public NetworkVariable<Vector3>[] SpawnPositon;
     public Vector3 InitialPosition;
-    public NetworkVariable<Quaternion> SpawnRotation;
+    public NetworkVariable<Quaternion>[] SpawnRotation;
     public Quaternion InitialRotation;
-
-    private void Start()
-    {
-        planet = FindFirstObjectByType<PlanetGravity>().gameObject;
-        _planetCollider = planet.GetComponent<SphereCollider>();
-
-        GetRandomPositionForInteractionObjects(15);
-    }
+    public int NumberOfObjects = 15;
+    
 
     public override void OnNetworkSpawn()
     {
+        
         if (!IsSessionOwner) return;
-        MyLogger.Print(this, "IsServer : " + IsServer);
-        if (IsServer)
+
+        SpawnPositon = new NetworkVariable<Vector3>[NumberOfObjects];
+        SpawnRotation = new NetworkVariable<Quaternion>[NumberOfObjects];
+        MyLogger.Print(this, "SpawnPositon.Length : " + SpawnPositon.Length);
+        for (int i = 0; i <  SpawnPositon.Length; i++)
         {
-            SpawnPositon.Value = InitialPosition;
+            SpawnPositon[i].Value = InitialPosition;
             NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
 
-            SpawnRotation.Value = InitialRotation;
+            SpawnRotation[i].Value = InitialRotation;
             NetworkManager.OnClientConnectedCallback += NetworkManager_OnClientConnectedCallback;
-        }
-        else
-        {
-            if (SpawnPositon.Value != InitialPosition)
+
+            if (SpawnPositon[i].Value != InitialPosition)
             {
                 Debug.LogWarning($"NetworkVariable was {SpawnPositon} upon being spawned" +
                 $" when it should have been {InitialPosition}");
@@ -47,10 +44,18 @@ public class InteractionController : NetworkBehaviour
             {
                 Debug.Log($"NetworkVariable is {SpawnPositon} when spawned.");
             }
-            SpawnPositon.OnValueChanged += OnPositionChanged;
+            SpawnPositon[i].OnValueChanged += OnPositionChanged;
         }
-    }
 
+    }
+    private void Start()
+    {
+        
+        planet = FindFirstObjectByType<PlanetGravity>().gameObject;
+        _planetCollider = planet.GetComponent<SphereCollider>();
+
+        GetRandomPositionForInteractionObjects(15);
+    }
     private void NetworkManager_OnClientConnectedCallback(ulong obj)
     {
         StartCoroutine(StartChangingNetworkVariable());
@@ -67,7 +72,11 @@ public class InteractionController : NetworkBehaviour
         var updateFrequency = new WaitForSeconds(0.5f);
         while (count < 4)
         {
-            SpawnPositon.Value += SpawnPositon.Value;
+            for(int i = 0; i < SpawnPositon.Length; i++)
+            {
+                SpawnPositon[i].Value += SpawnPositon[i].Value;
+            }
+            
             count++;
             yield return updateFrequency;
         }
@@ -86,7 +95,8 @@ public class InteractionController : NetworkBehaviour
         {
             points[i] = Random.onUnitSphere.normalized;
         }
-
+        var count = 0;
+        MyLogger.Print(this, "SpawnPosition.Length2 : " + SpawnPositon.Length);
         foreach (var point in points)
         {
             var spawnPosition = _planetCollider.transform.position + point * _planetCollider.radius * planet.transform.localScale.x;
@@ -94,10 +104,15 @@ public class InteractionController : NetworkBehaviour
 
             Quaternion rotation = Quaternion.FromToRotation(Vector3.up, normal);
 
-            SpawnPositon.Value = spawnPosition;
-            SpawnRotation.Value = rotation;
-
-            Instantiate(interactionObjects[Random.Range(0, 3)], spawnPosition, rotation);
+            if(IsSessionOwner)
+            {
+                SpawnPositon[count].Value = spawnPosition;
+                SpawnRotation[count].Value = rotation;
+            }
+            
+            MyLogger.Print(this, "SpawnPositon.Value : " + SpawnPositon[count].Value);
+            Instantiate(interactionObjects[Random.Range(0, 3)], SpawnPositon[count].Value, SpawnRotation[count].Value);
+            count++;
         }
     }
 }
