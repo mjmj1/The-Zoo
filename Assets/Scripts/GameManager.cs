@@ -36,6 +36,13 @@ public class GameManager : NetworkBehaviour
             NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
                 true;
         }
+        else
+        {
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
+                false;
+
+            ReadyRpc(playerId, false);
+        }
     }
 
     internal bool CanGameStart()

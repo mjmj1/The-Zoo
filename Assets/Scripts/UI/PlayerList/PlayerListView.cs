@@ -87,7 +87,13 @@ namespace UI.PlayerList
 
         private void OnSessionHostChanged(string obj)
         {
+            foreach (var view in map.Values)
+            {
+                view.Host(false);
+            }
+
             map[obj].Host(true);
+            map[obj].Ready(false);
         }
 
         private void OnPlayerHasLeft(string obj)
