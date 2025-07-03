@@ -1,4 +1,3 @@
-using System.Linq;
 using Characters;
 using UI.PlayerList;
 using Unity.Collections;
@@ -41,7 +40,8 @@ public class GameManager : NetworkBehaviour
             NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
                 false;
 
-            ReadyRpc(playerId, false);
+            ReadyRpc(NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().playerId.Value, 
+                false);
         }
     }
 
@@ -49,10 +49,24 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var client in NetworkManager.ConnectedClientsList)
         {
-            if (client.PlayerObject == null) return false;
-            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity)) return false;
-            if (!entity.isReady.Value) return false;
+            if (client.PlayerObject == null)
+            {
+                print($"client-{client.ClientId} PlayerObject is null"); return false;
+            }
+
+            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity))
+            {
+                print($"client-{client.ClientId} playerEntity is null");
+                return false;
+            }
+
+            if (!entity.isReady.Value)
+            {
+                print($"client-{client.ClientId} not ready");
+                return false;
+            }
         }
+
         return true;
     }
 

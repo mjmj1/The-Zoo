@@ -54,7 +54,7 @@ namespace UI.PlayerList
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
+            if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
 
             if (isHost) return;
 
@@ -63,7 +63,7 @@ namespace UI.PlayerList
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
+            if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
 
             actionButtons.SetActive(false);
         }
@@ -83,6 +83,8 @@ namespace UI.PlayerList
             hostIcon.SetActive(value);
 
             isHost = value;
+            
+            actionButtons.SetActive(false);
         }
 
         public void Ready(bool value)
