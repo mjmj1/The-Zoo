@@ -11,6 +11,8 @@ namespace UI.PlayerList
     {
         [SerializeField] private GameObject hostIcon;
         [SerializeField] private GameObject readyIcon;
+        [SerializeField] private GameObject otherBg;
+        [SerializeField] private GameObject bg;
 
         [SerializeField] private TMP_Text playerNameText;
 
@@ -39,11 +41,13 @@ namespace UI.PlayerList
 
             isHost = false;
 
+            otherBg.SetActive(true);
+            
+            bg.SetActive(false);
+            
             hostIcon.SetActive(false);
 
             readyIcon.SetActive(false);
-
-            playerNameText.color = Color.white;
         }
 
         private void OnDisable()
@@ -94,7 +98,8 @@ namespace UI.PlayerList
 
         public void Highlight()
         {
-            playerNameText.color = Color.green;
+            otherBg.SetActive(false);
+            bg.SetActive(true);
         }
 
         private void OnPromoteHostButtonClick()
