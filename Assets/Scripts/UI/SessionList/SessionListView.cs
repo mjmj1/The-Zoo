@@ -115,6 +115,12 @@ namespace UI.SessionList
                 joinButton.interactable = true;
         }
 
+        private void OnDeselect()
+        {
+            _selectedSession = null;
+            joinButton.interactable = false;
+        }
+
         private SessionView OnCreatePooledObjects()
         {
             return Instantiate(sessionViewPrefab, contentParent).GetComponent<SessionView>();
@@ -123,19 +129,23 @@ namespace UI.SessionList
         private void OnGetPooledObjects(SessionView sessionView)
         {
             sessionView.gameObject.SetActive(true);
-            sessionView.onSelect.AddListener(OnSelect);
+            sessionView.OnSelected.AddListener(OnSelect);
+            sessionView.OnDeselected.AddListener(OnDeselect);
             sessionView.transform.SetAsLastSibling();
         }
 
         private void OnReturnPooledObjects(SessionView sessionView)
         {
             sessionView.gameObject.SetActive(false);
-            sessionView.onSelect.RemoveAllListeners();
+            sessionView.OnSelected.RemoveAllListeners();
+            sessionView.OnDeselected.RemoveAllListeners();
         }
 
         private void OnDestroyPooledObjects(SessionView sessionView)
         {
-            sessionView.onSelect.RemoveAllListeners();
+            sessionView.OnSelected.RemoveAllListeners();
+            sessionView.OnDeselected.RemoveAllListeners();
+            
             Destroy(sessionView.gameObject);
         }
     }

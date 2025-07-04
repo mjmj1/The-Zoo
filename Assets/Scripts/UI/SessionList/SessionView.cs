@@ -1,37 +1,54 @@
+using System;
 using TMPro;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 
 namespace UI.SessionList
 {
-    public class SessionView : MonoBehaviour, ISelectHandler
+    public class SessionView : MonoBehaviour, ISelectHandler, IDeselectHandler
     {
-        [SerializeField] private Image lockIcon;
+        [SerializeField] private Color originColor;
+        
+        [SerializeField] private Image shine;
+        [SerializeField] private GameObject lockIcon;
         [SerializeField] private TMP_Text sessionNameText;
         [SerializeField] private TMP_Text sessionPlayersText;
-
-        public UnityEvent<ISessionInfo> onSelect;
-
-        private ISessionInfo _sessionInfo;
+        
+        private ISessionInfo sessionInfo;
+        
+        internal UnityEvent<ISessionInfo> OnSelected;
+        internal UnityEvent OnDeselected;
 
         public void OnSelect(BaseEventData eventData)
         {
-            onSelect?.Invoke(_sessionInfo);
+            OnSelected?.Invoke(sessionInfo);
+        }
+        
+        public void OnDeselect(BaseEventData eventData)
+        {
+            sessionInfo = null;
+            OnDeselected?.Invoke();
         }
 
-        public void Bind(ISessionInfo sessionInfo)
+        public void Bind(ISessionInfo info)
         {
-            _sessionInfo = sessionInfo;
-            
-            lockIcon.enabled = _sessionInfo.HasPassword;
-            sessionNameText.text = _sessionInfo.Name;
-            
-            var currentPlayers = _sessionInfo.MaxPlayers - _sessionInfo.AvailableSlots;
-            sessionPlayersText.text = $"{currentPlayers}/{_sessionInfo.MaxPlayers}";
+            sessionInfo = info;
+
+            IsLock(sessionInfo.HasPassword);
+            sessionNameText.text = sessionInfo.Name;
+
+            var currentPlayers = sessionInfo.MaxPlayers - sessionInfo.AvailableSlots;
+            sessionPlayersText.text = $"{currentPlayers}/{sessionInfo.MaxPlayers}";
+        }
+
+        private void IsLock(bool value)
+        {
+            lockIcon.SetActive(value);
+            shine.color = value ? Color.gold : originColor;
         }
     }
 }

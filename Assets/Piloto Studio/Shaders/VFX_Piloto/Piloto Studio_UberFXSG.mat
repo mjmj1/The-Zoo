@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6124801520252827491
+--- !u!114 &-8127274429864425448
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   version: 0
---- !u!114 &-3065849284688882807
+--- !u!114 &-7565258856181544323
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -39,9 +39,7 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _SURFACE_TYPE_TRANSPARENT
-  - _USESOFTALPHA
-  m_InvalidKeywords:
-  - _ENABLE_FOG_ON_TRANSPARENT
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -69,7 +67,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 3f765e3bd1de92f4fbddc742714a37ab, type: 3}
+        m_Texture: {fileID: 2800000, guid: 501a9c4358955104999e82b6d55de50d, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
@@ -88,11 +86,12 @@ Material:
     m_Floats:
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
-    - _AlphaCutoffEnable: 1
+    - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 10
     - _AlphaSrcBlend: 1
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
+    - _Alpha_Clip_Threshold: 0.5
     - _BUILTIN_AlphaClip: 0
     - _BUILTIN_Blend: 0
     - _BUILTIN_CullMode: 2
@@ -120,7 +119,7 @@ Material:
     - _DoubleSidedNormalMode: 2
     - _DstBlend: 10
     - _EnableBlendModePreserveSpecularLighting: 0
-    - _EnableFogOnTransparent: 1
+    - _EnableFogOnTransparent: 0
     - _FRESNEL: 0
     - _FresnelPower: 1
     - _FresnelScale: 1
@@ -153,7 +152,7 @@ Material:
     - _USEALPHAOVERRIDE: 0
     - _USEPIXELATION: 0
     - _USERAMP: 0
-    - _USESOFTALPHA: 1
+    - _USESOFTALPHA: 0
     - _USEUVOFFSET: 0
     - _UseShadowThreshold: 0
     - _ZTest: 4
@@ -170,6 +169,7 @@ Material:
     - _DetailMultiplyChannel: {r: 0, g: 0, b: 0, a: 0}
     - _DetailNoisePanning: {r: 0, g: 0, b: 0, a: 0}
     - _DetailVertexOffsetChannel: {r: 0, g: 0, b: 0, a: 0}
+    - _Disolve_Fade_Range: {r: -0.25, g: 1, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _FresnelColor: {r: 1, g: 1, b: 1, a: 0}
@@ -178,11 +178,11 @@ Material:
     - _MainTextureChannel: {r: 1, g: 1, b: 1, a: 0}
     - _MainTexturePanning: {r: 0, g: 0, b: 0, a: 0}
     - _MidColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0}
-    - _Resolution: {r: 16, g: 16, b: 0, a: 0}
+    - _Resolution: {r: 64, g: 64, b: 0, a: 0}
     - _WhiteColor: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
---- !u!114 &3333361685994905702
+--- !u!114 &6634675059611362682
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}

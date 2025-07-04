@@ -12,14 +12,12 @@ Material:
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _ADD_PRECOMPUTED_VELOCITY
-  - _CONSERVATIVE_DEPTH_OFFSET
-  - _DEPTHOFFSET_ON
   - _DISABLE_SSR_TRANSPARENT
   - _DOUBLESIDED_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 1
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2225
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -76,7 +74,6 @@ Material:
     m_Floats:
     - _AddPrecomputedVelocity: 1
     - _AdditiveMaskEdge: 0
-    - _AlphaClipping: 1
     - _AlphaCutoff: 0.5
     - _AlphaCutoffEnable: 0
     - _AlphaDstBlend: 0
@@ -84,11 +81,9 @@ Material:
     - _AlphaToMask: 0
     - _AlphaToMaskInspectorValue: 0
     - _BlendMode: 0
-    - _ConservativeDepthOffsetEnable: 1
     - _CullMode: 0
     - _CullModeForward: 0
     - _DepthOffset: 0
-    - _DepthOffsetEnable: 1
     - _DoubleSidedEnable: 1
     - _DoubleSidedGIMode: 0
     - _DoubleSidedNormalMode: 1
@@ -103,7 +98,7 @@ Material:
     - _OcclusionScale: 1
     - _OpaqueCullMode: 2
     - _PanningNoiseStrenght: 2
-    - _QueueControl: 0
+    - _QueueControl: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _ReceivesSSR: 1
@@ -137,7 +132,6 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
-    - _BaseColorTint: {r: 1, g: 1, b: 1, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveTint: {r: 1, g: 1, b: 1, a: 1}

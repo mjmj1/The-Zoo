@@ -1335,7 +1335,7 @@
     "m_ActiveSubTarget": {
         "m_Id": "75d6b950009f47a396968217181cd178"
     },
-    "m_AllowMaterialOverride": true,
+    "m_AllowMaterialOverride": false,
     "m_SurfaceType": 1,
     "m_ZWriteControl": 0,
     "m_ZTestMode": 4,
@@ -3536,7 +3536,7 @@
     "m_AlphaToMask": false,
     "m_DepthOffset": false,
     "m_ConservativeDepthOffset": false,
-    "m_TransparencyFog": true,
+    "m_TransparencyFog": false,
     "m_AlphaTestShadow": false,
     "m_BackThenFrontRendering": false,
     "m_TransparentDepthPrepass": false,
@@ -5146,7 +5146,7 @@
     "m_ActiveSubTarget": {
         "m_Id": "dea40bc112004aa395a96aeeb4605ddf"
     },
-    "m_AllowMaterialOverride": true,
+    "m_AllowMaterialOverride": false,
     "m_SurfaceType": 1,
     "m_ZTestMode": 4,
     "m_ZWriteControl": 0,
