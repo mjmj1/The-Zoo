@@ -9,8 +9,20 @@
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Pudu.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Pudu.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Emu.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Emu.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Kookaburra.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Kookaburra.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Platypus.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Platypus.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Possum.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Possum.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Quokka.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Quokka.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_TasmanianDevil.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_TasmanianDevil.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Wombat.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Wombat.controller" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -224,7 +236,9 @@
       <workItem from="1751192457070" duration="19703000" />
       <workItem from="1751288210900" duration="11249000" />
       <workItem from="1751382052806" duration="6675000" />
-      <workItem from="1751462170252" duration="10699000" />
+      <workItem from="1751462170252" duration="10731000" />
+      <workItem from="1751732068794" duration="616000" />
+      <workItem from="1751732762932" duration="593000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

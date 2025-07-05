@@ -1,13 +1,11 @@
 #if UNITY_EDITOR
-using System;
-using UI;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using Utils;
+using static Characters.InputHandler;
 
 namespace Characters
 {
@@ -82,11 +80,6 @@ namespace Characters
         private PlayerEntity _entity;
 
         private float _moveSpeed;
-        
-        public static readonly int MoveId = Animator.StringToHash("Move");
-        public static readonly int SprintId = Animator.StringToHash("Sprint");
-        public static readonly int SpinId = Animator.StringToHash("Spin");
-        public static readonly int ClickedId = Animator.StringToHash("Clicked");
         
         public float Pitch { get; private set; }
 
@@ -236,24 +229,24 @@ namespace Characters
 
         private void MovementAction(InputAction.CallbackContext ctx)
         {
-            _entity.SetBool(MoveId, ctx.performed);
+            _entity.SetBool(MoveHash, ctx.performed);
         }
 
         private void SprintAction(bool value)
         {
-            _entity.SetBool(SprintId, value);
+            _entity.SetBool(SprintHash, value);
 
             _moveSpeed = value ? sprintSpeed : walkSpeed;
         }
 
         private void SpinAction(bool value)
         {
-            _entity.SetBool(SpinId, value);
+            _entity.SetBool(SpinHash, value);
         }
         
         private void ClickedAction(bool value)
         {
-            _entity.SetBool(ClickedId, value);
+            _entity.SetBool(AttackHash, value);
         }
     }
 }
