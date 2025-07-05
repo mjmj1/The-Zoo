@@ -8,21 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameOptionField.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameOptionField.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Pudu.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Pudu.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Emu.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Emu.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Kookaburra.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Kookaburra.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Platypus.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Platypus.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Possum.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Possum.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Quokka.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Quokka.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_TasmanianDevil.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_TasmanianDevil.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Wombat.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Wombat.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/SessionView.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/SessionView.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionListView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionListView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionView.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,8 +44,11 @@
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0022d4fb3cd44d45a62e51c39f257e7c1ea600/19/777acbd7/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0022d4fb3cd44d45a62e51c39f257e7c1ea600/e0/3c06746c/IObjectPool`1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4d594d2cdb534082903b3f5c27c72cfb96400/46/07340333/IMultiplayerService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4d6ee36bacff4f8eaf48aa51bd57615996400/d4/effe4c21/ISession.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e4d9240e78544597a1d42d60268e7da421e00/11/c353d574/Property`2.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ea01e77be99618395f448b16bd7cc2bd4248bd9e5d8474964b2d97f39c5d74/System.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/TargetBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/TimeManager.cs" root0="FORCE_HIGHLIGHTING" />
@@ -84,6 +82,8 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.authentication@868ebdf18f3f/Runtime/AuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.authentication@868ebdf18f3f/Runtime/IAuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.core@9e81a5e38245/Runtime/Core/UnityServices.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@1719b68380e6/Runtime/Multiplayer/SessionBrowser/FilterOption.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.multiplayer@1719b68380e6/Runtime/Multiplayer/SessionBrowser/QuerySessionsOptions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@5c9fd4989cdd/Editor/UGUI/UI/ImageEditor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ugui@5c9fd4989cdd/Runtime/UGUI/EventSystem/EventSystem.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -238,7 +238,7 @@
       <workItem from="1751382052806" duration="6675000" />
       <workItem from="1751462170252" duration="10731000" />
       <workItem from="1751732068794" duration="616000" />
-      <workItem from="1751732762932" duration="593000" />
+      <workItem from="1751732762932" duration="8897000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

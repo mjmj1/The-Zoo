@@ -18,31 +18,32 @@ namespace UI.SessionList
         [SerializeField] private TMP_Text sessionNameText;
         [SerializeField] private TMP_Text sessionPlayersText;
         
-        private ISessionInfo sessionInfo;
+        private ISessionInfo _sessionInfo;
         
         internal UnityEvent<ISessionInfo> OnSelected;
         internal UnityEvent OnDeselected;
 
         public void OnSelect(BaseEventData eventData)
         {
-            OnSelected?.Invoke(sessionInfo);
+            OnSelected?.Invoke(_sessionInfo);
         }
         
         public void OnDeselect(BaseEventData eventData)
         {
-            sessionInfo = null;
             OnDeselected?.Invoke();
         }
 
         public void Bind(ISessionInfo info)
         {
-            sessionInfo = info;
+            print("Bind");
 
-            IsLock(sessionInfo.HasPassword);
-            sessionNameText.text = sessionInfo.Name;
+            _sessionInfo = info;
 
-            var currentPlayers = sessionInfo.MaxPlayers - sessionInfo.AvailableSlots;
-            sessionPlayersText.text = $"{currentPlayers}/{sessionInfo.MaxPlayers}";
+            IsLock(_sessionInfo.HasPassword);
+            sessionNameText.text = _sessionInfo.Name;
+
+            var currentPlayers = _sessionInfo.MaxPlayers - _sessionInfo.AvailableSlots;
+            sessionPlayersText.text = $"{currentPlayers}/{_sessionInfo.MaxPlayers}";
         }
 
         private void IsLock(bool value)

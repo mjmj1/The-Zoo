@@ -121,22 +121,22 @@ namespace UI.GameSetup
         
         private void OnPrivateToggled(bool arg0)
         {
-            TrackChange(arg0, a => _controller.IsPrivate = arg0);
+            TrackChange(arg0, a => _controller.IsPrivate.Current = arg0);
         }
         
         private void OnSessionNameChanged(string arg0)
         {
-            TrackChange(arg0, a => _controller.SessionName = arg0);
+            TrackChange(arg0, a => _controller.SessionName.Current = arg0);
         }
         
         private void OnPasswordChanged(string arg0)
         {
-            TrackChange(arg0, a => _controller.Password = arg0);
+            TrackChange(arg0, a => _controller.Password.Current = arg0);
         }
 
         private void OnPlayerSlotChanged(int arg0)
         {
-            TrackChange(arg0, a => _controller.PlayerSlot = arg0 + 4);
+            TrackChange(arg0, a => _controller.PlayerSlot.Current = arg0 + 4);
         }
         
         private void OnAILevelChanged(int arg0)
@@ -151,19 +151,6 @@ namespace UI.GameSetup
 
         private void Clear()
         {
-            var session = ConnectionManager.Instance.CurrentSession;
-
-            codeCopyText.text = session.Code;
-            privateToggle.isOn = session.IsPrivate;
-
-            sessionNameInput.text = "";
-            sessionNamePlaceholder.text = session.Name;
-
-            session.Properties.TryGetValue(Util.PASSWORD, out var prof);
-            passwordInput.text = prof?.Value;
-            
-            playerSlotDropdown.value = int.Parse(session.Properties[Util.PLAYERSLOT].Value) - 4;
-
             applyButton.interactable = false;
             
             _controller.Reset();

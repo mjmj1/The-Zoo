@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using UI.GameSetup;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using Unity.Services.Core;
@@ -240,36 +241,37 @@ namespace Networks
             }
         }
 
-        public async void UpdateSessionAsync(string sessionName = "", string password = "", bool? isPrivate = null,
-            int playerSlot = -1)
+        public async void UpdateSessionAsync(
+            GameOptionField<string> sessionName, GameOptionField<string> password,
+            GameOptionField<bool> isPrivate, GameOptionField<int> playerSlot)
         {
             try
             {
                 await WithHostSessionAsync(async host =>
                 {
-                    if (!sessionName.IsNullOrEmpty())
+                    if (!sessionName.IsDirty)
                     {
-                        print($"sessionName {sessionName}");
-                        host.Name = sessionName;
+                        print($"sessionName {sessionName.Original}");
+                        host.Name = sessionName.Original;
                     }
 
-                    if (!password.IsNullOrEmpty())
+                    if (!password.IsDirty)
                     {
-                        print($"password {password}");
-                        host.Password = password;
-                        host.SetProperty(Util.PASSWORD, new SessionProperty(password, VisibilityPropertyOptions.Private));
+                        print($"password {password.Original}");
+                        host.Password = password.Original;
+                        host.SetProperty(Util.PASSWORD, new SessionProperty(password.Original, VisibilityPropertyOptions.Private));
                     }
 
-                    if (isPrivate != null)
+                    if (isPrivate.IsDirty)
                     {
-                        print($"isPrivate {isPrivate}");
-                        host.IsPrivate = isPrivate.Value;
+                        print($"isPrivate {isPrivate.Original}");
+                        host.IsPrivate = isPrivate.Original;
                     }
 
-                    if (playerSlot != -1)
+                    if (playerSlot.IsDirty)
                     {
-                        print($"playerSlot {playerSlot}");
-                        host.SetProperty(Util.PLAYERSLOT, new SessionProperty(playerSlot.ToString()));
+                        print($"playerSlot {playerSlot.Original}");
+                        host.SetProperty(Util.PLAYERSLOT, new SessionProperty(playerSlot.Original.ToString()));
                     }
 
                     await host.SavePropertiesAsync();

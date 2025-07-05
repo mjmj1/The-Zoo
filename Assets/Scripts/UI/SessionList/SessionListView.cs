@@ -6,6 +6,7 @@ using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI.SessionList
 {
@@ -28,10 +29,7 @@ namespace UI.SessionList
             joinButton.onClick.AddListener(OnJoinButtonClick);
             createButton.onClick.AddListener(OnCreateButtonClick);
             refreshButton.onClick.AddListener(OnRefreshButtonClick);
-        }
 
-        private void Start()
-        {
             _pool = new ObjectPool<SessionView>
             (
                 OnCreatePooledObjects,
@@ -90,16 +88,19 @@ namespace UI.SessionList
 
                 _activeViews.Clear();
 
-                var sessions = await ConnectionManager.Instance.QuerySessionsAsync();
+                var infos = await ConnectionManager.Instance.QuerySessionsAsync();
 
-                sessions = sessions.OrderBy<ISessionInfo, object>(s => s.HasPassword).ToList();
+                infos = infos.OrderBy<ISessionInfo, object>(s => s.HasPassword).ToList();
 
-                foreach (var sessionInfo in sessions)
+                foreach (var info in infos)
                 {
                     var view = _pool.Get();
-                    view.Bind(sessionInfo);
 
+                    MyLogger.Print(this, "_activeViews.AddLast");
                     _activeViews.AddLast(view);
+
+                    MyLogger.Print(this, "view.Bind");
+                    view.Bind(info);
                 }
             }
             catch (Exception e)
@@ -123,11 +124,13 @@ namespace UI.SessionList
 
         private SessionView OnCreatePooledObjects()
         {
+            MyLogger.Print(this, "OnCreatePooledObjects");
             return Instantiate(sessionViewPrefab, contentParent).GetComponent<SessionView>();
         }
 
         private void OnGetPooledObjects(SessionView sessionView)
         {
+            MyLogger.Print(this, "OnGetPooledObjects");
             sessionView.gameObject.SetActive(true);
             sessionView.OnSelected.AddListener(OnSelect);
             sessionView.OnDeselected.AddListener(OnDeselect);
@@ -136,6 +139,7 @@ namespace UI.SessionList
 
         private void OnReturnPooledObjects(SessionView sessionView)
         {
+            MyLogger.Print(this, "OnReturnPooledObjects");
             sessionView.gameObject.SetActive(false);
             sessionView.OnSelected.RemoveAllListeners();
             sessionView.OnDeselected.RemoveAllListeners();
@@ -143,6 +147,7 @@ namespace UI.SessionList
 
         private void OnDestroyPooledObjects(SessionView sessionView)
         {
+            MyLogger.Print(this, "OnDestroyPooledObjects");
             sessionView.OnSelected.RemoveAllListeners();
             sessionView.OnDeselected.RemoveAllListeners();
             
