@@ -20,9 +20,9 @@ namespace UI.PlayerList
         [SerializeField] private Button promoteHostButton;
         [SerializeField] private Button kickButton;
 
-        private bool isHost;
+        private bool _isHost;
 
-        private string playerId;
+        private string _playerId;
 
         private void Start()
         {
@@ -39,7 +39,7 @@ namespace UI.PlayerList
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
 
-            isHost = false;
+            _isHost = false;
 
             otherBg.SetActive(true);
             
@@ -60,7 +60,7 @@ namespace UI.PlayerList
         {
             if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
 
-            if (isHost) return;
+            if (_isHost) return;
 
             actionButtons.SetActive(true);
         }
@@ -74,7 +74,7 @@ namespace UI.PlayerList
 
         public void SetPlayerId(string pId)
         {
-            playerId = pId;
+            _playerId = pId;
         }
 
         public void SetPlayerName(string playerName)
@@ -86,7 +86,7 @@ namespace UI.PlayerList
         {
             hostIcon.SetActive(value);
 
-            isHost = value;
+            _isHost = value;
             
             actionButtons.SetActive(false);
         }
@@ -104,12 +104,12 @@ namespace UI.PlayerList
 
         private void OnPromoteHostButtonClick()
         {
-            ConnectionManager.Instance.ChangeHostAsync(playerId);
+            ConnectionManager.Instance.ChangeHostAsync(_playerId);
         }
 
         private void OnKickButtonClick()
         {
-            ConnectionManager.Instance.KickPlayerAsync(playerId);
+            ConnectionManager.Instance.KickPlayerAsync(_playerId);
         }
     }
 }

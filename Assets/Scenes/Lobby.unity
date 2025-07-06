@@ -3257,7 +3257,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f6d2a668c58f044195a117186fd7b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sessionViewPrefab: {fileID: 4636040949162402222, guid: 2203b92080803484d95a812f481d9fee, type: 3}
+  sessionViewPrefab: {fileID: 674392319773374703, guid: 2203b92080803484d95a812f481d9fee, type: 3}
   contentParent: {fileID: 86657354}
   joinButton: {fileID: 1570592482}
   createButton: {fileID: 1060083974}
@@ -3818,7 +3818,7 @@ GameObject:
   - component: {fileID: 542996881}
   - component: {fileID: 542996884}
   m_Layer: 5
-  m_Name: Refresh List Button
+  m_Name: Refresh Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

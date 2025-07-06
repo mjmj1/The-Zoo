@@ -8,14 +8,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameOptionField.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameOptionField.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/SessionView.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/SessionView.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/UI/SessionView.prefab.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/UI/SessionView.prefab.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/ConnectionManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionListView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionListView.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/SessionList/SessionView.cs" afterDir="false" />
     </list>
@@ -239,6 +237,7 @@
       <workItem from="1751462170252" duration="10731000" />
       <workItem from="1751732068794" duration="616000" />
       <workItem from="1751732762932" duration="8897000" />
+      <workItem from="1751803137611" duration="3394000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

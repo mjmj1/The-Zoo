@@ -17,17 +17,17 @@ namespace UI.PlayerList
     {
         [SerializeField] private GameObject playerViewPrefab;
 
-        private readonly Dictionary<string, PlayerView> map = new();
+        private readonly Dictionary<string, PlayerView> _map = new();
 
-        private IObjectPool<PlayerView> pool;
+        private IObjectPool<PlayerView> _pool;
 
-        private ISession session;
+        private ISession _session;
 
         public static PlayerListView Instance { get; private set; }
 
         private void Awake()
         {
-            pool = new ObjectPool<PlayerView>
+            _pool = new ObjectPool<PlayerView>
             (
                 CreatePoolObj,
                 GetPoolObj,
@@ -42,11 +42,11 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
-            session = ConnectionManager.Instance.CurrentSession;
+            _session = ConnectionManager.Instance.CurrentSession;
 
-            foreach (var player in session.Players)
+            foreach (var player in _session.Players)
             {
-                var item = pool.Get();
+                var item = _pool.Get();
 
                 player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
 
@@ -55,58 +55,58 @@ namespace UI.PlayerList
                 item.SetPlayerId(player.Id);
                 item.SetPlayerName(playerName);
 
-                map.Add(player.Id, item);
+                _map.Add(player.Id, item);
 
-                if (player.Id == session.CurrentPlayer.Id) item.Highlight();
+                if (player.Id == _session.CurrentPlayer.Id) item.Highlight();
             }
 
-            session.PlayerJoined += OnPlayerJoined;
-            session.PlayerHasLeft += OnPlayerHasLeft;
-            session.SessionHostChanged += OnSessionHostChanged;
-            session.SessionHostChanged += GameManager.Instance.PromotedSessionHost;
+            _session.PlayerJoined += OnPlayerJoined;
+            _session.PlayerHasLeft += OnPlayerHasLeft;
+            _session.SessionHostChanged += OnSessionHostChanged;
+            _session.SessionHostChanged += GameManager.Instance.PromotedSessionHost;
             
-            map[session.Host].Host(true);
+            _map[_session.Host].Host(true);
         }
 
         private void OnDisable()
         {
             Clear();
 
-            session.PlayerJoined -= OnPlayerJoined;
-            session.PlayerHasLeft -= OnPlayerHasLeft;
-            session.SessionHostChanged -= OnSessionHostChanged;
-            session.SessionHostChanged -= GameManager.Instance.PromotedSessionHost;
+            _session.PlayerJoined -= OnPlayerJoined;
+            _session.PlayerHasLeft -= OnPlayerHasLeft;
+            _session.SessionHostChanged -= OnSessionHostChanged;
+            _session.SessionHostChanged -= GameManager.Instance.PromotedSessionHost;
 
-            session = null;
+            _session = null;
         }
 
         public void OnPlayerReady(string id, bool value)
         {
-            map[id].Ready(value);
+            _map[id].Ready(value);
         }
 
         private void OnSessionHostChanged(string obj)
         {
-            foreach (var view in map.Values)
+            foreach (var view in _map.Values)
             {
                 view.Host(false);
             }
 
-            map[obj].Host(true);
-            map[obj].Ready(false);
+            _map[obj].Host(true);
+            _map[obj].Ready(false);
         }
 
         private void OnPlayerHasLeft(string obj)
         {
-            map.Remove(obj, out var player);
-            pool.Release(player);
+            _map.Remove(obj, out var player);
+            _pool.Release(player);
         }
 
         private void OnPlayerJoined(string obj)
         {
-            var item = pool.Get();
+            var item = _pool.Get();
 
-            var player = session.Players.First(player => player.Id == obj);
+            var player = _session.Players.First(player => player.Id == obj);
             
             player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
 
@@ -116,19 +116,19 @@ namespace UI.PlayerList
             
             item.SetPlayerId(obj);
             
-            map.Add(obj, item);
+            _map.Add(obj, item);
         }
 
         private void Clear()
         {
-            foreach (var kvp in map)
+            foreach (var kvp in _map)
             {
-                pool.Release(kvp.Value);    
+                _pool.Release(kvp.Value);
             }
             
-            pool.Clear();
+            _pool.Clear();
 
-            map.Clear();
+            _map.Clear();
         }
 
         private PlayerView CreatePoolObj()

@@ -96,10 +96,8 @@ namespace UI.SessionList
                 {
                     var view = _pool.Get();
 
-                    MyLogger.Print(this, "_activeViews.AddLast");
                     _activeViews.AddLast(view);
 
-                    MyLogger.Print(this, "view.Bind");
                     view.Bind(info);
                 }
             }
@@ -112,25 +110,23 @@ namespace UI.SessionList
         private void OnSelect(ISessionInfo sessionInfo)
         {
             _selectedSession = sessionInfo;
+
             if (_selectedSession != null)
                 joinButton.interactable = true;
         }
 
         private void OnDeselect()
         {
-            _selectedSession = null;
             joinButton.interactable = false;
         }
 
         private SessionView OnCreatePooledObjects()
         {
-            MyLogger.Print(this, "OnCreatePooledObjects");
             return Instantiate(sessionViewPrefab, contentParent).GetComponent<SessionView>();
         }
 
         private void OnGetPooledObjects(SessionView sessionView)
         {
-            MyLogger.Print(this, "OnGetPooledObjects");
             sessionView.gameObject.SetActive(true);
             sessionView.OnSelected.AddListener(OnSelect);
             sessionView.OnDeselected.AddListener(OnDeselect);
@@ -139,7 +135,6 @@ namespace UI.SessionList
 
         private void OnReturnPooledObjects(SessionView sessionView)
         {
-            MyLogger.Print(this, "OnReturnPooledObjects");
             sessionView.gameObject.SetActive(false);
             sessionView.OnSelected.RemoveAllListeners();
             sessionView.OnDeselected.RemoveAllListeners();
@@ -147,7 +142,6 @@ namespace UI.SessionList
 
         private void OnDestroyPooledObjects(SessionView sessionView)
         {
-            MyLogger.Print(this, "OnDestroyPooledObjects");
             sessionView.OnSelected.RemoveAllListeners();
             sessionView.OnDeselected.RemoveAllListeners();
             

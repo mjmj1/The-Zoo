@@ -20,8 +20,8 @@ namespace UI.SessionList
         
         private ISessionInfo _sessionInfo;
         
-        internal UnityEvent<ISessionInfo> OnSelected;
-        internal UnityEvent OnDeselected;
+        internal readonly UnityEvent<ISessionInfo> OnSelected = new();
+        internal readonly UnityEvent OnDeselected = new();
 
         public void OnSelect(BaseEventData eventData)
         {
@@ -35,8 +35,6 @@ namespace UI.SessionList
 
         public void Bind(ISessionInfo info)
         {
-            print("Bind");
-
             _sessionInfo = info;
 
             IsLock(_sessionInfo.HasPassword);
