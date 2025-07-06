@@ -9,7 +9,7 @@ using Image = UnityEngine.UI.Image;
 
 namespace UI.SessionList
 {
-    public class SessionView : MonoBehaviour, ISelectHandler, IDeselectHandler
+    public class SessionView : MonoBehaviour, ISelectHandler
     {
         [SerializeField] private Color originColor;
         
@@ -21,16 +21,10 @@ namespace UI.SessionList
         private ISessionInfo _sessionInfo;
         
         internal readonly UnityEvent<ISessionInfo> OnSelected = new();
-        internal readonly UnityEvent OnDeselected = new();
 
         public void OnSelect(BaseEventData eventData)
         {
             OnSelected?.Invoke(_sessionInfo);
-        }
-        
-        public void OnDeselect(BaseEventData eventData)
-        {
-            OnDeselected?.Invoke();
         }
 
         public void Bind(ISessionInfo info)

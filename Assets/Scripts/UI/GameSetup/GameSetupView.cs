@@ -83,6 +83,21 @@ namespace UI.GameSetup
             SetupCloseSequence();
 
             Register();
+
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            _controller.Initialize();
+
+            codeCopyText.text = _controller.JoinCode;
+
+            sessionNamePlaceholder.text = _controller.SessionName.Original;
+
+            privateToggle.isOn = _controller.IsPrivate.Original;
+
+            playerSlotDropdown.value = _controller.PlayerSlot.Original - 4;
         }
 
         public void OnPointerClick(PointerEventData eventData)

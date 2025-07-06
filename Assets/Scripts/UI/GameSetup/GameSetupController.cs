@@ -8,6 +8,7 @@ namespace UI.GameSetup
 {
     public class GameSetupController : MonoBehaviour
     {
+        public string JoinCode { get; private set; }
         public GameOptionField<bool> IsPrivate { get; private set; }
         public GameOptionField<string> Password { get; private set; }
         public GameOptionField<int> PlayerSlot { get; private set; }
@@ -21,17 +22,11 @@ namespace UI.GameSetup
             PlayerSlot.Reset();
         }
 
-        public void Start()
-        {
-            if (NetworkManager.Singleton.CurrentSessionOwner !=
-                NetworkManager.Singleton.LocalClientId) return;
-
-            Initialize();
-        }
-
         public void Initialize()
         {
             var info = ConnectionManager.Instance.CurrentSession;
+
+            JoinCode = info.Code;
 
             IsPrivate = new GameOptionField<bool>(info.IsPrivate);
             SessionName = new GameOptionField<string>(info.Name);
@@ -46,7 +41,8 @@ namespace UI.GameSetup
                 ? new GameOptionField<int>(Convert.ToInt32(playerSlot.Value))
                 : new GameOptionField<int>(8);
 
-            print($"{IsPrivate.Original} {SessionName.Original} {Password.Original} {PlayerSlot.Original}");
+            print(
+                $"{IsPrivate.Original} {SessionName.Original} {Password.Original} {PlayerSlot.Original}");
         }
 
         public void Apply()

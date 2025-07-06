@@ -129,7 +129,6 @@ namespace UI.SessionList
         {
             sessionView.gameObject.SetActive(true);
             sessionView.OnSelected.AddListener(OnSelect);
-            sessionView.OnDeselected.AddListener(OnDeselect);
             sessionView.transform.SetAsLastSibling();
         }
 
@@ -137,13 +136,11 @@ namespace UI.SessionList
         {
             sessionView.gameObject.SetActive(false);
             sessionView.OnSelected.RemoveAllListeners();
-            sessionView.OnDeselected.RemoveAllListeners();
         }
 
         private void OnDestroyPooledObjects(SessionView sessionView)
         {
             sessionView.OnSelected.RemoveAllListeners();
-            sessionView.OnDeselected.RemoveAllListeners();
             
             Destroy(sessionView.gameObject);
         }
