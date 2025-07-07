@@ -8,9 +8,11 @@ namespace Characters
     internal class InputHandler : MonoBehaviour
     {
         public static readonly int MoveHash = Animator.StringToHash("Move");
+        public static readonly int JumpHash = Animator.StringToHash("Jump");
         public static readonly int SprintHash = Animator.StringToHash("Sprint");
         public static readonly int SpinHash = Animator.StringToHash("Spin");
         public static readonly int AttackHash = Animator.StringToHash("Attack");
+        public static readonly int IsGroundHash = Animator.StringToHash("IsGround");
 
         private bool _attackPressed;
         private bool _isOverUI;
