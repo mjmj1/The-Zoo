@@ -64,7 +64,8 @@ namespace Networks
             prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,
                 isPlayerObject: true,
-                position: pos);
+                position: pos,
+                rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
     }
 }
