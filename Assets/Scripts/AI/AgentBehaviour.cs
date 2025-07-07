@@ -1,11 +1,10 @@
 using System;
-using Characters;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using Utils;
-using Random = UnityEngine.Random;
+using static Characters.InputHandler;
 
 namespace AI
 {
@@ -28,15 +27,17 @@ namespace AI
         private PlanetGravity _gravity;
         private PlayerInputActions _inputActions;
 
-        private RayPerceptionSensorComponent3D _raySensor;
+        private bool _movePressed;
         private Transform _planet;
+
+        private RayPerceptionSensorComponent3D _raySensor;
         private Rigidbody _rb;
 
-        private float _stepReward;
+        private bool _seekerDetected;
 
         private bool _spinPressed;
 
-        private bool _seekerDetected;
+        private float _stepReward;
         private bool _targetDetected;
 
         private bool SpinPressed
@@ -49,7 +50,6 @@ namespace AI
             }
         }
 
-        private bool _movePressed;
         private bool MovePressed
         {
             get => _movePressed;
@@ -148,14 +148,14 @@ namespace AI
             var toTarget = Vector3.zero;
 
             foreach (var output in observations.RayOutputs)
-            {
                 switch (output.HitTagIndex)
                 {
                     case 0:
                     {
                         _seekerDetected = true;
 
-                        toSeeker = (output.HitGameObject.transform.position - transform.position).normalized;
+                        toSeeker = (output.HitGameObject.transform.position - transform.position)
+                            .normalized;
 
                         break;
                     }
@@ -164,23 +164,22 @@ namespace AI
                     {
                         _targetDetected = true;
 
-                        toTarget = (output.HitGameObject.transform.position - transform.position).normalized;
+                        toTarget = (output.HitGameObject.transform.position - transform.position)
+                            .normalized;
 
                         break;
                     }
                 }
-            }
 
-            if(_targetDetected) totalReward += FindTarget(toTarget);
+            if (_targetDetected) totalReward += FindTarget(toTarget);
 
-            if (_seekerDetected)
-            {
-                totalReward += FindSeeker(seekerResponse, toSeeker);
-            }
+            if (_seekerDetected) totalReward += FindSeeker(seekerResponse, toSeeker);
 
             if (_movePressed)
             {
-                var moveDir = Vector3.ProjectOnPlane(_rb.linearVelocity.normalized, transform.up.normalized).normalized;
+                var moveDir = Vector3
+                    .ProjectOnPlane(_rb.linearVelocity.normalized, transform.up.normalized)
+                    .normalized;
                 var alignment = Mathf.Clamp01(Vector3.Dot(transform.forward.normalized, moveDir));
 
                 totalReward += _stepReward * alignment;
@@ -196,19 +195,20 @@ namespace AI
                 case 0:
                     if (_rb.linearVelocity.magnitude < 0.1f)
                         return _stepReward * 0.5f;
-                    else
-                        return _stepReward * -0.2f;
+                    return _stepReward * -0.2f;
 
                 case 1:
                     if (!(_rb.linearVelocity.magnitude > 0.1f)) return 0f;
 
-                    return Vector3.Dot(_rb.linearVelocity.normalized, -toSeeker) > 0.7f ?
-                        _stepReward * 0.4f : _stepReward * -0.3f;
+                    return Vector3.Dot(_rb.linearVelocity.normalized, -toSeeker) > 0.7f
+                        ? _stepReward * 0.4f
+                        : _stepReward * -0.3f;
 
                 case 2:
                     if (!(_rb.linearVelocity.magnitude > 0.1f)) return 0f;
 
-                    var dot = Vector3.Dot(_rb.linearVelocity.normalized, Vector3.Cross(Vector3.up, toSeeker));
+                    var dot = Vector3.Dot(_rb.linearVelocity.normalized,
+                        Vector3.Cross(Vector3.up, toSeeker));
                     return Mathf.Abs(dot) > 0.7f ? _stepReward * 0.3f : _stepReward * -0.2f;
             }
 
@@ -287,12 +287,12 @@ namespace AI
 
         private void MovementAction(bool value)
         {
-            _animator.SetBool(CharacterHandler.MoveId, value);
+            _animator.SetBool(MoveHash, value);
         }
 
         private void SpinAction(bool value)
         {
-            _animator.SetBool(CharacterHandler.SpinId, value);
+            _animator.SetBool(SpinHash, value);
         }
 
         private void AlignToSurface()
@@ -347,33 +347,9 @@ namespace AI
 
         private void MoveRandomPosition()
         {
-			transform.position = GetRandomPosition();
-            seeker.transform.position = GetRandomPosition();
-            target.transform.position = GetRandomPosition();
-
-            /*var arcAngle = Random.Range(10f, 40f);
-            var baseAngle = Random.Range(0f, 360f);
-
-            var baseDir = Quaternion.Euler(0f, baseAngle, 0f) * Vector3.forward;
-
-            transform.position = PositionOnArc(-arcAngle);
-            seeker.transform.position = PositionOnArc(0f);
-            target.transform.position = PositionOnArc(+arcAngle);
-
-            return;
-
-            // 위치 계산 함수
-            Vector3 PositionOnArc(float angleOffset)
-            {
-                var rotation = Quaternion.AngleAxis(angleOffset, Vector3.up);
-                var dir = rotation * baseDir;
-                return _planet.position + dir.normalized * spawnRadius;
-            }*/
+            transform.position = Util.GetRandomPositionInSphere(spawnRadius);
+            seeker.transform.position = Util.GetRandomPositionInSphere(spawnRadius);
+            target.transform.position = Util.GetRandomPositionInSphere(spawnRadius);
         }
-
-		private Vector3 GetRandomPosition()
-        {
-            return Random.onUnitSphere.normalized * spawnRadius;
-		}
     }
 }

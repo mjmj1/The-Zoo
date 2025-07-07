@@ -1,7 +1,6 @@
-using Static;
+using Networks;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace UI
 {
@@ -26,17 +25,20 @@ namespace UI
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             
-            Manage.ConnectionManager().OnSessionConnect += OnSessionConnect;
-            Manage.ConnectionManager().OnSessionDisconnected += OnSessionDisconnected;
+            ConnectionManager.Instance.OnSessionConnect += OnSessionConnect;
+            ConnectionManager.Instance.OnSessionDisconnected += OnSessionDisconnected;
         }
 
         private void OnDestroy()
         {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-            
-            Manage.ConnectionManager().OnSessionConnect -= OnSessionConnect;
-            Manage.ConnectionManager().OnSessionDisconnected -= OnSessionDisconnected;
+            if (NetworkManager.Singleton != null)
+            {
+                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+            }
+
+            ConnectionManager.Instance.OnSessionConnect -= OnSessionConnect;
+            ConnectionManager.Instance.OnSessionDisconnected -= OnSessionDisconnected;
 
         }
 

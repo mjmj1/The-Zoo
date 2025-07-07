@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils;
 
 namespace Interactions
 {
@@ -22,16 +23,11 @@ namespace Interactions
         /// <param name="numberOfObjects">number of interaction objects</param>
         private void GetRandomPositionForInteractionObjects(int numberOfObjects)
         {
-            var points = new Vector3[numberOfObjects];
-
             for (var i = 0; i < numberOfObjects; i++)
             {
-                points[i] = Random.onUnitSphere.normalized;
-            }
-
-            foreach (var point in points)
-            {
-                var spawnPosition = _planetCollider.transform.position + point * _planetCollider.radius * planet.transform.localScale.x;
+                var spawnPosition = _planetCollider.transform.position + 
+                                    Util.GetRandomPositionInSphere(_planetCollider.radius)
+                                    * planet.transform.localScale.x;
                 var normal = (spawnPosition - _planetCollider.transform.position).normalized;
 
                 Quaternion rotation = Quaternion.FromToRotation(Vector3.up, normal);

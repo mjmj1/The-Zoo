@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using Static;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
 
 namespace Networks
 {
@@ -10,24 +10,24 @@ namespace Networks
     {
         [SerializeField] private List<NetworkObject> animalPrefabs;
 
-        private NetworkVariable<int> _nextAnimalIndex = new();
+        private readonly NetworkVariable<int> nextAnimalIndex = new();
         
-        private List<int> _animalIndexes;
+        private List<int> animalIndexes;
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            _animalIndexes = Enumerable.Range(0, animalPrefabs.Count).OrderBy(_ => Random.value).ToList();
+            animalIndexes = Enumerable.Range(0, animalPrefabs.Count).OrderBy(_ => Random.value).ToList();
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
             if (IsSessionOwner)
             {
-                _nextAnimalIndex.Value += 1 % _animalIndexes.Count;
+                nextAnimalIndex.Value += 1 % animalIndexes.Count;
             
-                var index = _animalIndexes[_nextAnimalIndex.Value];
+                var index = animalIndexes[nextAnimalIndex.Value];
                 
                 AssignAnimalPrefab(index);
             }
@@ -42,33 +42,30 @@ namespace Networks
         [Rpc(SendTo.Owner)]
         private void AssignAnimalPrefabRpc(ulong clientId)
         {
-            print($"Send to owner from client-{clientId}");
+            nextAnimalIndex.Value += 1 % animalIndexes.Count;
             
-            _nextAnimalIndex.Value += 1 % _animalIndexes.Count;
+            var index = animalIndexes[nextAnimalIndex.Value];
             
-            var index = _animalIndexes[_nextAnimalIndex.Value];
-            
-            AssignAnimalPrefabRpc(index, new RpcParams
-            {
-                Send = RpcTarget.Single(clientId, RpcTargetUse.Temp)
-            });
+            AssignAnimalPrefabRpc(index, RpcTarget.Single(clientId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
         private void AssignAnimalPrefabRpc(int index, RpcParams rpcParams = default)
         {
-            print($"Received index: {index}");
-
             AssignAnimalPrefab(index);
         }
 
         private void AssignAnimalPrefab(int index)
         {
             var prefab = animalPrefabs[index];
-            
+
+            var pos = Util.GetCirclePositions(Vector3.zero, index, 5f, 8);
+
             prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,
-                isPlayerObject: true);
+                isPlayerObject: true,
+                position: pos,
+                rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
     }
 }

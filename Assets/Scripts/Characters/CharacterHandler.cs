@@ -1,13 +1,11 @@
 #if UNITY_EDITOR
-using System;
-using UI;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using Utils;
+using static Characters.InputHandler;
 
 namespace Characters
 {
@@ -83,31 +81,22 @@ namespace Characters
 
         private float _moveSpeed;
         
-        public static readonly int MoveId = Animator.StringToHash("Move");
-        public static readonly int SprintId = Animator.StringToHash("Sprint");
-        public static readonly int SpinId = Animator.StringToHash("Spin");
-        public static readonly int ClickedId = Animator.StringToHash("Clicked");
-        
         public float Pitch { get; private set; }
 
         private void Start()
         {
             if (!IsOwner) return;
 
-            MyLogger.Print(this);
-            
             _moveSpeed = walkSpeed;
         }
 
         public override void OnNetworkSpawn()
         {
-            base.OnNetworkSpawn();
-            
-            if (!IsOwner) return;
-            
-            Init();
-            InitCamera();
+            InitializeComponent();
+            InitializeFollowCamera();
             Subscribe();
+
+            base.OnNetworkSpawn();
         }
 
         public override void OnNetworkDespawn()
@@ -138,20 +127,16 @@ namespace Characters
         {
             if (OwnerClientId != clientId) return;
 
-            MyLogger.Print(this);
-
-            InitCamera();
-            InitSceneLoaded();
+            InitializeFollowCamera();
+            InitializeGravity();
         }
 
         private void Subscribe()
         {
-            MyLogger.Print(this);
+            if (!IsOwner) return;
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            if (!_input) return;
-            
             _input.InputActions.Player.Move.performed += MovementAction;
             _input.InputActions.Player.Move.canceled += MovementAction;
 
@@ -162,12 +147,10 @@ namespace Characters
         
         private void Unsubscribe()
         {
-            MyLogger.Print(this);
+            if (!IsOwner) return;
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            if (!_input) return;
-            
             _input.InputActions.Player.Move.performed -= MovementAction;
             _input.InputActions.Player.Move.canceled -= MovementAction;
             
@@ -176,11 +159,9 @@ namespace Characters
             _input.OnSpinPressed -= SpinAction;
         }
 
-        private void Init()
+        private void InitializeComponent()
         {
             if (!IsOwner) return;
-
-            MyLogger.Print(this);
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -190,14 +171,18 @@ namespace Characters
             _entity = GetComponent<PlayerEntity>();
         }
 
-        private void InitCamera()
+        private void InitializeFollowCamera()
         {
+            if (!IsOwner) return;
+
             var cam = FindAnyObjectByType<ThirdPersonCamera>();
             cam?.ConnectToTarget(transform);
         }
 
-        private void InitSceneLoaded()
+        private void InitializeGravity()
         {
+            if (!IsOwner) return;
+
             _gravity = FindAnyObjectByType<PlanetGravity>();
 
             _rb.useGravity = !_gravity;
@@ -244,30 +229,24 @@ namespace Characters
 
         private void MovementAction(InputAction.CallbackContext ctx)
         {
-            _entity.SetBool(MoveId, ctx.performed);
+            _entity.SetBool(MoveHash, ctx.performed);
         }
 
         private void SprintAction(bool value)
         {
-            _entity.SetBool(SprintId, value);
+            _entity.SetBool(SprintHash, value);
 
             _moveSpeed = value ? sprintSpeed : walkSpeed;
-            
-            MyLogger.Print(this, $"{value}");
         }
 
         private void SpinAction(bool value)
         {
-            _entity.SetBool(SpinId, value);
-            
-            MyLogger.Print(this, $"{value}");
+            _entity.SetBool(SpinHash, value);
         }
         
         private void ClickedAction(bool value)
         {
-            MyLogger.Print(this, $"{value}");
-            
-            _entity.SetBool(ClickedId, value);
+            _entity.SetBool(AttackHash, value);
         }
     }
 }

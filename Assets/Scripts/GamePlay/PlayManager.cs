@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
 using Random = UnityEngine.Random;
 
 namespace GamePlay
@@ -84,17 +85,12 @@ namespace GamePlay
         private void MoveRandomPositionRpc()
         {
             var clientId = NetworkManager.Singleton.LocalClientId;
-            var randomPos = GetRandomPosition();
+            var randomPos = Util.GetRandomPositionInSphere(spawnRadius);
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
 
             print($"Client {clientId}: Position = {randomPos}");
-        }
-
-        private Vector3 GetRandomPosition()
-        {
-            return Random.onUnitSphere.normalized * spawnRadius;
         }
     }
 }
