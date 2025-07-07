@@ -40,9 +40,6 @@ namespace UI.GameSetup
             PlayerSlot = playerSlot != null
                 ? new GameOptionField<int>(Convert.ToInt32(playerSlot.Value))
                 : new GameOptionField<int>(8);
-
-            print(
-                $"{IsPrivate.Original} {SessionName.Original} {Password.Original} {PlayerSlot.Original}");
         }
 
         public void Apply()
@@ -55,10 +52,18 @@ namespace UI.GameSetup
 
         public void Save()
         {
-            Apply();
-
             ConnectionManager.Instance.UpdateSessionAsync(SessionName, Password, IsPrivate,
                 PlayerSlot);
+            
+            Apply();
+        }
+
+        public void Print()
+        {
+            print(IsPrivate.ToString());
+            print(SessionName.ToString());
+            print(Password.ToString());
+            print(PlayerSlot.ToString());
         }
     }
 }

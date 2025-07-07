@@ -249,29 +249,25 @@ namespace Networks
             {
                 await WithHostSessionAsync(async host =>
                 {
-                    if (!sessionName.IsDirty)
+                    if (sessionName.IsDirty)
                     {
-                        print($"sessionName {sessionName.Original}");
-                        host.Name = sessionName.Original;
+                        host.Name = sessionName.Current;
                     }
 
-                    if (!password.IsDirty)
+                    if (password.IsDirty)
                     {
-                        print($"password {password.Original}");
-                        host.Password = password.Original;
-                        host.SetProperty(Util.PASSWORD, new SessionProperty(password.Original, VisibilityPropertyOptions.Private));
+                        host.Password = password.Current;
+                        host.SetProperty(Util.PASSWORD, new SessionProperty(password.Current, VisibilityPropertyOptions.Private));
                     }
 
                     if (isPrivate.IsDirty)
                     {
-                        print($"isPrivate {isPrivate.Original}");
-                        host.IsPrivate = isPrivate.Original;
+                        host.IsPrivate = isPrivate.Current;
                     }
 
                     if (playerSlot.IsDirty)
                     {
-                        print($"playerSlot {playerSlot.Original}");
-                        host.SetProperty(Util.PLAYERSLOT, new SessionProperty(playerSlot.Original.ToString()));
+                        host.SetProperty(Util.PLAYERSLOT, new SessionProperty(playerSlot.Current.ToString()));
                     }
 
                     await host.SavePropertiesAsync();

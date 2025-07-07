@@ -83,16 +83,25 @@ namespace UI.GameSetup
             SetupCloseSequence();
 
             Register();
-
+            
+            _controller.Initialize();
+            
             Initialize();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.N))
+            {
+                _controller.Print();    
+            }
         }
 
         private void Initialize()
         {
-            _controller.Initialize();
-
             codeCopyText.text = _controller.JoinCode;
-
+            
+            sessionNameInput.text = string.Empty;
             sessionNamePlaceholder.text = _controller.SessionName.Original;
 
             privateToggle.isOn = _controller.IsPrivate.Original;
@@ -127,31 +136,31 @@ namespace UI.GameSetup
             cancelButton.onClick.AddListener(OnCancelButtonClick);
         }
 
-        private void TrackChange<T>(T value, Action<T> action)
+        private void TrackChange<T>(T value, GameOptionField<T> optionField)
         {
-            action?.Invoke(value);
+            optionField.Current = value;
             
-            applyButton.interactable = true;
+            applyButton.interactable = optionField.IsDirty;
         }
         
         private void OnPrivateToggled(bool arg0)
         {
-            TrackChange(arg0, a => _controller.IsPrivate.Current = arg0);
+            TrackChange(arg0, _controller.IsPrivate);
         }
         
         private void OnSessionNameChanged(string arg0)
         {
-            TrackChange(arg0, a => _controller.SessionName.Current = arg0);
+            TrackChange(arg0, _controller.SessionName);
         }
         
         private void OnPasswordChanged(string arg0)
         {
-            TrackChange(arg0, a => _controller.Password.Current = arg0);
+            TrackChange(arg0, _controller.Password);
         }
 
         private void OnPlayerSlotChanged(int arg0)
         {
-            TrackChange(arg0, a => _controller.PlayerSlot.Current = arg0 + 4);
+            TrackChange(arg0 + 4, _controller.PlayerSlot);
         }
         
         private void OnAILevelChanged(int arg0)
@@ -169,6 +178,8 @@ namespace UI.GameSetup
             applyButton.interactable = false;
             
             _controller.Reset();
+            
+            Initialize();
         }
 
         private void OnCopyCodeButtonClick()

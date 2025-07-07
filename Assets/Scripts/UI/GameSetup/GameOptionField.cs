@@ -24,5 +24,10 @@ namespace UI.GameSetup
         {
             Current = Original;
         }
+
+        public override string ToString()
+        {
+            return $"Origin: {Original} Current: {Current}";
+        }
     }
 }
