@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 0c19259e94febf84ebae574708d91b7b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 119975
+  packageName: Quirky Series - Pet Animals Vol 1
+  packageVersion: 1.5
+  assetPath: Assets/Quirky Series Ultimate/_Scripts/RotateOnScroll.cs
+  uploadId: 755680
