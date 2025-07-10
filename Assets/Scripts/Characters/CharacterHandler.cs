@@ -15,22 +15,29 @@ namespace Characters
     [CustomEditor(typeof(CharacterHandler), true)]
     public class CharacterControllerEditor : NetworkTransformEditor
     {
+        private SerializedProperty _groundMask;
+        private SerializedProperty _jumpForce;
         private SerializedProperty _mouseSensitivity;
-        private SerializedProperty _walkSpeed;
-        private SerializedProperty _sprintSpeed;
         private SerializedProperty _rotationSpeed;
+        private SerializedProperty _sprintSpeed;
+        private SerializedProperty _walkSpeed;
 
         public override void OnEnable()
         {
+            _groundMask = serializedObject.FindProperty(nameof(CharacterHandler.groundMask));
+            _jumpForce = serializedObject.FindProperty(nameof(CharacterHandler.jumpForce));
             _walkSpeed = serializedObject.FindProperty(nameof(CharacterHandler.walkSpeed));
             _sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.sprintSpeed));
             _rotationSpeed = serializedObject.FindProperty(nameof(CharacterHandler.rotationSpeed));
-            _mouseSensitivity = serializedObject.FindProperty(nameof(CharacterHandler.mouseSensitivity));
+            _mouseSensitivity =
+                serializedObject.FindProperty(nameof(CharacterHandler.mouseSensitivity));
             base.OnEnable();
         }
 
         private void DisplayCharacterControllerProperties()
         {
+            EditorGUILayout.PropertyField(_groundMask);
+            EditorGUILayout.PropertyField(_jumpForce);
             EditorGUILayout.PropertyField(_walkSpeed);
             EditorGUILayout.PropertyField(_sprintSpeed);
             EditorGUILayout.PropertyField(_rotationSpeed);
@@ -58,11 +65,10 @@ namespace Characters
     public class CharacterHandler : NetworkTransform
     {
 #if UNITY_EDITOR
-        // These bool properties ensure that any expanded or collapsed property views
-        // within the inspector view will be saved and restored the next time the
-        // asset/prefab is viewed.
         public bool controllerPropertiesVisible;
 #endif
+        public LayerMask groundMask;
+        public float jumpForce = 3f;
         public float walkSpeed = 4f;
         public float sprintSpeed = 7f;
         public float rotationSpeed = 50f;
@@ -70,17 +76,19 @@ namespace Characters
         public float minPitch = -10f;
         public float maxPitch = 20f;
 
+        private PlayerEntity _entity;
+
         private PlanetGravity _gravity;
         private InputHandler _input;
+
+        private float _moveSpeed;
         private Transform _planet;
         private Quaternion _previousRotation;
 
         private Rigidbody _rb;
 
-        private PlayerEntity _entity;
+        private bool _isGrounded;
 
-        private float _moveSpeed;
-        
         public float Pitch { get; private set; }
 
         private void Start()
@@ -88,6 +96,26 @@ namespace Characters
             if (!IsOwner) return;
 
             _moveSpeed = walkSpeed;
+        }
+
+        private void Update()
+        {
+            if (!IsOwner) return;
+
+            AlignToSurface();
+
+            HandleLook();
+        }
+
+        private void FixedUpdate()
+        {
+            if (!IsOwner) return;
+
+            _isGrounded = IsGrounded();
+
+            _entity.SetBool(IsGroundHash, _isGrounded);
+
+            HandleMovement();
         }
 
         public override void OnNetworkSpawn()
@@ -103,24 +131,14 @@ namespace Characters
         {
             Unsubscribe();
             _gravity?.Unsubscribe(_rb);
-            
+
             base.OnNetworkDespawn();
         }
 
-        private void Update()
+        private bool IsGrounded()
         {
-            if (!IsOwner) return;
-            
-            AlignToSurface();
-            
-            HandleLook();
-        }
-
-        private void FixedUpdate()
-        {
-            if (!IsOwner) return;
-
-            HandleMovement();
+            return Physics.SphereCast(transform.position + transform.up * 0.3f, 0.25f,
+                -transform.up, out _, 0.2f, groundMask);
         }
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
@@ -140,11 +158,13 @@ namespace Characters
             _input.InputActions.Player.Move.performed += MovementAction;
             _input.InputActions.Player.Move.canceled += MovementAction;
 
+            _input.InputActions.Player.Jump.performed += JumpAction;
+
             _input.OnAttackPressed += ClickedAction;
             _input.OnSprintPressed += SprintAction;
             _input.OnSpinPressed += SpinAction;
         }
-        
+
         private void Unsubscribe()
         {
             if (!IsOwner) return;
@@ -153,7 +173,7 @@ namespace Characters
 
             _input.InputActions.Player.Move.performed -= MovementAction;
             _input.InputActions.Player.Move.canceled -= MovementAction;
-            
+
             _input.OnAttackPressed -= ClickedAction;
             _input.OnSprintPressed -= SprintAction;
             _input.OnSpinPressed -= SpinAction;
@@ -204,14 +224,14 @@ namespace Characters
         {
             if (_input.SpinPressed) return;
             if (_input.AttackPressed) return;
-            
+
             var moveInput = _input.MoveInput;
-            
+
             if (moveInput == Vector2.zero) return;
 
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
-            
+
             _rb.MovePosition(_rb.position + moveDirection * (_moveSpeed * Time.fixedDeltaTime));
         }
 
@@ -232,6 +252,15 @@ namespace Characters
             _entity.SetBool(MoveHash, ctx.performed);
         }
 
+        private void JumpAction(InputAction.CallbackContext obj)
+        {
+            if (!_isGrounded) return;
+
+            _entity.SetTrigger(JumpHash);
+
+            _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+        }
+
         private void SprintAction(bool value)
         {
             _entity.SetBool(SprintHash, value);
@@ -243,7 +272,7 @@ namespace Characters
         {
             _entity.SetBool(SpinHash, value);
         }
-        
+
         private void ClickedAction(bool value)
         {
             _entity.SetBool(AttackHash, value);
