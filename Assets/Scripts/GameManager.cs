@@ -79,6 +79,6 @@ public class GameManager : NetworkBehaviour
     internal void LoadSceneRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
-        // NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
 }

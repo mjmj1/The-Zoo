@@ -263,6 +263,8 @@ namespace Characters
 
         private void SprintAction(bool value)
         {
+            if (!_isGrounded) return;
+            
             _entity.SetBool(SprintHash, value);
 
             _moveSpeed = value ? sprintSpeed : walkSpeed;
@@ -270,11 +272,15 @@ namespace Characters
 
         private void SpinAction(bool value)
         {
+            if (!_isGrounded) return;
+            
             _entity.SetBool(SpinHash, value);
         }
 
         private void ClickedAction(bool value)
         {
+            if (!_isGrounded) return;
+            
             _entity.SetBool(AttackHash, value);
         }
     }
