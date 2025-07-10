@@ -1,11 +1,9 @@
-using System;
 using Networks;
-using Static;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils;
 using WebSocketSharp;
-using static Static.Strings;
 
 namespace UI
 {
@@ -51,31 +49,33 @@ namespace UI
             preferencesButton.onClick.RemoveAllListeners();
         }
 
-        private void OnEnterButtonClick()
+        private async void OnEnterButtonClick()
         {
             if (playerNameInput.text.IsNullOrEmpty()) return;
-
-            PlayerPrefs.SetString(PLAYERNAME, playerNameInput.text);
 
             gameLobby.SetActive(true);
             entrance.SetActive(false);
             preferencesButton.gameObject.SetActive(true);
 
-            Manage.ConnectionManager().SignInAnonymouslyAsync();
+            var playerName = playerNameInput.text;
+
+            var task = ConnectionManager.Instance.OnEnterButtonPressed(playerName);
+
+            await task;
         }
         
         private void OnQuickStartButtonClick()
         {
-            var data = new ConnectionData(ConnectionData.ConnectionType.Quick, null, null, GetRandomSessionName());
+            var data = new ConnectionData(ConnectionData.ConnectionType.Quick, code: null, password: null, Util.GetRandomSessionName());
 
-            Manage.ConnectionManager().ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
         }
 
         private void OnJoinByCodeButtonClick()
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.JoinByCode, codeInput.text);
 
-            Manage.ConnectionManager().ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
         }
         
         private void OnSessionListButtonClick()

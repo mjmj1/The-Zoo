@@ -2,12 +2,16 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using Utils;
 
 namespace Characters
 {
     internal class InputHandler : MonoBehaviour
     {
+        public static readonly int MoveHash = Animator.StringToHash("Move");
+        public static readonly int SprintHash = Animator.StringToHash("Sprint");
+        public static readonly int SpinHash = Animator.StringToHash("Spin");
+        public static readonly int AttackHash = Animator.StringToHash("Attack");
+
         private bool _attackPressed;
         private bool _isOverUI;
         private bool _spinPressed;
@@ -72,7 +76,7 @@ namespace Characters
 
         private void Update()
         {
-            if(!InputActions.Player.enabled)
+            if (!InputActions.Player.enabled)
                 _isOverUI = IsPointerOverUI();
         }
 
@@ -94,8 +98,6 @@ namespace Characters
 
         private void EscapePressed(InputAction.CallbackContext ctx)
         {
-            MyLogger.Print(this, $"{ctx.phase}");
-
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
@@ -106,15 +108,13 @@ namespace Characters
         {
             if (_isOverUI) return;
 
-            MyLogger.Print(this, $"{ctx.phase}");
-
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
             InputActions.Player.Enable();
         }
 
-        private bool IsPointerOverUI()
+        private static bool IsPointerOverUI()
         {
             return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
         }

@@ -7,9 +7,6 @@ namespace Characters
     {
         public float height = 5f;
         public float distance = 10f;
-        // public float rotationSmoothTime = 0.1f;
-        
-        // private Vector3 _currentVelocity = Vector3.zero;
         private Vector3 _defaultOffset;
 
         private Transform _target;

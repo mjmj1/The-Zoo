@@ -1,12 +1,13 @@
-using Networks;
+using Characters;
 using UI.PlayerList;
-using UnityEngine;
+using Unity.Collections;
+using Unity.Netcode;
+using Unity.Services.Authentication;
+using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
-    public static GameManager Instance;
-    
-    [SerializeField] private PlayerListView playerListView;
+    public static GameManager Instance { get; private set; }
 
     private void Awake()
     {
@@ -19,5 +20,65 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    internal void ReadyRpc(FixedString32Bytes playerId, bool isReady)
+    {
+        PlayerListView.Instance.OnPlayerReady(playerId.Value, isReady);
+    }
+
+    internal void PromotedSessionHost(string playerId)
+    {
+        if (playerId == AuthenticationService.Instance.PlayerId)
+        {
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
+                true;
+        }
+        else
+        {
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
+                false;
+
+            ReadyRpc(NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().playerId.Value, 
+                false);
+        }
+    }
+
+    internal bool CanGameStart()
+    {
+        foreach (var client in NetworkManager.ConnectedClientsList)
+        {
+            if (client.PlayerObject == null)
+            {
+                print($"client-{client.ClientId} PlayerObject is null"); return false;
+            }
+
+            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity))
+            {
+                print($"client-{client.ClientId} playerEntity is null");
+                return false;
+            }
+
+            if (!entity.isReady.Value)
+            {
+                print($"client-{client.ClientId} not ready");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    internal void LoadLobbyScene()
+    {
+        SceneManager.LoadScene("Lobby");
+    }
+
+    [Rpc(SendTo.Owner)]
+    internal void LoadSceneRpc(string sceneName)
+    {
+        print($"{sceneName} GameStartRpc called");
+        // NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
 }

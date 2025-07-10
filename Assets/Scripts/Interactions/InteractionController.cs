@@ -10,7 +10,7 @@ public class InteractionController : NetworkBehaviour
 
     private SphereCollider _planetCollider;
 
-    // Tree.cs¿¡¼­ »ç¿ëÇÏ±â À§ÇÑ º¯¼ö
+    // Tree.csï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Ï±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     public NetworkVariable<Vector3> SpawnPositon;
     public Vector3 InitialPosition;
     public NetworkVariable<Quaternion> SpawnRotation;

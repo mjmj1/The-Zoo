@@ -1,12 +1,10 @@
-using System;
-using Static;
+using Characters;
+using Networks;
 using TMPro;
 using UI.PlayerList;
 using Unity.Netcode;
 using Unity.Services.Authentication;
-using Unity.Services.Multiplay.Authoring.Editor;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI
@@ -22,44 +20,60 @@ namespace UI
         {
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
-            
-            var session = Manage.Session();
+
+            var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged += OnSessionHostChanged;
+        }
+
+        private void OnEnable()
+        {
+            ChangeLobbyUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
         private void OnDestroy()
         {
             quitButton.onClick.RemoveAllListeners();
             gameStartButton.onClick.RemoveAllListeners();
-            
-            var session = Manage.Session();
+
+            var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged -= OnSessionHostChanged;
         }
 
-        private void OnEnable()
-        {
-            ChangeLobbyUI(Manage.Session().IsHost);
-        }
-        
         private void OnSessionHostChanged(string obj)
         {
-            ChangeLobbyUI(Manage.Session().IsHost);
+            ChangeLobbyUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
         private void OnQuitButtonClick()
         {
-            Manage.ConnectionManager().DisconnectSessionAsync();
+            ConnectionManager.Instance.DisconnectSessionAsync();
         }
 
         private void OnGameStartButtonClick()
         {
-            NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
+            if (ConnectionManager.Instance.CurrentSession.IsHost)
+            {
+                if (!GameManager.Instance.CanGameStart()) return;
+
+                GameManager.Instance.LoadSceneRpc("InGame");
+
+                return;
+            }
+
+            var entity = NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerEntity>();
+            var isReady = entity.isReady.Value;
+
+            entity.isReady.Value = !isReady;
+
+            GameManager.Instance.ReadyRpc(AuthenticationService.Instance.PlayerId, entity.isReady.Value);
         }
 
         private void ChangeLobbyUI(bool isHost)
         {
             gameSetup.gameObject.SetActive(isHost);
-            gameStartButton.GetComponentInChildren<TMP_Text>().text = isHost ? "Game Start" : "Ready";
+            gameStartButton.GetComponentInChildren<TMP_Text>().text =
+                isHost ? "Game Start" : "Ready";
         }
     }
 }

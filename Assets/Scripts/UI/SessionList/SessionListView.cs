@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Networks;
-using Static;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI.SessionList
 {
@@ -18,9 +18,10 @@ namespace UI.SessionList
         [SerializeField] private Button createButton;
         [SerializeField] private Button refreshButton;
 
-        private IObjectPool<SessionView> _pool;
         private readonly LinkedList<SessionView> _activeViews = new();
-        
+
+        private IObjectPool<SessionView> _pool;
+
         private ISessionInfo _selectedSession;
 
         private void Awake()
@@ -28,16 +29,13 @@ namespace UI.SessionList
             joinButton.onClick.AddListener(OnJoinButtonClick);
             createButton.onClick.AddListener(OnCreateButtonClick);
             refreshButton.onClick.AddListener(OnRefreshButtonClick);
-        }
 
-        private void Start()
-        {
             _pool = new ObjectPool<SessionView>
             (
-                createFunc: OnCreatePooledObjects,
-                actionOnGet: OnGetPooledObjects,
-                actionOnRelease: OnReturnPooledObjects,
-                actionOnDestroy: OnDestroyPooledObjects,
+                OnCreatePooledObjects,
+                OnGetPooledObjects,
+                OnReturnPooledObjects,
+                OnDestroyPooledObjects,
                 true, 5, 100
             );
         }
@@ -60,16 +58,17 @@ namespace UI.SessionList
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.Create);
 
-            Manage.ConnectionManager().ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
         }
 
         private void OnJoinButtonClick()
         {
             if (_selectedSession == null) return;
 
-            var data = new ConnectionData(ConnectionData.ConnectionType.JoinById, _selectedSession.Id);
+            var data = new ConnectionData(ConnectionData.ConnectionType.JoinById,
+                _selectedSession.Id);
 
-            Manage.ConnectionManager().ConnectAsync(data);
+            ConnectionManager.Instance.ConnectAsync(data);
 
             _selectedSession = null;
             joinButton.interactable = false;
@@ -85,23 +84,21 @@ namespace UI.SessionList
         {
             try
             {
-                foreach (var view in _activeViews)
-                {
-                    _pool.Release(view);
-                }
-                
+                foreach (var view in _activeViews) _pool.Release(view);
+
                 _activeViews.Clear();
 
-                var sessions = await Manage.ConnectionManager().QuerySessionsAsync();
+                var infos = await ConnectionManager.Instance.QuerySessionsAsync();
 
-                sessions = sessions.OrderBy<ISessionInfo, object>(s => s.HasPassword).ToList();
+                infos = infos.OrderBy<ISessionInfo, object>(s => s.HasPassword).ToList();
 
-                foreach (var sessionInfo in sessions)
+                foreach (var info in infos)
                 {
                     var view = _pool.Get();
-                    view.Bind(sessionInfo);
-                    
+
                     _activeViews.AddLast(view);
+
+                    view.Bind(info);
                 }
             }
             catch (Exception e)
@@ -113,8 +110,14 @@ namespace UI.SessionList
         private void OnSelect(ISessionInfo sessionInfo)
         {
             _selectedSession = sessionInfo;
+
             if (_selectedSession != null)
                 joinButton.interactable = true;
+        }
+
+        private void OnDeselect()
+        {
+            joinButton.interactable = false;
         }
 
         private SessionView OnCreatePooledObjects()
@@ -125,19 +128,20 @@ namespace UI.SessionList
         private void OnGetPooledObjects(SessionView sessionView)
         {
             sessionView.gameObject.SetActive(true);
-            sessionView.onSelect.AddListener(OnSelect);
+            sessionView.OnSelected.AddListener(OnSelect);
             sessionView.transform.SetAsLastSibling();
         }
 
         private void OnReturnPooledObjects(SessionView sessionView)
         {
             sessionView.gameObject.SetActive(false);
-            sessionView.onSelect.RemoveAllListeners();
+            sessionView.OnSelected.RemoveAllListeners();
         }
 
         private void OnDestroyPooledObjects(SessionView sessionView)
         {
-            sessionView.onSelect.RemoveAllListeners();
+            sessionView.OnSelected.RemoveAllListeners();
+            
             Destroy(sessionView.gameObject);
         }
     }
