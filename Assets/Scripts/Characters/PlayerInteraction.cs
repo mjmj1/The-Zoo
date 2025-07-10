@@ -1,26 +1,23 @@
 using System;
 using Interactions;
-using UI;
 using UnityEngine;
 
 namespace Characters
 {
     public class PlayerInteraction : MonoBehaviour
     {
-        [SerializeField] private float interactionDistance = 3f;
-        [SerializeField] private InGameUIManager uiManager;
+        [SerializeField] private float interactionDistance = 2f;
 
+        private Interactable currentInteractable;
         private InputHandler inputHandler;
-        
-        private IInteractable currentInteractable;
 
         private void Start()
         {
             inputHandler = GetComponent<InputHandler>();
-            
+
             inputHandler.InputActions.Player.Interact.performed += _ => Interact();
         }
-        
+
         private void FixedUpdate()
         {
             CheckForInteractable();
@@ -28,52 +25,21 @@ namespace Characters
 
         private void CheckForInteractable()
         {
-            if (Physics.Raycast(transform.position, transform.forward, out var hit, interactionDistance))
-            {
-                hit.collider.TryGetComponent<IInteractable>(out var interactable);
-                
-                UpdateInteractable(interactable);
-            }
-            else
-            {
-                ClearInteractable();
-            }
+            if (!Physics.Raycast(transform.position, transform.forward, out var hit,
+                    interactionDistance)) return;
+
+            currentInteractable?.gameObject.SetActive(false);
+
+            if (!hit.collider.TryGetComponent<Interactable>(out var interactable)) return;
+
+            currentInteractable = interactable;
+            
+            currentInteractable?.gameObject.SetActive(true);
         }
 
-        private void UpdateInteractable(IInteractable interactable)
+        private void UpdateInteractable()
         {
-            string prompt = "";
-            
-            switch (interactable.GetInteractableType())
-            {
-                case IInteractable.InteractableType.LeftClick:
-                    prompt += "Attack (LMB)\n";
-                    break;
-                case IInteractable.InteractableType.RightClick:
-                    break;
-                case IInteractable.InteractableType.F:
-                    prompt += currentInteractable.GetInteractableType() + " (F)\n";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-            
-            if (!string.IsNullOrEmpty(prompt))
-            {
-                uiManager.ShowInteractionPrompt(prompt.Trim());
-            }
-            else
-            {
-                uiManager.HideInteractionPrompt();
-            }
-        }
-
-        private void ClearInteractable()
-        {
-            if (currentInteractable == null) return;
-
-            currentInteractable = null;
-            uiManager.HideInteractionPrompt();
+            currentInteractable?.ShowInteractableUI();
         }
 
         private void Interact()

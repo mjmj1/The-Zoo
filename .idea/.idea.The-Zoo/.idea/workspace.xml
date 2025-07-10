@@ -9,29 +9,17 @@
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Gecko Variant.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Gecko Variant.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Platypus Variant.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Platypus Variant.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Emu Variant.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Emu Variant.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Gecko.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Muskrat.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Pudu.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Pudu.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/FREE/Animations/AC_Sparrow.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Emu.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Emu.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Kookaburra.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Kookaburra.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Platypus.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Platypus.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Possum.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Possum.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Quokka.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Quokka.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_TasmanianDevil.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_TasmanianDevil.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Wombat.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/AC_Wombat.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/Platypus_Animations.fbx.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Quirky Series Ultimate/Mega Pack Vol.2/Island Vol.1/Animations/Platypus_Animations.fbx.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/PlayerSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/PlayerSpawner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerInteraction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerInteraction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/SpawnerInteractable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Interactions/SpawnerInteractable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/interface/IDamageable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/interface/IDamageable.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/interface/IInteractable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Interactions/interface/IInteractable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/interface/ISpecialInteractable.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/interface/ISpecialInteractable.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUIManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUIManager.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -120,7 +108,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "Unity 에디터에 연결.Unity 에디터에 연결.executor": "Debug",
     "XThreadsFramesViewSplitterKey": "0.68524593",
-    "git-widget-placeholder": "IG/ST/013/playmanager-구현",
+    "git-widget-placeholder": "IG/ST/016/Game__System",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -255,6 +243,7 @@
       <workItem from="1751732762932" duration="8897000" />
       <workItem from="1751803137611" duration="5814000" />
       <workItem from="1751898220687" duration="4866000" />
+      <workItem from="1752167664729" duration="4892000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

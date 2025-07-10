@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace Interactions
 {
-    public class SpawnerInteractable : MonoBehaviour, IInteractable
+    public class SpawnerInteractable : Interactable
     {
         private bool isInteracting = false;
         
-        public void StartInteract()
+        public override void StartInteract()
         {
             if (isInteracting) return;
             
@@ -14,7 +14,7 @@ namespace Interactions
             print($"{gameObject.name} is interacting...");
         }
 
-        public void StopInteract()
+        public override void StopInteract()
         {
             if (!isInteracting) return;
             
@@ -22,9 +22,9 @@ namespace Interactions
             print($"{gameObject.name} is stop interacting...");
         }
         
-        public IInteractable.InteractableType GetInteractableType()
+        public override Interactable.InteractableType GetInteractableType()
         {
-            return IInteractable.InteractableType.LeftClick;
+            return Interactable.InteractableType.LeftClick;
         }
     }
 }
