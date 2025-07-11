@@ -1,6 +1,7 @@
 using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 using Random = UnityEngine.Random;
 
@@ -11,9 +12,9 @@ namespace GamePlay
         [SerializeField] private float spawnRadius = 7.5f;
         
         public static readonly NetworkVariable<int> CurrentTime = new();
-        
-        private bool _isGameStarted;
-        private WaitForSeconds _wait;
+        private readonly WaitForSeconds waitDelay = new (1.0f);
+
+        private bool isGameStarted;
         
         public void Update()
         {
@@ -34,13 +35,18 @@ namespace GamePlay
             }
         }
 
-        public override void OnNetworkSpawn()
+        protected override void OnNetworkSessionSynchronized()
+        {
+            if (!SceneManager.GetActiveScene().name.Equals("InGame")) return;
+
+            OnGameStart();
+        }
+        
+        private void OnGameStart()
         {
             if (!IsSessionOwner) return;
 
-            _isGameStarted = true;
-            
-            _wait = new WaitForSeconds(1.0f);
+            isGameStarted = true;
             
             MoveRandomPositionRpc();
             
@@ -73,9 +79,9 @@ namespace GamePlay
 
         private IEnumerator CountTime()
         {
-            while (_isGameStarted)
+            while (isGameStarted)
             {
-                yield return _wait;
+                yield return waitDelay;
 
                 CurrentTime.Value += 1;
             }

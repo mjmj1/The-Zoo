@@ -15,7 +15,8 @@ namespace Characters
         {
             inputHandler = GetComponent<InputHandler>();
 
-            inputHandler.InputActions.Player.Interact.performed += _ => Interact();
+            inputHandler.InputActions.Player.Interact.performed += _ => currentInteractable?.StartInteract();
+            inputHandler.InputActions.Player.Interact.canceled += _ => currentInteractable?.StopInteract();
         }
 
         private void FixedUpdate()
@@ -23,28 +24,44 @@ namespace Characters
             CheckForInteractable();
         }
 
+        private void LateUpdate()
+        {
+            // UnfocusInteractable();
+        }
+
         private void CheckForInteractable()
         {
             if (!Physics.Raycast(transform.position, transform.forward, out var hit,
-                    interactionDistance)) return;
-
-            currentInteractable?.gameObject.SetActive(false);
+                    interactionDistance))
+            {
+                UnfocusInteractable();
+                return;
+            }
 
             if (!hit.collider.TryGetComponent<Interactable>(out var interactable)) return;
-
-            currentInteractable = interactable;
             
-            currentInteractable?.gameObject.SetActive(true);
+            UpdateInteractable(interactable);
         }
 
-        private void UpdateInteractable()
+        private void UpdateInteractable(Interactable interactable)
         {
+            currentInteractable = interactable;
+            
             currentInteractable?.ShowInteractableUI();
+        }
+
+        private void UnfocusInteractable()
+        {
+            if (!currentInteractable) return;
+            
+            currentInteractable?.HideInteractableUI();
+            
+            currentInteractable = null;
         }
 
         private void Interact()
         {
-            currentInteractable?.StartInteract();
+            
         }
     }
 }

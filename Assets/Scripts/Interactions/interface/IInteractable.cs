@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,43 +15,30 @@ namespace Interactions
         }
 
         [SerializeField] protected Image interactionUI;
-        [SerializeField] private Canvas canvas;
+        [SerializeField] protected RectTransform canvas;
+        private Camera cam;
+        public Vector3 offset;
 
-        private bool isFocused = false;
-
-        private void Start()
+        protected virtual void Start()
         {
+            cam = Camera.main;
+            offset = new Vector3(1.0f, 1.0f, 0);
+            
             if (interactionUI != null)
             {
                 interactionUI.gameObject.SetActive(false);
             }
         }
 
-        private void OnEnable()
-        {
-            interactionUI.gameObject.SetActive(true);
-
-            var screenPos = Camera.main.WorldToScreenPoint(interactionUI.transform.position);
-
-            // 2) 스크린 좌표 → 캔버스 로컬 좌표로 변환
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                canvas.transform as RectTransform,
-                screenPos,
-                null,
-                out var localPoint
-            );
-
-            interactionUI.transform.position = localPoint;
-        }
-
-        private void OnDisable()
-        {
-
-        }
-
         public void ShowInteractableUI()
         {
-            interactionUI?.gameObject.SetActive(true);
+            if (!interactionUI) return;
+            
+            interactionUI.gameObject.SetActive(true);
+            
+            if (!cam.transform.hasChanged) return;
+
+            interactionUI.transform.position = cam.WorldToScreenPoint(transform.position + offset);
         }
 
         public void HideInteractableUI()

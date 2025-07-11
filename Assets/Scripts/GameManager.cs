@@ -49,22 +49,11 @@ public class GameManager : NetworkBehaviour
     {
         foreach (var client in NetworkManager.ConnectedClientsList)
         {
-            if (client.PlayerObject == null)
-            {
-                print($"client-{client.ClientId} PlayerObject is null"); return false;
-            }
+            if (client.PlayerObject == null) return false;
 
-            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity))
-            {
-                print($"client-{client.ClientId} playerEntity is null");
-                return false;
-            }
+            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity)) return false;
 
-            if (!entity.isReady.Value)
-            {
-                print($"client-{client.ClientId} not ready");
-                return false;
-            }
+            if (!entity.isReady.Value) return false;
         }
 
         return true;
