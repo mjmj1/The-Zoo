@@ -1,3 +1,4 @@
+using System;
 using EventHandler;
 using Networks;
 using Unity.Netcode;
@@ -22,6 +23,11 @@ namespace UI
 
         private void Start()
         {
+            
+        }
+
+        private void OnEnable()
+        {
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             
@@ -29,14 +35,13 @@ namespace UI
             ConnectionEventHandler.OnSessionDisconnected += OnSessionDisconnected;
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-            
             ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
             ConnectionEventHandler.OnSessionDisconnected -= OnSessionDisconnected;
-
+            
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         }
 
         private void OnMain()

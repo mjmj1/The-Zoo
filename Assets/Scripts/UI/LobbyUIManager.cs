@@ -12,7 +12,6 @@ namespace UI
         [SerializeField] private PlayerListView playerListView;
         [SerializeField] private GameObject gameSetup;
 
-        [Header("Buttons")] 
         [SerializeField] private Button quitButton;
         [SerializeField] private Button gameStartButton;
         [SerializeField] private Button gameReadyButton;
@@ -26,7 +25,7 @@ namespace UI
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
             gameReadyButton.onClick.AddListener(OnGameReadyButtonClick);
             
-            ChangeUI(session.IsHost);
+            SwitchUI(session.IsHost);
         }
 
         private void OnDisable()
@@ -40,7 +39,7 @@ namespace UI
 
         private void OnSessionHostChanged(string obj)
         {
-            ChangeUI(ConnectionManager.Instance.CurrentSession.IsHost);
+            SwitchUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
         private void OnQuitButtonClick()
@@ -55,14 +54,14 @@ namespace UI
 
         private void OnGameReadyButtonClick()
         {
-            GameManager.Instance.GameReadyRpc();
+            GameManager.Instance.GameReady();
         }
 
-        private void ChangeUI(bool isHost)
+        private void SwitchUI(bool isHost)
         {
+            gameSetup.gameObject.SetActive(isHost);
             gameStartButton.gameObject.SetActive(isHost);
             gameReadyButton.gameObject.SetActive(!isHost);
-            gameSetup.gameObject.SetActive(isHost);
         }
     }
 }

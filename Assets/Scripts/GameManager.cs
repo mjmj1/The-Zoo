@@ -20,11 +20,6 @@ public class GameManager : NetworkBehaviour
     
     public NetworkVariable<GameState> CurrentState = new(GameState.Lobby);
     
-    public event Action OnGameOver;
-    public event Action OnGameFinished;
-    
-    public event Action<string, bool> OnGameStart;
-    
     public static GameManager Instance { get; private set; }
 
     private void Awake()
@@ -48,19 +43,19 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Everyone)]
-    private void ReadyRpc(FixedString32Bytes playerId, bool isReady)
+    private void NotifyReadyRpc(FixedString32Bytes playerId, bool isReady)
     {
-        // PlayerListView.Instance.OnPlayerReady(playerId.Value, isReady);
+        PlayerListView.OnPlayerReady(playerId.Value, isReady);
     }
 
-    internal void GameReadyRpc()
+    internal void GameReady()
     {
         var entity = NetworkManager.Singleton.LocalClient.PlayerObject
             .GetComponent<PlayerEntity>();
 
         entity.isReady.Value = !entity.isReady.Value;
 
-        ReadyRpc(AuthenticationService.Instance.PlayerId, entity.isReady.Value);
+        NotifyReadyRpc(AuthenticationService.Instance.PlayerId, entity.isReady.Value);
     }
     
     [Rpc(SendTo.Owner)]
@@ -71,19 +66,6 @@ public class GameManager : NetworkBehaviour
         if (!CanGameStart()) return;
 
         LoadSceneRpc("InGame");
-    }
-
-    internal void GameFinishedRpc()
-    {
-        OnGameFinished?.Invoke();
-    }
-
-    internal void GameOverRpc(ulong clientId)
-    {
-        var player = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
-        player.Despawn();
-        
-        OnGameOver?.Invoke();
     }
 
     internal void PromotedSessionHost(string playerId)
@@ -98,7 +80,7 @@ public class GameManager : NetworkBehaviour
             NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
                 false;
 
-            ReadyRpc(NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().playerId.Value, 
+            NotifyReadyRpc(NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().playerId.Value, 
                 false);
         }
     }

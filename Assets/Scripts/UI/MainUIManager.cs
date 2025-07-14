@@ -4,12 +4,17 @@ using UI.SessionList;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils;
-using WebSocketSharp;
+using System;
 
 namespace UI
 {
     public class MainUIManager : MonoBehaviour
     {
+        public enum MainState
+        {
+            Title,
+            Menu,
+        }
         [Header("Title")]
         [SerializeField] private GameObject title;
         [SerializeField] private TMP_InputField playerNameInput;
@@ -17,25 +22,15 @@ namespace UI
 
         [Header("Menu")]
         [SerializeField] private GameObject menu;
-
-        [Header("Quick Start")]
         [SerializeField] private Button quickStartButton;
-
-        [Header("Join")]
         [SerializeField] private TMP_InputField codeInput;
         [SerializeField] private Button joinButton;
-
-        [Header("Session List")] 
         [SerializeField] private Button sessionListButton;
         [SerializeField] private SessionListView sessionsList;
 
-        [Header("Preferences")]
-        [SerializeField] private Button preferencesButton;
-        [SerializeField] private GameObject preferences;
-
         private void Start()
         {
-            OnTitle();
+            SwitchUI(MainState.Title);
         }
 
         private void OnEnable()
@@ -44,7 +39,6 @@ namespace UI
             enterButton.onClick.AddListener(OnEnterButtonClick);
             quickStartButton.onClick.AddListener(OnQuickStartButtonClick);
             sessionListButton.onClick.AddListener(sessionsList.Toggle);
-            preferencesButton.onClick.AddListener(OnPreferencesButtonClick);
         }
 
         private void OnDisable()
@@ -53,53 +47,37 @@ namespace UI
             enterButton.onClick.RemoveAllListeners();
             quickStartButton.onClick.RemoveAllListeners();
             sessionListButton.onClick.RemoveAllListeners();
-            preferencesButton.onClick.RemoveAllListeners();
         }
 
-        private void OnTitle()
+        public void SwitchUI(MainState mainState)
         {
-            title.SetActive(true);
-
-            menu.SetActive(false);
-
+            title.SetActive(mainState == MainState.Title);
+            menu.SetActive(mainState == MainState.Menu);
+            
             sessionsList.gameObject.SetActive(false);
-
-            preferences.SetActive(false);
-            preferencesButton.gameObject.SetActive(false);
-        }
-
-        private void OnMenu()
-        {
-            title.SetActive(false);
-
-            menu.SetActive(true);
-
-            sessionsList.gameObject.SetActive(false);
-
-            preferences.SetActive(false);
-
-            preferencesButton.gameObject.SetActive(true);
         }
 
         private async void OnEnterButtonClick()
         {
-            if (playerNameInput.text.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(playerNameInput.text))
             {
                 InformationPopup.instance.ShowPopup("플레이어의 이름을 입력해주세요");
-
                 return;
             }
 
             var playerName = playerNameInput.text;
 
-            var task = ConnectionManager.Instance.Login(playerName);
-
-            await task;
-
-            if (task.IsCompletedSuccessfully)
-                OnMenu();
-            else
+            try
+            {
+                await ConnectionManager.Instance.Login(playerName);
+                MyLogger.Print(this, $"Login Success! PlayerName: {playerName}");
+                SwitchUI(MainState.Menu);
+            }
+            catch (Exception e)
+            {
+                MyLogger.Print(this, $"Login Failed! PlayerName: {playerName}, Error: {e.Message}");
                 InformationPopup.instance.ShowPopup("로그인에 실패했습니다. 다시 시도해주세요.");
+            }
         }
 
         private void OnQuickStartButtonClick()
@@ -114,11 +92,6 @@ namespace UI
             var data = new ConnectionData(ConnectionData.ConnectionType.JoinByCode, codeInput.text);
 
             ConnectionManager.Instance.ConnectAsync(data);
-        }
-
-        private void OnPreferencesButtonClick()
-        {
-            preferences.SetActive(!preferences.activeSelf);
         }
     }
 }

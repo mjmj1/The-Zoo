@@ -17,7 +17,7 @@ namespace UI.PlayerList
     {
         [SerializeField] private GameObject playerViewPrefab;
 
-        private readonly Dictionary<string, PlayerView> _map = new();
+        private static readonly Dictionary<string, PlayerView> Map = new();
 
         private IObjectPool<PlayerView> _pool;
 
@@ -50,7 +50,7 @@ namespace UI.PlayerList
                 item.SetPlayerId(player.Id);
                 item.SetPlayerName(playerName);
 
-                _map.Add(player.Id, item);
+                Map.Add(player.Id, item);
 
                 if (player.Id == _session.CurrentPlayer.Id) item.Highlight();
             }
@@ -60,7 +60,7 @@ namespace UI.PlayerList
             _session.SessionHostChanged += OnSessionHostChanged;
             _session.SessionHostChanged += GameManager.Instance.PromotedSessionHost;
             
-            _map[_session.Host].Host(true);
+            Map[_session.Host].Host(true);
         }
 
         private void OnDisable()
@@ -75,25 +75,25 @@ namespace UI.PlayerList
             _session = null;
         }
 
-        public void OnPlayerReady(string id, bool value)
+        public static void OnPlayerReady(string id, bool value)
         {
-            _map[id].Ready(value);
+            Map[id].Ready(value);
         }
 
         private void OnSessionHostChanged(string obj)
         {
-            foreach (var view in _map.Values)
+            foreach (var view in Map.Values)
             {
                 view.Host(false);
             }
 
-            _map[obj].Host(true);
-            _map[obj].Ready(false);
+            Map[obj].Host(true);
+            Map[obj].Ready(false);
         }
 
         private void OnPlayerHasLeft(string obj)
         {
-            _map.Remove(obj, out var player);
+            Map.Remove(obj, out var player);
             _pool.Release(player);
         }
 
@@ -111,19 +111,19 @@ namespace UI.PlayerList
             
             item.SetPlayerId(obj);
             
-            _map.Add(obj, item);
+            Map.Add(obj, item);
         }
 
         private void Clear()
         {
-            foreach (var kvp in _map)
+            foreach (var kvp in Map)
             {
                 _pool.Release(kvp.Value);
             }
             
             _pool.Clear();
 
-            _map.Clear();
+            Map.Clear();
         }
 
         private PlayerView CreatePoolObj()
