@@ -55,28 +55,22 @@ public class GameManager : NetworkBehaviour
 
     internal void GameReadyRpc()
     {
-        
-    }
-    
-    internal void GameStartRpc()
-    {
-        //OnGameStart?.Invoke();
-        
-        if (ConnectionManager.Instance.CurrentSession.IsHost)
-        {
-            if (!CanGameStart()) return;
-
-            LoadSceneRpc("InGame");
-
-            return;
-        }
-
         var entity = NetworkManager.Singleton.LocalClient.PlayerObject
             .GetComponent<PlayerEntity>();
 
         entity.isReady.Value = !entity.isReady.Value;
 
         ReadyRpc(AuthenticationService.Instance.PlayerId, entity.isReady.Value);
+    }
+    
+    [Rpc(SendTo.Owner)]
+    internal void GameStartRpc()
+    {
+        if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
+        
+        if (!CanGameStart()) return;
+
+        LoadSceneRpc("InGame");
     }
 
     internal void GameFinishedRpc()

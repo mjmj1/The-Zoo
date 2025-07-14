@@ -14,6 +14,7 @@ namespace UI.SessionList
     {
         [SerializeField] private GameObject sessionViewPrefab;
         [SerializeField] private Transform contentParent;
+        [SerializeField] private Button closeButton;
         [SerializeField] private Button joinButton;
         [SerializeField] private Button createButton;
         [SerializeField] private Button refreshButton;
@@ -26,10 +27,6 @@ namespace UI.SessionList
 
         private void Awake()
         {
-            joinButton.onClick.AddListener(OnJoinButtonClick);
-            createButton.onClick.AddListener(OnCreateButtonClick);
-            refreshButton.onClick.AddListener(OnRefreshButtonClick);
-
             _pool = new ObjectPool<SessionView>
             (
                 OnCreatePooledObjects,
@@ -43,12 +40,17 @@ namespace UI.SessionList
         private void OnEnable()
         {
             joinButton.interactable = false;
-
             RefreshAsync();
+            
+            closeButton.onClick.AddListener(Toggle);
+            joinButton.onClick.AddListener(OnJoinButtonClick);
+            createButton.onClick.AddListener(OnCreateButtonClick);
+            refreshButton.onClick.AddListener(OnRefreshButtonClick);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
+            closeButton.onClick.RemoveListener(Toggle);
             joinButton.onClick.RemoveListener(OnJoinButtonClick);
             createButton.onClick.RemoveListener(OnCreateButtonClick);
             refreshButton.onClick.RemoveListener(OnRefreshButtonClick);
@@ -115,9 +117,9 @@ namespace UI.SessionList
                 joinButton.interactable = true;
         }
 
-        private void OnDeselect()
+        public void Toggle()
         {
-            joinButton.interactable = false;
+            gameObject.SetActive(!gameObject.activeSelf);
         }
 
         private SessionView OnCreatePooledObjects()

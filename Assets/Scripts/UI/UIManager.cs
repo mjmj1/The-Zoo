@@ -25,7 +25,7 @@ namespace UI
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             
-            ConnectionEventHandler.OnSessionConnecting += OnSessionConnecting;
+            ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
             ConnectionEventHandler.OnSessionDisconnected += OnSessionDisconnected;
         }
 
@@ -34,7 +34,7 @@ namespace UI
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
             
-            ConnectionEventHandler.OnSessionConnecting -= OnSessionConnecting;
+            ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
             ConnectionEventHandler.OnSessionDisconnected -= OnSessionDisconnected;
 
         }
@@ -53,7 +53,7 @@ namespace UI
             loadingCanvas.gameObject.SetActive(false);
         }
 
-        private void OnSessionConnecting()
+        private void OnSessionConnectStart()
         {
             loadingCanvas.gameObject.SetActive(true);
         }

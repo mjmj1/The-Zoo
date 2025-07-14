@@ -1,9 +1,7 @@
-using Characters;
+using System;
 using Networks;
 using TMPro;
 using UI.PlayerList;
-using Unity.Netcode;
-using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,29 +11,25 @@ namespace UI
     {
         [SerializeField] private PlayerListView playerListView;
         [SerializeField] private GameObject gameSetup;
-        
-        [Header("Buttons")]
+
+        [Header("Buttons")] 
         [SerializeField] private Button quitButton;
         [SerializeField] private Button gameStartButton;
         [SerializeField] private Button gameReadyButton;
         
-        private void Start()
-        {
-            quitButton.onClick.AddListener(OnQuitButtonClick);
-            
-            gameStartButton.onClick.AddListener(OnGameStartButtonClick);
-            gameReadyButton.onClick.AddListener(OnGameReadyButtonClick);
-
-            var session = ConnectionManager.Instance.CurrentSession;
-            session.SessionHostChanged += OnSessionHostChanged;
-        }
-
         private void OnEnable()
         {
-            ChangeLobbyUI(ConnectionManager.Instance.CurrentSession.IsHost);
+            var session = ConnectionManager.Instance.CurrentSession;
+            session.SessionHostChanged += OnSessionHostChanged;
+            
+            quitButton.onClick.AddListener(OnQuitButtonClick);
+            gameStartButton.onClick.AddListener(OnGameStartButtonClick);
+            gameReadyButton.onClick.AddListener(OnGameReadyButtonClick);
+            
+            ChangeUI(session.IsHost);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             quitButton.onClick.RemoveAllListeners();
             gameStartButton.onClick.RemoveAllListeners();
@@ -46,7 +40,7 @@ namespace UI
 
         private void OnSessionHostChanged(string obj)
         {
-            ChangeLobbyUI(ConnectionManager.Instance.CurrentSession.IsHost);
+            ChangeUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
         private void OnQuitButtonClick()
@@ -58,17 +52,17 @@ namespace UI
         {
             GameManager.Instance.GameStartRpc();
         }
-        
+
         private void OnGameReadyButtonClick()
         {
             GameManager.Instance.GameReadyRpc();
         }
 
-        private void ChangeLobbyUI(bool isHost)
+        private void ChangeUI(bool isHost)
         {
+            gameStartButton.gameObject.SetActive(isHost);
+            gameReadyButton.gameObject.SetActive(!isHost);
             gameSetup.gameObject.SetActive(isHost);
-            gameStartButton.GetComponentInChildren<TMP_Text>().text =
-                isHost ? "Game Start" : "Ready";
         }
     }
 }

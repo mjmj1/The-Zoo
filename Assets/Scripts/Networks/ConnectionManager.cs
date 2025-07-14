@@ -69,13 +69,16 @@ namespace Networks
         {
             try
             {
+                
                 _state = ConnectionState.Connect;
 
-                SessionConnecting();
-
+                SessionConnectStart();
+                
                 CurrentSession = await sessionFunc.Invoke();
 
                 _state = ConnectionState.Connected;
+
+                SessionConnected();
             }
             catch (Exception e)
             {
