@@ -96,7 +96,7 @@ namespace UI.Preferences
         {
             Screen.SetResolution(_resolutions[_currentResolutionIndex].Resolution.width, _resolutions[_currentResolutionIndex].Resolution.height, fullScreenToggle.isOn);
             
-            UIManager.OpenInformationPopup("해상도 변경이 완료되었습니다.");
+            InformationPopup.instance.ShowPopup("해상도 변경이 완료되었습니다.");
         }
         
     }

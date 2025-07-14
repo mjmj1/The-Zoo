@@ -8,12 +8,12 @@ using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using Utils;
-using WebSocketSharp;
+using static EventHandler.ConnectionEventHandler;
 using static Networks.ConnectionData;
 
 namespace Networks
 {
-    public class ConnectionManager : MonoBehaviour, IConnectionHandler
+    public class ConnectionManager : MonoBehaviour
     {
         private const int MaxPlayers = 8;
         private bool initialLoad;
@@ -63,9 +63,6 @@ namespace Networks
             NetworkManager.Singleton.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
         }
 
-        public event Action OnSessionConnect;
-        public event Action OnSessionDisconnected;
-
         // <-------------------Connection------------------->
 
         private async Task HandleSessionFlowAsync(Func<Task<ISession>> sessionFunc)
@@ -74,7 +71,7 @@ namespace Networks
             {
                 _state = ConnectionState.Connect;
 
-                OnSessionConnect?.Invoke();
+                SessionConnecting();
 
                 CurrentSession = await sessionFunc.Invoke();
 
@@ -82,7 +79,7 @@ namespace Networks
             }
             catch (Exception e)
             {
-                OnSessionDisconnected?.Invoke();
+                SessionDisconnected();
                 
                 _state = ConnectionState.Disconnected;
                 
@@ -152,7 +149,7 @@ namespace Networks
             }
             finally
             {
-                OnSessionDisconnected?.Invoke();
+                SessionDisconnected();
 
                 _state = ConnectionState.Disconnected;
 
@@ -402,7 +399,7 @@ namespace Networks
         }
 
 
-        public async Task OnEnterButtonPressed(string playerName)
+        public async Task Login(string playerName)
         {
             if (AuthenticationService.Instance == null)
             {

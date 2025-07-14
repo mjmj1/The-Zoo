@@ -1,23 +1,23 @@
+using EventHandler;
 using Networks;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI
 {
     public class UIManager : MonoBehaviour
     {
-        private static InformationPopup _informationPopup;
-
-        [SerializeField] private GameObject titleMenu;
-        [SerializeField] private GameObject lobbyMenu;
-        [SerializeField] private GameObject loadingScreen;
+        [SerializeField] private Canvas mainCanvas;
+        [SerializeField] private Canvas lobbyCanvas;
+        [SerializeField] private Canvas loadingCanvas;
+        [SerializeField] private Canvas popupCanvas;
 
         private void Awake()
         {
-            _informationPopup = GetComponent<InformationPopup>();
-            titleMenu.SetActive(true);
-            lobbyMenu.SetActive(false);
-            loadingScreen.SetActive(false);
+            popupCanvas.gameObject.SetActive(true);
+
+            OnMain();
         }
 
         private void Start()
@@ -25,58 +25,56 @@ namespace UI
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             
-            ConnectionManager.Instance.OnSessionConnect += OnSessionConnect;
-            ConnectionManager.Instance.OnSessionDisconnected += OnSessionDisconnected;
+            ConnectionEventHandler.OnSessionConnecting += OnSessionConnecting;
+            ConnectionEventHandler.OnSessionDisconnected += OnSessionDisconnected;
         }
 
         private void OnDestroy()
         {
-            if (NetworkManager.Singleton != null)
-            {
-                NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-                NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
-            }
-
-            ConnectionManager.Instance.OnSessionConnect -= OnSessionConnect;
-            ConnectionManager.Instance.OnSessionDisconnected -= OnSessionDisconnected;
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
+            
+            ConnectionEventHandler.OnSessionConnecting -= OnSessionConnecting;
+            ConnectionEventHandler.OnSessionDisconnected -= OnSessionDisconnected;
 
         }
 
-        public static void OpenInformationPopup(string massage)
+        private void OnMain()
         {
-            _informationPopup.GetInformationPopup(massage);
+            mainCanvas.gameObject.SetActive(true);
+            lobbyCanvas.gameObject.SetActive(false);
+            loadingCanvas.gameObject.SetActive(false);
+        }
+        
+        private void OnLobby()
+        {
+            mainCanvas.gameObject.SetActive(false);
+            lobbyCanvas.gameObject.SetActive(true);
+            loadingCanvas.gameObject.SetActive(false);
         }
 
-        private void SetupUI(bool isConnected)
+        private void OnSessionConnecting()
         {
-            titleMenu.SetActive(!isConnected);
-            lobbyMenu.SetActive(isConnected);
-
-            loadingScreen.gameObject.SetActive(false);
-        }
-
-        private void OnSessionConnect()
-        {
-            loadingScreen.gameObject.SetActive(true);
+            loadingCanvas.gameObject.SetActive(true);
         }
 
         private void OnSessionDisconnected()
         {
-            loadingScreen.gameObject.SetActive(false);
+            loadingCanvas.gameObject.SetActive(false);
         }
 
         private void OnClientConnectedCallback(ulong clientId)
         {
             if (NetworkManager.Singleton.LocalClientId != clientId) return;
 
-            SetupUI(true);
+            OnLobby();
         }
 
         private void OnClientDisconnectCallback(ulong clientId)
         {
             if (NetworkManager.Singleton.LocalClientId != clientId) return;
 
-            SetupUI(false);
+            OnMain();
         }
     }
 }

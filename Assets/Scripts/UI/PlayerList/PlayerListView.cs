@@ -23,8 +23,6 @@ namespace UI.PlayerList
 
         private ISession _session;
 
-        public static PlayerListView Instance { get; private set; }
-
         private void Awake()
         {
             _pool = new ObjectPool<PlayerView>
@@ -35,9 +33,6 @@ namespace UI.PlayerList
                 DestroyPoolObj,
                 true, 4, 8
             );
-
-            if (Instance == null) Instance = this;
-            else Destroy(gameObject);
         }
 
         private void OnEnable()

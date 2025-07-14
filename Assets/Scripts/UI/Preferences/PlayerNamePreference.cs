@@ -28,7 +28,7 @@ namespace UI.Preferences
 
             await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
 
-            UIManager.OpenInformationPopup("닉네임 설정이 완료되었습니다.");
+            InformationPopup.instance.ShowPopup("닉네임 설정이 완료되었습니다.");
         }
     }
 }

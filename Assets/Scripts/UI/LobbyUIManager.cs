@@ -12,14 +12,19 @@ namespace UI
     public class LobbyUIManager : MonoBehaviour
     {
         [SerializeField] private PlayerListView playerListView;
-        [SerializeField] private Button quitButton;
         [SerializeField] private GameObject gameSetup;
+        
+        [Header("Buttons")]
+        [SerializeField] private Button quitButton;
         [SerializeField] private Button gameStartButton;
-
+        [SerializeField] private Button gameReadyButton;
+        
         private void Start()
         {
             quitButton.onClick.AddListener(OnQuitButtonClick);
+            
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
+            gameReadyButton.onClick.AddListener(OnGameReadyButtonClick);
 
             var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged += OnSessionHostChanged;
@@ -51,22 +56,12 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
-            if (ConnectionManager.Instance.CurrentSession.IsHost)
-            {
-                if (!GameManager.Instance.CanGameStart()) return;
-
-                GameManager.Instance.LoadSceneRpc("InGame");
-
-                return;
-            }
-
-            var entity = NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>();
-            var isReady = entity.isReady.Value;
-
-            entity.isReady.Value = !isReady;
-
-            GameManager.Instance.ReadyRpc(AuthenticationService.Instance.PlayerId, entity.isReady.Value);
+            GameManager.Instance.GameStartRpc();
+        }
+        
+        private void OnGameReadyButtonClick()
+        {
+            GameManager.Instance.GameReadyRpc();
         }
 
         private void ChangeLobbyUI(bool isHost)

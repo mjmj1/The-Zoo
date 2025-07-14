@@ -31,7 +31,7 @@ namespace Interactions
 
                 var finalRotation = rotationOnSurface * randomYaw;
 
-                Instantiate(interactionObjects[Random.Range(0, 3)], spawnPoint, finalRotation);
+                Instantiate(interactionObjects[Random.Range(0, interactionObjects.Length)], spawnPoint, finalRotation);
             }
         }
     }
