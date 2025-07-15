@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace UI
 {
-    public class LobbyUIManager : MonoBehaviour
+    public class LobbyUI : MonoBehaviour
     {
         [SerializeField] private PlayerListView playerListView;
         [SerializeField] private GameObject gameSetup;
@@ -30,11 +30,12 @@ namespace UI
 
         private void OnDisable()
         {
-            quitButton.onClick.RemoveAllListeners();
-            gameStartButton.onClick.RemoveAllListeners();
-
             var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged -= OnSessionHostChanged;
+            
+            quitButton.onClick.RemoveListener(OnQuitButtonClick);
+            gameStartButton.onClick.RemoveListener(OnGameStartButtonClick);
+            gameReadyButton.onClick.RemoveListener(OnGameReadyButtonClick);
         }
 
         private void OnSessionHostChanged(string obj)
@@ -49,12 +50,14 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
-            GameManager.Instance.GameStartRpc();
+            // GameManager.Instance.GameStartRpc();
+            GameManager.Instance.Test();
         }
 
         private void OnGameReadyButtonClick()
         {
-            GameManager.Instance.GameReady();
+            // GameManager.Instance.GameReady();
+            GameManager.Instance.Test();
         }
 
         private void SwitchUI(bool isHost)

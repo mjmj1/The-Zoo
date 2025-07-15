@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Characters;
+using EventHandler;
 using Networks;
 using Unity.Collections;
 using Unity.Netcode;
@@ -37,6 +38,8 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
+            if (!ConnectionManager.Instance) return;
+            
             _session = ConnectionManager.Instance.CurrentSession;
 
             foreach (var player in _session.Players)
@@ -55,11 +58,12 @@ namespace UI.PlayerList
                 if (player.Id == _session.CurrentPlayer.Id) item.Highlight();
             }
 
+            GamePlayEventHandler.OnPlayerReady += OnPlayerReady;
             _session.PlayerJoined += OnPlayerJoined;
             _session.PlayerHasLeft += OnPlayerHasLeft;
             _session.SessionHostChanged += OnSessionHostChanged;
             _session.SessionHostChanged += GameManager.Instance.PromotedSessionHost;
-            
+
             Map[_session.Host].Host(true);
         }
 
@@ -67,6 +71,7 @@ namespace UI.PlayerList
         {
             Clear();
 
+            GamePlayEventHandler.OnPlayerReady -= OnPlayerReady;
             _session.PlayerJoined -= OnPlayerJoined;
             _session.PlayerHasLeft -= OnPlayerHasLeft;
             _session.SessionHostChanged -= OnSessionHostChanged;
@@ -75,7 +80,12 @@ namespace UI.PlayerList
             _session = null;
         }
 
-        public static void OnPlayerReady(string id, bool value)
+        private void OnPlayerReady(ulong clientId, bool obj)
+        {
+            print($"{clientId} is Ready {obj}");
+        }
+        
+        public void OnPlayerReady(string id, bool value)
         {
             Map[id].Ready(value);
         }

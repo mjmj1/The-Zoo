@@ -1,3 +1,4 @@
+using EventHandler;
 using Networks;
 using TMPro;
 using UI.PlayerList;
@@ -16,7 +17,7 @@ namespace Characters
         public NetworkVariable<FixedString32Bytes> playerId = new();
         public NetworkVariable<ulong> clientId = new();
         public NetworkVariable<bool> isReady = new();
-
+        
         private CharacterNetworkAnimator networkAnimator;
 
         private void Awake()
@@ -26,9 +27,11 @@ namespace Characters
 
         public override void OnNetworkSpawn()
         {
+            isReady.OnValueChanged += OnPlayerReadyChanged;
+            
             playerName.OnValueChanged += OnPlayerNameChanged;
             clientId.OnValueChanged += OnClientIdChanged;
-
+            
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
 
@@ -50,6 +53,11 @@ namespace Characters
 
             playerName.OnValueChanged -= OnPlayerNameChanged;
             clientId.OnValueChanged -= OnClientIdChanged;
+        }
+        
+        private void OnPlayerReadyChanged(bool previousValue, bool newValue)
+        {
+            GamePlayEventHandler.PlayerReady(NetworkManager.LocalClientId, newValue);
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)

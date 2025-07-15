@@ -1,61 +1,82 @@
 using System;
 using EventHandler;
-using Networks;
 using Unity.Netcode;
+using Unity.Services.Authentication;
+using Unity.Services.Core;
+using Unity.Services.Vivox;
 using UnityEngine;
-using UnityEngine.Serialization;
+using Utils;
 
 namespace UI
 {
     public class UIManager : MonoBehaviour
     {
+        [SerializeField] private Canvas backgroundCanvas;
+        [SerializeField] private Canvas titleCanvas;
         [SerializeField] private Canvas mainCanvas;
         [SerializeField] private Canvas lobbyCanvas;
         [SerializeField] private Canvas loadingCanvas;
         [SerializeField] private Canvas popupCanvas;
 
+        public static UIManager Instance;
+
         private void Awake()
         {
-            popupCanvas.gameObject.SetActive(true);
-
-            OnMain();
-        }
-
-        private void Start()
-        {
-            
+            if(Instance == null) Instance = this;
+            else Destroy(gameObject);
         }
 
         private void OnEnable()
         {
+            popupCanvas.gameObject.SetActive(true);
+
+            SwitchUI(UIType.Title);
+            
+            ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
             
-            ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
-            ConnectionEventHandler.OnSessionDisconnected += OnSessionDisconnected;
+            UnityServices.Initialized += UnityServicesOnInitialized;
+            
+            NetworkManager.OnDestroying += Destroying;
         }
 
-        private void OnDisable()
+        private void UnityServicesOnInitialized()
         {
-            ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
-            ConnectionEventHandler.OnSessionDisconnected -= OnSessionDisconnected;
+            UnityServices.Initialized -= UnityServicesOnInitialized;
             
+            print("Unity Services initialized.");
+            
+            if(AuthenticationService.Instance == null) print("AuthenticationService.Instance == null");
+            
+            AuthenticationService.Instance.SignedIn += OnSignedIn;
+        }
+
+        private void Destroying(NetworkManager obj)
+        {
+            NetworkManager.OnDestroying -= Destroying;
+            
+            ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
+            
+            AuthenticationService.Instance.SignedIn -= OnSignedIn;
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         }
 
-        private void OnMain()
+        internal void SwitchUI(UIType uiType)
         {
-            mainCanvas.gameObject.SetActive(true);
-            lobbyCanvas.gameObject.SetActive(false);
+            titleCanvas.gameObject.SetActive(uiType == UIType.Title);
+            mainCanvas.gameObject.SetActive(uiType == UIType.Main);
+            lobbyCanvas.gameObject.SetActive(uiType == UIType.Lobby);
+            backgroundCanvas.gameObject.SetActive(uiType != UIType.Lobby);
             loadingCanvas.gameObject.SetActive(false);
         }
         
-        private void OnLobby()
+        private void OnSignedIn()
         {
-            mainCanvas.gameObject.SetActive(false);
-            lobbyCanvas.gameObject.SetActive(true);
-            loadingCanvas.gameObject.SetActive(false);
+            print("Signed In.");
+            
+            SwitchUI(UIType.Main);
         }
 
         private void OnSessionConnectStart()
@@ -63,23 +84,25 @@ namespace UI
             loadingCanvas.gameObject.SetActive(true);
         }
 
-        private void OnSessionDisconnected()
-        {
-            loadingCanvas.gameObject.SetActive(false);
-        }
-
         private void OnClientConnectedCallback(ulong clientId)
         {
             if (NetworkManager.Singleton.LocalClientId != clientId) return;
 
-            OnLobby();
+            SwitchUI(UIType.Lobby);
         }
 
         private void OnClientDisconnectCallback(ulong clientId)
         {
             if (NetworkManager.Singleton.LocalClientId != clientId) return;
 
-            OnMain();
+            SwitchUI(UIType.Main);
         }
+    }
+
+    internal enum UIType
+    {
+        Title,
+        Main,
+        Lobby
     }
 }

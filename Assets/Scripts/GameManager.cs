@@ -10,16 +10,6 @@ using Utils;
 
 public class GameManager : NetworkBehaviour
 {
-    public enum GameState
-    {
-        Lobby,
-        InGame,
-        GameOver,
-        Finished
-    }
-    
-    public NetworkVariable<GameState> CurrentState = new(GameState.Lobby);
-    
     public static GameManager Instance { get; private set; }
 
     private void Awake()
@@ -34,18 +24,19 @@ public class GameManager : NetworkBehaviour
             Destroy(gameObject);
         }
     }
-    
-    [Rpc(SendTo.Owner)]
-    internal void SetGameStateOwnerRpc(GameState state)
+
+    public void Test()
     {
-        MyLogger.Print(this, $"Set GameState: {state} ");
-        CurrentState.Value = state;
+        var entity = NetworkManager.Singleton.LocalClient.PlayerObject
+            .GetComponent<PlayerEntity>();
+        
+        entity.isReady.Value = !entity.isReady.Value;
     }
 
     [Rpc(SendTo.Everyone)]
     private void NotifyReadyRpc(FixedString32Bytes playerId, bool isReady)
     {
-        PlayerListView.OnPlayerReady(playerId.Value, isReady);
+        // PlayerListView.OnPlayerReady(playerId.Value, isReady);
     }
 
     internal void GameReady()

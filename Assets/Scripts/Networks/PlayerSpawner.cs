@@ -1,8 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Networks
 {
@@ -13,6 +15,9 @@ namespace Networks
         private readonly NetworkVariable<int> nextAnimalIndex = new();
         
         private List<int> animalIndexes;
+
+        private NetworkVariable<int> personalINT = new();
+        private NetworkVariable<int> ownerINT = new(writePerm:NetworkVariableWritePermission.Owner);
 
         public override void OnNetworkSpawn()
         {
@@ -29,33 +34,46 @@ namespace Networks
             
                 var index = animalIndexes[nextAnimalIndex.Value];
                 
-                AssignAnimalPrefab(index);
+                SpawnPlayer(index);
             }
             else
             {
-                AssignAnimalPrefabRpc(NetworkManager.LocalClientId);
+                SpawnPlayerRpc(NetworkManager.LocalClientId);
             }
             
             base.OnNetworkSessionSynchronized();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                MyLogger.Print(this, $"owner: {personalINT.Value}, server: {ownerINT.Value}");
+            }
+            
+            if (Input.GetKeyDown(KeyCode.H))
+            {
+                MyLogger.Print(this, $"owner: {++personalINT.Value}, server: {++ownerINT.Value}");
+            }
+        }
+
         [Rpc(SendTo.Owner)]
-        private void AssignAnimalPrefabRpc(ulong clientId)
+        private void SpawnPlayerRpc(ulong clientId)
         {
             nextAnimalIndex.Value += 1 % animalIndexes.Count;
             
             var index = animalIndexes[nextAnimalIndex.Value];
             
-            AssignAnimalPrefabRpc(index, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+            SpawnPlayerRpc(index, RpcTarget.Single(clientId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        private void AssignAnimalPrefabRpc(int index, RpcParams rpcParams = default)
+        private void SpawnPlayerRpc(int index, RpcParams rpcParams = default)
         {
-            AssignAnimalPrefab(index);
+            SpawnPlayer(index);
         }
 
-        private void AssignAnimalPrefab(int index)
+        private void SpawnPlayer(int index)
         {
             var prefab = animalPrefabs[index];
 

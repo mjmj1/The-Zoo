@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace UI
 {
-    public class InGameUIManager : MonoBehaviour
+    public class InGameUI : MonoBehaviour
     {
         // No longer manages interaction prompts directly
     }

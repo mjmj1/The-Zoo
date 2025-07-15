@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Interactions
 {
-    public class SpawnerInteractable : Interactable
+    public class InteractableSpawner : Interactable
     {
         [SerializeField] private GameObject spawnObject;
         [SerializeField] private BoxCollider[] spawnPoints;
