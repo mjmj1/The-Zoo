@@ -18,14 +18,6 @@ namespace UI
         [SerializeField] private Canvas loadingCanvas;
         [SerializeField] private Canvas popupCanvas;
 
-        public static UIManager Instance;
-
-        private void Awake()
-        {
-            if(Instance == null) Instance = this;
-            else Destroy(gameObject);
-        }
-
         private void OnEnable()
         {
             popupCanvas.gameObject.SetActive(true);
@@ -38,23 +30,19 @@ namespace UI
             
             UnityServices.Initialized += UnityServicesOnInitialized;
             
-            NetworkManager.OnDestroying += Destroying;
+            NetworkManager.OnDestroying += OnDestroying;
         }
 
         private void UnityServicesOnInitialized()
         {
             UnityServices.Initialized -= UnityServicesOnInitialized;
             
-            print("Unity Services initialized.");
-            
-            if(AuthenticationService.Instance == null) print("AuthenticationService.Instance == null");
-            
             AuthenticationService.Instance.SignedIn += OnSignedIn;
         }
 
-        private void Destroying(NetworkManager obj)
+        private void OnDestroying(NetworkManager obj)
         {
-            NetworkManager.OnDestroying -= Destroying;
+            NetworkManager.OnDestroying -= OnDestroying;
             
             ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
             
@@ -63,7 +51,7 @@ namespace UI
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         }
 
-        internal void SwitchUI(UIType uiType)
+        private void SwitchUI(UIType uiType)
         {
             titleCanvas.gameObject.SetActive(uiType == UIType.Title);
             mainCanvas.gameObject.SetActive(uiType == UIType.Main);
@@ -74,8 +62,6 @@ namespace UI
         
         private void OnSignedIn()
         {
-            print("Signed In.");
-            
             SwitchUI(UIType.Main);
         }
 

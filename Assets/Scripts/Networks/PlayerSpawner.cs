@@ -16,9 +16,6 @@ namespace Networks
         
         private List<int> animalIndexes;
 
-        private NetworkVariable<int> personalINT = new();
-        private NetworkVariable<int> ownerINT = new(writePerm:NetworkVariableWritePermission.Owner);
-
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -42,19 +39,6 @@ namespace Networks
             }
             
             base.OnNetworkSessionSynchronized();
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                MyLogger.Print(this, $"owner: {personalINT.Value}, server: {ownerINT.Value}");
-            }
-            
-            if (Input.GetKeyDown(KeyCode.H))
-            {
-                MyLogger.Print(this, $"owner: {++personalINT.Value}, server: {++ownerINT.Value}");
-            }
         }
 
         [Rpc(SendTo.Owner)]

@@ -24,7 +24,11 @@ namespace Networks
 
         private void Awake()
         {
-            if (Instance == null) Instance = this;
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
             else Destroy(gameObject);
         }
 
@@ -34,11 +38,11 @@ namespace Networks
             {
                 await UnityServices.InitializeAsync();
 
-                if (!initialLoad)
+                /*if (!initialLoad)
                 {
                     initialLoad = true;
                     GameManager.Instance.LoadLobbyScene();
-                }
+                }*/
             
                 NetworkManager.OnDestroying += Destroying;
             
@@ -365,17 +369,11 @@ namespace Networks
 
         public async Task Login(string playerName)
         {
-            if (AuthenticationService.Instance == null)
-            {
-                print("AuthenticationService.Instance == null");
-                return;
-            }
+            if (AuthenticationService.Instance == null) return;
 
             if (!AuthenticationService.Instance.IsSignedIn) await SignInAsync();
 
             await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
-            
-            print($"logged in. {playerName}");
         }
     }
 }
