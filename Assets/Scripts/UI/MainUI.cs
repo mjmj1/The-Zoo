@@ -29,7 +29,7 @@ namespace UI
         {
             joinButton.onClick.RemoveListener(OnJoinButtonClick);
             quickStartButton.onClick.RemoveListener(OnQuickStartButtonClick);
-            sessionListButton.onClick.AddListener(sessionsList.Toggle);
+            sessionListButton.onClick.RemoveListener(sessionsList.Toggle);
         }
         
         private void OnQuickStartButtonClick()

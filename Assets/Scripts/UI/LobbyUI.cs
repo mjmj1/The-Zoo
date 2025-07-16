@@ -57,10 +57,7 @@ namespace UI
 
         private void OnGameReadyButtonClick()
         {
-            var checker = NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerReadyChecker>();
-        
-            checker.Toggle();
+            GameManager.Instance.Ready();
         }
 
         private void SwitchUI(bool isHost)

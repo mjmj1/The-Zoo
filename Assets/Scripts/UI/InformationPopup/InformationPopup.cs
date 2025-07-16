@@ -47,16 +47,16 @@ namespace UI
 
             msg.text = massage;
             
-            btn.onClick.AddListener(HidePopup());
+            btn.onClick.AddListener(HidePopup(item));
 
             item.SetActive(true);
         }
 
-        private UnityAction HidePopup()
+        private UnityAction HidePopup(GameObject item)
         {
             return () =>
             {
-                pool.Release(gameObject);
+                pool.Release(item);
             };
         }
         
@@ -72,6 +72,7 @@ namespace UI
 
         private void ReleasePoolObj(GameObject obj)
         {
+            obj.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
             obj.SetActive(false);
         }
 

@@ -15,33 +15,33 @@ namespace Characters
     [CustomEditor(typeof(CharacterHandler), true)]
     public class CharacterControllerEditor : NetworkTransformEditor
     {
-        private SerializedProperty _groundMask;
-        private SerializedProperty _jumpForce;
-        private SerializedProperty _mouseSensitivity;
-        private SerializedProperty _rotationSpeed;
-        private SerializedProperty _sprintSpeed;
-        private SerializedProperty _walkSpeed;
+        private SerializedProperty groundMask;
+        private SerializedProperty jumpForce;
+        private SerializedProperty mouseSensitivity;
+        private SerializedProperty rotationSpeed;
+        private SerializedProperty sprintSpeed;
+        private SerializedProperty walkSpeed;
 
         public override void OnEnable()
         {
-            _groundMask = serializedObject.FindProperty(nameof(CharacterHandler.groundMask));
-            _jumpForce = serializedObject.FindProperty(nameof(CharacterHandler.jumpForce));
-            _walkSpeed = serializedObject.FindProperty(nameof(CharacterHandler.walkSpeed));
-            _sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.sprintSpeed));
-            _rotationSpeed = serializedObject.FindProperty(nameof(CharacterHandler.rotationSpeed));
-            _mouseSensitivity =
+            groundMask = serializedObject.FindProperty(nameof(CharacterHandler.groundMask));
+            jumpForce = serializedObject.FindProperty(nameof(CharacterHandler.jumpForce));
+            walkSpeed = serializedObject.FindProperty(nameof(CharacterHandler.walkSpeed));
+            sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.sprintSpeed));
+            rotationSpeed = serializedObject.FindProperty(nameof(CharacterHandler.rotationSpeed));
+            mouseSensitivity =
                 serializedObject.FindProperty(nameof(CharacterHandler.mouseSensitivity));
             base.OnEnable();
         }
 
         private void DisplayCharacterControllerProperties()
         {
-            EditorGUILayout.PropertyField(_groundMask);
-            EditorGUILayout.PropertyField(_jumpForce);
-            EditorGUILayout.PropertyField(_walkSpeed);
-            EditorGUILayout.PropertyField(_sprintSpeed);
-            EditorGUILayout.PropertyField(_rotationSpeed);
-            EditorGUILayout.PropertyField(_mouseSensitivity);
+            EditorGUILayout.PropertyField(groundMask);
+            EditorGUILayout.PropertyField(jumpForce);
+            EditorGUILayout.PropertyField(walkSpeed);
+            EditorGUILayout.PropertyField(sprintSpeed);
+            EditorGUILayout.PropertyField(rotationSpeed);
+            EditorGUILayout.PropertyField(mouseSensitivity);
         }
 
         public override void OnInspectorGUI()

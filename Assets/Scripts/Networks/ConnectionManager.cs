@@ -38,12 +38,6 @@ namespace Networks
             {
                 await UnityServices.InitializeAsync();
 
-                /*if (!initialLoad)
-                {
-                    initialLoad = true;
-                    GameManager.Instance.LoadLobbyScene();
-                }*/
-            
                 NetworkManager.OnDestroying += Destroying;
             
                 NetworkManager.Singleton.OnClientStopped += OnClientStopped;
@@ -55,13 +49,6 @@ namespace Networks
             {
                 MyLogger.Print(this, e.Message);
             }
-        }
-
-        private void ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest req,
-                                                NetworkManager.ConnectionApprovalResponse res)
-        {
-            print($"Request: {req.ClientNetworkId}, {req.Payload}");
-            print($"Response: {res.PlayerPrefabHash}");
         }
 
         private void Destroying(NetworkManager obj)

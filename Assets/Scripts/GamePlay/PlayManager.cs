@@ -3,35 +3,27 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
-using Random = UnityEngine.Random;
 
 namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
-        [SerializeField] private float spawnRadius = 7.5f;
-        
         public static readonly NetworkVariable<int> CurrentTime = new();
-        private readonly WaitForSeconds waitDelay = new (1.0f);
+        [SerializeField] private float spawnRadius = 7.5f;
+        private readonly WaitForSeconds waitDelay = new(1.0f);
 
         private bool isGameStarted;
-        
+
         public void Update()
         {
             if (IsClient)
             {
                 if (Input.GetKeyDown(KeyCode.T))
-                {
-                    PingToAuthorityRpc();    
-                }
+                    PingToAuthorityRpc();
                 else if (Input.GetKeyDown(KeyCode.G))
-                {
                     PingToNotAuthorityRpc();
-                }
                 else if (Input.GetKeyDown(KeyCode.B))
-                {
                     PingToEveryoneRpc();
-                }
             }
         }
 
@@ -41,39 +33,39 @@ namespace GamePlay
 
             OnGameStart();
         }
-        
+
         private void OnGameStart()
         {
             if (!IsSessionOwner) return;
 
             isGameStarted = true;
-            
+
             MoveRandomPositionRpc();
-            
+
             StartCoroutine(CountTime());
         }
 
         [Rpc(SendTo.Authority)]
         private void PingToAuthorityRpc()
         {
-            print($"Ping SendTo.Authority");
-            
+            print("Ping SendTo.Authority");
+
             print($"Ping SendTo.Authority from Client-{OwnerClientId}");
         }
-        
+
         [Rpc(SendTo.NotAuthority)]
         private void PingToNotAuthorityRpc()
         {
-            print($"Ping SendTo.NotAuthority");
-            
+            print("Ping SendTo.NotAuthority");
+
             print($"Ping SendTo.NotAuthority from Client-{OwnerClientId}");
         }
-        
+
         [Rpc(SendTo.Everyone)]
         private void PingToEveryoneRpc()
         {
-            print($"Ping SendTo.Everyone");
-            
+            print("Ping SendTo.Everyone");
+
             print($"Ping SendTo.Everyone from Client-{OwnerClientId}");
         }
 

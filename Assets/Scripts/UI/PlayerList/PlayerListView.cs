@@ -41,10 +41,8 @@ namespace UI.PlayerList
                 var item = pool.Get();
 
                 player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
-
-                var playerName = prop == null ? "UNKNOWN" : prop.Value;
-
-                item.SetPlayerName(playerName);
+                
+                item.Bind(player);
 
                 Map.Add(player.Id, item);
 
@@ -98,11 +96,7 @@ namespace UI.PlayerList
 
             var player = session.Players.First(player => player.Id == playerId);
 
-            player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
-
-            var playerName = prop == null ? "UNKNOWN" : prop.Value;
-
-            item.SetPlayerName(playerName);
+            item.Bind(player);
 
             Map.Add(playerId, item);
         }

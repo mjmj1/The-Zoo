@@ -236,6 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1295311494}
+  gameEndButton: {fileID: 415958139}
 --- !u!1 &415958137
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,7 +250,7 @@ GameObject:
   - component: {fileID: 415958140}
   - component: {fileID: 415958139}
   m_Layer: 5
-  m_Name: GameEnd
+  m_Name: Game End Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

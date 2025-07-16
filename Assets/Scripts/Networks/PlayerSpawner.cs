@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
@@ -11,11 +10,10 @@ namespace Networks
     public class PlayerSpawner : NetworkBehaviour
     {
         [SerializeField] private List<NetworkObject> animalPrefabs;
-
         private readonly NetworkList<int> spawnedAnimals = new();
 
-        public int id;
-        
+        public int index;
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
@@ -26,31 +24,33 @@ namespace Networks
         private void OnPreShutdown()
         {
             NetworkManager.Singleton.OnPreShutdown -= OnPreShutdown;
-            
-            RemoveRpc(id);
+
+            RemoveRpc(index);
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
+            index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
+
+            SpawnPlayer(index);
+
+            AddRpc(index);
+
             base.OnNetworkSessionSynchronized();
-
-            id = GetRandomIndexExcludingSpawned(11);
-            
-            SpawnPlayer(id);
         }
 
         [Rpc(SendTo.Owner)]
-        private void AddRpc(int index)
+        private void AddRpc(int i)
         {
-            spawnedAnimals.Add(index);
+            spawnedAnimals.Add(i);
         }
-        
+
         [Rpc(SendTo.Owner)]
-        private void RemoveRpc(int index)
+        private void RemoveRpc(int i)
         {
-            spawnedAnimals.Remove(index);
+            spawnedAnimals.Remove(i);
         }
-        
+
         private int GetRandomIndexExcludingSpawned(int max)
         {
             var candidates = Enumerable
@@ -69,19 +69,17 @@ namespace Networks
             return pick;
         }
 
-        private void SpawnPlayer(int index)
+        private void SpawnPlayer(int i)
         {
-            var list = NetworkManager.Singleton.NetworkConfig.Prefabs.NetworkPrefabsLists[1].PrefabList;
+            var prefab = animalPrefabs[i];
 
-            var prefab = list[index];
+            var pos = Util.GetCirclePositions(Vector3.zero, i, 5f, 8);
 
-            var pos = Util.GetCirclePositions(Vector3.zero, index, 5f, 8);
-
-            var obj = Instantiate(prefab.Prefab, pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
-
-            obj.GetComponent<NetworkObject>().Spawn();
-
-            AddRpc(index);
+            prefab.InstantiateAndSpawn(NetworkManager,
+                NetworkManager.LocalClientId,
+                isPlayerObject: true,
+                position: pos,
+                rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
     }
 }

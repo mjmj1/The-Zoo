@@ -1,9 +1,11 @@
 using Networks;
 using TMPro;
 using Unity.Netcode;
+using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Utils;
 
 namespace UI.PlayerList
 {
@@ -20,9 +22,9 @@ namespace UI.PlayerList
         [SerializeField] private Button promoteHostButton;
         [SerializeField] private Button kickButton;
 
-        private bool _isHost;
+        private bool isHost;
 
-        private string _playerId;
+        private string playerId;
 
         private void Start()
         {
@@ -39,7 +41,7 @@ namespace UI.PlayerList
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
 
-            _isHost = false;
+            isHost = false;
 
             otherBg.SetActive(true);
             
@@ -60,7 +62,7 @@ namespace UI.PlayerList
         {
             if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
 
-            if (_isHost) return;
+            if (isHost) return;
 
             actionButtons.SetActive(true);
         }
@@ -77,11 +79,22 @@ namespace UI.PlayerList
             playerNameText.SetText(playerName);
         }
 
+        public void Bind(IReadOnlyPlayer player)
+        {
+            player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
+
+            var playerName = prop == null ? "UNKNOWN" : prop.Value;
+
+            playerNameText.SetText(playerName);
+
+            playerId = player.Id;
+        }
+
         public void Host(bool value)
         {
             hostIcon.SetActive(value);
 
-            _isHost = value;
+            isHost = value;
             
             actionButtons.SetActive(false);
         }
@@ -99,12 +112,12 @@ namespace UI.PlayerList
 
         private void OnPromoteHostButtonClick()
         {
-            ConnectionManager.Instance.ChangeHostAsync(_playerId);
+            ConnectionManager.Instance.ChangeHostAsync(playerId);
         }
 
         private void OnKickButtonClick()
         {
-            ConnectionManager.Instance.KickPlayerAsync(_playerId);
+            ConnectionManager.Instance.KickPlayerAsync(playerId);
         }
     }
 }

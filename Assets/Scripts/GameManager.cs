@@ -5,6 +5,7 @@ using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine.SceneManagement;
+using Utils;
 
 public class GameManager : NetworkBehaviour
 {
@@ -17,23 +18,36 @@ public class GameManager : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (Instance != this)
+        else
         {
             Destroy(gameObject);
         }
+    }
+
+    protected override void OnOwnershipChanged(ulong previous, ulong current)
+    {
+        base.OnOwnershipChanged(previous, current);
+
+        MyLogger.Trace($"previous: {previous}\n current: {current}");
+    }
+
+    internal void Ready()
+    {
+        var checker = NetworkManager.Singleton.LocalClient.PlayerObject
+            .GetComponent<PlayerReadyChecker>();
+
+        checker.Toggle();
     }
 
     internal void GameStartRpc()
     {
         try
         {
-            print(1);
             if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
-            print(2);
-            if (!CanGameStart()) throw new Exception("You Can not start game !");
-            print(3);
-            LoadSceneServerRpc("InGame");
-            print(4);
+
+            if (!CanGameStart()) throw new Exception("플레이어들이 준비되지 않았습니다");
+
+            LoadSceneRpc("InGame");
         }
         catch (Exception e)
         {
@@ -45,8 +59,7 @@ public class GameManager : NetworkBehaviour
     {
         if (playerId == AuthenticationService.Instance.PlayerId)
             NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().isReady
-                    .Value =
-                true;
+                .Value = true;
         else
             NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().Reset();
     }
@@ -71,12 +84,12 @@ public class GameManager : NetworkBehaviour
         SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    internal void LoadSceneServerRpc(string sceneName)
+    [Rpc(SendTo.Authority)]
+    internal void LoadSceneRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
         print($"client-{NetworkManager.Singleton.CurrentSessionOwner} is Session Owner.");
 
-        // NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
 }
