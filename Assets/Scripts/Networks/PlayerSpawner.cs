@@ -19,7 +19,7 @@ namespace Networks
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
-            
+
             NetworkManager.Singleton.OnPreShutdown += OnPreShutdown;
         }
 
@@ -32,11 +32,11 @@ namespace Networks
 
         protected override void OnNetworkSessionSynchronized()
         {
+            base.OnNetworkSessionSynchronized();
+
             id = GetRandomIndexExcludingSpawned();
             
             SpawnPlayer(id);
-            
-            base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]
