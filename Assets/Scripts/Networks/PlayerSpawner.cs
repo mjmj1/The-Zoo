@@ -12,49 +12,61 @@ namespace Networks
     {
         [SerializeField] private List<NetworkObject> animalPrefabs;
 
-        private readonly NetworkVariable<int> nextAnimalIndex = new();
-        
-        private List<int> animalIndexes;
+        private readonly NetworkList<int> spawnedAnimals = new();
 
+        public int id;
+        
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
+            
+            NetworkManager.Singleton.OnPreShutdown += OnPreShutdown;
+        }
 
-            animalIndexes = Enumerable.Range(0, animalPrefabs.Count).OrderBy(_ => Random.value).ToList();
+        private void OnPreShutdown()
+        {
+            NetworkManager.Singleton.OnPreShutdown -= OnPreShutdown;
+            
+            RemoveRpc(id);
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
-            if (IsSessionOwner)
-            {
-                nextAnimalIndex.Value += 1 % animalIndexes.Count;
+            id = GetRandomIndexExcludingSpawned();
             
-                var index = animalIndexes[nextAnimalIndex.Value];
-                
-                SpawnPlayer(index);
-            }
-            else
-            {
-                SpawnPlayerRpc(NetworkManager.LocalClientId);
-            }
+            SpawnPlayer(id);
             
             base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]
-        private void SpawnPlayerRpc(ulong clientId)
+        private void AddRpc(int index)
         {
-            nextAnimalIndex.Value += 1 % animalIndexes.Count;
-            
-            var index = animalIndexes[nextAnimalIndex.Value];
-            
-            SpawnPlayerRpc(index, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+            spawnedAnimals.Add(index);
         }
-
-        [Rpc(SendTo.SpecifiedInParams)]
-        private void SpawnPlayerRpc(int index, RpcParams rpcParams = default)
+        
+        [Rpc(SendTo.Owner)]
+        private void RemoveRpc(int index)
         {
-            SpawnPlayer(index);
+            spawnedAnimals.Remove(index);
+        }
+        
+        private int GetRandomIndexExcludingSpawned()
+        {
+            var candidates = Enumerable
+                .Range(0, animalPrefabs.Count)
+                .Where(i => !spawnedAnimals.Contains(i))
+                .ToList();
+
+            if (candidates.Count == 0)
+            {
+                Debug.LogWarning("사용 가능한 인덱스가 남아있지 않습니다!");
+                return 0;
+            }
+
+            var pick = candidates[Random.Range(0, candidates.Count)];
+
+            return pick;
         }
 
         private void SpawnPlayer(int index)
@@ -68,6 +80,8 @@ namespace Networks
                 isPlayerObject: true,
                 position: pos,
                 rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
+            
+            AddRpc(index);
         }
     }
 }

@@ -57,6 +57,13 @@ namespace Networks
             }
         }
 
+        private void ConnectionApprovalCallback(NetworkManager.ConnectionApprovalRequest req,
+                                                NetworkManager.ConnectionApprovalResponse res)
+        {
+            print($"Request: {req.ClientNetworkId}, {req.Payload}");
+            print($"Response: {res.PlayerPrefabHash}");
+        }
+
         private void Destroying(NetworkManager obj)
         {
             NetworkManager.OnDestroying -= Destroying;
