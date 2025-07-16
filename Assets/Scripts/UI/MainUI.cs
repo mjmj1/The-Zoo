@@ -19,6 +19,7 @@ namespace UI
 
         private void OnEnable()
         {
+            sessionsList.gameObject.SetActive(false);
             joinButton.onClick.AddListener(OnJoinButtonClick);
             quickStartButton.onClick.AddListener(OnQuickStartButtonClick);
             sessionListButton.onClick.AddListener(sessionsList.Toggle);

@@ -11,9 +11,6 @@ namespace UI.SessionList
 {
     public class SessionView : MonoBehaviour, ISelectHandler
     {
-        [SerializeField] private Color originColor;
-        
-        [SerializeField] private Image shine;
         [SerializeField] private GameObject lockIcon;
         [SerializeField] private TMP_Text sessionNameText;
         [SerializeField] private TMP_Text sessionPlayersText;
@@ -41,7 +38,6 @@ namespace UI.SessionList
         private void IsLock(bool value)
         {
             lockIcon.SetActive(value);
-            shine.color = value ? Color.gold : originColor;
         }
     }
 }
