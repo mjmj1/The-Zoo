@@ -29,7 +29,7 @@ namespace UI
 
         private void OnGameEndButtonClicked()
         {
-            GameManager.Instance.LoadLobbyScene();
+            GameManager.Instance.LoadSceneRpc("Lobby");
         }
     }
 }

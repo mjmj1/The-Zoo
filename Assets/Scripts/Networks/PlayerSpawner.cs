@@ -30,6 +30,8 @@ namespace Networks
 
         protected override void OnNetworkSessionSynchronized()
         {
+            MyLogger.Print("Synchronized");
+
             index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
 
             SpawnPlayer(index);

@@ -79,11 +79,6 @@ public class GameManager : NetworkBehaviour
         return true;
     }
 
-    internal void LoadLobbyScene()
-    {
-        SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
-    }
-
     [Rpc(SendTo.Authority)]
     internal void LoadSceneRpc(string sceneName)
     {

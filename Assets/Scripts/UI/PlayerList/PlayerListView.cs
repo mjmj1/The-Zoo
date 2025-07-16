@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EventHandler;
 using Networks;
+using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -32,6 +33,8 @@ namespace UI.PlayerList
 
         private void OnEnable()
         {
+            if (!UnityServices.State.Equals(ServicesInitializationState.Initialized)) return;
+
             if (!ConnectionManager.Instance) return;
 
             session = ConnectionManager.Instance.CurrentSession;
@@ -41,7 +44,7 @@ namespace UI.PlayerList
                 var item = pool.Get();
 
                 player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
-                
+
                 item.Bind(player);
 
                 Map.Add(player.Id, item);
@@ -60,6 +63,8 @@ namespace UI.PlayerList
 
         private void OnDisable()
         {
+            if(session == null) return;
+
             Clear();
 
             GamePlayEventHandler.OnPlayerReady -= OnPlayerReady;

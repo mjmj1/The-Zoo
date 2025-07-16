@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using Utils;
 using static Characters.InputHandler;
 
 namespace Characters
@@ -146,6 +147,12 @@ namespace Characters
 
             InitializeFollowCamera();
             InitializeGravity();
+
+            if (sceneName != "Lobby") return;
+
+            var pos = Util.GetCirclePositions(Vector3.zero, Random.Range(0, 8), 5f, 8);
+
+            transform.SetPositionAndRotation(pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
 
         private void Subscribe()

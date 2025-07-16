@@ -4,6 +4,7 @@ using Networks;
 using TMPro;
 using UI.PlayerList;
 using Unity.Netcode;
+using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,6 +21,8 @@ namespace UI
         
         private void OnEnable()
         {
+            if (!UnityServices.State.Equals(ServicesInitializationState.Initialized)) return;
+
             var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged += OnSessionHostChanged;
             
@@ -33,6 +36,9 @@ namespace UI
         private void OnDisable()
         {
             var session = ConnectionManager.Instance.CurrentSession;
+
+            if (session == null) return;
+
             session.SessionHostChanged -= OnSessionHostChanged;
             
             quitButton.onClick.RemoveListener(OnQuitButtonClick);

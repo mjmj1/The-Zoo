@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Networks;
+using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -39,6 +40,8 @@ namespace UI.SessionList
 
         private void OnEnable()
         {
+            if (!UnityServices.State.Equals(ServicesInitializationState.Initialized)) return;
+
             joinButton.interactable = false;
             RefreshAsync();
             
