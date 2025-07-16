@@ -9,7 +9,7 @@ namespace EventHandler
         internal static event Action OnGameStart;
         internal static event Action OnGameOver;
         internal static event Action OnGameFinished;
-        internal static event Action<ulong, bool> OnPlayerReady;
+        internal static event Action<string, bool> OnPlayerReady;
         internal static event Action OnPlayerLogin;
         
         private static void GameStart()
@@ -26,10 +26,10 @@ namespace EventHandler
         {
             OnGameFinished?.Invoke();
         }
-
-        internal static void PlayerReady(ulong clientId, bool newValue)
+        
+        internal static void PlayerReady(string id, bool value)
         {
-            OnPlayerReady?.Invoke(clientId, newValue);
+            OnPlayerReady?.Invoke(id, value);
         }
         
         internal static void PlayerLogin()

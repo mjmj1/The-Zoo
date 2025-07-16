@@ -72,11 +72,6 @@ namespace UI.PlayerList
             actionButtons.SetActive(false);
         }
 
-        public void SetPlayerId(string pId)
-        {
-            _playerId = pId;
-        }
-
         public void SetPlayerName(string playerName)
         {
             playerNameText.SetText(playerName);

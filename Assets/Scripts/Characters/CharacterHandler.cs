@@ -76,18 +76,17 @@ namespace Characters
         public float minPitch = -10f;
         public float maxPitch = 20f;
 
-        private PlayerEntity _entity;
+        private CharacterNetworkAnimator animator;
 
-        private PlanetGravity _gravity;
-        private InputHandler _input;
+        private PlanetGravity gravity;
+        private InputHandler input;
 
-        private float _moveSpeed;
-        private Transform _planet;
-        private Quaternion _previousRotation;
+        private float moveSpeed;
+        private Quaternion previousRotation;
 
-        private Rigidbody _rb;
+        private Rigidbody rb;
 
-        private bool _isGrounded;
+        private bool isGrounded;
 
         public float Pitch { get; private set; }
 
@@ -95,7 +94,7 @@ namespace Characters
         {
             if (!IsOwner) return;
 
-            _moveSpeed = walkSpeed;
+            moveSpeed = walkSpeed;
         }
 
         private void Update()
@@ -111,9 +110,9 @@ namespace Characters
         {
             if (!IsOwner) return;
 
-            _isGrounded = IsGrounded();
+            isGrounded = IsGrounded();
 
-            _entity.SetBool(IsGroundHash, _isGrounded);
+            animator.SetBool(IsGroundHash, isGrounded);
 
             HandleMovement();
         }
@@ -130,7 +129,7 @@ namespace Characters
         public override void OnNetworkDespawn()
         {
             Unsubscribe();
-            _gravity?.Unsubscribe(_rb);
+            gravity?.Unsubscribe(rb);
 
             base.OnNetworkDespawn();
         }
@@ -155,14 +154,14 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            _input.InputActions.Player.Move.performed += MovementAction;
-            _input.InputActions.Player.Move.canceled += MovementAction;
+            input.InputActions.Player.Move.performed += MovementAction;
+            input.InputActions.Player.Move.canceled += MovementAction;
 
-            _input.InputActions.Player.Jump.performed += JumpAction;
+            input.InputActions.Player.Jump.performed += JumpAction;
 
-            _input.OnAttackPressed += ClickedAction;
-            _input.OnSprintPressed += SprintAction;
-            _input.OnSpinPressed += SpinAction;
+            input.OnAttackPressed += ClickedAction;
+            input.OnSprintPressed += SprintAction;
+            input.OnSpinPressed += SpinAction;
         }
 
         private void Unsubscribe()
@@ -171,12 +170,12 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            _input.InputActions.Player.Move.performed -= MovementAction;
-            _input.InputActions.Player.Move.canceled -= MovementAction;
+            input.InputActions.Player.Move.performed -= MovementAction;
+            input.InputActions.Player.Move.canceled -= MovementAction;
 
-            _input.OnAttackPressed -= ClickedAction;
-            _input.OnSprintPressed -= SprintAction;
-            _input.OnSpinPressed -= SpinAction;
+            input.OnAttackPressed -= ClickedAction;
+            input.OnSprintPressed -= SprintAction;
+            input.OnSpinPressed -= SpinAction;
         }
 
         private void InitializeComponent()
@@ -186,9 +185,9 @@ namespace Characters
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            _rb = GetComponent<Rigidbody>();
-            _input = GetComponent<InputHandler>();
-            _entity = GetComponent<PlayerEntity>();
+            rb = GetComponent<Rigidbody>();
+            input = GetComponent<InputHandler>();
+            animator = GetComponent<CharacterNetworkAnimator>();
         }
 
         private void InitializeFollowCamera()
@@ -203,17 +202,16 @@ namespace Characters
         {
             if (!IsOwner) return;
 
-            _gravity = FindAnyObjectByType<PlanetGravity>();
+            gravity = FindAnyObjectByType<PlanetGravity>();
 
-            _rb.useGravity = !_gravity;
+            rb.useGravity = !gravity;
 
-            _planet = _gravity?.gameObject.transform;
-            _gravity?.Subscribe(_rb);
+            gravity?.Subscribe(rb);
         }
 
         private void HandleLook()
         {
-            var lookInput = _input.LookInput;
+            var lookInput = input.LookInput;
 
             Pitch = Mathf.Clamp(Pitch - lookInput.y * mouseSensitivity, minPitch, maxPitch);
 
@@ -222,24 +220,24 @@ namespace Characters
 
         private void HandleMovement()
         {
-            if (_input.SpinPressed) return;
-            if (_input.AttackPressed) return;
+            if (input.SpinPressed) return;
+            if (input.AttackPressed) return;
 
-            var moveInput = _input.MoveInput;
+            var moveInput = input.MoveInput;
 
             if (moveInput == Vector2.zero) return;
 
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            _rb.MovePosition(_rb.position + moveDirection * (_moveSpeed * Time.fixedDeltaTime));
+            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
         }
 
         private void AlignToSurface()
         {
-            if (!_gravity) return;
+            if (!gravity) return;
 
-            var gravityDirection = (transform.position - _planet.position).normalized;
+            var gravityDirection = (transform.position - gravity.transform.position).normalized;
 
             var targetRotation = Quaternion.FromToRotation(
                 transform.up, gravityDirection) * transform.rotation;
@@ -249,39 +247,39 @@ namespace Characters
 
         private void MovementAction(InputAction.CallbackContext ctx)
         {
-            _entity.SetBool(MoveHash, ctx.performed);
+            animator.SetBool(MoveHash, ctx.performed);
         }
 
         private void JumpAction(InputAction.CallbackContext obj)
         {
-            if (!_isGrounded) return;
+            if (!isGrounded) return;
 
-            _entity.SetTrigger(JumpHash);
+            animator.SetTrigger(JumpHash);
 
-            _rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
 
         private void SprintAction(bool value)
         {
-            if (!_isGrounded) return;
+            if (!isGrounded) return;
             
-            _entity.SetBool(SprintHash, value);
+            animator.SetBool(SprintHash, value);
 
-            _moveSpeed = value ? sprintSpeed : walkSpeed;
+            moveSpeed = value ? sprintSpeed : walkSpeed;
         }
 
         private void SpinAction(bool value)
         {
-            if (!_isGrounded) return;
+            if (!isGrounded) return;
             
-            _entity.SetBool(SpinHash, value);
+            animator.SetBool(SpinHash, value);
         }
 
         private void ClickedAction(bool value)
         {
-            if (!_isGrounded) return;
+            if (!isGrounded) return;
             
-            _entity.SetBool(AttackHash, value);
+            animator.SetBool(AttackHash, value);
         }
     }
 }

@@ -14,37 +14,22 @@ namespace Characters
         [SerializeField] private TMP_Text playerNameText;
 
         public NetworkVariable<FixedString32Bytes> playerName = new();
-        public NetworkVariable<FixedString32Bytes> playerId = new();
         public NetworkVariable<ulong> clientId = new();
-        public NetworkVariable<bool> isReady = new();
-        
-        private CharacterNetworkAnimator networkAnimator;
-
-        private void Awake()
-        {
-            networkAnimator = GetComponent<CharacterNetworkAnimator>();
-        }
 
         public override void OnNetworkSpawn()
         {
-            isReady.OnValueChanged += OnPlayerReadyChanged;
-            
+            base.OnNetworkSpawn();
+
             playerName.OnValueChanged += OnPlayerNameChanged;
             clientId.OnValueChanged += OnClientIdChanged;
             
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
 
-            if (IsOwner)
-            {
-                playerName.Value = AuthenticationService.Instance.PlayerName;
-                playerId.Value = AuthenticationService.Instance.PlayerId;
-                clientId.Value = NetworkManager.LocalClientId;
+            if (!IsOwner) return;
 
-                isReady.Value = ConnectionManager.Instance.CurrentSession.IsHost;
-            }
-
-            base.OnNetworkSpawn();
+            playerName.Value = AuthenticationService.Instance.PlayerName;
+            clientId.Value = NetworkManager.LocalClientId;
         }
 
         public override void OnNetworkDespawn()
@@ -55,11 +40,6 @@ namespace Characters
             clientId.OnValueChanged -= OnClientIdChanged;
         }
         
-        private void OnPlayerReadyChanged(bool previousValue, bool newValue)
-        {
-            GamePlayEventHandler.PlayerReady(NetworkManager.LocalClientId, newValue);
-        }
-
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)
         {
             var str = current.Value.Split('#')[0];
@@ -69,26 +49,6 @@ namespace Characters
         private void OnClientIdChanged(ulong prev, ulong current)
         {
             name = $"Client-{current}";
-        }
-
-        public void SetTrigger(int id)
-        {
-            networkAnimator.SetTrigger(id);
-        }
-
-        public void ResetTrigger(int id)
-        {
-            networkAnimator.ResetTrigger(id);
-        }
-
-        public void SetBool(int id, bool value)
-        {
-            networkAnimator.SetBool(id, value);
-        }
-
-        public void SetFloat(int id, float value)
-        {
-            networkAnimator.SetFloat(id, value);
         }
     }
 }

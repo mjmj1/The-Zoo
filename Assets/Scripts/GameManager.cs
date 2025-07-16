@@ -25,14 +25,6 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void Test()
-    {
-        var entity = NetworkManager.Singleton.LocalClient.PlayerObject
-            .GetComponent<PlayerEntity>();
-        
-        entity.isReady.Value = !entity.isReady.Value;
-    }
-
     [Rpc(SendTo.Everyone)]
     private void NotifyReadyRpc(FixedString32Bytes playerId, bool isReady)
     {
@@ -41,12 +33,12 @@ public class GameManager : NetworkBehaviour
 
     internal void GameReady()
     {
-        var entity = NetworkManager.Singleton.LocalClient.PlayerObject
-            .GetComponent<PlayerEntity>();
+        var checker = NetworkManager.Singleton.LocalClient.PlayerObject
+            .GetComponent<PlayerReadyChecker>();
 
-        entity.isReady.Value = !entity.isReady.Value;
+        checker.isReady.Value = !checker.isReady.Value;
 
-        NotifyReadyRpc(AuthenticationService.Instance.PlayerId, entity.isReady.Value);
+        NotifyReadyRpc(AuthenticationService.Instance.PlayerId, checker.isReady.Value);
     }
     
     [Rpc(SendTo.Owner)]
@@ -63,16 +55,12 @@ public class GameManager : NetworkBehaviour
     {
         if (playerId == AuthenticationService.Instance.PlayerId)
         {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().isReady.Value =
                 true;
         }
         else
         {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
-                false;
-
-            NotifyReadyRpc(NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().playerId.Value, 
-                false);
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().Reset();
         }
     }
 
@@ -82,9 +70,9 @@ public class GameManager : NetworkBehaviour
         {
             if (client.PlayerObject == null) return false;
 
-            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity)) return false;
+            if (!client.PlayerObject.TryGetComponent<PlayerReadyChecker>(out var checker)) return false;
 
-            if (!entity.isReady.Value) return false;
+            if (!checker.isReady.Value) return false;
         }
 
         return true;

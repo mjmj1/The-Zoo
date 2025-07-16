@@ -1,7 +1,9 @@
 using System;
+using Characters;
 using Networks;
 using TMPro;
 using UI.PlayerList;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -51,13 +53,21 @@ namespace UI
         private void OnGameStartButtonClick()
         {
             // GameManager.Instance.GameStartRpc();
-            GameManager.Instance.Test();
+            
+            var checker = NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerReadyChecker>();
+        
+            checker.Toggle();
         }
 
         private void OnGameReadyButtonClick()
         {
             // GameManager.Instance.GameReady();
-            GameManager.Instance.Test();
+            
+            var checker = NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerReadyChecker>();
+        
+            checker.Toggle();
         }
 
         private void SwitchUI(bool isHost)
