@@ -20,15 +20,15 @@ namespace GamePlay
         {
             if (IsClient)
             {
-                if (Input.GetKeyDown(KeyCode.R))
+                if (Input.GetKeyDown(KeyCode.T))
                 {
                     PingToAuthorityRpc();    
                 }
-                else if (Input.GetKeyDown(KeyCode.T))
+                else if (Input.GetKeyDown(KeyCode.G))
                 {
                     PingToNotAuthorityRpc();
                 }
-                else if (Input.GetKeyDown(KeyCode.Y))
+                else if (Input.GetKeyDown(KeyCode.B))
                 {
                     PingToEveryoneRpc();
                 }
@@ -58,7 +58,7 @@ namespace GamePlay
         {
             print($"Ping SendTo.Authority");
             
-            print($"Ping SendTo.Authority from Client {NetworkManager.Singleton.LocalClientId}");
+            print($"Ping SendTo.Authority from Client-{OwnerClientId}");
         }
         
         [Rpc(SendTo.NotAuthority)]
@@ -66,7 +66,7 @@ namespace GamePlay
         {
             print($"Ping SendTo.NotAuthority");
             
-            print($"Ping SendTo.NotAuthority from Client {NetworkManager.Singleton.LocalClientId}");
+            print($"Ping SendTo.NotAuthority from Client-{OwnerClientId}");
         }
         
         [Rpc(SendTo.Everyone)]
@@ -74,7 +74,7 @@ namespace GamePlay
         {
             print($"Ping SendTo.Everyone");
             
-            print($"Ping SendTo.Everyone from Client {NetworkManager.Singleton.LocalClientId}");
+            print($"Ping SendTo.Everyone from Client-{OwnerClientId}");
         }
 
         private IEnumerator CountTime()

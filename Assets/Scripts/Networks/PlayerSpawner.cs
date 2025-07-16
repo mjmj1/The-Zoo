@@ -34,7 +34,7 @@ namespace Networks
         {
             base.OnNetworkSessionSynchronized();
 
-            id = GetRandomIndexExcludingSpawned();
+            id = GetRandomIndexExcludingSpawned(11);
             
             SpawnPlayer(id);
         }
@@ -51,10 +51,10 @@ namespace Networks
             spawnedAnimals.Remove(index);
         }
         
-        private int GetRandomIndexExcludingSpawned()
+        private int GetRandomIndexExcludingSpawned(int max)
         {
             var candidates = Enumerable
-                .Range(0, animalPrefabs.Count)
+                .Range(0, max)
                 .Where(i => !spawnedAnimals.Contains(i))
                 .ToList();
 
@@ -71,16 +71,16 @@ namespace Networks
 
         private void SpawnPlayer(int index)
         {
-            var prefab = animalPrefabs[index];
+            var list = NetworkManager.Singleton.NetworkConfig.Prefabs.NetworkPrefabsLists[1].PrefabList;
+
+            var prefab = list[index];
 
             var pos = Util.GetCirclePositions(Vector3.zero, index, 5f, 8);
 
-            prefab.InstantiateAndSpawn(NetworkManager,
-                NetworkManager.LocalClientId,
-                isPlayerObject: true,
-                position: pos,
-                rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
-            
+            var obj = Instantiate(prefab.Prefab, pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
+
+            obj.GetComponent<NetworkObject>().Spawn();
+
             AddRpc(index);
         }
     }

@@ -47,16 +47,16 @@ namespace UI
 
             msg.text = massage;
             
-            btn.onClick.AddListener(HidePopup(item));
+            btn.onClick.AddListener(HidePopup());
 
             item.SetActive(true);
         }
 
-        private UnityAction HidePopup(GameObject item)
+        private UnityAction HidePopup()
         {
             return () =>
             {
-                pool.Release(item);
+                pool.Release(gameObject);
             };
         }
         

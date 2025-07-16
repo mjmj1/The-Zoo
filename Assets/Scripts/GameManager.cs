@@ -1,12 +1,10 @@
 using System;
 using Characters;
 using Networks;
-using UI.PlayerList;
-using Unity.Collections;
+using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine.SceneManagement;
-using Utils;
 
 public class GameManager : NetworkBehaviour
 {
@@ -25,43 +23,32 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone)]
-    private void NotifyReadyRpc(FixedString32Bytes playerId, bool isReady)
-    {
-        // PlayerListView.OnPlayerReady(playerId.Value, isReady);
-    }
-
-    internal void GameReady()
-    {
-        var checker = NetworkManager.Singleton.LocalClient.PlayerObject
-            .GetComponent<PlayerReadyChecker>();
-
-        checker.isReady.Value = !checker.isReady.Value;
-
-        NotifyReadyRpc(AuthenticationService.Instance.PlayerId, checker.isReady.Value);
-    }
-    
-    [Rpc(SendTo.Owner)]
     internal void GameStartRpc()
     {
-        if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
-        
-        if (!CanGameStart()) return;
-
-        LoadSceneRpc("InGame");
+        try
+        {
+            print(1);
+            if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
+            print(2);
+            if (!CanGameStart()) throw new Exception("You Can not start game !");
+            print(3);
+            LoadSceneServerRpc("InGame");
+            print(4);
+        }
+        catch (Exception e)
+        {
+            InformationPopup.instance.ShowPopup(e.Message);
+        }
     }
 
     internal void PromotedSessionHost(string playerId)
     {
         if (playerId == AuthenticationService.Instance.PlayerId)
-        {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().isReady.Value =
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().isReady
+                    .Value =
                 true;
-        }
         else
-        {
             NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().Reset();
-        }
     }
 
     private bool CanGameStart()
@@ -70,7 +57,8 @@ public class GameManager : NetworkBehaviour
         {
             if (client.PlayerObject == null) return false;
 
-            if (!client.PlayerObject.TryGetComponent<PlayerReadyChecker>(out var checker)) return false;
+            if (!client.PlayerObject.TryGetComponent<PlayerReadyChecker>(out var checker))
+                return false;
 
             if (!checker.isReady.Value) return false;
         }
@@ -80,13 +68,15 @@ public class GameManager : NetworkBehaviour
 
     internal void LoadLobbyScene()
     {
-        SceneManager.LoadScene("Lobby");
+        SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
     }
 
-    [Rpc(SendTo.Owner)]
-    internal void LoadSceneRpc(string sceneName)
+    [ServerRpc(RequireOwnership = false)]
+    internal void LoadSceneServerRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
-        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        print($"client-{NetworkManager.Singleton.CurrentSessionOwner} is Session Owner.");
+
+        // NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
 }

@@ -52,18 +52,11 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
-            // GameManager.Instance.GameStartRpc();
-            
-            var checker = NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerReadyChecker>();
-        
-            checker.Toggle();
+            GameManager.Instance.GameStartRpc();
         }
 
         private void OnGameReadyButtonClick()
         {
-            // GameManager.Instance.GameReady();
-            
             var checker = NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerReadyChecker>();
         
