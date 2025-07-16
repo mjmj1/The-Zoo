@@ -4,7 +4,6 @@ using Networks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils;
 
 namespace UI
 {
@@ -28,7 +27,9 @@ namespace UI
             try
             {
                 if (string.IsNullOrEmpty(playerNameInput.text)) throw new Exception("플레이어의 이름을 입력해주세요");
-
+                
+                GamePlayEventHandler.PlayerLogin();
+                
                 var playerName = playerNameInput.text;
 
                 await ConnectionManager.Instance.Login(playerName);
