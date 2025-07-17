@@ -180,7 +180,7 @@ CapsuleCollider:
   m_Radius: 0.22736058
   m_Height: 0.7808913
   m_Direction: 2
-  m_Center: {x: 0, y: 0.2286171, z: 0.03333658}
+  m_Center: {x: 0, y: 0.2286171, z: 0}
 --- !u!1 &3811652565121520473
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,42 +925,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  TransitionStateInfoList:
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 2081823275
-    DestinationState: 765711723
-    TransitionDuration: 0.25
-    TriggerNameHash: 765711723
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 765711723
-    DestinationState: 1748754976
-    TransitionDuration: 0
-    TriggerNameHash: 1748754976
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 765711723
-    DestinationState: 2081823275
-    TransitionDuration: 0.25
-    TriggerNameHash: -1438939069
-    TransitionIndex: 1
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 1748754976
-    DestinationState: 765711723
-    TransitionDuration: 0
-    TriggerNameHash: -121300815
-    TransitionIndex: 0
-  - IsCrossFadeExit: 0
-    Layer: 0
-    OriginatingState: 1748754976
-    DestinationState: 2081823275
-    TransitionDuration: 0.25
-    TriggerNameHash: -1438939069
-    TransitionIndex: 1
+  TransitionStateInfoList: []
   m_Animator: {fileID: 1767503800218650165}
 --- !u!4 &8506982856531812397 stripped
 Transform:

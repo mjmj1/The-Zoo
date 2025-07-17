@@ -758,10 +758,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.37
-  m_Height: 1
+  m_Radius: 0.30763972
+  m_Height: 0.7383674
   m_Direction: 1
-  m_Center: {x: 0, y: 0.5, z: 0.04}
+  m_Center: {x: 0, y: 0.3691837, z: 0}
 --- !u!1001 &3121622680435294790
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -777,10 +777,6 @@ PrefabInstance:
     - target: {fileID: 5884640447956715888, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 336986193
-      objectReference: {fileID: 0}
-    - target: {fileID: 5884640447956715888, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
-      propertyPath: SceneMigrationSynchronization
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5884640447956715888, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
