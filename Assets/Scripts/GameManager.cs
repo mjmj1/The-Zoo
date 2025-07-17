@@ -1,9 +1,11 @@
+using System;
 using Characters;
-using UI.PlayerList;
-using Unity.Collections;
+using Networks;
+using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine.SceneManagement;
+using Utils;
 
 public class GameManager : NetworkBehaviour
 {
@@ -16,69 +18,73 @@ public class GameManager : NetworkBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (Instance != this)
+        else
         {
             Destroy(gameObject);
         }
     }
 
-    [Rpc(SendTo.Everyone)]
-    internal void ReadyRpc(FixedString32Bytes playerId, bool isReady)
+    protected override void OnOwnershipChanged(ulong previous, ulong current)
     {
-        PlayerListView.Instance.OnPlayerReady(playerId.Value, isReady);
+        base.OnOwnershipChanged(previous, current);
+
+        MyLogger.Trace($"previous: {previous}\n current: {current}");
+    }
+
+    internal void Ready()
+    {
+        var checker = NetworkManager.Singleton.LocalClient.PlayerObject
+            .GetComponent<PlayerReadyChecker>();
+
+        checker.Toggle();
+    }
+
+    internal void GameStartRpc()
+    {
+        try
+        {
+            if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
+
+            if (!CanGameStart()) throw new Exception("플레이어들이 준비되지 않았습니다");
+
+            LoadSceneRpc("InGame");
+        }
+        catch (Exception e)
+        {
+            InformationPopup.instance.ShowPopup(e.Message);
+        }
     }
 
     internal void PromotedSessionHost(string playerId)
     {
         if (playerId == AuthenticationService.Instance.PlayerId)
-        {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
-                true;
-        }
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().isReady
+                .Value = true;
         else
-        {
-            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().isReady.Value =
-                false;
-
-            ReadyRpc(NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerEntity>().playerId.Value, 
-                false);
-        }
+            NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerReadyChecker>().Reset();
     }
 
-    internal bool CanGameStart()
+    private bool CanGameStart()
     {
         foreach (var client in NetworkManager.ConnectedClientsList)
         {
-            if (client.PlayerObject == null)
-            {
-                print($"client-{client.ClientId} PlayerObject is null"); return false;
-            }
+            if (client.PlayerObject == null) return false;
 
-            if (!client.PlayerObject.TryGetComponent<PlayerEntity>(out var entity))
-            {
-                print($"client-{client.ClientId} playerEntity is null");
+            if (!client.PlayerObject.TryGetComponent<PlayerReadyChecker>(out var checker))
                 return false;
-            }
 
-            if (!entity.isReady.Value)
-            {
-                print($"client-{client.ClientId} not ready");
-                return false;
-            }
+            if (!checker.isReady.Value) return false;
         }
 
         return true;
     }
 
-    internal void LoadLobbyScene()
-    {
-        SceneManager.LoadScene("Lobby");
-    }
-
-    [Rpc(SendTo.Owner)]
+    [Rpc(SendTo.Authority)]
     internal void LoadSceneRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
-        // NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+        print($"client-{NetworkManager.Singleton.CurrentSessionOwner} is Session Owner.");
+
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }
 }

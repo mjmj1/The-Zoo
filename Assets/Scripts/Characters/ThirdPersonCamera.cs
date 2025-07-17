@@ -7,42 +7,42 @@ namespace Characters
     {
         public float height = 5f;
         public float distance = 10f;
-        private Vector3 _defaultOffset;
+        private Vector3 defaultOffset;
 
-        private Transform _target;
-        private Transform _planetCenter;
+        private Transform target;
+        private Transform planetCenter;
         
-        private CharacterHandler _characterHandler;
+        private CharacterHandler characterHandler;
 
         private void Start()
         {
-            _planetCenter = FindAnyObjectByType<PlanetGravity>()?.transform;
-            _defaultOffset = new Vector3(0, height, -distance);
+            planetCenter = FindAnyObjectByType<PlanetGravity>()?.transform;
+            defaultOffset = new Vector3(0, height, -distance);
         }
 
         private void FixedUpdate()
         {
-            if (!_target) return;
+            if (!target) return;
 
             UpdateCameraPosition();
         }
 
         public void ConnectToTarget(Transform target)
         {
-            _target = target;
-            _characterHandler = target.GetComponent<CharacterHandler>();
+            this.target = target;
+            characterHandler = target.GetComponent<CharacterHandler>();
         }
 
         private void UpdateCameraPosition()
         {
-            var gravityDir = _planetCenter ? (_target.position - _planetCenter.position).normalized : Vector3.up;
-            var pitchRot = Quaternion.AngleAxis(_characterHandler.Pitch, _target.right);
-            var offset = pitchRot * (_target.rotation * _defaultOffset);
-            var targetPos = _target.position + offset;
+            var gravityDir = planetCenter ? (target.position - planetCenter.position).normalized : Vector3.up;
+            var pitchRot = Quaternion.AngleAxis(characterHandler.Pitch, target.right);
+            var offset = pitchRot * (target.rotation * defaultOffset);
+            var targetPos = target.position + offset;
 
             transform.position = targetPos; //Vector3.SmoothDamp(transform.position, targetPos, ref _currentVelocity, rotationSmoothTime);
 
-            transform.rotation = Quaternion.LookRotation(_target.position - transform.position, gravityDir);
+            transform.rotation = Quaternion.LookRotation(target.position - transform.position, gravityDir);
         }
     }
 }

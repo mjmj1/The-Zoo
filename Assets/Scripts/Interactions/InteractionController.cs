@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.Netcode;
 using UnityEngine;
 using Utils;
 
@@ -5,34 +7,31 @@ namespace Interactions
 {
     public class InteractionController : MonoBehaviour
     {
-        [SerializeField] private GameObject planet;
-        [SerializeField] private GameObject interactionObjects;
-    
-        private SphereCollider _planetCollider;
+        [SerializeField] private GameObject[] interactionObjects;
+        
+        private PlanetGravity planet;
 
         private void Start()
         {
-            _planetCollider = planet.GetComponent<SphereCollider>();
-
-            GetRandomPositionForInteractionObjects(10);
+            planet = FindFirstObjectByType<PlanetGravity>();
+            SpawnInteractionObjects(15);
         }
 
-        /// <summary>
-        /// A function that creates interaction objects in random position
-        /// </summary>
-        /// <param name="numberOfObjects">number of interaction objects</param>
-        private void GetRandomPositionForInteractionObjects(int numberOfObjects)
+        private void SpawnInteractionObjects(int count)
         {
-            for (var i = 0; i < numberOfObjects; i++)
+            for (var i = 0; i < count; i++)
             {
-                var spawnPosition = _planetCollider.transform.position + 
-                                    Util.GetRandomPositionInSphere(_planetCollider.radius)
-                                    * planet.transform.localScale.x;
-                var normal = (spawnPosition - _planetCollider.transform.position).normalized;
+                var spawnPoint = Util.GetRandomPositionInSphere(planet.GetRadius());
 
-                Quaternion rotation = Quaternion.FromToRotation(Vector3.up, normal);
+                var surfaceUp = spawnPoint.normalized;
 
-                Instantiate(interactionObjects, spawnPosition, rotation);
+                var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, surfaceUp);
+
+                var randomYaw = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+
+                var finalRotation = rotationOnSurface * randomYaw;
+
+                Instantiate(interactionObjects[Random.Range(0, interactionObjects.Length)], spawnPoint, finalRotation);
             }
         }
     }

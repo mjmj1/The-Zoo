@@ -34,6 +34,7 @@ Material:
   m_InvalidKeywords:
   - _CONSERVATIVE_DEPTH_OFFSET
   - _DISABLE_SSR_TRANSPARENT
+  - _EMISSION
   - _NORMALMAP_TANGENT_SPACE
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
@@ -361,4 +362,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 9
+  version: 10

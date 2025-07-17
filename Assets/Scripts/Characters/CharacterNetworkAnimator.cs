@@ -9,6 +9,11 @@ namespace Characters
             return false;
         }
 
+        public void SetTrigger(int id)
+        {
+            Animator.SetTrigger(id);
+        }
+        
         public void SetBool(int id, bool value)
         {
             Animator.SetBool(id, value);

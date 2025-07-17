@@ -8,12 +8,12 @@ using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using Utils;
-using WebSocketSharp;
+using static EventHandler.ConnectionEventHandler;
 using static Networks.ConnectionData;
 
 namespace Networks
 {
-    public class ConnectionManager : MonoBehaviour, IConnectionHandler
+    public class ConnectionManager : MonoBehaviour
     {
         private const int MaxPlayers = 8;
         private bool initialLoad;
@@ -22,70 +22,59 @@ namespace Networks
 
         public ISession CurrentSession { get; private set; }
 
-        private ConnectionState _state = ConnectionState.Disconnected;
-
         private void Awake()
         {
-            if (Instance == null) Instance = this;
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
             else Destroy(gameObject);
         }
 
-        private async void Start()
+        private async void OnEnable()
         {
-            UnityServices.Initialized += OnUnityServicesInitialized;
-            await UnityServices.InitializeAsync();
-
-            if (!initialLoad)
+            try
             {
-                initialLoad = true;
-                GameManager.Instance.LoadLobbyScene();
+                await UnityServices.InitializeAsync();
+
+                NetworkManager.OnDestroying += Destroying;
+            
+                NetworkManager.Singleton.OnClientStopped += OnClientStopped;
+                NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectCallback;
+                NetworkManager.Singleton.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
+                NetworkManager.Singleton.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
             }
-
-            NetworkManager.Singleton.OnClientStopped += OnClientStopped;
-            NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectCallback;
-            NetworkManager.Singleton.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
-            NetworkManager.Singleton.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
+            catch (Exception e)
+            {
+                MyLogger.Print(this, e.Message);
+            }
         }
 
-        private async void OnUnityServicesInitialized()
+        private void Destroying(NetworkManager obj)
         {
-            UnityServices.Initialized -= OnUnityServicesInitialized;
-            await SignInAsync();
-        }
-
-        private void OnDestroy()
-        {
-            if (!NetworkManager.Singleton) return;
-
+            NetworkManager.OnDestroying -= Destroying;
+            
             NetworkManager.Singleton.OnClientStopped -= OnClientStopped;
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnOnClientDisconnectCallback;
             NetworkManager.Singleton.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
         }
 
-        public event Action OnSessionConnect;
-        public event Action OnSessionDisconnected;
-
         // <-------------------Connection------------------->
-
         private async Task HandleSessionFlowAsync(Func<Task<ISession>> sessionFunc)
         {
             try
             {
-                _state = ConnectionState.Connect;
-
-                OnSessionConnect?.Invoke();
+                SessionConnectStart();
 
                 CurrentSession = await sessionFunc.Invoke();
 
-                _state = ConnectionState.Connected;
+                SessionConnected();
             }
             catch (Exception e)
             {
-                OnSessionDisconnected?.Invoke();
-                
-                _state = ConnectionState.Disconnected;
-                
+                SessionDisconnected();
                 Debug.LogError(e);
             }
         }
@@ -95,7 +84,7 @@ namespace Networks
             try
             {
                 AuthenticationService.Instance.SignInFailed += SignInFailed;
-                AuthenticationService.Instance.SwitchProfile(Util.GetRandomString(5));
+                AuthenticationService.Instance.SwitchProfile(Util.GetRandomString(8));
                 await AuthenticationService.Instance.SignInAnonymouslyAsync();
             }
             catch (Exception e)
@@ -140,8 +129,6 @@ namespace Networks
 
         public async void DisconnectSessionAsync()
         {
-            if (CurrentSession == null && _state == ConnectionState.Disconnected) return;
-
             try
             {
                 await CurrentSession.LeaveAsync();
@@ -152,10 +139,8 @@ namespace Networks
             }
             finally
             {
-                OnSessionDisconnected?.Invoke();
-
-                _state = ConnectionState.Disconnected;
-
+                SessionDisconnected();
+                
                 CurrentSession = null;
             }
         }
@@ -249,26 +234,19 @@ namespace Networks
             {
                 await WithHostSessionAsync(async host =>
                 {
-                    if (sessionName.IsDirty)
-                    {
-                        host.Name = sessionName.Current;
-                    }
+                    if (sessionName.IsDirty) host.Name = sessionName.Current;
 
                     if (password.IsDirty)
                     {
                         host.Password = password.Current;
-                        host.SetProperty(Util.PASSWORD, new SessionProperty(password.Current, VisibilityPropertyOptions.Private));
+                        host.SetProperty(Util.PASSWORD,
+                            new SessionProperty(password.Current, VisibilityPropertyOptions.Private));
                     }
 
-                    if (isPrivate.IsDirty)
-                    {
-                        host.IsPrivate = isPrivate.Current;
-                    }
+                    if (isPrivate.IsDirty) host.IsPrivate = isPrivate.Current;
 
                     if (playerSlot.IsDirty)
-                    {
                         host.SetProperty(Util.PLAYERSLOT, new SessionProperty(playerSlot.Current.ToString()));
-                    }
 
                     await host.SavePropertiesAsync();
                 });
@@ -339,22 +317,6 @@ namespace Networks
             }
         }
 
-        private async void PrivateSessionAsync()
-        {
-            try
-            {
-                await WithHostSessionAsync(async host =>
-                {
-                    host.IsPrivate = true;
-                    await host.SavePropertiesAsync();
-                });
-            }
-            catch (Exception e)
-            {
-                print(e.Message);
-            }
-        }
-
         private async void PublicSessionAsync()
         {
             try
@@ -396,32 +358,16 @@ namespace Networks
             if (NetworkManager.Singleton.LocalClientId == clientId)
             {
                 print($"Client-{clientId} is disconnected");
-
-                _state = ConnectionState.Disconnected;
             }
         }
 
-
-        public async Task OnEnterButtonPressed(string playerName)
+        public async Task Login(string playerName)
         {
-            if (AuthenticationService.Instance == null)
-            {
-                return;
-            }
+            if (AuthenticationService.Instance == null) return;
 
-            if (!AuthenticationService.Instance.IsSignedIn)
-            {
-                await SignInAsync();
-            }
+            if (!AuthenticationService.Instance.IsSignedIn) await SignInAsync();
 
             await AuthenticationService.Instance.UpdatePlayerNameAsync(playerName);
-        }
-
-        private enum ConnectionState
-        {
-            Disconnected,
-            Connect,
-            Connected
         }
     }
 }

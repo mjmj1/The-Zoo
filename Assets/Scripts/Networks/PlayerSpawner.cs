@@ -3,63 +3,79 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace Networks
 {
     public class PlayerSpawner : NetworkBehaviour
     {
         [SerializeField] private List<NetworkObject> animalPrefabs;
+        private readonly NetworkList<int> spawnedAnimals = new();
 
-        private readonly NetworkVariable<int> nextAnimalIndex = new();
-        
-        private List<int> animalIndexes;
+        public int index;
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            animalIndexes = Enumerable.Range(0, animalPrefabs.Count).OrderBy(_ => Random.value).ToList();
+            NetworkManager.Singleton.OnPreShutdown += OnPreShutdown;
+        }
+
+        private void OnPreShutdown()
+        {
+            NetworkManager.Singleton.OnPreShutdown -= OnPreShutdown;
+
+            RemoveRpc(index);
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
-            if (IsSessionOwner)
-            {
-                nextAnimalIndex.Value += 1 % animalIndexes.Count;
-            
-                var index = animalIndexes[nextAnimalIndex.Value];
-                
-                AssignAnimalPrefab(index);
-            }
-            else
-            {
-                AssignAnimalPrefabRpc(NetworkManager.LocalClientId);
-            }
-            
+            MyLogger.Print("Synchronized");
+
+            index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
+
+            SpawnPlayer(index);
+
+            AddRpc(index);
+
             base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]
-        private void AssignAnimalPrefabRpc(ulong clientId)
+        private void AddRpc(int i)
         {
-            nextAnimalIndex.Value += 1 % animalIndexes.Count;
-            
-            var index = animalIndexes[nextAnimalIndex.Value];
-            
-            AssignAnimalPrefabRpc(index, RpcTarget.Single(clientId, RpcTargetUse.Temp));
+            spawnedAnimals.Add(i);
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
-        private void AssignAnimalPrefabRpc(int index, RpcParams rpcParams = default)
+        [Rpc(SendTo.Owner)]
+        private void RemoveRpc(int i)
         {
-            AssignAnimalPrefab(index);
+            spawnedAnimals.Remove(i);
         }
 
-        private void AssignAnimalPrefab(int index)
+        private int GetRandomIndexExcludingSpawned(int max)
         {
-            var prefab = animalPrefabs[index];
+            var candidates = Enumerable
+                .Range(0, max)
+                .Where(i => !spawnedAnimals.Contains(i))
+                .ToList();
 
-            var pos = Util.GetCirclePositions(Vector3.zero, index, 5f, 8);
+            if (candidates.Count == 0)
+            {
+                Debug.LogWarning("사용 가능한 인덱스가 남아있지 않습니다!");
+                return 0;
+            }
+
+            var pick = candidates[Random.Range(0, candidates.Count)];
+
+            return pick;
+        }
+
+        private void SpawnPlayer(int i)
+        {
+            var prefab = animalPrefabs[i];
+
+            var pos = Util.GetCirclePositions(Vector3.zero, i, 5f, 8);
 
             prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,
