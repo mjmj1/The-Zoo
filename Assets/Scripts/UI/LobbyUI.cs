@@ -18,7 +18,7 @@ namespace UI
         [SerializeField] private Button quitButton;
         [SerializeField] private Button gameStartButton;
         [SerializeField] private Button gameReadyButton;
-        
+
         private void OnEnable()
         {
             if (!UnityServices.State.Equals(ServicesInitializationState.Initialized)) return;

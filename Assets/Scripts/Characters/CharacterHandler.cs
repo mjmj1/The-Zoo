@@ -5,8 +5,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using Utils;
-using static Characters.InputHandler;
+using Random = UnityEngine.Random;
 
 namespace Characters
 {
@@ -22,13 +23,20 @@ namespace Characters
         private SerializedProperty rotationSpeed;
         private SerializedProperty sprintSpeed;
         private SerializedProperty walkSpeed;
+        private SerializedProperty isGround;
+        private SerializedProperty isAttack;
+        private SerializedProperty isSpin;
 
         public override void OnEnable()
         {
+            isGround = serializedObject.FindProperty(nameof(CharacterHandler.isGround));
+            isAttack = serializedObject.FindProperty(nameof(CharacterHandler.isAttack));
+            isSpin = serializedObject.FindProperty(nameof(CharacterHandler.isSpin));
+
             groundMask = serializedObject.FindProperty(nameof(CharacterHandler.groundMask));
             jumpForce = serializedObject.FindProperty(nameof(CharacterHandler.jumpForce));
             walkSpeed = serializedObject.FindProperty(nameof(CharacterHandler.walkSpeed));
-            sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.sprintSpeed));
+            sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.runSpeed));
             rotationSpeed = serializedObject.FindProperty(nameof(CharacterHandler.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(CharacterHandler.mouseSensitivity));
@@ -43,6 +51,9 @@ namespace Characters
             EditorGUILayout.PropertyField(sprintSpeed);
             EditorGUILayout.PropertyField(rotationSpeed);
             EditorGUILayout.PropertyField(mouseSensitivity);
+            EditorGUILayout.PropertyField(isGround);
+            EditorGUILayout.PropertyField(isAttack);
+            EditorGUILayout.PropertyField(isSpin);
         }
 
         public override void OnInspectorGUI()
@@ -71,11 +82,15 @@ namespace Characters
         public LayerMask groundMask;
         public float jumpForce = 3f;
         public float walkSpeed = 4f;
-        public float sprintSpeed = 7f;
+        public float runSpeed = 7f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
         public float minPitch = -10f;
         public float maxPitch = 20f;
+
+        public bool isGround = true;
+        public bool isAttack;
+        public bool isSpin;
 
         private CharacterNetworkAnimator animator;
 
@@ -86,8 +101,6 @@ namespace Characters
         private Quaternion previousRotation;
 
         private Rigidbody rb;
-
-        private bool isGrounded;
 
         public float Pitch { get; private set; }
 
@@ -111,10 +124,6 @@ namespace Characters
         {
             if (!IsOwner) return;
 
-            isGrounded = IsGrounded();
-
-            animator.SetBool(IsGroundHash, isGrounded);
-
             HandleMovement();
         }
 
@@ -137,8 +146,7 @@ namespace Characters
 
         private bool IsGrounded()
         {
-            return Physics.SphereCast(transform.position + transform.up * 0.3f, 0.25f,
-                -transform.up, out _, 0.2f, groundMask);
+            return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.1f, groundMask);;
         }
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
@@ -152,7 +160,8 @@ namespace Characters
 
             var pos = Util.GetCirclePositions(Vector3.zero, Random.Range(0, 8), 5f, 8);
 
-            transform.SetPositionAndRotation(pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
+            transform.SetPositionAndRotation(pos,
+                Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
 
         private void Subscribe()
@@ -161,14 +170,14 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            input.InputActions.Player.Move.performed += MovementAction;
-            input.InputActions.Player.Move.canceled += MovementAction;
-
-            input.InputActions.Player.Jump.performed += JumpAction;
-
-            input.OnAttackPressed += ClickedAction;
-            input.OnSprintPressed += SprintAction;
-            input.OnSpinPressed += SpinAction;
+            input.InputActions.Player.Move.performed += Movement;
+            input.InputActions.Player.Move.canceled += Movement;
+            input.InputActions.Player.Run.performed += Run;
+            input.InputActions.Player.Run.canceled += Run;
+            input.InputActions.Player.Spin.performed += Spin;
+            input.InputActions.Player.Spin.canceled += Spin;
+            input.InputActions.Player.Jump.performed += Jump;
+            input.InputActions.Player.Attack.performed += Attack;
         }
 
         private void Unsubscribe()
@@ -177,12 +186,14 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            input.InputActions.Player.Move.performed -= MovementAction;
-            input.InputActions.Player.Move.canceled -= MovementAction;
-
-            input.OnAttackPressed -= ClickedAction;
-            input.OnSprintPressed -= SprintAction;
-            input.OnSpinPressed -= SpinAction;
+            input.InputActions.Player.Move.performed -= Movement;
+            input.InputActions.Player.Move.canceled -= Movement;
+            input.InputActions.Player.Run.performed -= Run;
+            input.InputActions.Player.Run.canceled -= Run;
+            input.InputActions.Player.Spin.performed -= Spin;
+            input.InputActions.Player.Spin.canceled -= Spin;
+            input.InputActions.Player.Jump.performed -= Jump;
+            input.InputActions.Player.Attack.performed -= Attack;
         }
 
         private void InitializeComponent()
@@ -227,8 +238,7 @@ namespace Characters
 
         private void HandleMovement()
         {
-            if (input.SpinPressed) return;
-            if (input.AttackPressed) return;
+            if (isAttack || isSpin) return;
 
             var moveInput = input.MoveInput;
 
@@ -252,41 +262,46 @@ namespace Characters
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        private void MovementAction(InputAction.CallbackContext ctx)
+        private void Movement(InputAction.CallbackContext ctx)
         {
-            animator.SetBool(MoveHash, ctx.performed);
+            animator.OnMove(ctx);
         }
 
-        private void JumpAction(InputAction.CallbackContext obj)
+        private void Jump(InputAction.CallbackContext ctx)
         {
-            if (!isGrounded) return;
-
-            animator.SetTrigger(JumpHash);
+            if (!isGround) return;
+            if (isAttack) return;
+            if (isSpin) return;
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            animator.OnJump(ctx);
         }
 
-        private void SprintAction(bool value)
+        private void Run(InputAction.CallbackContext ctx)
         {
-            if (!isGrounded) return;
-            
-            animator.SetBool(SprintHash, value);
+            if (ctx.performed) moveSpeed = runSpeed;
+            if (ctx.canceled) moveSpeed = walkSpeed;
 
-            moveSpeed = value ? sprintSpeed : walkSpeed;
+            animator.OnRun(ctx);
         }
 
-        private void SpinAction(bool value)
+        private void Attack(InputAction.CallbackContext ctx)
         {
-            if (!isGrounded) return;
-            
-            animator.SetBool(SpinHash, value);
+            if (!isGround) return;
+            if (isAttack) return;
+            if (isSpin) return;
+
+            animator.OnAttack(ctx);
         }
 
-        private void ClickedAction(bool value)
+        private void Spin(InputAction.CallbackContext ctx)
         {
-            if (!isGrounded) return;
-            
-            animator.SetBool(AttackHash, value);
+            if (!isGround) return;
+            if (isAttack) return;
+
+            isSpin = ctx.performed;
+            animator.OnSpin(ctx);
         }
     }
 }

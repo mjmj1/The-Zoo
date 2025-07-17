@@ -11,7 +11,9 @@ namespace EventHandler
         internal static event Action OnGameFinished;
         internal static event Action<string, bool> OnPlayerReady;
         internal static event Action OnPlayerLogin;
-        
+        internal static event Action OnSceneEvent;
+
+
         private static void GameStart()
         {
             OnGameStart?.Invoke();
@@ -35,6 +37,11 @@ namespace EventHandler
         internal static void PlayerLogin()
         {
             OnPlayerLogin?.Invoke();
+        }
+
+        private static void SceneEvent()
+        {
+            OnSceneEvent?.Invoke();
         }
     }
 }

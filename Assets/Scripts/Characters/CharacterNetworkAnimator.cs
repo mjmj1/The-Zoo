@@ -1,27 +1,46 @@
 using Unity.Netcode.Components;
+using Unity.VisualScripting;
+using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Characters
 {
     public class CharacterNetworkAnimator : NetworkAnimator
     {
+        public static readonly int MoveHash = Animator.StringToHash("Move");
+        public static readonly int RunHash = Animator.StringToHash("Run");
+        public static readonly int JumpHash = Animator.StringToHash("Jump");
+        public static readonly int SpinHash = Animator.StringToHash("Spin");
+        public static readonly int AttackHash = Animator.StringToHash("Attack");
+
         protected override bool OnIsServerAuthoritative()
         {
             return false;
         }
 
-        public void SetTrigger(int id)
+        internal void OnSpin(InputAction.CallbackContext ctx)
         {
-            Animator.SetTrigger(id);
-        }
-        
-        public void SetBool(int id, bool value)
-        {
-            Animator.SetBool(id, value);
+            Animator.SetBool(SpinHash, ctx.performed);
         }
 
-        public void SetFloat(int id, float value)
+        internal void OnAttack(InputAction.CallbackContext ctx)
         {
-            Animator.SetFloat(id, value);
+            Animator.SetTrigger(AttackHash);
+        }
+
+        internal void OnMove(InputAction.CallbackContext ctx)
+        {
+            Animator.SetBool(MoveHash, ctx.performed);
+        }
+
+        internal void OnRun(InputAction.CallbackContext ctx)
+        {
+            Animator.SetBool(RunHash, ctx.performed);
+        }
+
+        internal void OnJump(InputAction.CallbackContext ctx)
+        {
+            Animator.SetTrigger(JumpHash);
         }
     }
 }
