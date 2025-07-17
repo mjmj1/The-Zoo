@@ -1,5 +1,4 @@
 #if UNITY_EDITOR
-using System;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -78,6 +77,10 @@ namespace Characters
         public float minPitch = -10f;
         public float maxPitch = 20f;
 
+        public bool IsGround;
+        public bool IsAttack;
+        public bool IsSpin;
+
         private CharacterNetworkAnimator animator;
 
         private PlanetGravity gravity;
@@ -87,17 +90,6 @@ namespace Characters
         private Quaternion previousRotation;
 
         private Rigidbody rb;
-
-        private bool isGround;
-        private bool IsGround
-        {
-            get => isGround;
-            set
-            {
-                isGround = value;
-                IsGroundChanged?.Invoke(value);
-            }
-        }
 
         public float Pitch { get; private set; }
 
@@ -160,7 +152,8 @@ namespace Characters
 
             var pos = Util.GetCirclePositions(Vector3.zero, Random.Range(0, 8), 5f, 8);
 
-            transform.SetPositionAndRotation(pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
+            transform.SetPositionAndRotation(pos,
+                Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
 
         private void Subscribe()
@@ -169,13 +162,15 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            animator.Initialize(input);
-
-            input.InputActions.Player.Jump.performed += Jump;
+            input.InputActions.Player.Move.performed += animator.OnMove;
+            input.InputActions.Player.Move.canceled += animator.OnMove;
             input.InputActions.Player.Run.performed += Run;
             input.InputActions.Player.Run.canceled += Run;
-
-            IsGroundChanged += OnIsGroundChanged;
+            input.InputActions.Player.Spin.performed += Spin;
+            input.InputActions.Player.Spin.canceled += Spin;
+            input.InputActions.Player.Jump.performed += Jump;
+            input.InputActions.Player.Attack.performed += Attack;
+            input.InputActions.Player.Attack.canceled += Attack;
         }
 
         private void Unsubscribe()
@@ -184,13 +179,15 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            animator.OnDestroying(input);
-
-            input.InputActions.Player.Jump.performed -= Jump;
+            input.InputActions.Player.Move.performed -= animator.OnMove;
+            input.InputActions.Player.Move.canceled -= animator.OnMove;
             input.InputActions.Player.Run.performed -= Run;
             input.InputActions.Player.Run.canceled -= Run;
-
-            IsGroundChanged -= OnIsGroundChanged;
+            input.InputActions.Player.Spin.performed -= Spin;
+            input.InputActions.Player.Spin.canceled -= Spin;
+            input.InputActions.Player.Jump.performed -= Jump;
+            input.InputActions.Player.Attack.performed -= Attack;
+            input.InputActions.Player.Attack.canceled -= Attack;
         }
 
         private void InitializeComponent()
@@ -235,6 +232,8 @@ namespace Characters
 
         private void HandleMovement()
         {
+            if (IsAttack || IsSpin) return;
+
             var moveInput = input.MoveInput;
 
             if (moveInput == Vector2.zero) return;
@@ -257,26 +256,39 @@ namespace Characters
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        private void OnIsGroundChanged(bool value)
+        private void Jump(InputAction.CallbackContext ctx)
         {
-            if(value) animator.SetTrigger(CharacterNetworkAnimator.LandHash);
-        }
-
-        private void Jump(InputAction.CallbackContext obj)
-        {
-            if (!IsGround) return;
+            if (!IsGrounded()) return;
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            animator.OnJump(ctx);
         }
 
-        private void Run(InputAction.CallbackContext obj)
+        private void Run(InputAction.CallbackContext ctx)
         {
-            if (!IsGround) return;
+            if (!IsGrounded()) return;
 
-            if (obj.performed) moveSpeed = runSpeed;
-            if (obj.canceled) moveSpeed = walkSpeed;
+            if (ctx.performed) moveSpeed = runSpeed;
+            if (ctx.canceled) moveSpeed = walkSpeed;
+
+            animator.OnRun(ctx);
         }
 
-        public event Action<bool> IsGroundChanged;
+        private void Attack(InputAction.CallbackContext ctx)
+        {
+            if (IsSpin) return;
+
+            IsAttack = ctx.performed;
+            animator.OnAttack(ctx);
+        }
+
+        private void Spin(InputAction.CallbackContext ctx)
+        {
+            if (IsAttack) return;
+
+            IsSpin = ctx.performed;
+            animator.OnSpin(ctx);
+        }
     }
 }
