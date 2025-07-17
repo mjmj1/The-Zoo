@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -7,49 +6,9 @@ namespace Characters
 {
     internal class InputHandler : MonoBehaviour
     {
-        public static readonly int MoveHash = Animator.StringToHash("Move");
-        public static readonly int JumpHash = Animator.StringToHash("Jump");
-        public static readonly int SprintHash = Animator.StringToHash("Sprint");
-        public static readonly int SpinHash = Animator.StringToHash("Spin");
-        public static readonly int AttackHash = Animator.StringToHash("Attack");
-        public static readonly int IsGroundHash = Animator.StringToHash("IsGround");
-
-        private bool _attackPressed;
-        private bool _isOverUI;
-        private bool _spinPressed;
-        private bool _sprintPressed;
+        private bool isOverUI;
         public Vector2 MoveInput { get; private set; }
         public Vector2 LookInput { get; private set; }
-
-        public bool SpinPressed
-        {
-            get => _spinPressed;
-            private set
-            {
-                _spinPressed = value;
-                OnSpinPressed?.Invoke(value);
-            }
-        }
-
-        public bool SprintPressed
-        {
-            get => _sprintPressed;
-            private set
-            {
-                _sprintPressed = value;
-                OnSprintPressed?.Invoke(value);
-            }
-        }
-
-        public bool AttackPressed
-        {
-            get => _attackPressed;
-            private set
-            {
-                _attackPressed = value;
-                OnAttackPressed?.Invoke(value);
-            }
-        }
 
         public PlayerInputActions InputActions { get; private set; }
 
@@ -63,15 +22,6 @@ namespace Characters
             InputActions.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
             InputActions.Player.Look.canceled += ctx => LookInput = Vector2.zero;
 
-            InputActions.Player.Attack.performed += ctx => AttackPressed = true;
-            InputActions.Player.Attack.canceled += ctx => AttackPressed = false;
-
-            InputActions.Player.Sprint.performed += ctx => SprintPressed = true;
-            InputActions.Player.Sprint.canceled += ctx => SprintPressed = false;
-
-            InputActions.Player.Spin.performed += ctx => SpinPressed = true;
-            InputActions.Player.Spin.canceled += ctx => SpinPressed = false;
-
             InputActions.UI.Escape.performed += EscapePressed;
             InputActions.UI.Click.performed += MouseLeftClicked;
         }
@@ -79,7 +29,7 @@ namespace Characters
         private void Update()
         {
             if (!InputActions.Player.enabled)
-                _isOverUI = IsPointerOverUI();
+                isOverUI = IsPointerOverUI();
         }
 
         private void OnEnable()
@@ -108,7 +58,7 @@ namespace Characters
 
         private void MouseLeftClicked(InputAction.CallbackContext ctx)
         {
-            if (_isOverUI) return;
+            if (isOverUI) return;
 
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
@@ -120,9 +70,5 @@ namespace Characters
         {
             return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
         }
-
-        public event Action<bool> OnAttackPressed;
-        public event Action<bool> OnSprintPressed;
-        public event Action<bool> OnSpinPressed;
     }
 }

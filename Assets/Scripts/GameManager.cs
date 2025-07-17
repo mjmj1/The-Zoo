@@ -9,6 +9,14 @@ using Utils;
 
 public class GameManager : NetworkBehaviour
 {
+    public enum GameState
+    {
+        Title,
+        Lobby,
+        InGame,
+        Result
+    }
+
     public static GameManager Instance { get; private set; }
 
     private void Awake()

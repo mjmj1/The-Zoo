@@ -60,7 +60,7 @@ namespace UI.GameSetup
             _rectTransform = GetComponent<RectTransform>();
 
             _openSize = _rectTransform.sizeDelta;
-            _closeSize = new Vector2(_openSize.x, 15f);
+            _closeSize = new Vector2(_openSize.x, _openSize.y * 0.1f);
 
             _rectTransform.sizeDelta = _closeSize;
 

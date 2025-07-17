@@ -17,12 +17,12 @@ namespace UI
         [SerializeField] private string loadingCanvasName = "LoadingCanvas";
         [SerializeField] private string popupCanvasName = "InformationPopup";
 
-        private Canvas backgroundCanvas;
-        private Canvas titleCanvas;
-        private Canvas mainCanvas;
-        private Canvas lobbyCanvas;
-        private Canvas loadingCanvas;
-        private Canvas popupCanvas;
+        private GameObject backgroundCanvas;
+        private GameObject titleCanvas;
+        private GameObject mainCanvas;
+        private GameObject lobbyCanvas;
+        private GameObject loadingCanvas;
+        private GameObject popupCanvas;
 
         private void OnEnable()
         {
@@ -37,7 +37,7 @@ namespace UI
             NetworkManager.OnDestroying += OnDestroying;
 
             if (popupCanvas != null)
-                popupCanvas.gameObject.SetActive(true);
+                popupCanvas.SetActive(true);
         }
 
         private void OnDestroying(NetworkManager obj)
@@ -80,15 +80,15 @@ namespace UI
 
         private void AssignAllCanvases()
         {
-            backgroundCanvas = FindCanvas(backgroundCanvasName);
-            titleCanvas = FindCanvas(titleCanvasName);
-            mainCanvas = FindCanvas(mainCanvasName);
-            lobbyCanvas = FindCanvas(lobbyCanvasName);
-            loadingCanvas = FindCanvas(loadingCanvasName);
-            popupCanvas = FindCanvas(popupCanvasName);
+            backgroundCanvas = FindObject(backgroundCanvasName);
+            titleCanvas = FindObject(titleCanvasName);
+            mainCanvas = FindObject(mainCanvasName);
+            lobbyCanvas = FindObject(lobbyCanvasName);
+            loadingCanvas = FindObject(loadingCanvasName);
+            popupCanvas = FindObject(popupCanvasName);
         }
 
-        private Canvas FindCanvas(string objName)
+        private GameObject FindObject(string objName)
         {
             var go = GameObject.Find(objName);
             if (go == null)
@@ -96,12 +96,8 @@ namespace UI
                 Debug.LogWarning($"[UIManager] {objName} not found in scene.");
                 return null;
             }
-            var canvas = go.GetComponent<Canvas>();
-            if (canvas == null)
-            {
-                Debug.LogWarning($"[UIManager] {objName} has no Canvas component.");
-            }
-            return canvas;
+
+            return go;
         }
 
         private void UnityServicesOnInitialized()
@@ -113,11 +109,11 @@ namespace UI
 
         private void SwitchUI(UIType uiType)
         {
-            titleCanvas.gameObject.SetActive(uiType == UIType.Title);
-            mainCanvas.gameObject.SetActive(uiType == UIType.Main);
-            lobbyCanvas.gameObject.SetActive(uiType == UIType.Lobby);
-            backgroundCanvas.gameObject.SetActive(uiType != UIType.Lobby);
-            loadingCanvas.gameObject.SetActive(false);
+            titleCanvas.SetActive(uiType == UIType.Title);
+            mainCanvas.SetActive(uiType == UIType.Main);
+            lobbyCanvas.SetActive(uiType == UIType.Lobby);
+            backgroundCanvas.SetActive(uiType != UIType.Lobby);
+            loadingCanvas.SetActive(false);
         }
 
         private void OnSignedIn()
@@ -127,12 +123,12 @@ namespace UI
 
         private void OnPlayerLogin()
         {
-            loadingCanvas.gameObject.SetActive(true);
+            loadingCanvas.SetActive(true);
         }
 
         private void OnSessionConnectStart()
         {
-            loadingCanvas.gameObject.SetActive(true);
+            loadingCanvas.SetActive(true);
         }
 
         private void OnClientConnectedCallback(ulong clientId)

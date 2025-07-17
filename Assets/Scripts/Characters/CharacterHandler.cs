@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -6,7 +7,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
-using static Characters.InputHandler;
+using Random = UnityEngine.Random;
 
 namespace Characters
 {
@@ -28,7 +29,7 @@ namespace Characters
             groundMask = serializedObject.FindProperty(nameof(CharacterHandler.groundMask));
             jumpForce = serializedObject.FindProperty(nameof(CharacterHandler.jumpForce));
             walkSpeed = serializedObject.FindProperty(nameof(CharacterHandler.walkSpeed));
-            sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.sprintSpeed));
+            sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.runSpeed));
             rotationSpeed = serializedObject.FindProperty(nameof(CharacterHandler.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(CharacterHandler.mouseSensitivity));
@@ -71,7 +72,7 @@ namespace Characters
         public LayerMask groundMask;
         public float jumpForce = 3f;
         public float walkSpeed = 4f;
-        public float sprintSpeed = 7f;
+        public float runSpeed = 7f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
         public float minPitch = -10f;
@@ -87,7 +88,16 @@ namespace Characters
 
         private Rigidbody rb;
 
-        private bool isGrounded;
+        private bool isGround;
+        private bool IsGround
+        {
+            get => isGround;
+            set
+            {
+                isGround = value;
+                IsGroundChanged?.Invoke(value);
+            }
+        }
 
         public float Pitch { get; private set; }
 
@@ -111,9 +121,7 @@ namespace Characters
         {
             if (!IsOwner) return;
 
-            isGrounded = IsGrounded();
-
-            animator.SetBool(IsGroundHash, isGrounded);
+            IsGround = IsGrounded();
 
             HandleMovement();
         }
@@ -161,14 +169,13 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            input.InputActions.Player.Move.performed += MovementAction;
-            input.InputActions.Player.Move.canceled += MovementAction;
+            animator.Initialize(input);
 
-            input.InputActions.Player.Jump.performed += JumpAction;
+            input.InputActions.Player.Jump.performed += Jump;
+            input.InputActions.Player.Run.performed += Run;
+            input.InputActions.Player.Run.canceled += Run;
 
-            input.OnAttackPressed += ClickedAction;
-            input.OnSprintPressed += SprintAction;
-            input.OnSpinPressed += SpinAction;
+            IsGroundChanged += OnIsGroundChanged;
         }
 
         private void Unsubscribe()
@@ -177,12 +184,13 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            input.InputActions.Player.Move.performed -= MovementAction;
-            input.InputActions.Player.Move.canceled -= MovementAction;
+            animator.OnDestroying(input);
 
-            input.OnAttackPressed -= ClickedAction;
-            input.OnSprintPressed -= SprintAction;
-            input.OnSpinPressed -= SpinAction;
+            input.InputActions.Player.Jump.performed -= Jump;
+            input.InputActions.Player.Run.performed -= Run;
+            input.InputActions.Player.Run.canceled -= Run;
+
+            IsGroundChanged -= OnIsGroundChanged;
         }
 
         private void InitializeComponent()
@@ -227,9 +235,6 @@ namespace Characters
 
         private void HandleMovement()
         {
-            if (input.SpinPressed) return;
-            if (input.AttackPressed) return;
-
             var moveInput = input.MoveInput;
 
             if (moveInput == Vector2.zero) return;
@@ -252,41 +257,26 @@ namespace Characters
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        private void MovementAction(InputAction.CallbackContext ctx)
+        private void OnIsGroundChanged(bool value)
         {
-            animator.SetBool(MoveHash, ctx.performed);
+            if(value) animator.SetTrigger(CharacterNetworkAnimator.LandHash);
         }
 
-        private void JumpAction(InputAction.CallbackContext obj)
+        private void Jump(InputAction.CallbackContext obj)
         {
-            if (!isGrounded) return;
-
-            animator.SetTrigger(JumpHash);
+            if (!IsGround) return;
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
         }
 
-        private void SprintAction(bool value)
+        private void Run(InputAction.CallbackContext obj)
         {
-            if (!isGrounded) return;
-            
-            animator.SetBool(SprintHash, value);
+            if (!IsGround) return;
 
-            moveSpeed = value ? sprintSpeed : walkSpeed;
+            if (obj.performed) moveSpeed = runSpeed;
+            if (obj.canceled) moveSpeed = walkSpeed;
         }
 
-        private void SpinAction(bool value)
-        {
-            if (!isGrounded) return;
-            
-            animator.SetBool(SpinHash, value);
-        }
-
-        private void ClickedAction(bool value)
-        {
-            if (!isGrounded) return;
-            
-            animator.SetBool(AttackHash, value);
-        }
+        public event Action<bool> IsGroundChanged;
     }
 }

@@ -279,21 +279,9 @@ namespace AI
             _inputActions.Player.Spin.performed += ctx => SpinPressed = true;
             _inputActions.Player.Spin.canceled += ctx => SpinPressed = false;
 
-            OnMovePressed += MovementAction;
-            OnSpinPressed += SpinAction;
-
             _inputActions.Enable();
         }
 
-        private void MovementAction(bool value)
-        {
-            _animator.SetBool(MoveHash, value);
-        }
-
-        private void SpinAction(bool value)
-        {
-            _animator.SetBool(SpinHash, value);
-        }
 
         private void AlignToSurface()
         {
