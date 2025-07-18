@@ -11,7 +11,7 @@ namespace Characters
 
         void OnEnable()
         {
-            print("Assigned Hider");
+            print($"Assigned Hider");
         }
     }
 }

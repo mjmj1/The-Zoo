@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Linq;
+using Characters;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
@@ -71,11 +72,15 @@ namespace GamePlay
 
             seekerIds.Add(seeker.ClientId);
 
+            seeker.PlayerObject.GetComponent<AssignedSeekerRole>().enabled = true;
+
             foreach (var client in clients)
             {
                 if (seekerIds.Contains(client.ClientId)) return;
 
                 hiderIds.Add(client.ClientId);
+
+                client.PlayerObject.GetComponent<AssignedHiderRole>().enabled = true;
             }
         }
 
