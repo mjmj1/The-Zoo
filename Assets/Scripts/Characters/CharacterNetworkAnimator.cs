@@ -1,3 +1,4 @@
+using EventHandler;
 using Unity.Netcode.Components;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,6 +13,7 @@ namespace Characters
         public static readonly int JumpHash = Animator.StringToHash("Jump");
         public static readonly int SpinHash = Animator.StringToHash("Spin");
         public static readonly int AttackHash = Animator.StringToHash("Attack");
+        public static readonly int HitHash = Animator.StringToHash("Hit");
 
         protected override bool OnIsServerAuthoritative()
         {
@@ -41,6 +43,11 @@ namespace Characters
         internal void OnJump(InputAction.CallbackContext ctx)
         {
             Animator.SetTrigger(JumpHash);
+        }
+
+        internal void OnHit(int previousValue, int newValue)
+        {
+            Animator.SetTrigger(HitHash);
         }
     }
 }

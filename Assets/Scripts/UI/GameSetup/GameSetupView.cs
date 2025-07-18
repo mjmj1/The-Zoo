@@ -89,14 +89,6 @@ namespace UI.GameSetup
             Initialize();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.N))
-            {
-                _controller.Print();    
-            }
-        }
-
         private void Initialize()
         {
             codeCopyText.text = _controller.JoinCode;

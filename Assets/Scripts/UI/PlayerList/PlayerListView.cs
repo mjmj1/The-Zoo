@@ -52,7 +52,7 @@ namespace UI.PlayerList
                 if (player.Id == session.CurrentPlayer.Id) item.Highlight();
             }
 
-            GamePlayEventHandler.OnPlayerReady += OnPlayerReady;
+            GamePlayEventHandler.PlayerReady += PlayerReady;
             session.PlayerJoined += OnPlayerJoined;
             session.PlayerHasLeft += OnPlayerHasLeft;
             session.SessionHostChanged += OnSessionHostChanged;
@@ -67,7 +67,7 @@ namespace UI.PlayerList
 
             Clear();
 
-            GamePlayEventHandler.OnPlayerReady -= OnPlayerReady;
+            GamePlayEventHandler.PlayerReady -= PlayerReady;
             session.PlayerJoined -= OnPlayerJoined;
             session.PlayerHasLeft -= OnPlayerHasLeft;
             session.SessionHostChanged -= OnSessionHostChanged;
@@ -76,7 +76,7 @@ namespace UI.PlayerList
             session = null;
         }
 
-        private void OnPlayerReady(string playerId, bool value)
+        private void PlayerReady(string playerId, bool value)
         {
             Map[playerId].Ready(value);
         }

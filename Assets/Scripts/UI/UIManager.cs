@@ -30,7 +30,7 @@ namespace UI
 
             SceneManager.sceneLoaded += OnSceneLoaded;
 
-            GamePlayEventHandler.OnPlayerLogin += OnPlayerLogin;
+            GamePlayEventHandler.PlayerLogin += PlayerLogin;
             ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
 
             NetworkManager.OnDestroying += OnDestroying;
@@ -128,7 +128,7 @@ namespace UI
             SwitchUI(UIType.Main);
         }
 
-        private void OnPlayerLogin()
+        private void PlayerLogin()
         {
             loadingCanvas.SetActive(true);
         }

@@ -41,8 +41,6 @@ public class GameManager : NetworkBehaviour
 
             if (!CanGameStart()) throw new Exception("플레이어들이 준비되지 않았습니다");
 
-            GamePlayEventHandler.GameStart();
-
             LoadSceneRpc("InGame");
         }
         catch (Exception e)

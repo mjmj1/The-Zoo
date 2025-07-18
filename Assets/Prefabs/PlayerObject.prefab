@@ -19,6 +19,7 @@ GameObject:
   - component: {fileID: 6661343672116730651}
   - component: {fileID: 46057852386042095}
   - component: {fileID: 8991061074975073049}
+  - component: {fileID: 3755982930554864778}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Player
@@ -40,6 +41,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3038864158766904284}
+  - {fileID: 5877200157190742088}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5884640447956715888
@@ -127,6 +129,7 @@ MonoBehaviour:
   isGround: 1
   isAttack: 0
   isSpin: 0
+  isHit: 0
 --- !u!114 &2736765177486910086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +191,8 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
+  health:
+    m_InternalValue: 3
   clientId:
     m_InternalValue: 0
 --- !u!54 &5100048763366486770
@@ -309,6 +314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59ff8f5f91e5a6645b4d3594e4683bd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!114 &8991061074975073049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,6 +327,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ffb8027e20230e4581625093896d5c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  attackRange: 0.7
+  attackRadius: 0.3
+  hiderMask:
+    serializedVersion: 2
+    m_Bits: 128
+  attackOrigin: {fileID: 5877200157190742088}
+--- !u!136 &3755982930554864778
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978094491091307183}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.35
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &3760930727023377504
 GameObject:
   m_ObjectHideFlags: 0
@@ -457,6 +493,37 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &6865702241295744437
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5877200157190742088}
+  m_Layer: 0
+  m_Name: AttackOrigin
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5877200157190742088
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6865702241295744437}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.4, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6605717164732790000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6952897241415688845
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3038864158766904284
 RectTransform:
   m_ObjectHideFlags: 0

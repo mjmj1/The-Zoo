@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using EventHandler;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -91,8 +92,10 @@ namespace Characters
         public bool isGround = true;
         public bool isAttack;
         public bool isSpin;
+        public bool isHit;
 
         private CharacterNetworkAnimator animator;
+        private PlayerEntity entity;
 
         private PlanetGravity gravity;
         private InputHandler input;
@@ -178,6 +181,8 @@ namespace Characters
             input.InputActions.Player.Spin.canceled += Spin;
             input.InputActions.Player.Jump.performed += Jump;
             input.InputActions.Player.Attack.performed += Attack;
+
+            entity.health.OnValueChanged += animator.OnHit;
         }
 
         private void Unsubscribe()
@@ -194,6 +199,8 @@ namespace Characters
             input.InputActions.Player.Spin.canceled -= Spin;
             input.InputActions.Player.Jump.performed -= Jump;
             input.InputActions.Player.Attack.performed -= Attack;
+
+            entity.health.OnValueChanged -= animator.OnHit;
         }
 
         private void InitializeComponent()
@@ -205,6 +212,7 @@ namespace Characters
 
             rb = GetComponent<Rigidbody>();
             input = GetComponent<InputHandler>();
+            entity = GetComponent<PlayerEntity>();
             animator = GetComponent<CharacterNetworkAnimator>();
         }
 
@@ -272,6 +280,7 @@ namespace Characters
             if (!isGround) return;
             if (isAttack) return;
             if (isSpin) return;
+            if (isHit) return;
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
@@ -291,6 +300,9 @@ namespace Characters
             if (!isGround) return;
             if (isAttack) return;
             if (isSpin) return;
+            if (isHit) return;
+
+            GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
         }
@@ -299,6 +311,7 @@ namespace Characters
         {
             if (!isGround) return;
             if (isAttack) return;
+            if (isHit) return;
 
             isSpin = ctx.performed;
             animator.OnSpin(ctx);

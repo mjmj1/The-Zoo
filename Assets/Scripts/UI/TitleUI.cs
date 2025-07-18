@@ -28,7 +28,7 @@ namespace UI
             {
                 if (string.IsNullOrEmpty(playerNameInput.text)) throw new Exception("플레이어의 이름을 입력해주세요");
                 
-                GamePlayEventHandler.PlayerLogin();
+                GamePlayEventHandler.OnPlayerLogin();
                 
                 var playerName = playerNameInput.text;
 

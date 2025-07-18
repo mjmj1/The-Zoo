@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Linq;
 using Characters;
+using Characters.Roles;
 using Unity.Netcode;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using Utils;
 
@@ -9,20 +11,14 @@ namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
-        public enum Team
-        {
-            Hider,
-            Seeker
-        }
-
         public static PlayManager Instance;
 
         public NetworkVariable<int> currentTime = new();
         [SerializeField] private float spawnRadius = 7.5f;
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
-        private NetworkList<ulong> hiderIds = new();
-        private NetworkList<ulong> seekerIds = new();
+        public NetworkList<ulong> hiderIds = new();
+        public NetworkList<ulong> seekerIds = new();
 
         public void Awake()
         {
@@ -30,86 +26,104 @@ namespace GamePlay
             else Destroy(gameObject);
         }
 
-        public void Update()
-        {
-            if (IsClient)
-            {
-                if (Input.GetKeyDown(KeyCode.T))
-                    PingToAuthorityRpc();
-                else if (Input.GetKeyDown(KeyCode.G))
-                    PingToNotAuthorityRpc();
-                else if (Input.GetKeyDown(KeyCode.B))
-                    PingToEveryoneRpc();
-            }
-        }
-
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            MyLogger.Print(this, "OnNetworkSpawn");
+            hiderIds.OnListChanged += OnHiderListChanged;
+            seekerIds.OnListChanged += OnSeekerListChanged;
+
+            if (!IsSessionOwner) return;
 
             OnGameStart();
+        }
+
+        private void OnHiderListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+
+            SetRoleRpc(PlayerEntity.Role.Hider,
+                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+        }
+
+        private void OnSeekerListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+
+            SetRoleRpc(PlayerEntity.Role.Seeker,
+                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
         }
 
         private void OnGameStart()
         {
             if (!IsSessionOwner) return;
 
-            MyLogger.Print(this, "Game Start");
+            StartCoroutine(CountTime());
 
             MoveRandomPositionRpc();
 
             AssignRole();
+        }
 
-            StartCoroutine(CountTime());
+        private void OnGameEnd()
+        {
+            UnassignRole();
         }
 
         private void AssignRole()
         {
             var clients = NetworkManager.Singleton.ConnectedClientsList;
-            var seeker = clients[Random.Range(0, clients.Count)];
+            var seeker = Random.Range(0, clients.Count);
 
-            seekerIds.Add(seeker.ClientId);
-
-            seeker.PlayerObject.GetComponent<AssignedSeekerRole>().enabled = true;
-
-            foreach (var client in clients)
+            for (var i = 0; i < clients.Count; i++)
             {
-                if (seekerIds.Contains(client.ClientId)) return;
-
-                hiderIds.Add(client.ClientId);
-
-                client.PlayerObject.GetComponent<AssignedHiderRole>().enabled = true;
+                if (seeker == i)
+                {
+                    seekerIds.Add(clients[i].ClientId);
+                }
+                else
+                {
+                    hiderIds.Add(clients[i].ClientId);
+                }
             }
         }
 
-        [Rpc(SendTo.Authority)]
-        private void PingToAuthorityRpc()
+        private void UnassignRole()
         {
-            print("Ping SendTo.Authority");
+            var clients = NetworkManager.Singleton.ConnectedClientsList;
 
-            print($"Ping SendTo.Authority from Client-{OwnerClientId}");
+            foreach (var client in clients)
+            {
+                client.PlayerObject.GetComponent<PlayerEntity>().role.Value
+                    = (PlayerEntity.Role.None);
+            }
         }
 
-        [Rpc(SendTo.NotAuthority)]
-        private void PingToNotAuthorityRpc()
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void SetRoleRpc(PlayerEntity.Role role, RpcParams rpcParams)
         {
-            print("Ping SendTo.NotAuthority");
+            var clientId = NetworkManager.Singleton.LocalClientId;
+            var obj = NetworkManager.Singleton.ConnectedClients[clientId]
+                .PlayerObject.GetComponent<PlayerEntity>();
 
-            print($"Ping SendTo.NotAuthority from Client-{OwnerClientId}");
+            obj.role.Value = role;
         }
 
-        [Rpc(SendTo.Everyone)]
-        private void PingToEveryoneRpc()
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void HitRpc(ulong targetId, RpcParams rpcParams)
         {
-            print("Ping SendTo.Everyone");
+            var target = NetworkManager.Singleton.ConnectedClients[targetId]
+                .PlayerObject.GetComponent<PlayerEntity>();
 
-            print($"Ping SendTo.Everyone from Client-{OwnerClientId}");
+            target.health.Value -= 1;
+
+            print($"client-{targetId} HP: {target.health.Value}");
         }
 
         private IEnumerator CountTime()
         {
+            print("Count Time Started");
+
             while (true)
             {
                 yield return waitDelay;

@@ -26,7 +26,7 @@ namespace Characters
 
         private void OnPlayerReadyChanged(bool previousValue, bool newValue)
         {
-            GamePlayEventHandler.PlayerReady(playerId.Value.Value, newValue);
+            GamePlayEventHandler.OnPlayerReady(playerId.Value.Value, newValue);
         }
 
         public void Toggle()
