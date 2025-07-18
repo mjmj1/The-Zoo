@@ -1,3 +1,4 @@
+using System;
 using EventHandler;
 using Networks;
 using Unity.Netcode;
@@ -17,23 +18,32 @@ namespace UI
         [SerializeField] private string loadingCanvasName = "LoadingCanvas";
         [SerializeField] private string popupCanvasName = "InformationPopup";
 
-        private GameObject backgroundCanvas;
-        private GameObject titleCanvas;
-        private GameObject mainCanvas;
-        private GameObject lobbyCanvas;
-        private GameObject loadingCanvas;
-        private GameObject popupCanvas;
+        public GameObject backgroundCanvas;
+        public GameObject titleCanvas;
+        public GameObject mainCanvas;
+        public GameObject lobbyCanvas;
+        public GameObject loadingCanvas;
+        public GameObject popupCanvas;
+
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
 
         private void OnEnable()
         {
             AssignAllCanvases();
 
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneLoaded  += OnSceneLoaded;
+
             GamePlayEventHandler.OnPlayerLogin += OnPlayerLogin;
             ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
+
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
+
             UnityServices.Initialized += UnityServicesOnInitialized;
+
             NetworkManager.OnDestroying += OnDestroying;
 
             if (popupCanvas != null)
@@ -45,14 +55,16 @@ namespace UI
             NetworkManager.OnDestroying -= OnDestroying;
 
             SceneManager.sceneLoaded -= OnSceneLoaded;
+
             AuthenticationService.Instance.SignedIn -= OnSignedIn;
+
             ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
 
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
         {
             if (scene.name != "Lobby") return;
 
@@ -65,27 +77,32 @@ namespace UI
             }
 
             if (ConnectionManager.Instance && ConnectionManager.Instance.CurrentSession != null)
-            {
                 SwitchUI(UIType.Lobby);
-            }
-            else if (AuthenticationService.Instance != null && AuthenticationService.Instance.IsSignedIn)
-            {
+            else if (AuthenticationService.Instance != null &&
+                     AuthenticationService.Instance.IsSignedIn)
                 SwitchUI(UIType.Main);
-            }
             else
-            {
                 SwitchUI(UIType.Title);
-            }
+        }
+
+        private void SetActiveAllCanvases(bool active)
+        {
+            titleCanvas.SetActive(active);
+            mainCanvas.SetActive(active);
+            lobbyCanvas.SetActive(active);
+            loadingCanvas.SetActive(active);
+            popupCanvas.SetActive(active);
+            backgroundCanvas.SetActive(active);
         }
 
         private void AssignAllCanvases()
         {
-            backgroundCanvas = FindObject(backgroundCanvasName);
             titleCanvas = FindObject(titleCanvasName);
             mainCanvas = FindObject(mainCanvasName);
             lobbyCanvas = FindObject(lobbyCanvasName);
             loadingCanvas = FindObject(loadingCanvasName);
             popupCanvas = FindObject(popupCanvasName);
+            backgroundCanvas = FindObject(backgroundCanvasName);
         }
 
         private GameObject FindObject(string objName)
@@ -109,6 +126,9 @@ namespace UI
 
         private void SwitchUI(UIType uiType)
         {
+            if (!titleCanvas || !mainCanvas || !lobbyCanvas || !loadingCanvas || !popupCanvas ||
+                !backgroundCanvas) return;
+
             titleCanvas.SetActive(uiType == UIType.Title);
             mainCanvas.SetActive(uiType == UIType.Main);
             lobbyCanvas.SetActive(uiType == UIType.Lobby);
@@ -141,6 +161,8 @@ namespace UI
         private void OnClientDisconnectCallback(ulong clientId)
         {
             if (NetworkManager.Singleton.LocalClientId != clientId) return;
+
+            SetActiveAllCanvases(true);
 
             SwitchUI(UIType.Main);
         }

@@ -14,26 +14,16 @@ namespace Networks
 
         public int index;
 
+        public void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            // NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
-
             NetworkManager.Singleton.OnPreShutdown += OnPreShutdown;
-        }
-
-        private void OnSceneEvent(SceneEvent sceneEvent)
-        {
-            if (sceneEvent.SceneEventType == SceneEventType.LoadComplete)
-            {
-                Debug.Log("Client finished loading scene: " + sceneEvent.SceneName);
-
-                if (sceneEvent.ClientId == NetworkManager.LocalClientId)
-                {
-                    Spawn();
-                }
-            }
         }
 
         private void OnPreShutdown()

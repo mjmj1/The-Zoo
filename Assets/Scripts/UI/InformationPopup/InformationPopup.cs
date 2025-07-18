@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,22 +8,17 @@ namespace UI
 {
     public class InformationPopup : MonoBehaviour
     {
-        [SerializeField] private GameObject informationPopupPrefab;
-        
-        private IObjectPool<GameObject> pool;
-        
         public static InformationPopup instance;
-        
+        [SerializeField] private GameObject informationPopupPrefab;
+
+        private IObjectPool<GameObject> pool;
+
         private void Awake()
         {
             if (instance == null)
-            {
                 instance = this;
-            }
             else
-            {
                 Destroy(gameObject);
-            }
         }
 
         private void Start()
@@ -46,7 +40,7 @@ namespace UI
             var btn = item.GetComponentInChildren<Button>();
 
             msg.text = massage;
-            
+
             btn.onClick.AddListener(HidePopup(item));
 
             item.SetActive(true);
@@ -54,12 +48,9 @@ namespace UI
 
         private UnityAction HidePopup(GameObject item)
         {
-            return () =>
-            {
-                pool.Release(item);
-            };
+            return () => { pool.Release(item); };
         }
-        
+
         private GameObject CreatePoolObj()
         {
             return Instantiate(informationPopupPrefab, transform);

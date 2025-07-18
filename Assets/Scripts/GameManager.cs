@@ -1,5 +1,6 @@
 using System;
 using Characters;
+using EventHandler;
 using Networks;
 using UI;
 using Unity.Netcode;
@@ -54,6 +55,8 @@ public class GameManager : NetworkBehaviour
             if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
 
             if (!CanGameStart()) throw new Exception("플레이어들이 준비되지 않았습니다");
+
+            GamePlayEventHandler.GameStart();
 
             LoadSceneRpc("InGame");
         }
