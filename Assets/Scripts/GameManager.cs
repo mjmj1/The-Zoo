@@ -94,7 +94,6 @@ public class GameManager : NetworkBehaviour
     internal void LoadSceneRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
-        print($"client-{NetworkManager.Singleton.CurrentSessionOwner} is Session Owner.");
 
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }

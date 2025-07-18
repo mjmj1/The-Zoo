@@ -1,4 +1,3 @@
-using System;
 using EventHandler;
 using Networks;
 using Unity.Netcode;
@@ -25,16 +24,11 @@ namespace UI
         public GameObject loadingCanvas;
         public GameObject popupCanvas;
 
-        private void Awake()
-        {
-            DontDestroyOnLoad(gameObject);
-        }
-
         private void OnEnable()
         {
             AssignAllCanvases();
 
-            SceneManager.sceneLoaded  += OnSceneLoaded;
+            SceneManager.sceneLoaded += OnSceneLoaded;
 
             GamePlayEventHandler.OnPlayerLogin += OnPlayerLogin;
             ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
@@ -44,16 +38,12 @@ namespace UI
 
             UnityServices.Initialized += UnityServicesOnInitialized;
 
-            NetworkManager.OnDestroying += OnDestroying;
-
             if (popupCanvas != null)
                 popupCanvas.SetActive(true);
         }
 
-        private void OnDestroying(NetworkManager obj)
+        private void OnDisable()
         {
-            NetworkManager.OnDestroying -= OnDestroying;
-
             SceneManager.sceneLoaded -= OnSceneLoaded;
 
             AuthenticationService.Instance.SignedIn -= OnSignedIn;
