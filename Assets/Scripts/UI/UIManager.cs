@@ -33,6 +33,7 @@ namespace UI
             GamePlayEventHandler.OnPlayerLogin += OnPlayerLogin;
             ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
 
+            NetworkManager.OnDestroying += OnDestroying;
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback += OnClientDisconnectCallback;
 
@@ -40,6 +41,14 @@ namespace UI
 
             if (popupCanvas != null)
                 popupCanvas.SetActive(true);
+        }
+
+        private void OnDestroying(NetworkManager obj)
+        {
+            NetworkManager.OnDestroying -= OnDestroying;
+
+            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
+            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         }
 
         private void OnDisable()
@@ -50,8 +59,6 @@ namespace UI
 
             ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
 
-            NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectedCallback;
-            NetworkManager.Singleton.OnClientDisconnectCallback -= OnClientDisconnectCallback;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
@@ -73,16 +80,6 @@ namespace UI
                 SwitchUI(UIType.Main);
             else
                 SwitchUI(UIType.Title);
-        }
-
-        private void SetActiveAllCanvases(bool active)
-        {
-            titleCanvas.SetActive(active);
-            mainCanvas.SetActive(active);
-            lobbyCanvas.SetActive(active);
-            loadingCanvas.SetActive(active);
-            popupCanvas.SetActive(active);
-            backgroundCanvas.SetActive(active);
         }
 
         private void AssignAllCanvases()
@@ -151,8 +148,6 @@ namespace UI
         private void OnClientDisconnectCallback(ulong clientId)
         {
             if (NetworkManager.Singleton.LocalClientId != clientId) return;
-
-            SetActiveAllCanvases(true);
 
             SwitchUI(UIType.Main);
         }

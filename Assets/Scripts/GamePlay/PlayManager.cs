@@ -1,18 +1,33 @@
 using System.Collections;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 
 namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
-        public static readonly NetworkVariable<int> CurrentTime = new();
+        public enum Team
+        {
+            Hider,
+            Seeker
+        }
+
+        public static PlayManager Instance;
+
+        public NetworkVariable<int> currentTime = new();
         [SerializeField] private float spawnRadius = 7.5f;
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
-        private bool isGameStarted;
+        private NetworkList<ulong> hiderIds = new();
+        private NetworkList<ulong> seekerIds = new();
+
+        public void Awake()
+        {
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
+        }
 
         public void Update()
         {
@@ -27,9 +42,11 @@ namespace GamePlay
             }
         }
 
-        protected override void OnNetworkSessionSynchronized()
+        public override void OnNetworkSpawn()
         {
-            if (!SceneManager.GetActiveScene().name.Equals("InGame")) return;
+            base.OnNetworkSpawn();
+
+            MyLogger.Print(this, "OnNetworkSpawn");
 
             OnGameStart();
         }
@@ -38,11 +55,28 @@ namespace GamePlay
         {
             if (!IsSessionOwner) return;
 
-            isGameStarted = true;
+            MyLogger.Print(this, "Game Start");
 
             MoveRandomPositionRpc();
 
+            AssignRole();
+
             StartCoroutine(CountTime());
+        }
+
+        private void AssignRole()
+        {
+            var clients = NetworkManager.Singleton.ConnectedClientsList;
+            var seeker = clients[Random.Range(0, clients.Count)];
+
+            seekerIds.Add(seeker.ClientId);
+
+            foreach (var client in clients)
+            {
+                if (seekerIds.Contains(client.ClientId)) return;
+
+                hiderIds.Add(client.ClientId);
+            }
         }
 
         [Rpc(SendTo.Authority)]
@@ -71,11 +105,11 @@ namespace GamePlay
 
         private IEnumerator CountTime()
         {
-            while (isGameStarted)
+            while (true)
             {
                 yield return waitDelay;
 
-                CurrentTime.Value += 1;
+                currentTime.Value += 1;
             }
         }
 

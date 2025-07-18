@@ -10,14 +10,6 @@ using Utils;
 
 public class GameManager : NetworkBehaviour
 {
-    public enum GameState
-    {
-        Title,
-        Lobby,
-        InGame,
-        Result
-    }
-
     public static GameManager Instance { get; private set; }
 
     private void Awake()
@@ -31,13 +23,6 @@ public class GameManager : NetworkBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    protected override void OnOwnershipChanged(ulong previous, ulong current)
-    {
-        base.OnOwnershipChanged(previous, current);
-
-        MyLogger.Trace($"previous: {previous}\n current: {current}");
     }
 
     internal void Ready()

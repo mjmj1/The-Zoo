@@ -15,6 +15,8 @@ namespace Characters
 
         public NetworkVariable<FixedString32Bytes> playerName = new();
         public NetworkVariable<ulong> clientId = new();
+        public AssignedSeekerRole seekerRole;
+        public AssignedHiderRole hiderRole;
 
         public override void OnNetworkSpawn()
         {

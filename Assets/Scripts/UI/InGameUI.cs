@@ -10,15 +10,15 @@ namespace UI
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private Button gameEndButton;
 
-        private void Awake()
+        private void Start()
         {
-            PlayManager.CurrentTime.OnValueChanged += OnValueChanged;
+            PlayManager.Instance.currentTime.OnValueChanged += OnValueChanged;
             gameEndButton.onClick.AddListener(OnGameEndButtonClicked);
         }
 
         private void OnDestroy()
         {
-            PlayManager.CurrentTime.OnValueChanged -= OnValueChanged;
+            PlayManager.Instance.currentTime.OnValueChanged -= OnValueChanged;
             gameEndButton.onClick.RemoveListener(OnGameEndButtonClicked);
         }
 
