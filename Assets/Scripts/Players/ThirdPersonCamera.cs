@@ -1,7 +1,6 @@
-using UI;
 using UnityEngine;
 
-namespace Characters
+namespace Players
 {
     public class ThirdPersonCamera : MonoBehaviour
     {
@@ -12,7 +11,7 @@ namespace Characters
         private Transform target;
         private Transform planetCenter;
         
-        private CharacterHandler characterHandler;
+        private PlayerController playerController;
 
         private void Start()
         {
@@ -27,16 +26,16 @@ namespace Characters
             UpdateCameraPosition();
         }
 
-        public void ConnectToTarget(Transform target)
+        public void ConnectToTarget(Transform obj)
         {
-            this.target = target;
-            characterHandler = target.GetComponent<CharacterHandler>();
+            target = obj;
+            playerController = obj.GetComponent<PlayerController>();
         }
 
         private void UpdateCameraPosition()
         {
             var gravityDir = planetCenter ? (target.position - planetCenter.position).normalized : Vector3.up;
-            var pitchRot = Quaternion.AngleAxis(characterHandler.Pitch, target.right);
+            var pitchRot = Quaternion.AngleAxis(playerController.Pitch, target.right);
             var offset = pitchRot * (target.rotation * defaultOffset);
             var targetPos = target.position + offset;
 

@@ -4,7 +4,7 @@ using UnityEngine;
 public class PlanetGravity : MonoBehaviour
 {
     public float gravityStrength = 9.81f;
-    private readonly HashSet<Rigidbody> _affectedBodies = new();
+    private readonly HashSet<Rigidbody> affectedBodies = new();
 
     private void FixedUpdate()
     {
@@ -13,7 +13,7 @@ public class PlanetGravity : MonoBehaviour
 
     private void ApplyGravity()
     {
-        foreach (var rb in _affectedBodies)
+        foreach (var rb in affectedBodies)
         {
             if (!rb) continue;
 
@@ -30,12 +30,12 @@ public class PlanetGravity : MonoBehaviour
     public void Subscribe(Rigidbody rb)
     {
         if (rb)
-            _affectedBodies.Add(rb);
+            affectedBodies.Add(rb);
     }
 
     public void Unsubscribe(Rigidbody rb)
     {
         if (rb)
-            _affectedBodies.Remove(rb);
+            affectedBodies.Remove(rb);
     }
 }

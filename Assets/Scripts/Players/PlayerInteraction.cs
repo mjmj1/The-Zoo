@@ -1,8 +1,7 @@
-using System;
 using Interactions;
 using UnityEngine;
 
-namespace Characters
+namespace Players
 {
     public class PlayerInteraction : MonoBehaviour
     {

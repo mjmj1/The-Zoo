@@ -2,6 +2,7 @@ using System;
 using Characters;
 using EventHandler;
 using Networks;
+using Players;
 using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;

@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace Characters
+namespace Players
 {
     internal class InputHandler : MonoBehaviour
     {

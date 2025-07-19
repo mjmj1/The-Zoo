@@ -1,5 +1,6 @@
 using EventHandler;
 using GamePlay;
+using Players;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -56,7 +57,7 @@ namespace Characters.Roles
 
             print($"target-{target.OwnerClientId} Seeker Hit");
 
-            PlayManager.Instance.HitRpc(target.OwnerClientId, RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
+            PlayManager.Instance.HitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
         }
     }
 }

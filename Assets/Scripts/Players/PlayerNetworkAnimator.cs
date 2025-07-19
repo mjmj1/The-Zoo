@@ -1,12 +1,10 @@
-using EventHandler;
 using Unity.Netcode.Components;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Characters
+namespace Players
 {
-    public class CharacterNetworkAnimator : NetworkAnimator
+    public class PlayerNetworkAnimator : NetworkAnimator
     {
         public static readonly int MoveHash = Animator.StringToHash("Move");
         public static readonly int RunHash = Animator.StringToHash("Run");
@@ -14,6 +12,7 @@ namespace Characters
         public static readonly int SpinHash = Animator.StringToHash("Spin");
         public static readonly int AttackHash = Animator.StringToHash("Attack");
         public static readonly int HitHash = Animator.StringToHash("Hit");
+        public static readonly int DeathHash = Animator.StringToHash("Death");
 
         protected override bool OnIsServerAuthoritative()
         {
@@ -45,9 +44,14 @@ namespace Characters
             Animator.SetTrigger(JumpHash);
         }
 
-        internal void OnHit(int previousValue, int newValue)
+        internal void OnHit()
         {
             Animator.SetTrigger(HitHash);
+        }
+
+        internal void OnDeath()
+        {
+            Animator.SetTrigger(DeathHash);
         }
     }
 }

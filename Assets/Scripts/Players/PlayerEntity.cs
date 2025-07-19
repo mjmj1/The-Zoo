@@ -1,13 +1,12 @@
-using System;
+using System.Collections;
 using Characters.Roles;
-using EventHandler;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
 
-namespace Characters
+namespace Players
 {
     public class PlayerEntity : NetworkBehaviour
     {
@@ -17,6 +16,7 @@ namespace Characters
             Hider,
             Seeker,
         }
+
         [SerializeField] private TMP_Text playerNameText;
 
         public NetworkVariable<FixedString32Bytes> playerName = new();
@@ -29,9 +29,10 @@ namespace Characters
         {
             base.OnNetworkSpawn();
 
-            playerName.OnValueChanged += OnPlayerNameChanged;
             clientId.OnValueChanged += OnClientIdChanged;
             role.OnValueChanged += OnRoleChanged;
+            playerName.OnValueChanged += OnPlayerNameChanged;
+            health.OnValueChanged += OnHealthChanged;
 
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
@@ -48,6 +49,11 @@ namespace Characters
 
             playerName.OnValueChanged -= OnPlayerNameChanged;
             clientId.OnValueChanged -= OnClientIdChanged;
+        }
+
+        public void Damaged()
+        {
+            health.Value -= 1;
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)
@@ -82,6 +88,14 @@ namespace Characters
 
                     break;
             }
+        }
+
+        private void OnHealthChanged(int previousValue, int newValue)
+        {
+            if (!IsOwner) return;
+
+            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
+            if (newValue != 0) return;
         }
     }
 }

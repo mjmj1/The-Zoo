@@ -4,7 +4,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 
-namespace Characters
+namespace Players
 {
     public class PlayerReadyChecker : NetworkBehaviour
     {

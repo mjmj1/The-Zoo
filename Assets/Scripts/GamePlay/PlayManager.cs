@@ -2,6 +2,7 @@ using System.Collections;
 using System.Linq;
 using Characters;
 using Characters.Roles;
+using Players;
 using Unity.Netcode;
 using Unity.Services.Matchmaker.Models;
 using UnityEngine;
@@ -102,22 +103,19 @@ namespace GamePlay
         [Rpc(SendTo.SpecifiedInParams)]
         private void SetRoleRpc(PlayerEntity.Role role, RpcParams rpcParams)
         {
-            var clientId = NetworkManager.Singleton.LocalClientId;
-            var obj = NetworkManager.Singleton.ConnectedClients[clientId]
-                .PlayerObject.GetComponent<PlayerEntity>();
+            var target = NetworkManager.Singleton
+                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
 
-            obj.role.Value = role;
+            target.role.Value = role;
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        public void HitRpc(ulong targetId, RpcParams rpcParams)
+        public void HitRpc(RpcParams rpcParams)
         {
-            var target = NetworkManager.Singleton.ConnectedClients[targetId]
-                .PlayerObject.GetComponent<PlayerEntity>();
+            var target = NetworkManager.Singleton
+                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
 
-            target.health.Value -= 1;
-
-            print($"client-{targetId} HP: {target.health.Value}");
+            target.Damaged();
         }
 
         private IEnumerator CountTime()
