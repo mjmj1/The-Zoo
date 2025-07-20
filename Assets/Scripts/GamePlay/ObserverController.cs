@@ -27,31 +27,21 @@ namespace GamePlay
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            var cam = FindAnyObjectByType<ThirdPersonCamera>();
+            CameraManager.Instance.Find();
 
-            cam?.ConnectToTarget(transform);
+            CameraManager.Instance.SetFollowTarget(transform);
+
             PlanetGravity.Instance.Subscribe(rb);
         }
 
         private void Update()
         {
             AlignToSurface();
-
-            HandleLook();
         }
 
         private void FixedUpdate()
         {
             HandleMovement();
-        }
-
-        private void HandleLook()
-        {
-            var lookInput = input.LookInput;
-
-            Pitch = Mathf.Clamp(Pitch - lookInput.y * mouseSensitivity, minPitch, maxPitch);
-
-            transform.Rotate(Vector3.up * (lookInput.x * mouseSensitivity));
         }
 
         private void HandleMovement()

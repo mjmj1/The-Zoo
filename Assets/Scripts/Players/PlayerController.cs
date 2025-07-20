@@ -109,9 +109,8 @@ namespace Players
         {
             if (!IsOwner) return;
 
+            Look(null);
             AlignToSurface();
-
-            HandleLook();
         }
 
         private void FixedUpdate()
@@ -170,6 +169,8 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
+            //input.InputActions.Player.Look.performed += Look;
+            //input.InputActions.Player.Look.canceled += Look;
             input.InputActions.Player.Move.performed += Movement;
             input.InputActions.Player.Move.canceled += Movement;
             input.InputActions.Player.Run.performed += Run;
@@ -188,6 +189,8 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
+            //input.InputActions.Player.Look.performed -= Look;
+            //input.InputActions.Player.Look.canceled -= Look;
             input.InputActions.Player.Move.performed -= Movement;
             input.InputActions.Player.Move.canceled -= Movement;
             input.InputActions.Player.Run.performed -= Run;
@@ -217,8 +220,9 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            var cam = FindAnyObjectByType<ThirdPersonCamera>();
-            cam?.ConnectToTarget(transform);
+            CameraManager.Instance.Find();
+
+            CameraManager.Instance.SetFollowTarget(transform);
         }
 
         private void InitializeGravity()
@@ -228,15 +232,6 @@ namespace Players
             rb.useGravity = !PlanetGravity.Instance;
 
             PlanetGravity.Instance.Subscribe(rb);
-        }
-
-        private void HandleLook()
-        {
-            var lookInput = input.LookInput;
-
-            Pitch = Mathf.Clamp(Pitch - lookInput.y * mouseSensitivity, minPitch, maxPitch);
-
-            transform.Rotate(Vector3.up * (lookInput.x * mouseSensitivity));
         }
 
         private void HandleMovement()
@@ -263,6 +258,32 @@ namespace Players
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        private void Look(InputAction.CallbackContext? ctx)
+        {
+            // if (rb.linearVelocity.magnitude < 0.001f) return;
+
+            /*
+            var lookInput = input.LookInput;
+
+            transform.Rotate(Vector3.up * (lookInput.x * mouseSensitivity));
+            */
+
+            /*var euler = transform.rotation.eulerAngles;
+            euler.y = CameraManager.Instance.GetEulerAnglesY();
+            transform.rotation = Quaternion.Euler(euler);*/
+
+            var rotation = transform.localRotation;
+            rotation.y = CameraManager.Instance.follow.transform.localRotation.y;
+            transform.localRotation = rotation;
+
+            /*var camForward = Vector3.ProjectOnPlane(CameraManager.Instance.follow.transform.forward, transform.up).normalized;
+
+            var targetRotation = Quaternion.LookRotation(camForward, transform.up);
+
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, targetRotation, Time.deltaTime);*/
         }
 
         private void Movement(InputAction.CallbackContext ctx)
