@@ -902,7 +902,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  observerPrefab: {fileID: 8973117195894818204, guid: 3d794a758d110b0489d8263bd1fa2a02, type: 3}
   spawnRadius: 7.5
+  currentTime:
+    m_InternalValue: 0
 --- !u!1 &1439727997
 GameObject:
   m_ObjectHideFlags: 0

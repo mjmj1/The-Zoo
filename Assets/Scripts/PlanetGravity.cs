@@ -3,12 +3,25 @@ using UnityEngine;
 
 public class PlanetGravity : MonoBehaviour
 {
+    public static PlanetGravity Instance { get; private set; }
+
     public float gravityStrength = 9.81f;
     private readonly HashSet<Rigidbody> affectedBodies = new();
+
+    private void Awake()
+    {
+        if (!Instance) Instance = this;
+        else Destroy(gameObject);
+    }
 
     private void FixedUpdate()
     {
         ApplyGravity();
+    }
+
+    public Vector3 GetGravityDirection(Vector3 position)
+    {
+        return (transform.position - position).normalized;
     }
 
     private void ApplyGravity()
@@ -17,8 +30,7 @@ public class PlanetGravity : MonoBehaviour
         {
             if (!rb) continue;
 
-            var gravityDirection = (transform.position - rb.position).normalized;
-            rb.AddForce(gravityDirection * gravityStrength, ForceMode.Acceleration);
+            rb.AddForce(GetGravityDirection(rb.position) * gravityStrength, ForceMode.Acceleration);
         }
     }
 

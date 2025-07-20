@@ -122,7 +122,7 @@ MonoBehaviour:
   jumpForce: 3
   walkSpeed: 4
   runSpeed: 7
-  rotationSpeed: 50
+  rotationSpeed: 100
   mouseSensitivity: 0.25
   minPitch: -10
   maxPitch: 20

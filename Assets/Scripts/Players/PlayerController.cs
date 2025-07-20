@@ -2,6 +2,7 @@
 using System.Collections;
 using Characters;
 using EventHandler;
+using GamePlay;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -66,7 +67,7 @@ namespace Players
     }
 #endif
 
-    public class PlayerController : NetworkTransform
+    public class PlayerController : NetworkTransform, ICameraTarget
     {
 #if UNITY_EDITOR
         public bool controllerPropertiesVisible;
@@ -86,8 +87,6 @@ namespace Players
 
         private PlayerNetworkAnimator animator;
         private PlayerEntity entity;
-
-        private PlanetGravity gravity;
         private InputHandler input;
 
         private float moveSpeed;
@@ -97,7 +96,7 @@ namespace Players
 
         private Rigidbody rb;
 
-        public float Pitch { get; private set; }
+        public float Pitch { get; set; }
 
         private void Start()
         {
@@ -134,7 +133,7 @@ namespace Players
         public override void OnNetworkDespawn()
         {
             Unsubscribe();
-            gravity?.Unsubscribe(rb);
+            PlanetGravity.Instance?.Unsubscribe(rb);
 
             base.OnNetworkDespawn();
         }
@@ -226,11 +225,9 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            gravity = FindAnyObjectByType<PlanetGravity>();
+            rb.useGravity = !PlanetGravity.Instance;
 
-            rb.useGravity = !gravity;
-
-            gravity?.Subscribe(rb);
+            PlanetGravity.Instance.Subscribe(rb);
         }
 
         private void HandleLook()
@@ -258,9 +255,9 @@ namespace Players
 
         private void AlignToSurface()
         {
-            if (!gravity) return;
+            if (!PlanetGravity.Instance) return;
 
-            var gravityDirection = (transform.position - gravity.transform.position).normalized;
+            var gravityDirection = -PlanetGravity.Instance.GetGravityDirection(transform.position);
 
             var targetRotation = Quaternion.FromToRotation(
                 transform.up, gravityDirection) * transform.rotation;
@@ -332,6 +329,8 @@ namespace Players
             yield return new WaitForSeconds(1f);
 
             NetworkObject.Despawn();
+
+            PlayManager.Instance.ChangeObserverMode(transform);
         }
 
         private IEnumerator Slowdown()

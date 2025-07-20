@@ -11,7 +11,7 @@ namespace Players
         private Transform target;
         private Transform planetCenter;
         
-        private PlayerController playerController;
+        private ICameraTarget cameraTarget;
 
         private void Start()
         {
@@ -29,17 +29,17 @@ namespace Players
         public void ConnectToTarget(Transform obj)
         {
             target = obj;
-            playerController = obj.GetComponent<PlayerController>();
+            cameraTarget = obj.GetComponent<ICameraTarget>();
         }
 
         private void UpdateCameraPosition()
         {
             var gravityDir = planetCenter ? (target.position - planetCenter.position).normalized : Vector3.up;
-            var pitchRot = Quaternion.AngleAxis(playerController.Pitch, target.right);
+            var pitchRot = Quaternion.AngleAxis(cameraTarget.Pitch, target.right);
             var offset = pitchRot * (target.rotation * defaultOffset);
             var targetPos = target.position + offset;
 
-            transform.position = targetPos; //Vector3.SmoothDamp(transform.position, targetPos, ref _currentVelocity, rotationSmoothTime);
+            transform.position = targetPos;
 
             transform.rotation = Quaternion.LookRotation(target.position - transform.position, gravityDir);
         }

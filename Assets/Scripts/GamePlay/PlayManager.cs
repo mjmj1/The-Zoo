@@ -12,14 +12,18 @@ namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
-        public static PlayManager Instance;
+        [SerializeField] private GameObject observerPrefab;
+        [SerializeField] private float spawnRadius = 7.5f;
+
+        public static PlayManager Instance { get; private set; }
 
         public NetworkVariable<int> currentTime = new();
-        [SerializeField] private float spawnRadius = 7.5f;
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
-        public NetworkList<ulong> hiderIds = new();
-        public NetworkList<ulong> seekerIds = new();
+        private NetworkList<ulong> hiderIds = new();
+        private NetworkList<ulong> seekerIds = new();
+
+        private bool isGameStarted;
 
         public void Awake()
         {
@@ -37,6 +41,13 @@ namespace GamePlay
             if (!IsSessionOwner) return;
 
             OnGameStart();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+
+            OnGameEnd();
         }
 
         private void OnHiderListChanged(NetworkListEvent<ulong> changeEvent)
@@ -59,6 +70,8 @@ namespace GamePlay
         {
             if (!IsSessionOwner) return;
 
+            isGameStarted = true;
+
             StartCoroutine(CountTime());
 
             MoveRandomPositionRpc();
@@ -68,6 +81,8 @@ namespace GamePlay
 
         private void OnGameEnd()
         {
+            isGameStarted = false;
+
             UnassignRole();
         }
 
@@ -118,18 +133,6 @@ namespace GamePlay
             target.Damaged();
         }
 
-        private IEnumerator CountTime()
-        {
-            print("Count Time Started");
-
-            while (true)
-            {
-                yield return waitDelay;
-
-                currentTime.Value += 1;
-            }
-        }
-
         [Rpc(SendTo.Everyone)]
         private void MoveRandomPositionRpc()
         {
@@ -138,8 +141,28 @@ namespace GamePlay
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
+            obj.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
 
             print($"Client {clientId}: Position = {randomPos}");
+        }
+
+        internal void ChangeObserverMode(Transform player)
+        {
+            print("Change Observer Mode");
+
+            var observer = Instantiate(observerPrefab, player.position, player.rotation);
+        }
+
+        private IEnumerator CountTime()
+        {
+            print("Count Time Started");
+
+            while (isGameStarted)
+            {
+                yield return waitDelay;
+
+                currentTime.Value += 1;
+            }
         }
     }
 }

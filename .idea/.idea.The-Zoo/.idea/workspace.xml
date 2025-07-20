@@ -8,61 +8,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/ObserverController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/ObserverController.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Players/ICameraTarget.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Players/ICameraTarget.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/AC_Platypus.controller" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/AC_Platypus.controller" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Cat.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Cat.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Dog.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Dog.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Dove.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Dove.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Emu.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Emu.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Gecko.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Gecko.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Kookaburra.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Kookaburra.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Mouse.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Mouse.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Muskrat.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Muskrat.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Parrot.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Parrot.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Pigeon.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Pigeon.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Possum.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Possum.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Pudu.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Pudu.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Quokka.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Quokka.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Rabbit.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Rabbit.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Sparrow.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Sparrow.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_TasmanianDevil.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_TasmanianDevil.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Tortoise.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Tortoise.overrideController" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Wombat.overrideController" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Controller/ac_Wombat.overrideController" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/InteractionObject/InteractableObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/InteractionObject/InteractableObject.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/InteractionObject/SpawnObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/InteractionObject/SpawnObject.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/AttackStateBehavior.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Animations/MoveStateBehaviour.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/AttackStateBehavior.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Animations/MoveStateBehaviour.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/HitStateBehavior.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/HitStateBehavior.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/JumpStateBehavior.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/JumpStateBehavior.cs.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterHandler.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterNetworkAnimator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerNetworkAnimator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/CharacterNetworkAnimator.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerNetworkAnimator.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/InputHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/InputHandler.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/InputHandler.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerEntity.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerEntity.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerInteraction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerInteraction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerInteraction.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerInteraction.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerReadyChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerReadyChecker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/PlayerReadyChecker.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerReadyChecker.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/Roles.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/Roles/HiderRole.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/HiderRole.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/Roles/HiderRole.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/HiderRole.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/Roles/SeekerRole.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/SeekerRole.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/Roles/SeekerRole.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/SeekerRole.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/ThirdPersonCamera.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/ThirdPersonCamera.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Characters/ThirdPersonCamera.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/ThirdPersonCamera.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GameManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/ObserverController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/ObserverController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/PlayManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/PlayManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Networks/PlayerSpawner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Networks/PlayerSpawner.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/InteractionController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Interactions/InteractionController.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/PlanetGravity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/PlanetGravity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/TestPlayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/TestPlayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/ThirdPersonCamera.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/ThirdPersonCamera.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -292,6 +251,7 @@
       <workItem from="1752664726828" duration="6130000" />
       <workItem from="1752755796126" duration="4599000" />
       <workItem from="1752843799811" duration="24717000" />
+      <workItem from="1752990673365" duration="15986000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />
