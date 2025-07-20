@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
-using Static;
+using Networks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static Static.Strings;
+using Utils;
 
 namespace UI.GameSetup
 {
@@ -60,7 +60,7 @@ namespace UI.GameSetup
             _rectTransform = GetComponent<RectTransform>();
 
             _openSize = _rectTransform.sizeDelta;
-            _closeSize = new Vector2(_openSize.x, 25f);
+            _closeSize = new Vector2(_openSize.x, _openSize.y * 0.1f);
 
             _rectTransform.sizeDelta = _closeSize;
 
@@ -83,6 +83,22 @@ namespace UI.GameSetup
             SetupCloseSequence();
 
             Register();
+            
+            _controller.Initialize();
+            
+            Initialize();
+        }
+
+        private void Initialize()
+        {
+            codeCopyText.text = _controller.JoinCode;
+            
+            sessionNameInput.text = string.Empty;
+            sessionNamePlaceholder.text = _controller.SessionName.Original;
+
+            privateToggle.isOn = _controller.IsPrivate.Original;
+
+            playerSlotDropdown.value = _controller.PlayerSlot.Original - 4;
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -112,31 +128,31 @@ namespace UI.GameSetup
             cancelButton.onClick.AddListener(OnCancelButtonClick);
         }
 
-        private void TrackChange<T>(T value, Action<T> action)
+        private void TrackChange<T>(T value, GameOptionField<T> optionField)
         {
-            action?.Invoke(value);
+            optionField.Current = value;
             
-            applyButton.interactable = true;
+            applyButton.interactable = optionField.IsDirty;
         }
         
         private void OnPrivateToggled(bool arg0)
         {
-            TrackChange(arg0, a => _controller.IsPrivate = arg0);
+            TrackChange(arg0, _controller.IsPrivate);
         }
         
         private void OnSessionNameChanged(string arg0)
         {
-            TrackChange(arg0, a => _controller.SessionName = arg0);
+            TrackChange(arg0, _controller.SessionName);
         }
         
         private void OnPasswordChanged(string arg0)
         {
-            TrackChange(arg0, a => _controller.Password = arg0);
+            TrackChange(arg0, _controller.Password);
         }
 
         private void OnPlayerSlotChanged(int arg0)
         {
-            TrackChange(arg0, a => _controller.PlayerSlot = arg0 + 4);
+            TrackChange(arg0 + 4, _controller.PlayerSlot);
         }
         
         private void OnAILevelChanged(int arg0)
@@ -151,22 +167,11 @@ namespace UI.GameSetup
 
         private void Clear()
         {
-            var session = Manage.Session();
-
-            codeCopyText.text = session.Code;
-            privateToggle.isOn = session.IsPrivate;
-
-            sessionNameInput.text = "";
-            sessionNamePlaceholder.text = session.Name;
-
-            session.Properties.TryGetValue(PASSWORD, out var prof);
-            passwordInput.text = prof?.Value;
-            
-            playerSlotDropdown.value = int.Parse(session.Properties[PLAYERSLOT].Value) - 4;
-
             applyButton.interactable = false;
             
             _controller.Reset();
+            
+            Initialize();
         }
 
         private void OnCopyCodeButtonClick()

@@ -215,7 +215,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4504325224983467106, guid: 9a271f8b0918b804f8de4052af73b6c9, type: 3}
+  - {fileID: 2100000, guid: 2c9d80e8b4cd9d448b40077331b9eeed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -358,61 +358,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2336785229434022301}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &6922480267864641468
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6716003154368053637}
-  - component: {fileID: 6505160365091379449}
-  m_Layer: 0
-  m_Name: Collider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6716003154368053637
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922480267864641468}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5050720141659909085}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &6505160365091379449
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6922480267864641468}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.22636256
-  m_Height: 0.86010915
-  m_Direction: 2
-  m_Center: {x: 0, y: 0.22661486, z: 0.09094605}
 --- !u!1 &7115324762011764541
 GameObject:
   m_ObjectHideFlags: 0
@@ -561,7 +506,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4504325224983467106, guid: 9a271f8b0918b804f8de4052af73b6c9, type: 3}
+  - {fileID: 2100000, guid: 2c9d80e8b4cd9d448b40077331b9eeed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -660,7 +605,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4504325224983467106, guid: 9a271f8b0918b804f8de4052af73b6c9, type: 3}
+  - {fileID: 2100000, guid: 2c9d80e8b4cd9d448b40077331b9eeed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -759,7 +704,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 4504325224983467106, guid: 9a271f8b0918b804f8de4052af73b6c9, type: 3}
+  - {fileID: 2100000, guid: 2c9d80e8b4cd9d448b40077331b9eeed, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -851,10 +796,6 @@ PrefabInstance:
       value: 4273521285
       objectReference: {fileID: 0}
     - target: {fileID: 5884640447956715888, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
-      propertyPath: SceneMigrationSynchronization
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5884640447956715888, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       propertyPath: InScenePlacedSourceGlobalObjectIdHash
       value: 778152095
       objectReference: {fileID: 0}
@@ -916,9 +857,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6605717164732790000, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3394090667835375136}
-    - targetCorrespondingSourceObject: {fileID: 6605717164732790000, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6716003154368053637}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 1978094491091307183, guid: 5224e81aded87394baff470fc195f1bb, type: 3}
       insertIndex: -1
@@ -976,7 +914,7 @@ Animator:
   m_GameObject: {fileID: 488747777735660930}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 43a464c1f4a75c34ba2d2cb8ebffea1a, type: 3}
-  m_Controller: {fileID: 9100000, guid: 9150783f3b1f14a4580c93002285ffbb, type: 2}
+  m_Controller: {fileID: 22100000, guid: 94abb18fe9805a54082081587e67058a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

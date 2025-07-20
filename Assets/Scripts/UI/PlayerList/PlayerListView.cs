@@ -1,145 +1,139 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Static;
-using Unity.Netcode;
+using EventHandler;
+using Networks;
+using Unity.Services.Core;
 using Unity.Services.Multiplayer;
 using UnityEngine;
+using UnityEngine.Pool;
 using Utils;
 
 namespace UI.PlayerList
 {
     public class PlayerListView : MonoBehaviour
     {
+        private static readonly Dictionary<string, PlayerView> Map = new();
         [SerializeField] private GameObject playerViewPrefab;
 
-        private readonly Dictionary<string, GameObject> _playerMap = new();
+        private IObjectPool<PlayerView> pool;
 
-        private readonly Queue<GameObject> _pool = new();
+        private ISession session;
+
+        private void Awake()
+        {
+            pool = new ObjectPool<PlayerView>
+            (
+                CreatePoolObj,
+                GetPoolObj,
+                ReleasePoolObj,
+                DestroyPoolObj,
+                true, 4, 8
+            );
+        }
 
         private void OnEnable()
         {
-            Initialize();
-            RegisterEvent();
+            if (!UnityServices.State.Equals(ServicesInitializationState.Initialized)) return;
+
+            if (!ConnectionManager.Instance) return;
+
+            session = ConnectionManager.Instance.CurrentSession;
+
+            foreach (var player in session.Players)
+            {
+                var item = pool.Get();
+
+                player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
+
+                item.Bind(player);
+
+                Map.Add(player.Id, item);
+
+                if (player.Id == session.CurrentPlayer.Id) item.Highlight();
+            }
+
+            GamePlayEventHandler.PlayerReady += PlayerReady;
+            session.PlayerJoined += OnPlayerJoined;
+            session.PlayerHasLeft += OnPlayerHasLeft;
+            session.SessionHostChanged += OnSessionHostChanged;
+            session.SessionHostChanged += GameManager.Instance.PromotedSessionHost;
+
+            Map[session.Host].Host(true);
         }
 
         private void OnDisable()
         {
+            if(session == null) return;
+
             Clear();
-            UnregisterEvent();
+
+            GamePlayEventHandler.PlayerReady -= PlayerReady;
+            session.PlayerJoined -= OnPlayerJoined;
+            session.PlayerHasLeft -= OnPlayerHasLeft;
+            session.SessionHostChanged -= OnSessionHostChanged;
+            session.SessionHostChanged -= GameManager.Instance.PromotedSessionHost;
+
+            session = null;
         }
 
-        private void RegisterEvent()
+        private void PlayerReady(string playerId, bool value)
         {
-            var session = Manage.Session();
-
-            session.PlayerJoined += OnJoined;
-            session.PlayerHasLeft += OnLeft;
-            session.SessionHostChanged += OnHostChanged;
+            Map[playerId].Ready(value);
         }
 
-        private void UnregisterEvent()
+        private void OnSessionHostChanged(string playerId)
         {
-            var session = Manage.Session();
+            foreach (var view in Map.Values) view.Host(false);
 
-            session.PlayerJoined -= OnJoined;
-            session.PlayerHasLeft -= OnLeft;
-            session.SessionHostChanged -= OnHostChanged;
+            Map[playerId].Host(true);
+            Map[playerId].Ready(false);
         }
 
-        private void Initialize()
+        private void OnPlayerHasLeft(string playerId)
         {
-            var session = Manage.Session();
-
-            foreach (var player in session.Players)
-            {
-                AddPlayerView(player);
-            }
-            
-            MarkMe();
-            
-            MarkHost(session.Host);
+            Map.Remove(playerId, out var player);
+            pool.Release(player);
         }
 
-        private void OnJoined(string obj)
+        private void OnPlayerJoined(string playerId)
         {
-            var session = Manage.Session();
+            var item = pool.Get();
 
-            var player = session.Players.First(x => x.Id.Equals(obj));
+            var player = session.Players.First(player => player.Id == playerId);
 
-            AddPlayerView(player);
-        }
+            item.Bind(player);
 
-        private void OnLeft(string obj)
-        {
-            RemovePlayerView(obj);
-        }
-
-        private void OnHostChanged(string obj)
-        {
-            MyLogger.Print(this, $"{obj}");
-
-            MarkHost(obj);
-        }
-
-        private void MarkHost(string host)
-        {
-            _playerMap[host].TryGetComponent<PlayerView>(out var view);
-            view.MarkHostIcon();
-        }
-
-        private void MarkMe()
-        {
-            _playerMap[Manage.LocalPlayerId()].TryGetComponent<PlayerView>(out var view);
-            view.HighlightView();
-        }
-
-        private void AddPlayerView(IReadOnlyPlayer player)
-        {
-            var obj = GetView();
-            var view = obj.GetComponent<PlayerView>();
-
-            view.Bind(player);
-            _playerMap.Add(player.Id, obj);
-        }
-
-        private void RemovePlayerView(string id)
-        {
-            var obj = _playerMap[id];
-            _playerMap.Remove(id);
-            ReturnView(obj);
+            Map.Add(playerId, item);
         }
 
         private void Clear()
         {
-            foreach (Transform child in transform) ReturnView(child.gameObject);
+            foreach (var kvp in Map) pool.Release(kvp.Value);
 
-            _playerMap.Clear();
+            pool.Clear();
+
+            Map.Clear();
         }
 
-        private GameObject GetView()
+        private PlayerView CreatePoolObj()
         {
-            GameObject obj;
+            return Instantiate(playerViewPrefab, transform).GetComponent<PlayerView>();
+        }
 
-            if (_pool.Count > 0)
-            {
-                obj = _pool.Dequeue();
-                obj.SetActive(true);
-            }
-            else
-            {
-                obj = Instantiate(playerViewPrefab, transform);
-            }
-
+        private void GetPoolObj(PlayerView obj)
+        {
+            obj.gameObject.SetActive(true);
             obj.transform.SetAsLastSibling();
-
-            return obj;
         }
 
-        private void ReturnView(GameObject obj)
+        private void ReleasePoolObj(PlayerView obj)
         {
-            obj.SetActive(false);
-            _pool.Enqueue(obj);
+            obj.gameObject.SetActive(false);
+        }
+
+        private void DestroyPoolObj(PlayerView obj)
+        {
+            Destroy(obj.gameObject);
         }
     }
 }

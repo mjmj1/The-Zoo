@@ -1,48 +1,75 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Pool;
 using UnityEngine.UI;
 
 namespace UI
 {
     public class InformationPopup : MonoBehaviour
     {
+        public static InformationPopup instance;
         [SerializeField] private GameObject informationPopupPrefab;
-        private readonly Queue<GameObject> _informationPopups = new();
+
+        private IObjectPool<GameObject> pool;
+
+        private void Awake()
+        {
+            if (instance == null)
+                instance = this;
+            else
+                Destroy(gameObject);
+        }
 
         private void Start()
         {
-            for (var i = 0; i < 3; i++)
-            {
-                var item = Instantiate(informationPopupPrefab, transform);
-                _informationPopups.Enqueue(item);
-                item.SetActive(false);
-            }
+            pool = new ObjectPool<GameObject>(
+                CreatePoolObj,
+                GetPoolObj,
+                ReleasePoolObj,
+                DestroyPoolObj,
+                true, 3, 5
+            );
         }
 
-        public void GetInformationPopup(string massage = "")
+        public void ShowPopup(string massage)
         {
-            var item = _informationPopups.Count > 0
-                ? _informationPopups.Dequeue()
-                : Instantiate(informationPopupPrefab, transform);
+            var item = pool.Get();
 
             var msg = item.GetComponentInChildren<TextMeshProUGUI>();
             var btn = item.GetComponentInChildren<Button>();
 
             msg.text = massage;
-            btn.onClick.AddListener(ReleaseInformationPopup(item));
+
+            btn.onClick.AddListener(HidePopup(item));
 
             item.SetActive(true);
         }
 
-        private UnityAction ReleaseInformationPopup(GameObject item)
+        private UnityAction HidePopup(GameObject item)
         {
-            return () =>
-            {
-                item.SetActive(false);
-                _informationPopups.Enqueue(item);
-            };
+            return () => { pool.Release(item); };
+        }
+
+        private GameObject CreatePoolObj()
+        {
+            return Instantiate(informationPopupPrefab, transform);
+        }
+
+        private void GetPoolObj(GameObject obj)
+        {
+            obj.SetActive(true);
+        }
+
+        private void ReleasePoolObj(GameObject obj)
+        {
+            obj.GetComponentInChildren<Button>().onClick.RemoveAllListeners();
+            obj.SetActive(false);
+        }
+
+        private void DestroyPoolObj(GameObject obj)
+        {
+            Destroy(obj);
         }
     }
 }

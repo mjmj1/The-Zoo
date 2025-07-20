@@ -8,9 +8,8 @@ TagManager:
   - Hider
   - Seeker
   - Target
+  - Interactable
   - Tree
-  - Rock
-  - Flower
   layers:
   - Default
   - TransparentFX
@@ -18,11 +17,11 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Ground
+  - Hider
+  - Seeker
+  - Observer
+  - Interactable
   - 
   - 
   - 

@@ -1,74 +1,95 @@
 using System.Collections.Generic;
 using System.Linq;
-using Static;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
+using Random = UnityEngine.Random;
 
 namespace Networks
 {
     public class PlayerSpawner : NetworkBehaviour
     {
         [SerializeField] private List<NetworkObject> animalPrefabs;
+        private readonly NetworkList<int> spawnedAnimals = new();
 
-        private NetworkVariable<int> _nextAnimalIndex = new();
-        
-        private List<int> _animalIndexes;
+        public int index;
+
+        public void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            _animalIndexes = Enumerable.Range(0, animalPrefabs.Count).OrderBy(_ => Random.value).ToList();
+            NetworkManager.Singleton.OnPreShutdown += OnPreShutdown;
+        }
+
+        private void OnPreShutdown()
+        {
+            NetworkManager.Singleton.OnPreShutdown -= OnPreShutdown;
+
+            RemoveRpc(index);
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
-            if (IsSessionOwner)
-            {
-                _nextAnimalIndex.Value += 1 % _animalIndexes.Count;
-            
-                var index = _animalIndexes[_nextAnimalIndex.Value];
-                
-                AssignAnimalPrefab(index);
-            }
-            else
-            {
-                AssignAnimalPrefabRpc(NetworkManager.LocalClientId);
-            }
-            
+            Spawn();
+        }
+
+        private void Spawn()
+        {
+            index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
+
+            SpawnPlayer(index);
+
+            AddRpc(index);
+
             base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]
-        private void AssignAnimalPrefabRpc(ulong clientId)
+        private void AddRpc(int i)
         {
-            print($"Send to owner from client-{clientId}");
-            
-            _nextAnimalIndex.Value += 1 % _animalIndexes.Count;
-            
-            var index = _animalIndexes[_nextAnimalIndex.Value];
-            
-            AssignAnimalPrefabRpc(index, new RpcParams
+            spawnedAnimals.Add(i);
+        }
+
+        [Rpc(SendTo.Owner)]
+        private void RemoveRpc(int i)
+        {
+            spawnedAnimals.Remove(i);
+        }
+
+        private int GetRandomIndexExcludingSpawned(int max)
+        {
+            var candidates = Enumerable
+                .Range(0, max)
+                .Where(i => !spawnedAnimals.Contains(i))
+                .ToList();
+
+            if (candidates.Count == 0)
             {
-                Send = RpcTarget.Single(clientId, RpcTargetUse.Temp)
-            });
+                Debug.LogWarning("사용 가능한 인덱스가 남아있지 않습니다!");
+                return 0;
+            }
+
+            var pick = candidates[Random.Range(0, candidates.Count)];
+
+            return pick;
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
-        private void AssignAnimalPrefabRpc(int index, RpcParams rpcParams = default)
+        private void SpawnPlayer(int i)
         {
-            print($"Received index: {index}");
+            var prefab = animalPrefabs[i];
 
-            AssignAnimalPrefab(index);
-        }
+            var pos = Util.GetCirclePositions(Vector3.zero, spawnedAnimals.Count, 5f, 8);
 
-        private void AssignAnimalPrefab(int index)
-        {
-            var prefab = animalPrefabs[index];
-            
             prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,
-                isPlayerObject: true);
+                isPlayerObject: true,
+                position: pos,
+                rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Unity.Services.Multiplayer;
-using static Static.Strings;
+using Utils;
 
 namespace Networks
 {
@@ -28,7 +28,7 @@ namespace Networks
 
             var prop = new SessionProperty(password, VisibilityPropertyOptions.Private);
 
-            if (!_sessionProperties.TryAdd(PASSWORD, prop)) _sessionProperties[PASSWORD] = prop;
+            if (!_sessionProperties.TryAdd(Util.PASSWORD, prop)) _sessionProperties[Util.PASSWORD] = prop;
 
             return this;
         }
@@ -39,7 +39,7 @@ namespace Networks
 
             var prop = new SessionProperty(playerSlot.ToString());
 
-            if (!_sessionProperties.TryAdd(PLAYERSLOT, prop)) _sessionProperties[PLAYERSLOT] = prop;
+            if (!_sessionProperties.TryAdd(Util.PLAYERSLOT, prop)) _sessionProperties[Util.PLAYERSLOT] = prop;
 
             return this;
         }

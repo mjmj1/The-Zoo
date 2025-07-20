@@ -1,30 +1,35 @@
-using Static;
+using Networks;
 using TMPro;
 using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static Static.Strings;
+using Utils;
 
 namespace UI.PlayerList
 {
     public class PlayerView : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private Sprite hostSprite;
+        [SerializeField] private GameObject hostIcon;
+        [SerializeField] private GameObject readyIcon;
+        [SerializeField] private GameObject otherBg;
+        [SerializeField] private GameObject bg;
 
-        [SerializeField] private Image stateIcon;
         [SerializeField] private TMP_Text playerNameText;
 
         [SerializeField] private GameObject actionButtons;
         [SerializeField] private Button promoteHostButton;
         [SerializeField] private Button kickButton;
-        private IReadOnlyPlayer _data;
-        private bool _isHost;
+
+        private bool isHost;
+
+        private string playerId;
 
         private void Start()
         {
             actionButtons.SetActive(false);
+
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
         }
@@ -32,13 +37,19 @@ namespace UI.PlayerList
         private void OnEnable()
         {
             actionButtons.SetActive(false);
-            
+
             promoteHostButton.onClick.AddListener(OnPromoteHostButtonClick);
             kickButton.onClick.AddListener(OnKickButtonClick);
+
+            isHost = false;
+
+            otherBg.SetActive(true);
             
-            stateIcon.enabled = false;
-            _isHost = false;
-            playerNameText.color = Color.white;
+            bg.SetActive(false);
+            
+            hostIcon.SetActive(false);
+
+            readyIcon.SetActive(false);
         }
 
         private void OnDisable()
@@ -49,47 +60,64 @@ namespace UI.PlayerList
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
+            if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
 
-            if (_isHost) return;
+            if (isHost) return;
 
             actionButtons.SetActive(true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (!NetworkManager.Singleton.LocalClient.IsSessionOwner) return;
+            if (!ConnectionManager.Instance.CurrentSession.IsHost) return;
 
             actionButtons.SetActive(false);
         }
 
-        public void Bind(IReadOnlyPlayer data)
+        public void SetPlayerName(string playerName)
         {
-            _data = data;
-
-            playerNameText.text =
-                _data.Properties.TryGetValue(PLAYERNAME, out var nameProperty) ? nameProperty.Value : "Unknown";
+            playerNameText.SetText(playerName);
         }
 
-        public void MarkHostIcon()
+        public void Bind(IReadOnlyPlayer player)
         {
-            stateIcon.enabled = true;
-            _isHost = true;
+            player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
+
+            var playerName = prop == null ? "UNKNOWN" : prop.Value;
+
+            playerNameText.SetText(playerName);
+
+            playerId = player.Id;
         }
-        
-        public void HighlightView()
+
+        public void Host(bool value)
         {
-            playerNameText.color = Color.green;
+            hostIcon.SetActive(value);
+
+            isHost = value;
+            
+            actionButtons.SetActive(false);
+        }
+
+        public void Ready(bool value)
+        {
+            readyIcon.SetActive(value);
+        }
+
+        public void Highlight()
+        {
+            otherBg.SetActive(false);
+            bg.SetActive(true);
         }
 
         private void OnPromoteHostButtonClick()
         {
-            Manage.ConnectionManager().ChangeHostAsync(_data.Id);
+            ConnectionManager.Instance.ChangeHostAsync(playerId);
         }
 
         private void OnKickButtonClick()
         {
-            Manage.ConnectionManager().KickPlayerAsync(_data.Id);
+            ConnectionManager.Instance.KickPlayerAsync(playerId);
         }
     }
 }

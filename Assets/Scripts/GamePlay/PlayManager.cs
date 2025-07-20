@@ -1,100 +1,168 @@
 using System.Collections;
+using System.Linq;
+using Characters;
+using Characters.Roles;
+using Players;
 using Unity.Netcode;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
-using Random = UnityEngine.Random;
+using Utils;
 
 namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
+        [SerializeField] private GameObject observerPrefab;
         [SerializeField] private float spawnRadius = 7.5f;
-        
-        public static readonly NetworkVariable<int> CurrentTime = new();
-        
-        private bool _isGameStarted;
-        private WaitForSeconds _wait;
-        
-        public void Update()
+
+        public static PlayManager Instance { get; private set; }
+
+        public NetworkVariable<int> currentTime = new();
+        private readonly WaitForSeconds waitDelay = new(1.0f);
+
+        private NetworkList<ulong> hiderIds = new();
+        private NetworkList<ulong> seekerIds = new();
+
+        private bool isGameStarted;
+
+        public void Awake()
         {
-            if (IsClient)
-            {
-                if (Input.GetKeyDown(KeyCode.R))
-                {
-                    PingToAuthorityRpc();    
-                }
-                else if (Input.GetKeyDown(KeyCode.T))
-                {
-                    PingToNotAuthorityRpc();
-                }
-                else if (Input.GetKeyDown(KeyCode.Y))
-                {
-                    PingToEveryoneRpc();
-                }
-            }
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
         }
 
         public override void OnNetworkSpawn()
         {
+            base.OnNetworkSpawn();
+
+            hiderIds.OnListChanged += OnHiderListChanged;
+            seekerIds.OnListChanged += OnSeekerListChanged;
+
             if (!IsSessionOwner) return;
 
-            _isGameStarted = true;
-            
-            _wait = new WaitForSeconds(1.0f);
-            
-            MoveRandomPositionRpc();
-            
+            OnGameStart();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+
+            OnGameEnd();
+        }
+
+        private void OnHiderListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+
+            SetRoleRpc(PlayerEntity.Role.Hider,
+                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+        }
+
+        private void OnSeekerListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+
+            SetRoleRpc(PlayerEntity.Role.Seeker,
+                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+        }
+
+        private void OnGameStart()
+        {
+            if (!IsSessionOwner) return;
+
+            isGameStarted = true;
+
             StartCoroutine(CountTime());
+
+            MoveRandomPositionRpc();
+
+            AssignRole();
         }
 
-        [Rpc(SendTo.Authority)]
-        private void PingToAuthorityRpc()
+        private void OnGameEnd()
         {
-            print($"Ping SendTo.Authority");
-            
-            print($"Ping SendTo.Authority from Client {NetworkManager.Singleton.LocalClientId}");
-        }
-        
-        [Rpc(SendTo.NotAuthority)]
-        private void PingToNotAuthorityRpc()
-        {
-            print($"Ping SendTo.NotAuthority");
-            
-            print($"Ping SendTo.NotAuthority from Client {NetworkManager.Singleton.LocalClientId}");
-        }
-        
-        [Rpc(SendTo.Everyone)]
-        private void PingToEveryoneRpc()
-        {
-            print($"Ping SendTo.Everyone");
-            
-            print($"Ping SendTo.Everyone from Client {NetworkManager.Singleton.LocalClientId}");
+            isGameStarted = false;
+
+            UnassignRole();
         }
 
-        private IEnumerator CountTime()
+        private void AssignRole()
         {
-            while (_isGameStarted)
+            var clients = NetworkManager.Singleton.ConnectedClientsList;
+            var seeker = Random.Range(0, clients.Count);
+
+            for (var i = 0; i < clients.Count; i++)
             {
-                yield return _wait;
-
-                CurrentTime.Value += 1;
+                if (seeker == i)
+                {
+                    seekerIds.Add(clients[i].ClientId);
+                }
+                else
+                {
+                    hiderIds.Add(clients[i].ClientId);
+                }
             }
+        }
+
+        private void UnassignRole()
+        {
+            var clients = NetworkManager.Singleton.ConnectedClientsList;
+
+            foreach (var client in clients)
+            {
+                client.PlayerObject.GetComponent<PlayerEntity>().role.Value
+                    = (PlayerEntity.Role.None);
+            }
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void SetRoleRpc(PlayerEntity.Role role, RpcParams rpcParams)
+        {
+            var target = NetworkManager.Singleton
+                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
+
+            target.role.Value = role;
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void HitRpc(RpcParams rpcParams)
+        {
+            var target = NetworkManager.Singleton
+                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
+
+            target.Damaged();
         }
 
         [Rpc(SendTo.Everyone)]
         private void MoveRandomPositionRpc()
         {
             var clientId = NetworkManager.Singleton.LocalClientId;
-            var randomPos = GetRandomPosition();
+            var randomPos = Util.GetRandomPositionInSphere(spawnRadius);
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
+            obj.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
 
             print($"Client {clientId}: Position = {randomPos}");
         }
 
-        private Vector3 GetRandomPosition()
+        internal void ChangeObserverMode(Transform player)
         {
-            return Random.onUnitSphere.normalized * spawnRadius;
+            print("Change Observer Mode");
+
+            var observer = Instantiate(observerPrefab, player.position, player.rotation);
+        }
+
+        private IEnumerator CountTime()
+        {
+            print("Count Time Started");
+
+            while (isGameStarted)
+            {
+                yield return waitDelay;
+
+                currentTime.Value += 1;
+            }
         }
     }
 }
