@@ -113,8 +113,6 @@ namespace UI
 
         private void SwitchUI(UIType uiType)
         {
-            print("SwitchUI");
-
             if (!titleCanvas || !mainCanvas || !lobbyCanvas || !loadingCanvas || !popupCanvas ||
                 !backgroundCanvas) return;
 

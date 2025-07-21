@@ -133,8 +133,6 @@ namespace Networks
         {
             try
             {
-                print("disconnect");
-
                 await CurrentSession.LeaveAsync();
             }
             catch (Exception e)

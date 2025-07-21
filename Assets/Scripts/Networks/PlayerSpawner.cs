@@ -46,18 +46,20 @@ namespace Networks
 
         protected override void OnNetworkSessionSynchronized()
         {
+            base.OnNetworkSessionSynchronized();
+
             Spawn();
         }
 
         private void Spawn()
         {
+            print("Spawn");
+
             index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
 
             SpawnPlayer(index);
 
             AddRpc(index);
-
-            base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]

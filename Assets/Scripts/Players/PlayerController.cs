@@ -145,14 +145,13 @@ namespace Players
         private bool IsGrounded()
         {
             return Physics.CheckSphere(transform.position, 0.05f, groundMask);
-            ;
         }
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
             if (OwnerClientId != clientId) return;
 
-            InitializeFollowCamera();
+            // InitializeFollowCamera();
             InitializeGravity();
 
             if (sceneName != "Lobby") return;
@@ -229,8 +228,6 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            CameraManager.Instance.Find();
-
             CameraManager.Instance.SetFollowTarget(transform);
         }
 
@@ -291,7 +288,7 @@ namespace Players
         private void AlignForward()
         {
             var forward = Vector3.Cross(
-                CameraManager.Instance.follow.transform.right,
+                CameraManager.Instance.orbit.transform.right,
                 transform.up).normalized;
 
             transform.rotation = Quaternion.LookRotation(forward, transform.up);
@@ -370,9 +367,7 @@ namespace Players
         {
             yield return new WaitForSeconds(1f);
 
-            NetworkObject.Despawn();
-
-            PlayManager.Instance.ChangeObserverMode(transform);
+            PlayManager.Instance.ChangeObserverModeRpc(OwnerClientId);
         }
 
         private IEnumerator Slowdown()

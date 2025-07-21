@@ -20,8 +20,8 @@ namespace GamePlay
         public NetworkVariable<int> currentTime = new();
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
-        private NetworkList<ulong> hiderIds = new();
-        private NetworkList<ulong> seekerIds = new();
+        public NetworkList<ulong> hiderIds = new();
+        public NetworkList<ulong> seekerIds = new();
 
         private bool isGameStarted;
 
@@ -83,7 +83,7 @@ namespace GamePlay
         {
             isGameStarted = false;
 
-            // UnassignRole();
+            UnassignRole();
         }
 
         private void AssignRole()
@@ -106,12 +106,10 @@ namespace GamePlay
 
         private void UnassignRole()
         {
-            var clients = NetworkManager.Singleton.ConnectedClientsList;
-
-            foreach (var client in clients)
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
             {
-                client.PlayerObject.GetComponent<PlayerEntity>().role.Value
-                    = (PlayerEntity.Role.None);
+                SetRoleRpc(PlayerEntity.Role.None,
+                    RpcTarget.Single(client, RpcTargetUse.Temp));
             }
         }
 
@@ -146,11 +144,16 @@ namespace GamePlay
             print($"Client {clientId}: Position = {randomPos}");
         }
 
-        internal void ChangeObserverMode(Transform player)
+        [Rpc(SendTo.Authority)]
+        internal void ChangeObserverModeRpc(ulong clientId)
         {
-            print("Change Observer Mode");
+            print($"client-{clientId} Dead, Change Observer Mode");
 
-            var observer = Instantiate(observerPrefab, player.position, player.rotation);
+            if (clientId == NetworkObject.OwnerClientId) return;
+
+            NetworkObject.NetworkHide(clientId);
+
+            // var observer = Instantiate(observerPrefab, player.position, player.rotation);
         }
 
         private IEnumerator CountTime()

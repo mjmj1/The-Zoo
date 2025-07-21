@@ -27,8 +27,6 @@ namespace GamePlay
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
-            CameraManager.Instance.Find();
-
             CameraManager.Instance.SetFollowTarget(transform);
 
             PlanetGravity.Instance.Subscribe(rb);

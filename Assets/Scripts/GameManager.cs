@@ -6,6 +6,7 @@ using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine.SceneManagement;
+using Utils;
 
 public class GameManager : NetworkBehaviour
 {
@@ -48,17 +49,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    //[Rpc(SendTo.Owner)]
     internal void GameEndRpc()
     {
-        /*var spawned = NetworkManager.Singleton
-            .SpawnManager.SpawnedObjectsList.ToList();
-
-        foreach (var obj in spawned)
-        {
-            obj.Despawn();
-        }*/
-
         LoadSceneRpc("Lobby");
     }
 
