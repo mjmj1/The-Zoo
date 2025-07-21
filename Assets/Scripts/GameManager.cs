@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Networks;
 using Players;
 using UI;
@@ -47,6 +48,20 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    //[Rpc(SendTo.Owner)]
+    internal void GameEndRpc()
+    {
+        /*var spawned = NetworkManager.Singleton
+            .SpawnManager.SpawnedObjectsList.ToList();
+
+        foreach (var obj in spawned)
+        {
+            obj.Despawn();
+        }*/
+
+        LoadSceneRpc("Lobby");
+    }
+
     internal void PromotedSessionHost(string playerId)
     {
         if (playerId == AuthenticationService.Instance.PlayerId)
@@ -72,7 +87,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Authority)]
-    internal void LoadSceneRpc(string sceneName)
+    private void LoadSceneRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
 

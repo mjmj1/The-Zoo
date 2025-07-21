@@ -83,7 +83,7 @@ namespace GamePlay
         {
             isGameStarted = false;
 
-            UnassignRole();
+            // UnassignRole();
         }
 
         private void AssignRole()

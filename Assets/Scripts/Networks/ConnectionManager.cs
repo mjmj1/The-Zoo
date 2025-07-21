@@ -43,7 +43,6 @@ namespace Networks
 
                 NetworkManager.OnDestroying += Destroying;
 
-                NetworkManager.Singleton.OnClientStopped += OnClientStopped;
                 NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectCallback;
                 NetworkManager.Singleton.OnClientDisconnectCallback += OnOnClientDisconnectCallback;
                 NetworkManager.Singleton.OnSessionOwnerPromoted += OnSessionOwnerPromoted;
@@ -58,7 +57,6 @@ namespace Networks
         {
             NetworkManager.OnDestroying -= Destroying;
 
-            NetworkManager.Singleton.OnClientStopped -= OnClientStopped;
             NetworkManager.Singleton.OnClientConnectedCallback -= OnClientConnectCallback;
             NetworkManager.Singleton.OnClientDisconnectCallback -= OnOnClientDisconnectCallback;
             NetworkManager.Singleton.OnSessionOwnerPromoted -= OnSessionOwnerPromoted;
@@ -69,15 +67,15 @@ namespace Networks
         {
             try
             {
-                SessionConnectStart();
+                OnSessionConnectStart();
 
                 CurrentSession = await sessionFunc.Invoke();
 
-                SessionConnected();
+                OnSessionConnected();
             }
             catch (Exception e)
             {
-                SessionDisconnected();
+                OnSessionDisconnected();
                 Debug.LogError(e);
             }
         }
@@ -131,10 +129,12 @@ namespace Networks
             }
         }
 
-        public async void DisconnectSessionAsync()
+        public async Task DisconnectSessionAsync()
         {
             try
             {
+                print("disconnect");
+
                 await CurrentSession.LeaveAsync();
             }
             catch (Exception e)
@@ -143,7 +143,7 @@ namespace Networks
             }
             finally
             {
-                SessionDisconnected();
+                OnSessionDisconnected();
 
                 CurrentSession = null;
             }
@@ -348,11 +348,6 @@ namespace Networks
         }
 
         // <-------------------Event------------------->
-
-        private void OnClientStopped(bool obj)
-        {
-            DisconnectSessionAsync();
-        }
 
         private void OnSessionOwnerPromoted(ulong sessionOwnerPromoted)
         {

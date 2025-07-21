@@ -31,7 +31,7 @@ namespace UI
             SceneManager.sceneLoaded += OnSceneLoaded;
 
             GamePlayEventHandler.PlayerLogin += PlayerLogin;
-            ConnectionEventHandler.OnSessionConnectStart += OnSessionConnectStart;
+            ConnectionEventHandler.SessionConnectStart += OnSessionConnectStart;
 
             NetworkManager.OnDestroying += OnDestroying;
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
@@ -57,7 +57,7 @@ namespace UI
 
             AuthenticationService.Instance.SignedIn -= OnSignedIn;
 
-            ConnectionEventHandler.OnSessionConnectStart -= OnSessionConnectStart;
+            ConnectionEventHandler.SessionConnectStart -= OnSessionConnectStart;
 
         }
 
@@ -113,6 +113,8 @@ namespace UI
 
         private void SwitchUI(UIType uiType)
         {
+            print("SwitchUI");
+
             if (!titleCanvas || !mainCanvas || !lobbyCanvas || !loadingCanvas || !popupCanvas ||
                 !backgroundCanvas) return;
 

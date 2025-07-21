@@ -14,7 +14,10 @@ public class CameraManager : MonoBehaviour
     {
         if(Instance == null) Instance = this;
         else Destroy(gameObject);
+    }
 
+    public void Start()
+    {
         Find();
 
         follow.enabled = false;
