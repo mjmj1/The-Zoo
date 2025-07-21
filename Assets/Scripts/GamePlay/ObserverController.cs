@@ -1,15 +1,15 @@
+using System;
 using Players;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace GamePlay
 {
-    public class ObserverController : MonoBehaviour, ICameraTarget
+    public class ObserverController : MonoBehaviour
     {
         public float Pitch { get; set; }
 
         public float mouseSensitivity = 0.1f;
-        public float minPitch = -10f;
-        public float maxPitch = 20f;
         public float moveSpeed = 8f;
         public float rotationSpeed = 50f;
 
@@ -32,6 +32,15 @@ namespace GamePlay
             CameraManager.Instance.SetFollowTarget(transform);
 
             PlanetGravity.Instance.Subscribe(rb);
+
+            input.InputActions.Player.Look.performed += Look;
+            input.InputActions.Player.Look.canceled += Look;
+        }
+
+        private void OnDestroy()
+        {
+            input.InputActions.Player.Look.performed -= Look;
+            input.InputActions.Player.Look.canceled -= Look;
         }
 
         private void Update()
@@ -42,6 +51,15 @@ namespace GamePlay
         private void FixedUpdate()
         {
             HandleMovement();
+        }
+
+        private void Look(InputAction.CallbackContext ctx)
+        {
+            CameraManager.Instance.LookMove();
+
+            transform.Rotate(Vector3.up * (input.LookInput.x * mouseSensitivity));
+
+            CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
         }
 
         private void HandleMovement()

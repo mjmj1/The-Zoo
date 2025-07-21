@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 613262707984986229}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -135,10 +135,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseSensitivity: 0.1
-  minPitch: -10
-  maxPitch: 20
   moveSpeed: 8
-  rotationSpeed: 200
+  rotationSpeed: 500
 --- !u!114 &7559507848500143055
 MonoBehaviour:
   m_ObjectHideFlags: 0

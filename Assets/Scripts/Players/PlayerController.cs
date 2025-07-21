@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using System.Collections;
-using Characters;
 using EventHandler;
 using GamePlay;
 using Unity.Netcode.Components;
@@ -67,7 +66,7 @@ namespace Players
     }
 #endif
 
-    public class PlayerController : NetworkTransform, ICameraTarget
+    public class PlayerController : NetworkTransform
     {
 #if UNITY_EDITOR
         public bool controllerPropertiesVisible;
@@ -78,25 +77,22 @@ namespace Players
         public float runSpeed = 7f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
-        public float minPitch = -10f;
-        public float maxPitch = 20f;
-
-        internal bool CanMove = true;
-        private bool isSpin;
-        private float slowdownRate = 1f;
 
         private PlayerNetworkAnimator animator;
+
+        internal bool CanMove = true;
+
+        private CharacterController cc;
         private PlayerEntity entity;
         private InputHandler input;
+        private bool isAround;
+        private bool isSpin;
 
         private float moveSpeed;
         private Quaternion previousRotation;
 
-        private CharacterController cc;
-
         private Rigidbody rb;
-
-        public float Pitch { get; set; }
+        private float slowdownRate = 1f;
 
         private void Start()
         {
@@ -109,7 +105,6 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            Look(null);
             AlignToSurface();
         }
 
@@ -120,11 +115,21 @@ namespace Players
             HandleMovement();
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, 0.05f);
+        }
+
+        public float Pitch { get; set; }
+
         public override void OnNetworkSpawn()
         {
             InitializeComponent();
             InitializeFollowCamera();
             Subscribe();
+
+            InitializeGravity();
 
             base.OnNetworkSpawn();
         }
@@ -139,13 +144,8 @@ namespace Players
 
         private bool IsGrounded()
         {
-            return Physics.CheckSphere(transform.position, 0.05f, groundMask);;
-        }
-
-        void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, 0.05f);
+            return Physics.CheckSphere(transform.position, 0.05f, groundMask);
+            ;
         }
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
@@ -169,8 +169,10 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            //input.InputActions.Player.Look.performed += Look;
-            //input.InputActions.Player.Look.canceled += Look;
+            input.InputActions.Player.Look.performed += Look;
+            input.InputActions.Player.Look.canceled += Look;
+            input.InputActions.Player.RightClick.performed += Rmb;
+            input.InputActions.Player.RightClick.canceled += Rmb;
             input.InputActions.Player.Move.performed += Movement;
             input.InputActions.Player.Move.canceled += Movement;
             input.InputActions.Player.Run.performed += Run;
@@ -189,8 +191,10 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            //input.InputActions.Player.Look.performed -= Look;
-            //input.InputActions.Player.Look.canceled -= Look;
+            input.InputActions.Player.Look.performed -= Look;
+            input.InputActions.Player.Look.canceled -= Look;
+            input.InputActions.Player.RightClick.performed -= Rmb;
+            input.InputActions.Player.RightClick.canceled -= Rmb;
             input.InputActions.Player.Move.performed -= Movement;
             input.InputActions.Player.Move.canceled -= Movement;
             input.InputActions.Player.Run.performed -= Run;
@@ -201,6 +205,11 @@ namespace Players
             input.InputActions.Player.Attack.performed -= Attack;
 
             entity.health.OnValueChanged -= Hit;
+        }
+
+        private void Rmb(InputAction.CallbackContext ctx)
+        {
+            isAround = ctx.performed;
         }
 
         private void InitializeComponent()
@@ -231,7 +240,7 @@ namespace Players
 
             rb.useGravity = !PlanetGravity.Instance;
 
-            PlanetGravity.Instance.Subscribe(rb);
+            PlanetGravity.Instance?.Subscribe(rb);
         }
 
         private void HandleMovement()
@@ -245,7 +254,8 @@ namespace Players
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+            rb.MovePosition(rb.position +
+                            moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
         }
 
         private void AlignToSurface()
@@ -260,34 +270,43 @@ namespace Players
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        private void Look(InputAction.CallbackContext? ctx)
+        private void Look(InputAction.CallbackContext ctx)
         {
-            // if (rb.linearVelocity.magnitude < 0.001f) return;
+            if (!CanMove) return;
 
-            /*
-            var lookInput = input.LookInput;
+            if (isAround)
+            {
+                CameraManager.Instance.LookAround();
+            }
+            else
+            {
+                CameraManager.Instance.LookMove();
 
-            transform.Rotate(Vector3.up * (lookInput.x * mouseSensitivity));
-            */
+                transform.Rotate(Vector3.up * (input.LookInput.x * mouseSensitivity));
 
-            /*var euler = transform.rotation.eulerAngles;
-            euler.y = CameraManager.Instance.GetEulerAnglesY();
-            transform.rotation = Quaternion.Euler(euler);*/
+                CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
+            }
+        }
 
-            var rotation = transform.localRotation;
-            rotation.y = CameraManager.Instance.follow.transform.localRotation.y;
-            transform.localRotation = rotation;
+        private void AlignForward()
+        {
+            var forward = Vector3.Cross(
+                CameraManager.Instance.follow.transform.right,
+                transform.up).normalized;
 
-            /*var camForward = Vector3.ProjectOnPlane(CameraManager.Instance.follow.transform.forward, transform.up).normalized;
+            transform.rotation = Quaternion.LookRotation(forward, transform.up);
 
-            var targetRotation = Quaternion.LookRotation(camForward, transform.up);
-
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation, targetRotation, Time.deltaTime);*/
+            CameraManager.Instance.LookMove();
         }
 
         private void Movement(InputAction.CallbackContext ctx)
         {
+            if (ctx.canceled)
+            {
+                CameraManager.Instance.orbit.HorizontalAxis.Value = 0;
+                CameraManager.Instance.LookAround();
+            }
+
             animator.OnMove(ctx);
         }
 
@@ -316,6 +335,8 @@ namespace Players
             if (!CanMove) return;
             if (!IsGrounded()) return;
             if (isSpin) return;
+
+            AlignForward();
 
             GamePlayEventHandler.OnPlayerAttack();
 
