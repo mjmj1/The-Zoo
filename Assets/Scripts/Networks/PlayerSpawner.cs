@@ -53,8 +53,6 @@ namespace Networks
 
         private void Spawn()
         {
-            print("Spawn");
-
             index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
 
             SpawnPlayer(index);

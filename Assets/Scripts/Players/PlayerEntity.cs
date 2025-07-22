@@ -1,13 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Characters.Roles;
+using GamePlay;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Players
 {
@@ -17,7 +14,7 @@ namespace Players
         {
             None,
             Hider,
-            Seeker,
+            Seeker
         }
 
         [SerializeField] private TMP_Text playerNameText;
@@ -30,6 +27,16 @@ namespace Players
         public NetworkVariable<int> health = new(3);
 
         private PlayerRenderer playerRenderer;
+
+        public void Reset()
+        {
+            NetworkShow();
+            playerRenderer.UseOrigin();
+            role.Value = Role.None;
+            isDead.Value = false;
+            health.Value = 3;
+            CameraManager.Instance.EnableCamera(true);
+        }
 
         public override void OnNetworkSpawn()
         {
@@ -51,6 +58,8 @@ namespace Players
             clientId.Value = NetworkManager.LocalClientId;
 
             playerRenderer = GetComponent<PlayerRenderer>();
+
+            CameraManager.Instance.EnableCamera(true);
         }
 
         public override void OnNetworkDespawn()
@@ -102,14 +111,30 @@ namespace Players
             }
         }
 
-        void OnIsDeadChanged(bool previousValue, bool newValue)
+        private void OnIsDeadChanged(bool previousValue, bool newValue)
         {
+            if (!newValue) return;
+
             if (!NetworkManager.Singleton.DistributedAuthorityMode || !HasAuthority) return;
 
             gameObject.layer = LayerMask.NameToLayer("Observer");
 
             playerRenderer.UseGhost();
 
+            NetworkHide();
+
+            PlayManager.Instance.observerIds.Add(OwnerClientId);
+        }
+
+        private void OnHealthChanged(int previousValue, int newValue)
+        {
+            if (!IsOwner) return;
+
+            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
+        }
+
+        private void NetworkHide()
+        {
             var netObj = GetComponent<NetworkObject>();
             foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
             {
@@ -118,12 +143,14 @@ namespace Players
             }
         }
 
-        private void OnHealthChanged(int previousValue, int newValue)
+        private void NetworkShow()
         {
-            if (!IsOwner) return;
-
-            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
-            if (newValue != 0) return;
+            var netObj = GetComponent<NetworkObject>();
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.ClientId == netObj.OwnerClientId) continue;
+                netObj.NetworkShow(client.ClientId);
+            }
         }
     }
 }

@@ -22,6 +22,7 @@ namespace GamePlay
 
         public NetworkList<ulong> hiderIds = new();
         public NetworkList<ulong> seekerIds = new();
+        public NetworkList<ulong> observerIds = new();
 
         private bool isGameStarted;
 

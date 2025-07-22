@@ -2,7 +2,7 @@ Shader "Custom/URP/GhostlyTransparent"
 {
     Properties
     {
-        _BaseMap       ("Base Texture", 2D)    = "white" {}
+        _MainTex       ("Albedo (RGB)", 2D)    = "white" {}
         _BaseColor     ("Tint Color", Color)    = (1,1,1,1)
         _Alpha         ("Base Opacity", Range(0,1)) = 1.0
         _FresnelPower  ("Edge Fade Power", Range(0.1,10)) = 0.3
@@ -55,9 +55,9 @@ Shader "Custom/URP/GhostlyTransparent"
                 float2 uv         : TEXCOORD0;
             };
 
-            TEXTURE2D(_BaseMap);
-            SAMPLER(sampler_BaseMap);
-            float4 _BaseMap_ST;
+            TEXTURE2D(_MainTex);
+            SAMPLER(sampler_MainTex);
+            float4 _MainTex_ST;
             float4 _BaseColor;
             float  _Alpha;
             float  _FresnelPower;
@@ -71,14 +71,14 @@ Shader "Custom/URP/GhostlyTransparent"
                 OUT.positionCS    = TransformObjectToHClip(IN.positionOS.xyz);
                 OUT.worldPos      = TransformObjectToWorld(IN.positionOS.xyz);
                 OUT.worldNormal   = TransformObjectToWorldNormal(IN.positionOS.xyz);
-                OUT.uv            = TRANSFORM_TEX(IN.uv, _BaseMap);
+                OUT.uv            = TRANSFORM_TEX(IN.uv, _MainTex);
                 return OUT;
             }
 
             half4 frag(Varyings IN) : SV_Target
             {
                 // 1) 기본 컬러 & 텍스쳐
-                half4 col = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, IN.uv) * _BaseColor;
+                half4 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv) * _BaseColor;
 
                 // 2) Fresnel 엣지 페이드: ViewDir ⋅ Normal
                 float3 V = normalize(_WorldSpaceCameraPos - IN.worldPos);

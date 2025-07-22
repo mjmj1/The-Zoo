@@ -1,7 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections;
+using System.Linq;
 using EventHandler;
-using GamePlay;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
-using Random = UnityEngine.Random;
 
 namespace Players
 {
@@ -81,8 +80,6 @@ namespace Players
         private PlayerNetworkAnimator animator;
 
         internal bool CanMove = true;
-
-        private CharacterController cc;
         private PlayerEntity entity;
         private InputHandler input;
         private bool isAround;
@@ -92,7 +89,14 @@ namespace Players
         private Quaternion previousRotation;
 
         private Rigidbody rb;
+
+        private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
+
+        public void Reset()
+        {
+            CanMove = true;
+        }
 
         private void Start()
         {
@@ -120,8 +124,6 @@ namespace Players
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, 0.05f);
         }
-
-        public float Pitch { get; set; }
 
         public override void OnNetworkSpawn()
         {
@@ -155,10 +157,16 @@ namespace Players
 
             if (sceneName != "Lobby") return;
 
-            var pos = Util.GetCirclePositions(Vector3.zero, Random.Range(0, 8), 5f, 8);
+            var clients = NetworkManager.ConnectedClientsIds.ToList();
+
+            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(OwnerClientId), 5f, 8);
 
             transform.SetPositionAndRotation(pos,
                 Quaternion.LookRotation((Vector3.zero - pos).normalized));
+
+            Reset();
+            entity.Reset();
+            readyChecker.Reset();
         }
 
         private void Subscribe()
@@ -221,6 +229,7 @@ namespace Players
             input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
             animator = GetComponent<PlayerNetworkAnimator>();
+            readyChecker = GetComponent<PlayerReadyChecker>();
         }
 
         private void InitializeFollowCamera()
@@ -228,6 +237,8 @@ namespace Players
             if (!IsOwner) return;
 
             CameraManager.Instance.SetFollowTarget(transform);
+            CameraManager.Instance.LookMove();
+            CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
         }
 
         private void InitializeGravity()

@@ -1,4 +1,5 @@
 using UnityEngine;
+using Utils;
 
 namespace Players
 {
@@ -14,18 +15,17 @@ namespace Players
         private void OnEnable()
         {
             lods = GetComponent<LODGroup>().GetLODs();
+            originShader = lods[0].renderers[0].sharedMaterial.shader;
         }
 
         internal void UseOrigin()
         {
-            foreach (var lod in lods)
-            {
-                lod.renderers[0].material.shader = originShader;
-            }
+            lods[0].renderers[0].sharedMaterial.shader = originShader;
         }
 
         internal void UseGhost()
         {
+            MyLogger.Print(this, "UseGhost");
             lods[0].renderers[0].sharedMaterial.shader = ghostShader;
         }
     }
