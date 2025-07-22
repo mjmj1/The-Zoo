@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using EventHandler;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
@@ -9,54 +10,56 @@ namespace Networks
 {
     public class PlayerSpawner : NetworkBehaviour
     {
+        public static PlayerSpawner Instance { get; private set; }
+
         [SerializeField] private List<NetworkObject> animalPrefabs;
         private readonly NetworkList<int> spawnedAnimals = new();
 
         public int index;
 
+        public void Awake()
+        {
+            if (!Instance)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            // NetworkManager.Singleton.SceneManager.OnSceneEvent += OnSceneEvent;
-
-            NetworkManager.Singleton.OnPreShutdown += OnPreShutdown;
+            ConnectionEventHandler.SessionDisconnected += OnSessionDisconnect;
         }
 
-        private void OnSceneEvent(SceneEvent sceneEvent)
+        private void OnSessionDisconnect()
         {
-            if (sceneEvent.SceneEventType == SceneEventType.LoadComplete)
-            {
-                Debug.Log("Client finished loading scene: " + sceneEvent.SceneName);
-
-                if (sceneEvent.ClientId == NetworkManager.LocalClientId)
-                {
-                    Spawn();
-                }
-            }
-        }
-
-        private void OnPreShutdown()
-        {
-            NetworkManager.Singleton.OnPreShutdown -= OnPreShutdown;
+            ConnectionEventHandler.SessionDisconnected -= OnSessionDisconnect;
 
             RemoveRpc(index);
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
+            base.OnNetworkSessionSynchronized();
+
             Spawn();
         }
 
         private void Spawn()
         {
+            print("Spawn");
+
             index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
 
             SpawnPlayer(index);
 
             AddRpc(index);
-
-            base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]
@@ -93,7 +96,7 @@ namespace Networks
         {
             var prefab = animalPrefabs[i];
 
-            var pos = Util.GetCirclePositions(Vector3.zero, i, 5f, 8);
+            var pos = Util.GetCirclePositions(Vector3.zero, spawnedAnimals.Count, 5f, 8);
 
             prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,

@@ -1,6 +1,7 @@
 using System;
-using Characters;
+using System.Linq;
 using Networks;
+using Players;
 using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;
@@ -9,14 +10,6 @@ using Utils;
 
 public class GameManager : NetworkBehaviour
 {
-    public enum GameState
-    {
-        Title,
-        Lobby,
-        InGame,
-        Result
-    }
-
     public static GameManager Instance { get; private set; }
 
     private void Awake()
@@ -30,13 +23,6 @@ public class GameManager : NetworkBehaviour
         {
             Destroy(gameObject);
         }
-    }
-
-    protected override void OnOwnershipChanged(ulong previous, ulong current)
-    {
-        base.OnOwnershipChanged(previous, current);
-
-        MyLogger.Trace($"previous: {previous}\n current: {current}");
     }
 
     internal void Ready()
@@ -61,6 +47,11 @@ public class GameManager : NetworkBehaviour
         {
             InformationPopup.instance.ShowPopup(e.Message);
         }
+    }
+
+    internal void GameEndRpc()
+    {
+        LoadSceneRpc("Lobby");
     }
 
     internal void PromotedSessionHost(string playerId)
@@ -88,10 +79,9 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Authority)]
-    internal void LoadSceneRpc(string sceneName)
+    private void LoadSceneRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
-        print($"client-{NetworkManager.Singleton.CurrentSessionOwner} is Session Owner.");
 
         NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
     }

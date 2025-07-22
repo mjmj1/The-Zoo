@@ -8,12 +8,9 @@ namespace Interactions
     public class InteractionController : MonoBehaviour
     {
         [SerializeField] private GameObject[] interactionObjects;
-        
-        private PlanetGravity planet;
 
         private void Start()
         {
-            planet = FindFirstObjectByType<PlanetGravity>();
             SpawnInteractionObjects(15);
         }
 
@@ -21,7 +18,7 @@ namespace Interactions
         {
             for (var i = 0; i < count; i++)
             {
-                var spawnPoint = Util.GetRandomPositionInSphere(planet.GetRadius());
+                var spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
 
                 var surfaceUp = spawnPoint.normalized;
 

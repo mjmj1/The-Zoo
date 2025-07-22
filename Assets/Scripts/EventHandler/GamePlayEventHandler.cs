@@ -1,47 +1,27 @@
 using System;
-using UI;
-using Unity.Netcode;
+using UnityEngine.InputSystem;
 
 namespace EventHandler
 {
     internal static class GamePlayEventHandler
     {
-        internal static event Action OnGameStart;
-        internal static event Action OnGameOver;
-        internal static event Action OnGameFinished;
-        internal static event Action<string, bool> OnPlayerReady;
-        internal static event Action OnPlayerLogin;
-        internal static event Action OnSceneEvent;
+        internal static event Action<string, bool> PlayerReady;
+        internal static event Action PlayerLogin;
+        internal static event Action PlayerAttack;
 
-
-        private static void GameStart()
+        internal static void OnPlayerReady(string id, bool value)
         {
-            OnGameStart?.Invoke();
+            PlayerReady?.Invoke(id, value);
         }
 
-        private static void GameOver()
+        internal static void OnPlayerLogin()
         {
-            OnGameOver?.Invoke();
+            PlayerLogin?.Invoke();
         }
 
-        private static void GameFinished()
+        internal static void OnPlayerAttack()
         {
-            OnGameFinished?.Invoke();
-        }
-        
-        internal static void PlayerReady(string id, bool value)
-        {
-            OnPlayerReady?.Invoke(id, value);
-        }
-        
-        internal static void PlayerLogin()
-        {
-            OnPlayerLogin?.Invoke();
-        }
-
-        private static void SceneEvent()
-        {
-            OnSceneEvent?.Invoke();
+            PlayerAttack?.Invoke();
         }
     }
 }

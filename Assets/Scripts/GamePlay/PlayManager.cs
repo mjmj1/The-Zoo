@@ -1,37 +1,69 @@
 using System.Collections;
+using System.Linq;
+using Characters;
+using Characters.Roles;
+using Players;
 using Unity.Netcode;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 
 namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
-        public static readonly NetworkVariable<int> CurrentTime = new();
+        [SerializeField] private GameObject observerPrefab;
         [SerializeField] private float spawnRadius = 7.5f;
+
+        public static PlayManager Instance { get; private set; }
+
+        public NetworkVariable<int> currentTime = new();
         private readonly WaitForSeconds waitDelay = new(1.0f);
+
+        public NetworkList<ulong> hiderIds = new();
+        public NetworkList<ulong> seekerIds = new();
 
         private bool isGameStarted;
 
-        public void Update()
+        public void Awake()
         {
-            if (IsClient)
-            {
-                if (Input.GetKeyDown(KeyCode.T))
-                    PingToAuthorityRpc();
-                else if (Input.GetKeyDown(KeyCode.G))
-                    PingToNotAuthorityRpc();
-                else if (Input.GetKeyDown(KeyCode.B))
-                    PingToEveryoneRpc();
-            }
+            if (Instance == null) Instance = this;
+            else Destroy(gameObject);
         }
 
-        protected override void OnNetworkSessionSynchronized()
+        public override void OnNetworkSpawn()
         {
-            if (!SceneManager.GetActiveScene().name.Equals("InGame")) return;
+            base.OnNetworkSpawn();
+
+            hiderIds.OnListChanged += OnHiderListChanged;
+            seekerIds.OnListChanged += OnSeekerListChanged;
+
+            if (!IsSessionOwner) return;
 
             OnGameStart();
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            base.OnNetworkDespawn();
+
+            OnGameEnd();
+        }
+
+        private void OnHiderListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+
+            SetRoleRpc(PlayerEntity.Role.Hider,
+                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+        }
+
+        private void OnSeekerListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+
+            SetRoleRpc(PlayerEntity.Role.Seeker,
+                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
         }
 
         private void OnGameStart()
@@ -40,43 +72,63 @@ namespace GamePlay
 
             isGameStarted = true;
 
+            StartCoroutine(CountTime());
+
             MoveRandomPositionRpc();
 
-            StartCoroutine(CountTime());
+            AssignRole();
         }
 
-        [Rpc(SendTo.Authority)]
-        private void PingToAuthorityRpc()
+        private void OnGameEnd()
         {
-            print("Ping SendTo.Authority");
+            isGameStarted = false;
 
-            print($"Ping SendTo.Authority from Client-{OwnerClientId}");
+            UnassignRole();
         }
 
-        [Rpc(SendTo.NotAuthority)]
-        private void PingToNotAuthorityRpc()
+        private void AssignRole()
         {
-            print("Ping SendTo.NotAuthority");
+            var clients = NetworkManager.Singleton.ConnectedClientsList;
+            var seeker = Random.Range(0, clients.Count);
 
-            print($"Ping SendTo.NotAuthority from Client-{OwnerClientId}");
-        }
-
-        [Rpc(SendTo.Everyone)]
-        private void PingToEveryoneRpc()
-        {
-            print("Ping SendTo.Everyone");
-
-            print($"Ping SendTo.Everyone from Client-{OwnerClientId}");
-        }
-
-        private IEnumerator CountTime()
-        {
-            while (isGameStarted)
+            for (var i = 0; i < clients.Count; i++)
             {
-                yield return waitDelay;
-
-                CurrentTime.Value += 1;
+                if (seeker == i)
+                {
+                    seekerIds.Add(clients[i].ClientId);
+                }
+                else
+                {
+                    hiderIds.Add(clients[i].ClientId);
+                }
             }
+        }
+
+        private void UnassignRole()
+        {
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
+            {
+                SetRoleRpc(PlayerEntity.Role.None,
+                    RpcTarget.Single(client, RpcTargetUse.Temp));
+            }
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void SetRoleRpc(PlayerEntity.Role role, RpcParams rpcParams)
+        {
+            var target = NetworkManager.Singleton
+                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
+
+            target.role.Value = role;
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void HitRpc(RpcParams rpcParams)
+        {
+            var target = NetworkManager.Singleton
+                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
+
+            target.Damaged();
         }
 
         [Rpc(SendTo.Everyone)]
@@ -87,8 +139,33 @@ namespace GamePlay
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
+            obj.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
 
             print($"Client {clientId}: Position = {randomPos}");
+        }
+
+        [Rpc(SendTo.Authority)]
+        internal void ChangeObserverModeRpc(ulong clientId)
+        {
+            print($"client-{clientId} Dead, Change Observer Mode");
+
+            if (clientId == NetworkObject.OwnerClientId) return;
+
+            NetworkObject.NetworkHide(clientId);
+
+            // var observer = Instantiate(observerPrefab, player.position, player.rotation);
+        }
+
+        private IEnumerator CountTime()
+        {
+            print("Count Time Started");
+
+            while (isGameStarted)
+            {
+                yield return waitDelay;
+
+                currentTime.Value += 1;
+            }
         }
     }
 }

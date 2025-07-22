@@ -1,4 +1,5 @@
 using Characters;
+using Players;
 using UnityEngine;
 
 public class TestPlayer : MonoBehaviour
@@ -21,7 +22,6 @@ public class TestPlayer : MonoBehaviour
 
         _plenetCenter = _planetGravity.gameObject.transform;
         _planetGravity.Subscribe(_rb);
-        ConnectFollowCamera();
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -41,12 +41,6 @@ public class TestPlayer : MonoBehaviour
     private void OnDestroy()
     {
         _planetGravity.Unsubscribe(_rb);
-    }
-
-    private void ConnectFollowCamera()
-    {
-        var cam = FindAnyObjectByType<ThirdPersonCamera>();
-        cam?.ConnectToTarget(transform);
     }
 
     private void CharacterMovement()

@@ -51,9 +51,18 @@ namespace UI
             SwitchUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
-        private void OnQuitButtonClick()
+        private async void OnQuitButtonClick()
         {
-            ConnectionManager.Instance.DisconnectSessionAsync();
+            try
+            {
+                var task = ConnectionManager.Instance.DisconnectSessionAsync();
+
+                await task;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
 
         private void OnGameStartButtonClick()

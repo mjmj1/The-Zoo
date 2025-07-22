@@ -4,23 +4,23 @@ namespace EventHandler
 {
     static class ConnectionEventHandler
     {
-        internal static event Action OnSessionConnectStart;
-        internal static event Action OnSessionConnected;
-        internal static event Action OnSessionDisconnected;
+        internal static event Action SessionConnectStart;
+        internal static event Action SessionConnected;
+        internal static event Action SessionDisconnected;
 
-        internal static void SessionConnectStart()
+        internal static void OnSessionConnectStart()
         {
-            OnSessionConnectStart?.Invoke();
+            SessionConnectStart?.Invoke();
         }
         
-        internal static void SessionDisconnected()
+        internal static void OnSessionDisconnected()
         {
-            OnSessionDisconnected?.Invoke();
+            SessionDisconnected?.Invoke();
         }
 
-        internal static void SessionConnected()
+        internal static void OnSessionConnected()
         {
-            OnSessionConnected?.Invoke();
+            SessionConnected?.Invoke();
         }
     }
 }

@@ -1,20 +1,22 @@
 #if UNITY_EDITOR
+using System.Collections;
+using EventHandler;
+using GamePlay;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
 using Utils;
 using Random = UnityEngine.Random;
 
-namespace Characters
+namespace Players
 {
     /// <summary>
-    ///     The custom editor for the <see cref="CharacterHandler" /> component.
+    ///     The custom editor for the <see cref="PlayerController" /> component.
     /// </summary>
-    [CustomEditor(typeof(CharacterHandler), true)]
+    [CustomEditor(typeof(PlayerController), true)]
     public class CharacterControllerEditor : NetworkTransformEditor
     {
         private SerializedProperty groundMask;
@@ -23,23 +25,16 @@ namespace Characters
         private SerializedProperty rotationSpeed;
         private SerializedProperty sprintSpeed;
         private SerializedProperty walkSpeed;
-        private SerializedProperty isGround;
-        private SerializedProperty isAttack;
-        private SerializedProperty isSpin;
 
         public override void OnEnable()
         {
-            isGround = serializedObject.FindProperty(nameof(CharacterHandler.isGround));
-            isAttack = serializedObject.FindProperty(nameof(CharacterHandler.isAttack));
-            isSpin = serializedObject.FindProperty(nameof(CharacterHandler.isSpin));
-
-            groundMask = serializedObject.FindProperty(nameof(CharacterHandler.groundMask));
-            jumpForce = serializedObject.FindProperty(nameof(CharacterHandler.jumpForce));
-            walkSpeed = serializedObject.FindProperty(nameof(CharacterHandler.walkSpeed));
-            sprintSpeed = serializedObject.FindProperty(nameof(CharacterHandler.runSpeed));
-            rotationSpeed = serializedObject.FindProperty(nameof(CharacterHandler.rotationSpeed));
+            groundMask = serializedObject.FindProperty(nameof(PlayerController.groundMask));
+            jumpForce = serializedObject.FindProperty(nameof(PlayerController.jumpForce));
+            walkSpeed = serializedObject.FindProperty(nameof(PlayerController.walkSpeed));
+            sprintSpeed = serializedObject.FindProperty(nameof(PlayerController.runSpeed));
+            rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
             mouseSensitivity =
-                serializedObject.FindProperty(nameof(CharacterHandler.mouseSensitivity));
+                serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
             base.OnEnable();
         }
 
@@ -51,14 +46,11 @@ namespace Characters
             EditorGUILayout.PropertyField(sprintSpeed);
             EditorGUILayout.PropertyField(rotationSpeed);
             EditorGUILayout.PropertyField(mouseSensitivity);
-            EditorGUILayout.PropertyField(isGround);
-            EditorGUILayout.PropertyField(isAttack);
-            EditorGUILayout.PropertyField(isSpin);
         }
 
         public override void OnInspectorGUI()
         {
-            var characterController = target as CharacterHandler;
+            var characterController = target as PlayerController;
 
             void SetExpanded(bool expanded)
             {
@@ -66,7 +58,7 @@ namespace Characters
             }
 
             if (characterController)
-                DrawFoldOutGroup<CharacterHandler>(characterController.GetType(),
+                DrawFoldOutGroup<PlayerController>(characterController.GetType(),
                     DisplayCharacterControllerProperties,
                     characterController.controllerPropertiesVisible, SetExpanded);
             base.OnInspectorGUI();
@@ -74,7 +66,7 @@ namespace Characters
     }
 #endif
 
-    public class CharacterHandler : NetworkTransform
+    public class PlayerController : NetworkTransform
     {
 #if UNITY_EDITOR
         public bool controllerPropertiesVisible;
@@ -85,24 +77,22 @@ namespace Characters
         public float runSpeed = 7f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
-        public float minPitch = -10f;
-        public float maxPitch = 20f;
 
-        public bool isGround = true;
-        public bool isAttack;
-        public bool isSpin;
+        private PlayerNetworkAnimator animator;
 
-        private CharacterNetworkAnimator animator;
+        internal bool CanMove = true;
 
-        private PlanetGravity gravity;
+        private CharacterController cc;
+        private PlayerEntity entity;
         private InputHandler input;
+        private bool isAround;
+        private bool isSpin;
 
         private float moveSpeed;
         private Quaternion previousRotation;
 
         private Rigidbody rb;
-
-        public float Pitch { get; private set; }
+        private float slowdownRate = 1f;
 
         private void Start()
         {
@@ -116,8 +106,6 @@ namespace Characters
             if (!IsOwner) return;
 
             AlignToSurface();
-
-            HandleLook();
         }
 
         private void FixedUpdate()
@@ -127,11 +115,21 @@ namespace Characters
             HandleMovement();
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, 0.05f);
+        }
+
+        public float Pitch { get; set; }
+
         public override void OnNetworkSpawn()
         {
             InitializeComponent();
             InitializeFollowCamera();
             Subscribe();
+
+            InitializeGravity();
 
             base.OnNetworkSpawn();
         }
@@ -139,21 +137,21 @@ namespace Characters
         public override void OnNetworkDespawn()
         {
             Unsubscribe();
-            gravity?.Unsubscribe(rb);
+            PlanetGravity.Instance?.Unsubscribe(rb);
 
             base.OnNetworkDespawn();
         }
 
         private bool IsGrounded()
         {
-            return Physics.Raycast(transform.position + Vector3.up * 0.1f, Vector3.down, 0.1f, groundMask);;
+            return Physics.CheckSphere(transform.position, 0.05f, groundMask);
         }
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
             if (OwnerClientId != clientId) return;
 
-            InitializeFollowCamera();
+            // InitializeFollowCamera();
             InitializeGravity();
 
             if (sceneName != "Lobby") return;
@@ -170,6 +168,10 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
+            input.InputActions.Player.Look.performed += Look;
+            input.InputActions.Player.Look.canceled += Look;
+            input.InputActions.Player.RightClick.performed += Rmb;
+            input.InputActions.Player.RightClick.canceled += Rmb;
             input.InputActions.Player.Move.performed += Movement;
             input.InputActions.Player.Move.canceled += Movement;
             input.InputActions.Player.Run.performed += Run;
@@ -178,6 +180,8 @@ namespace Characters
             input.InputActions.Player.Spin.canceled += Spin;
             input.InputActions.Player.Jump.performed += Jump;
             input.InputActions.Player.Attack.performed += Attack;
+
+            entity.health.OnValueChanged += Hit;
         }
 
         private void Unsubscribe()
@@ -186,6 +190,10 @@ namespace Characters
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
+            input.InputActions.Player.Look.performed -= Look;
+            input.InputActions.Player.Look.canceled -= Look;
+            input.InputActions.Player.RightClick.performed -= Rmb;
+            input.InputActions.Player.RightClick.canceled -= Rmb;
             input.InputActions.Player.Move.performed -= Movement;
             input.InputActions.Player.Move.canceled -= Movement;
             input.InputActions.Player.Run.performed -= Run;
@@ -194,6 +202,13 @@ namespace Characters
             input.InputActions.Player.Spin.canceled -= Spin;
             input.InputActions.Player.Jump.performed -= Jump;
             input.InputActions.Player.Attack.performed -= Attack;
+
+            entity.health.OnValueChanged -= Hit;
+        }
+
+        private void Rmb(InputAction.CallbackContext ctx)
+        {
+            isAround = ctx.performed;
         }
 
         private void InitializeComponent()
@@ -205,40 +220,29 @@ namespace Characters
 
             rb = GetComponent<Rigidbody>();
             input = GetComponent<InputHandler>();
-            animator = GetComponent<CharacterNetworkAnimator>();
+            entity = GetComponent<PlayerEntity>();
+            animator = GetComponent<PlayerNetworkAnimator>();
         }
 
         private void InitializeFollowCamera()
         {
             if (!IsOwner) return;
 
-            var cam = FindAnyObjectByType<ThirdPersonCamera>();
-            cam?.ConnectToTarget(transform);
+            CameraManager.Instance.SetFollowTarget(transform);
         }
 
         private void InitializeGravity()
         {
             if (!IsOwner) return;
 
-            gravity = FindAnyObjectByType<PlanetGravity>();
+            rb.useGravity = !PlanetGravity.Instance;
 
-            rb.useGravity = !gravity;
-
-            gravity?.Subscribe(rb);
-        }
-
-        private void HandleLook()
-        {
-            var lookInput = input.LookInput;
-
-            Pitch = Mathf.Clamp(Pitch - lookInput.y * mouseSensitivity, minPitch, maxPitch);
-
-            transform.Rotate(Vector3.up * (lookInput.x * mouseSensitivity));
+            PlanetGravity.Instance?.Subscribe(rb);
         }
 
         private void HandleMovement()
         {
-            if (isAttack || isSpin) return;
+            if (!CanMove || isSpin) return;
 
             var moveInput = input.MoveInput;
 
@@ -247,14 +251,15 @@ namespace Characters
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
+            rb.MovePosition(rb.position +
+                            moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
         }
 
         private void AlignToSurface()
         {
-            if (!gravity) return;
+            if (!PlanetGravity.Instance) return;
 
-            var gravityDirection = (transform.position - gravity.transform.position).normalized;
+            var gravityDirection = -PlanetGravity.Instance.GetGravityDirection(transform.position);
 
             var targetRotation = Quaternion.FromToRotation(
                 transform.up, gravityDirection) * transform.rotation;
@@ -262,18 +267,54 @@ namespace Characters
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
+        private void Look(InputAction.CallbackContext ctx)
+        {
+            if (!CanMove) return;
+
+            if (isAround)
+            {
+                CameraManager.Instance.LookAround();
+            }
+            else
+            {
+                CameraManager.Instance.LookMove();
+
+                transform.Rotate(Vector3.up * (input.LookInput.x * mouseSensitivity));
+
+                CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
+            }
+        }
+
+        private void AlignForward()
+        {
+            var forward = Vector3.Cross(
+                CameraManager.Instance.orbit.transform.right,
+                transform.up).normalized;
+
+            transform.rotation = Quaternion.LookRotation(forward, transform.up);
+
+            CameraManager.Instance.LookMove();
+        }
+
         private void Movement(InputAction.CallbackContext ctx)
         {
+            if (ctx.canceled)
+            {
+                CameraManager.Instance.orbit.HorizontalAxis.Value = 0;
+                CameraManager.Instance.LookAround();
+            }
+
             animator.OnMove(ctx);
         }
 
         private void Jump(InputAction.CallbackContext ctx)
         {
-            if (!isGround) return;
-            if (isAttack) return;
-            if (isSpin) return;
+            if (!IsGrounded()) return;
+            if (!CanMove) return;
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            if (isSpin) return;
 
             animator.OnJump(ctx);
         }
@@ -288,20 +329,54 @@ namespace Characters
 
         private void Attack(InputAction.CallbackContext ctx)
         {
-            if (!isGround) return;
-            if (isAttack) return;
+            if (!CanMove) return;
+            if (!IsGrounded()) return;
             if (isSpin) return;
+
+            AlignForward();
+
+            GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
         }
 
         private void Spin(InputAction.CallbackContext ctx)
         {
-            if (!isGround) return;
-            if (isAttack) return;
+            if (!CanMove) return;
 
             isSpin = ctx.performed;
             animator.OnSpin(ctx);
+        }
+
+        private void Hit(int previousValue, int newValue)
+        {
+            StartCoroutine(Slowdown());
+
+            if (newValue > 0) animator.OnHit();
+            else Death();
+        }
+
+        private void Death()
+        {
+            StartCoroutine(DeathCoroutine());
+
+            animator.OnDeath();
+        }
+
+        private IEnumerator DeathCoroutine()
+        {
+            yield return new WaitForSeconds(1f);
+
+            PlayManager.Instance.ChangeObserverModeRpc(OwnerClientId);
+        }
+
+        private IEnumerator Slowdown()
+        {
+            slowdownRate = 0.7f;
+
+            yield return new WaitForSeconds(0.3f);
+
+            slowdownRate = 1f;
         }
     }
 }

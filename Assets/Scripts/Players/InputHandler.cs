@@ -1,15 +1,11 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-namespace Characters
+namespace Players
 {
     internal class InputHandler : MonoBehaviour
     {
-        public bool AttackPressed { get; private set; }
-        public bool spinPressed { get; private set; }
-        public bool runPressed { get; private set; }
         private bool isOverUI;
 
         public Vector2 MoveInput { get; private set; }
@@ -26,15 +22,6 @@ namespace Characters
 
             InputActions.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
             InputActions.Player.Look.canceled += ctx => LookInput = Vector2.zero;
-
-            InputActions.Player.Attack.performed += OnAttack;
-            InputActions.Player.Attack.canceled += OnAttack;
-
-            InputActions.Player.Run.performed += OnRun;
-            InputActions.Player.Run.canceled += OnRun;
-
-            InputActions.Player.Spin.performed += OnSpin;
-            InputActions.Player.Spin.canceled += OnSpin;
 
             InputActions.UI.Escape.performed += EscapePressed;
             InputActions.UI.Click.performed += MouseLeftClicked;
@@ -62,26 +49,12 @@ namespace Characters
             InputActions.UI.Click.performed -= MouseLeftClicked;
         }
 
-        private void OnAttack(InputAction.CallbackContext ctx)
-        {
-            OnAttackPressed?.Invoke(ctx);
-        }
-
-        private void OnRun(InputAction.CallbackContext ctx)
-        {
-            OnRunPressed?.Invoke(ctx);
-        }
-
-        private void OnSpin(InputAction.CallbackContext ctx)
-        {
-            OnSpinPressed?.Invoke(ctx);
-        }
-
         private void EscapePressed(InputAction.CallbackContext ctx)
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
+            CameraManager.Instance.EnableCamera(false);
             InputActions.Player.Disable();
         }
 
@@ -92,6 +65,7 @@ namespace Characters
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
 
+            CameraManager.Instance.EnableCamera(true);
             InputActions.Player.Enable();
         }
 
@@ -99,9 +73,5 @@ namespace Characters
         {
             return EventSystem.current && EventSystem.current.IsPointerOverGameObject();
         }
-
-        public event Action<InputAction.CallbackContext> OnAttackPressed;
-        public event Action<InputAction.CallbackContext> OnRunPressed;
-        public event Action<InputAction.CallbackContext> OnSpinPressed;
     }
 }

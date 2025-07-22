@@ -3,22 +3,34 @@ using UnityEngine;
 
 public class PlanetGravity : MonoBehaviour
 {
+    public static PlanetGravity Instance { get; private set; }
+
     public float gravityStrength = 9.81f;
-    private readonly HashSet<Rigidbody> _affectedBodies = new();
+    private readonly HashSet<Rigidbody> affectedBodies = new();
+
+    private void Awake()
+    {
+        if (!Instance) Instance = this;
+        else Destroy(gameObject);
+    }
 
     private void FixedUpdate()
     {
         ApplyGravity();
     }
 
+    public Vector3 GetGravityDirection(Vector3 position)
+    {
+        return (transform.position - position).normalized;
+    }
+
     private void ApplyGravity()
     {
-        foreach (var rb in _affectedBodies)
+        foreach (var rb in affectedBodies)
         {
             if (!rb) continue;
 
-            var gravityDirection = (transform.position - rb.position).normalized;
-            rb.AddForce(gravityDirection * gravityStrength, ForceMode.Acceleration);
+            rb.AddForce(GetGravityDirection(rb.position) * gravityStrength, ForceMode.Acceleration);
         }
     }
 
@@ -30,12 +42,12 @@ public class PlanetGravity : MonoBehaviour
     public void Subscribe(Rigidbody rb)
     {
         if (rb)
-            _affectedBodies.Add(rb);
+            affectedBodies.Add(rb);
     }
 
     public void Unsubscribe(Rigidbody rb)
     {
         if (rb)
-            _affectedBodies.Remove(rb);
+            affectedBodies.Remove(rb);
     }
 }

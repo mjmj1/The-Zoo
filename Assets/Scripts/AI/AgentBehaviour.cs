@@ -4,7 +4,7 @@ using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using Utils;
-using static Characters.InputHandler;
+using static Players.InputHandler;
 
 namespace AI
 {

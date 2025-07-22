@@ -4,7 +4,7 @@ using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 
-namespace Characters
+namespace Players
 {
     public class PlayerReadyChecker : NetworkBehaviour
     {
@@ -26,7 +26,7 @@ namespace Characters
 
         private void OnPlayerReadyChanged(bool previousValue, bool newValue)
         {
-            GamePlayEventHandler.PlayerReady(playerId.Value.Value, newValue);
+            GamePlayEventHandler.OnPlayerReady(playerId.Value.Value, newValue);
         }
 
         public void Toggle()
