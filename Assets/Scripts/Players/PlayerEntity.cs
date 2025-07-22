@@ -1,10 +1,13 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Characters.Roles;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Players
 {
@@ -19,19 +22,24 @@ namespace Players
 
         [SerializeField] private TMP_Text playerNameText;
 
-        public NetworkVariable<FixedString32Bytes> playerName = new();
-        public NetworkVariable<int> health = new(3);
         public NetworkVariable<ulong> clientId = new();
+        public NetworkVariable<FixedString32Bytes> playerName = new();
 
         public NetworkVariable<Role> role = new();
+        public NetworkVariable<bool> isDead = new();
+        public NetworkVariable<int> health = new(3);
+
+        private PlayerRenderer playerRenderer;
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
             clientId.OnValueChanged += OnClientIdChanged;
-            role.OnValueChanged += OnRoleChanged;
             playerName.OnValueChanged += OnPlayerNameChanged;
+
+            role.OnValueChanged += OnRoleChanged;
+            isDead.OnValueChanged += OnIsDeadChanged;
             health.OnValueChanged += OnHealthChanged;
 
             OnPlayerNameChanged("", playerName.Value);
@@ -41,6 +49,8 @@ namespace Players
 
             playerName.Value = AuthenticationService.Instance.PlayerName;
             clientId.Value = NetworkManager.LocalClientId;
+
+            playerRenderer = GetComponent<PlayerRenderer>();
         }
 
         public override void OnNetworkDespawn()
@@ -49,6 +59,9 @@ namespace Players
 
             playerName.OnValueChanged -= OnPlayerNameChanged;
             clientId.OnValueChanged -= OnClientIdChanged;
+            role.OnValueChanged -= OnRoleChanged;
+            isDead.OnValueChanged -= OnIsDeadChanged;
+            health.OnValueChanged -= OnHealthChanged;
         }
 
         public void Damaged()
@@ -85,8 +98,23 @@ namespace Players
                     gameObject.layer = LayerMask.NameToLayer("Default");
                     gameObject.GetComponent<SeekerRole>().enabled = false;
                     gameObject.GetComponent<HiderRole>().enabled = false;
-
                     break;
+            }
+        }
+
+        void OnIsDeadChanged(bool previousValue, bool newValue)
+        {
+            if (!NetworkManager.Singleton.DistributedAuthorityMode || !HasAuthority) return;
+
+            gameObject.layer = LayerMask.NameToLayer("Observer");
+
+            playerRenderer.UseGhost();
+
+            var netObj = GetComponent<NetworkObject>();
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                if (client.ClientId == netObj.OwnerClientId) continue;
+                netObj.NetworkHide(client.ClientId);
             }
         }
 

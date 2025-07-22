@@ -144,18 +144,6 @@ namespace GamePlay
             print($"Client {clientId}: Position = {randomPos}");
         }
 
-        [Rpc(SendTo.Authority)]
-        internal void ChangeObserverModeRpc(ulong clientId)
-        {
-            print($"client-{clientId} Dead, Change Observer Mode");
-
-            if (clientId == NetworkObject.OwnerClientId) return;
-
-            NetworkObject.NetworkHide(clientId);
-
-            // var observer = Instantiate(observerPrefab, player.position, player.rotation);
-        }
-
         private IEnumerator CountTime()
         {
             print("Count Time Started");

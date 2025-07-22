@@ -151,7 +151,6 @@ namespace Players
         {
             if (OwnerClientId != clientId) return;
 
-            // InitializeFollowCamera();
             InitializeGravity();
 
             if (sceneName != "Lobby") return;
@@ -288,7 +287,7 @@ namespace Players
         private void AlignForward()
         {
             var forward = Vector3.Cross(
-                CameraManager.Instance.orbit.transform.right,
+                CameraManager.Instance.Orbit.transform.right,
                 transform.up).normalized;
 
             transform.rotation = Quaternion.LookRotation(forward, transform.up);
@@ -300,7 +299,7 @@ namespace Players
         {
             if (ctx.canceled)
             {
-                CameraManager.Instance.orbit.HorizontalAxis.Value = 0;
+                CameraManager.Instance.Orbit.HorizontalAxis.Value = 0;
                 CameraManager.Instance.LookAround();
             }
 
@@ -365,9 +364,12 @@ namespace Players
 
         private IEnumerator DeathCoroutine()
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(3f);
 
-            PlayManager.Instance.ChangeObserverModeRpc(OwnerClientId);
+            entity.isDead.Value = true;
+            CanMove = true;
+
+            animator.OnRebind();
         }
 
         private IEnumerator Slowdown()
