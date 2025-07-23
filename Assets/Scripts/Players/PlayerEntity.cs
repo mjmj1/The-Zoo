@@ -75,6 +75,7 @@ namespace Players
                     gameObject.layer = LayerMask.NameToLayer("Hider");
                     gameObject.GetComponent<SeekerRole>().enabled = false;
                     gameObject.GetComponent<HiderRole>().enabled = true;
+                    
                     break;
                 case Role.Seeker:
                     gameObject.layer = LayerMask.NameToLayer("Seeker");

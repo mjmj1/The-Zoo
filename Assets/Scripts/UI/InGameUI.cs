@@ -1,6 +1,8 @@
 using GamePlay;
+using System.Reflection;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace UI
@@ -9,6 +11,7 @@ namespace UI
     {
         [SerializeField] private TextMeshProUGUI timerText;
         [SerializeField] private Button gameEndButton;
+        [SerializeField] private GameObject missions;
 
         private void Start()
         {
@@ -30,6 +33,24 @@ namespace UI
         private void OnGameEndButtonClicked()
         {
             GameManager.Instance.LoadSceneRpc("Lobby");
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                KeyDown_Tab();
+            }
+        }
+
+        private void KeyDown_Tab()
+        {
+            if(missions.activeSelf)
+                missions.SetActive(false);
+            else
+                missions.SetActive(true);
+
+            Debug.Log("Tab");
         }
     }
 }

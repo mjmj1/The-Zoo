@@ -7,6 +7,7 @@ using Unity.Netcode;
 using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using Utils;
+using Characters.Roles;
 
 namespace GamePlay
 {

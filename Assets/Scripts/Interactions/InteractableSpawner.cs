@@ -1,4 +1,5 @@
 using UnityEngine;
+using Characters.Roles;
 
 namespace Interactions
 {
@@ -9,6 +10,7 @@ namespace Interactions
         [SerializeField] private Vector2 downForceRange = new (0f, 1f);
         
         private bool isInteracting = false;
+        private int maxSpawnCount = 4;
         
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
@@ -35,13 +37,18 @@ namespace Interactions
         
         public override void StartInteract()
         {
-            if (isInteracting) return;
-            
-            isInteracting = true;
+            while(maxSpawnCount > 0)
+            {
+                if (isInteracting) return;
 
-            Spawn();
+                isInteracting = true;
+
+                Spawn();
+
+                print($"{gameObject.name} is interacting...");
+                
+            }
             
-            print($"{gameObject.name} is interacting...");
         }
 
         public override void StopInteract()
@@ -73,6 +80,7 @@ namespace Interactions
                 var force = Random.Range(downForceRange.x, downForceRange.y);
                 rb.AddForce(Vector3.down * force, ForceMode.Impulse);
             }
+            maxSpawnCount--;
         }
         
         public override InteractableType GetInteractableType()

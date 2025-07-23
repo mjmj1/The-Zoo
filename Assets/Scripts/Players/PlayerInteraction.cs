@@ -1,5 +1,6 @@
 using Interactions;
 using UnityEngine;
+using Utils;
 
 namespace Players
 {
@@ -13,6 +14,7 @@ namespace Players
         private void Start()
         {
             inputHandler = GetComponent<InputHandler>();
+            
 
             inputHandler.InputActions.Player.Interact.performed += _ => currentInteractable?.StartInteract();
             inputHandler.InputActions.Player.Interact.canceled += _ => currentInteractable?.StopInteract();
@@ -44,8 +46,12 @@ namespace Players
 
         private void UpdateInteractable(Interactable interactable)
         {
-            currentInteractable = interactable;
-            
+            //MyLogger.Print(this, "player layer : " + gameObject.layer);
+            if (gameObject.layer != 8)
+            {
+                currentInteractable = interactable;
+            }
+
             currentInteractable?.ShowInteractableUI();
         }
 
