@@ -20,13 +20,18 @@ namespace Players
 
         internal void UseOrigin()
         {
-            lods[0].renderers[0].sharedMaterial.shader = originShader;
+            foreach (var lod in lods)
+            {
+                lod.renderers[0].material.shader = originShader;
+            }
         }
 
         internal void UseGhost()
         {
-            MyLogger.Print(this, "UseGhost");
-            lods[0].renderers[0].sharedMaterial.shader = ghostShader;
+            foreach (var lod in lods)
+            {
+                lod.renderers[0].material.shader = ghostShader;
+            }
         }
     }
 }

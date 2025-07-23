@@ -1,3 +1,4 @@
+using System;
 using Characters.Roles;
 using GamePlay;
 using TMPro;
@@ -14,7 +15,8 @@ namespace Players
         {
             None,
             Hider,
-            Seeker
+            Seeker,
+            Observer,
         }
 
         [SerializeField] private TMP_Text playerNameText;
@@ -23,15 +25,14 @@ namespace Players
         public NetworkVariable<FixedString32Bytes> playerName = new();
 
         public NetworkVariable<Role> role = new();
-        public NetworkVariable<bool> isDead = new();
         public NetworkVariable<int> health = new(3);
+        public NetworkVariable<bool> isDead = new();
 
         private PlayerRenderer playerRenderer;
 
         public void Reset()
         {
             NetworkShow();
-            playerRenderer.UseOrigin();
             role.Value = Role.None;
             isDead.Value = false;
             health.Value = 3;
@@ -104,9 +105,10 @@ namespace Players
                     gameObject.GetComponent<HiderRole>().enabled = false;
                     break;
                 case Role.None:
-                    gameObject.layer = LayerMask.NameToLayer("Default");
+                    gameObject.layer = LayerMask.NameToLayer("Observer");
                     gameObject.GetComponent<SeekerRole>().enabled = false;
                     gameObject.GetComponent<HiderRole>().enabled = false;
+                    playerRenderer.UseOrigin();
                     break;
             }
         }
@@ -115,15 +117,11 @@ namespace Players
         {
             if (!newValue) return;
 
-            if (!NetworkManager.Singleton.DistributedAuthorityMode || !HasAuthority) return;
-
-            gameObject.layer = LayerMask.NameToLayer("Observer");
+            if (!IsOwner) return;
 
             playerRenderer.UseGhost();
 
             NetworkHide();
-
-            PlayManager.Instance.observerIds.Add(OwnerClientId);
         }
 
         private void OnHealthChanged(int previousValue, int newValue)
@@ -141,6 +139,8 @@ namespace Players
                 if (client.ClientId == netObj.OwnerClientId) continue;
                 netObj.NetworkHide(client.ClientId);
             }
+
+
         }
 
         private void NetworkShow()
