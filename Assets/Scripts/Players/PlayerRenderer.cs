@@ -19,8 +19,7 @@ namespace Players
             originShader = lods[0].renderers[0].sharedMaterial.shader;
         }
 
-        [Rpc(SendTo.Everyone)]
-        internal void UseOriginShaderRpc()
+        internal void UseOriginShader()
         {
             foreach (var lod in lods)
             {
@@ -28,8 +27,7 @@ namespace Players
             }
         }
 
-        [Rpc(SendTo.Everyone)]
-        internal void UseObserverShaderRpc()
+        internal void UseObserverShader()
         {
             foreach (var lod in lods)
             {

@@ -67,6 +67,8 @@ namespace GamePlay
             isGameStarted = false;
 
             RoleManager.UnassignRole();
+
+            ObserverManager.RemoveAllRpc();
         }
 
         [Rpc(SendTo.Everyone)]

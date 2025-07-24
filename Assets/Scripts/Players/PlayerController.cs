@@ -372,7 +372,10 @@ namespace Players
 
             yield return new WaitForSeconds(3f);
 
+            entity.isDead.Value = true;
+
             CanMove = true;
+
             animator.OnRebind();
         }
 
