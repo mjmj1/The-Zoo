@@ -23,25 +23,33 @@ namespace GamePlay
             observerIds.OnListChanged -= OnObserverListChanged;
         }
 
-        private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
+        [Rpc(SendTo.Authority)]
+        public void AddRpc(ulong observerId)
         {
-
+            observerIds.Add(observerId);
         }
 
-        private void UpdateVisibility()
+        public bool Contains(ulong clientId)
         {
-            var all = FindObjectsOfType<PlayerEntity>()
-                .Select(p => p.NetworkObject);
-            foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
+            return observerIds.Contains(clientId);
+        }
+
+        private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            var observer = NetworkManager.Singleton.ConnectedClients[changeEvent.Value];
+
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
             {
-                bool isObs = observerIds.Contains(clientId);
-                foreach (var obj in all)
+                if (observerIds.Contains(client.ClientId))
                 {
-                    bool targetObs = observerIds.Contains(obj.OwnerClientId);
-                    if (isObs == targetObs) obj.NetworkShow(clientId);
-                    else                   obj.NetworkHide(clientId);
+                    observer.PlayerObject.GetComponent<PlayerEntity>().NetworkShow(client.ClientId);
+                    continue;
                 }
+
+                observer.PlayerObject.GetComponent<PlayerEntity>().NetworkHide(client.ClientId);
             }
+
+
         }
     }
 }

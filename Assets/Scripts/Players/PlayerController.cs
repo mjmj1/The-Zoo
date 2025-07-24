@@ -363,23 +363,16 @@ namespace Players
             StartCoroutine(Slowdown());
 
             if (newValue > 0) animator.OnHit();
-            else Death();
-        }
-
-        private void Death()
-        {
-            StartCoroutine(DeathCoroutine());
-
-            animator.OnDeath();
+            else StartCoroutine(DeathCoroutine());
         }
 
         private IEnumerator DeathCoroutine()
         {
+            animator.OnDeath();
+
             yield return new WaitForSeconds(3f);
 
-            entity.isDead.Value = true;
             CanMove = true;
-
             animator.OnRebind();
         }
 

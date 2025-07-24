@@ -14,8 +14,8 @@ namespace GamePlay
         public NetworkVariable<int> currentTime = new();
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
-        private ObserverManager observerManager;
-        private RoleManager roleManager;
+        internal ObserverManager ObserverManager;
+        internal RoleManager RoleManager;
 
         private bool isGameStarted;
 
@@ -23,20 +23,14 @@ namespace GamePlay
 
         public void Awake()
         {
-            if (Instance == null) Instance = this;
+            if (Instance == null)
+            {
+                Instance = this;
+
+                ObserverManager = GetComponent<ObserverManager>();
+                RoleManager = GetComponent<RoleManager>();
+            }
             else Destroy(gameObject);
-
-            observerManager = GetComponent<ObserverManager>();
-            roleManager = GetComponent<RoleManager>();
-        }
-
-        public override void OnNetworkSpawn()
-        {
-            base.OnNetworkSpawn();
-
-            if (!IsSessionOwner) return;
-
-            OnGameStart();
         }
 
         public override void OnNetworkDespawn()
@@ -44,6 +38,15 @@ namespace GamePlay
             base.OnNetworkDespawn();
 
             OnGameEnd();
+        }
+
+        protected override void OnInSceneObjectsSpawned()
+        {
+            base.OnInSceneObjectsSpawned();
+
+            if (!IsSessionOwner) return;
+
+            OnGameStart();
         }
 
         private void OnGameStart()
@@ -56,23 +59,14 @@ namespace GamePlay
 
             MoveRandomPositionRpc();
 
-            roleManager.AssignRole();
+            RoleManager.AssignRole();
         }
 
         private void OnGameEnd()
         {
             isGameStarted = false;
 
-            roleManager.UnassignRole();
-        }
-
-        [Rpc(SendTo.SpecifiedInParams)]
-        public void HitRpc(RpcParams rpcParams)
-        {
-            var target = NetworkManager.Singleton
-                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
-
-            target.Damaged();
+            RoleManager.UnassignRole();
         }
 
         [Rpc(SendTo.Everyone)]

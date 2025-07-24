@@ -1,6 +1,6 @@
-using System;
-using Characters.Roles;
+using System.Collections;
 using GamePlay;
+using Players.Roles;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -16,7 +16,6 @@ namespace Players
             None,
             Hider,
             Seeker,
-            Observer,
         }
 
         [SerializeField] private TMP_Text playerNameText;
@@ -32,7 +31,11 @@ namespace Players
 
         public void Reset()
         {
-            NetworkShow();
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+            {
+                NetworkShow(client.ClientId);
+            }
+
             role.Value = Role.None;
             isDead.Value = false;
             health.Value = 3;
@@ -47,13 +50,14 @@ namespace Players
             playerName.OnValueChanged += OnPlayerNameChanged;
 
             role.OnValueChanged += OnRoleChanged;
-            isDead.OnValueChanged += OnIsDeadChanged;
-            health.OnValueChanged += OnHealthChanged;
 
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
 
             if (!IsOwner) return;
+
+            isDead.OnValueChanged += OnIsDeadChanged;
+            health.OnValueChanged += OnHealthChanged;
 
             playerName.Value = AuthenticationService.Instance.PlayerName;
             clientId.Value = NetworkManager.LocalClientId;
@@ -105,10 +109,10 @@ namespace Players
                     gameObject.GetComponent<HiderRole>().enabled = false;
                     break;
                 case Role.None:
-                    gameObject.layer = LayerMask.NameToLayer("Observer");
+                    gameObject.layer = LayerMask.NameToLayer("Default");
                     gameObject.GetComponent<SeekerRole>().enabled = false;
                     gameObject.GetComponent<HiderRole>().enabled = false;
-                    playerRenderer.UseOrigin();
+                    playerRenderer.UseOriginShaderRpc();
                     break;
             }
         }
@@ -117,40 +121,48 @@ namespace Players
         {
             if (!newValue) return;
 
-            if (!IsOwner) return;
+            gameObject.layer = LayerMask.NameToLayer("Observer");
 
-            playerRenderer.UseGhost();
-
-            NetworkHide();
+            playerRenderer.UseObserverShaderRpc();
         }
 
         private void OnHealthChanged(int previousValue, int newValue)
         {
-            if (!IsOwner) return;
-
             print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
+
+            if (newValue == 0)
+            {
+                StartCoroutine(DeathRoutine());
+            }
         }
 
-        private void NetworkHide()
+        private IEnumerator DeathRoutine()
         {
-            var netObj = GetComponent<NetworkObject>();
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                if (client.ClientId == netObj.OwnerClientId) continue;
-                netObj.NetworkHide(client.ClientId);
-            }
+            PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
 
+            yield return new WaitForSeconds(3f);
 
+            isDead.Value = true;
         }
 
-        private void NetworkShow()
+        internal void NetworkShow(ulong id)
         {
             var netObj = GetComponent<NetworkObject>();
-            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
-            {
-                if (client.ClientId == netObj.OwnerClientId) continue;
-                netObj.NetworkShow(client.ClientId);
-            }
+
+            if (netObj.OwnerClientId == id) return;
+
+            if (netObj.IsNetworkVisibleTo(id)) return;
+
+            netObj.NetworkShow(id);
+        }
+
+        internal void NetworkHide(ulong id)
+        {
+            var netObj = GetComponent<NetworkObject>();
+
+            if (netObj.OwnerClientId == id) return;
+
+            netObj.NetworkHide(id);
         }
     }
 }

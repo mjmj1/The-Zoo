@@ -1,9 +1,10 @@
+using Unity.Netcode;
 using UnityEngine;
 using Utils;
 
 namespace Players
 {
-    public class PlayerRenderer : MonoBehaviour
+    public class PlayerRenderer : NetworkBehaviour
     {
         [SerializeField] private Shader ghostShader;
 
@@ -18,7 +19,8 @@ namespace Players
             originShader = lods[0].renderers[0].sharedMaterial.shader;
         }
 
-        internal void UseOrigin()
+        [Rpc(SendTo.Everyone)]
+        internal void UseOriginShaderRpc()
         {
             foreach (var lod in lods)
             {
@@ -26,7 +28,8 @@ namespace Players
             }
         }
 
-        internal void UseGhost()
+        [Rpc(SendTo.Everyone)]
+        internal void UseObserverShaderRpc()
         {
             foreach (var lod in lods)
             {
