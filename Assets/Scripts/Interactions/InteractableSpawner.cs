@@ -11,6 +11,7 @@ namespace Interactions
         
         private bool isInteracting = false;
         private int maxSpawnCount = 4;
+        public bool TargetMission = false;
         
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
@@ -34,21 +35,27 @@ namespace Interactions
             }
         }
 #endif
-        
+        public void Initailize(bool targeted)
+        {
+            TargetMission = targeted;
+        }
+
         public override void StartInteract()
         {
-            while(maxSpawnCount > 0)
+            if(TargetMission)
             {
-                if (isInteracting) return;
+                while (maxSpawnCount > 0)
+                {
+                    if (isInteracting) return;
 
-                isInteracting = true;
+                    isInteracting = true;
 
-                Spawn();
+                    Spawn();
 
-                print($"{gameObject.name} is interacting...");
-                
+                    print($"{gameObject.name} is interacting...");
+
+                }
             }
-            
         }
 
         public override void StopInteract()
