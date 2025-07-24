@@ -14,7 +14,6 @@ namespace Characters.Roles
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
-            //missionBackground = 
         }
 
         private void OnEnable()

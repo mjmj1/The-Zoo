@@ -49,8 +49,6 @@ namespace UI
                 missions.SetActive(false);
             else
                 missions.SetActive(true);
-
-            Debug.Log("Tab");
         }
     }
 }

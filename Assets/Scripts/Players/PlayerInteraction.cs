@@ -46,8 +46,7 @@ namespace Players
 
         private void UpdateInteractable(Interactable interactable)
         {
-            //MyLogger.Print(this, "player layer : " + gameObject.layer);
-            if (gameObject.layer != 8)
+            if (gameObject.layer != 8)// 8 is layered as Seeker
             {
                 currentInteractable = interactable;
             }
