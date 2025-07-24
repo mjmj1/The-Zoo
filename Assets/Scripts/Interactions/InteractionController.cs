@@ -19,7 +19,7 @@ namespace Interactions
 
         private void SpawnInteractionObjects(int count)
         {
-            
+            //selectedList = Enumerable
             for (var i = 0; i < count; i++)
             {
                 var randomNumber = Random.Range(0, count + 1);
