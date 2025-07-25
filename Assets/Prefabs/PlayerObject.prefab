@@ -190,10 +190,10 @@ MonoBehaviour:
         byte0029: 0
   role:
     m_InternalValue: 0
-  isDead:
-    m_InternalValue: 0
   health:
     m_InternalValue: 3
+  isDead:
+    m_InternalValue: 0
 --- !u!114 &6675916858937408846
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7178414fa0f245338ecd1f353644dbbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originShader: {fileID: -6465566751694194690, guid: a44401f8b3d263c4e9c2ed62b3f5adff, type: 3}
+  ShowTopMostFoldoutHeaderGroup: 1
   ghostShader: {fileID: 4800000, guid: 8282f0c5abc468e4bafab4d0228290c5, type: 3}
 --- !u!136 &3755982930554864778
 CapsuleCollider:
@@ -250,7 +250,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 512
+    m_Bits: 513
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1

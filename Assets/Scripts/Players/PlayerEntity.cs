@@ -6,6 +6,7 @@ using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utils;
 
 namespace Players
 {
@@ -42,14 +43,10 @@ namespace Players
 
         public override void OnNetworkSpawn()
         {
-            base.OnNetworkSpawn();
-
             playerRenderer = GetComponent<PlayerRenderer>();
 
             clientId.OnValueChanged += OnClientIdChanged;
             playerName.OnValueChanged += OnPlayerNameChanged;
-
-            isDead.OnValueChanged += OnIsDeadChanged;
             role.OnValueChanged += OnRoleChanged;
 
             OnPlayerNameChanged("", playerName.Value);
@@ -59,6 +56,8 @@ namespace Players
             if (!IsOwner) return;
 
             health.OnValueChanged += OnHealthChanged;
+            isDead.OnValueChanged += OnIsDeadChanged;
+
             NetworkManager.Singleton.SceneManager.OnLoadComplete += OnNetworkSceneLoadComplete;
 
             playerName.Value = AuthenticationService.Instance.PlayerName;
@@ -76,16 +75,29 @@ namespace Players
             role.OnValueChanged -= OnRoleChanged;
             isDead.OnValueChanged -= OnIsDeadChanged;
             health.OnValueChanged -= OnHealthChanged;
-        }
-
-        private void OnNetworkSceneLoadComplete(ulong clientId, string sceneName,
-            LoadSceneMode mode)
-        {
-            if (sceneName != "InGame") return;
-
             NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
 
-            PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+            CameraManager.Instance.EnableCamera(false);
+        }
+
+        private void OnNetworkSceneLoadComplete(ulong _, string sceneName, LoadSceneMode mode)
+        {
+            if (!IsOwner) return;
+
+            if (sceneName.Equals("Lobby"))
+            {
+                MyLogger.Print(this, "옵저버 리스트 구독 해체");
+                if (!PlayManager.Instance) return;
+
+                PlayManager.Instance.ObserverManager.observerIds.OnListChanged -= OnObserverListChanged;
+            }
+            else if (sceneName.Equals("InGame"))
+            {
+                MyLogger.Print(this, "옵저버 리스트 구독");
+                if (!PlayManager.Instance) return;
+
+                PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+            }
         }
 
         public void Damaged()
@@ -129,17 +141,15 @@ namespace Players
 
         private void OnIsDeadChanged(bool previousValue, bool newValue)
         {
+            print($"client-{OwnerClientId} OnIsDeadChanged: {newValue}");
+
             if (!newValue)
             {
                 playerRenderer.UseOriginShader();
                 return;
             }
 
-            playerRenderer.UseObserverShader();
-
             gameObject.layer = LayerMask.NameToLayer("Observer");
-
-            playerRenderer.UseObserverShader();
 
             PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
 
@@ -153,6 +163,8 @@ namespace Players
 
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
         {
+            print("observer list changed");
+
             if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
 
             if (OwnerClientId == changeEvent.Value)

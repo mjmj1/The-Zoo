@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Utils;
 
 namespace GamePlay
 {
@@ -10,12 +11,6 @@ namespace GamePlay
         public void AddRpc(ulong observerId)
         {
             observerIds.Add(observerId);
-        }
-
-        [Rpc(SendTo.Authority)]
-        public void RemoveAllRpc()
-        {
-            observerIds.Clear();
         }
     }
 }

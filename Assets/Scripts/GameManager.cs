@@ -5,6 +5,7 @@ using Players;
 using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
 
@@ -51,6 +52,8 @@ public class GameManager : NetworkBehaviour
 
     internal void GameEndRpc()
     {
+        print("Game EndRpc called");
+
         LoadSceneRpc("Lobby");
     }
 

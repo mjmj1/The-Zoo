@@ -151,22 +151,25 @@ namespace Players
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
-            if (OwnerClientId != clientId) return;
+            if (!IsOwner) return;
 
             InitializeGravity();
 
-            if (sceneName != "Lobby") return;
-
-            var clients = NetworkManager.ConnectedClientsIds.ToList();
-
-            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(OwnerClientId), 5f, 8);
-
-            transform.SetPositionAndRotation(pos,
-                Quaternion.LookRotation((Vector3.zero - pos).normalized));
+            if (!sceneName.Equals("Lobby")) return;
 
             Reset();
             entity.Reset();
             readyChecker.Reset();
+
+            var clients = NetworkManager.ConnectedClientsIds.ToList();
+
+            MyLogger.Print(this, $"{clients.Count}");
+            MyLogger.Print(this, $"{clients.IndexOf(clientId)}");
+
+            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 5f, 8);
+
+            transform.SetPositionAndRotation(pos,
+                Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
 
         private void Subscribe()

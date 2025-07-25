@@ -8,7 +8,6 @@ namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
-        [SerializeField] private GameObject observerPrefab;
         [SerializeField] private float spawnRadius = 7.5f;
 
         public NetworkVariable<int> currentTime = new();
@@ -33,11 +32,12 @@ namespace GamePlay
             else Destroy(gameObject);
         }
 
-        public override void OnNetworkDespawn()
+        public override void OnDestroy()
         {
-            base.OnNetworkDespawn();
-
+            MyLogger.Print(this, "OnDestroy");
             OnGameEnd();
+
+            base.OnDestroy();
         }
 
         protected override void OnInSceneObjectsSpawned()
@@ -67,8 +67,6 @@ namespace GamePlay
             isGameStarted = false;
 
             RoleManager.UnassignRole();
-
-            ObserverManager.RemoveAllRpc();
         }
 
         [Rpc(SendTo.Everyone)]
