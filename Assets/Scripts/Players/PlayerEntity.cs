@@ -24,6 +24,7 @@ namespace Players
         public NetworkVariable<ulong> clientId = new();
 
         public NetworkVariable<Role> role = new();
+        [SerializeField] private ParticleSystem hitEffectPrefab;
 
         public override void OnNetworkSpawn()
         {
@@ -54,6 +55,7 @@ namespace Players
         public void Damaged()
         {
             health.Value -= 1;
+            hitEffectPrefab.Play();
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)

@@ -320,6 +320,7 @@ namespace Players
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
+
         }
 
         private void Spin(InputAction.CallbackContext ctx)
