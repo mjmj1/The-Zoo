@@ -48,6 +48,7 @@ namespace Players
             clientId.OnValueChanged += OnClientIdChanged;
             playerName.OnValueChanged += OnPlayerNameChanged;
             role.OnValueChanged += OnRoleChanged;
+            isDead.OnValueChanged += OnIsDeadChanged;
 
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
@@ -56,7 +57,6 @@ namespace Players
             if (!IsOwner) return;
 
             health.OnValueChanged += OnHealthChanged;
-            isDead.OnValueChanged += OnIsDeadChanged;
 
             NetworkManager.Singleton.SceneManager.OnLoadComplete += OnNetworkSceneLoadComplete;
 
@@ -141,19 +141,19 @@ namespace Players
 
         private void OnIsDeadChanged(bool previousValue, bool newValue)
         {
-            print($"client-{OwnerClientId} OnIsDeadChanged: {newValue}");
-
             if (!newValue)
             {
                 playerRenderer.UseOriginShader();
                 return;
             }
 
+            playerRenderer.UseObserverShader();
+
             gameObject.layer = LayerMask.NameToLayer("Observer");
 
-            PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
+            if (!IsOwner) return;
 
-            playerRenderer.UseObserverShader();
+            PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
         }
 
         private void OnHealthChanged(int previousValue, int newValue)
