@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Interactions;
 
 namespace UI
 {
@@ -17,6 +18,7 @@ namespace UI
         {
             PlayManager.Instance.currentTime.OnValueChanged += OnValueChanged;
             gameEndButton.onClick.AddListener(OnGameEndButtonClicked);
+            
         }
 
         private void OnDestroy()

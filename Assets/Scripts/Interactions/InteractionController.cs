@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
@@ -11,12 +12,18 @@ namespace Interactions
     {
         [SerializeField] private GameObject[] interactionObjects;
         [SerializeField] private int InteractionsNumber = 15;
+        [SerializeField] private TMP_Text treeCountText;
+        [SerializeField] private TMP_Text playerCountText;
 
         private List<int> RandomNumberList = new List<int>();
-        private int targetCount = 5;
+        public int TargetCount = 5;
 
         private void Start()
         {
+            treeCountText.text = " : " + TargetCount.ToString();
+
+            playerCountText.text = " : " + GameManager.Instance.PlayerCount.ToString();
+
             SpawnInteractionObjects(InteractionsNumber);
         }
 
@@ -26,7 +33,7 @@ namespace Interactions
             for (int i = 0; i < count; i++)
                 allIndexes.Add(i);
 
-            for (int i = 0; i < targetCount; i++)
+            for (int i = 0; i < TargetCount; i++)
             {
                 int rand = Random.Range(0, allIndexes.Count);
                 RandomNumberList.Add(allIndexes[rand]);
@@ -48,7 +55,7 @@ namespace Interactions
                 var obj = Instantiate(interactionObjects[Random.Range(0, interactionObjects.Length)], spawnPoint, finalRotation);
 
                 var targetMission = RandomNumberList.Contains(i);
-                MyLogger.Print(this, "targetMission : " + targetMission);
+                
                 obj.GetComponent<InteractableSpawner>().Initailize(targetMission);
             }
         }

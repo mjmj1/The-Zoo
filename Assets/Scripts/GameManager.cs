@@ -9,6 +9,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : NetworkBehaviour
 {
     public static GameManager Instance { get; private set; }
+    public int PlayerCount;
 
     private void Awake()
     {

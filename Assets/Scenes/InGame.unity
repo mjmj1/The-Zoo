@@ -2037,6 +2037,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactionObjects:
   - {fileID: 1183728168525978545, guid: bb02e8d356baeab4284417fb46d7ab5b, type: 3}
+  InteractionsNumber: 15
+  treeCountText: {fileID: 270837049}
+  playerCountText: {fileID: 1019117542}
+  TargetCount: 5
 --- !u!114 &1316204685
 MonoBehaviour:
   m_ObjectHideFlags: 0
