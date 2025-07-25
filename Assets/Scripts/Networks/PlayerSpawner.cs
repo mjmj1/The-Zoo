@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using EventHandler;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
@@ -9,6 +10,8 @@ namespace Networks
 {
     public class PlayerSpawner : NetworkBehaviour
     {
+        public static PlayerSpawner Instance { get; private set; }
+
         [SerializeField] private List<NetworkObject> animalPrefabs;
         private readonly NetworkList<int> spawnedAnimals = new();
 
@@ -16,25 +19,35 @@ namespace Networks
 
         public void Awake()
         {
-            DontDestroyOnLoad(gameObject);
+            if (!Instance)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            NetworkManager.Singleton.OnPreShutdown += OnPreShutdown;
+            ConnectionEventHandler.SessionDisconnected += OnSessionDisconnect;
         }
 
-        private void OnPreShutdown()
+        private void OnSessionDisconnect()
         {
-            NetworkManager.Singleton.OnPreShutdown -= OnPreShutdown;
+            ConnectionEventHandler.SessionDisconnected -= OnSessionDisconnect;
 
             RemoveRpc(index);
         }
 
         protected override void OnNetworkSessionSynchronized()
         {
+            base.OnNetworkSessionSynchronized();
+
             Spawn();
         }
 
@@ -45,8 +58,6 @@ namespace Networks
             SpawnPlayer(index);
 
             AddRpc(index);
-
-            base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]

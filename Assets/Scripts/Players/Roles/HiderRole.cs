@@ -1,16 +1,11 @@
-using GamePlay;
-using Players;
-using UI;
 using Unity.Netcode;
-using UnityEngine;
 
-namespace Characters.Roles
+namespace Players.Roles
 {
     public class HiderRole : NetworkBehaviour
     {
         private PlayerEntity entity;
-        private GameObject missionBackground;
-        
+
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
@@ -18,7 +13,6 @@ namespace Characters.Roles
 
         private void OnEnable()
         {
-            
             print($"client-{entity.clientId.Value} Assigned Hider");
         }
     }

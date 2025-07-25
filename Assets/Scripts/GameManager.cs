@@ -1,10 +1,13 @@
 using System;
+using System.Linq;
 using Networks;
 using Players;
 using UI;
 using Unity.Netcode;
 using Unity.Services.Authentication;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utils;
 
 public class GameManager : NetworkBehaviour
 {
@@ -48,6 +51,13 @@ public class GameManager : NetworkBehaviour
         }
     }
 
+    internal void GameEndRpc()
+    {
+        print("Game EndRpc called");
+
+        LoadSceneRpc("Lobby");
+    }
+
     internal void PromotedSessionHost(string playerId)
     {
         if (playerId == AuthenticationService.Instance.PlayerId)
@@ -73,7 +83,7 @@ public class GameManager : NetworkBehaviour
     }
 
     [Rpc(SendTo.Authority)]
-    internal void LoadSceneRpc(string sceneName)
+    private void LoadSceneRpc(string sceneName)
     {
         print($"{sceneName} GameStartRpc called");
 

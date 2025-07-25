@@ -53,5 +53,10 @@ namespace Players
         {
             Animator.SetTrigger(DeathHash);
         }
+
+        internal void OnRebind()
+        {
+            Animator.Rebind();
+        }
     }
 }

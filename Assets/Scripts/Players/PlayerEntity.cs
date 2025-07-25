@@ -1,10 +1,12 @@
-using System.Collections;
-using Characters.Roles;
+using GamePlay;
+using Players.Roles;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Utils;
 
 namespace Players
 {
@@ -14,34 +16,54 @@ namespace Players
         {
             None,
             Hider,
-            Seeker,
+            Seeker
         }
 
         [SerializeField] private TMP_Text playerNameText;
 
-        public NetworkVariable<FixedString32Bytes> playerName = new();
-        public NetworkVariable<int> health = new(3);
         public NetworkVariable<ulong> clientId = new();
+        public NetworkVariable<FixedString32Bytes> playerName = new();
 
         public NetworkVariable<Role> role = new();
-        [SerializeField] private ParticleSystem hitEffectPrefab;
+        public NetworkVariable<int> health = new(3);
+        public NetworkVariable<bool> isDead = new();
+
+        private PlayerRenderer playerRenderer;
+
+        public void Reset()
+        {
+            foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
+                NetworkShow(client.ClientId);
+
+            role.Value = Role.None;
+            isDead.Value = false;
+            health.Value = 3;
+            CameraManager.Instance.EnableCamera(true);
+        }
 
         public override void OnNetworkSpawn()
         {
-            base.OnNetworkSpawn();
+            playerRenderer = GetComponent<PlayerRenderer>();
 
             clientId.OnValueChanged += OnClientIdChanged;
-            role.OnValueChanged += OnRoleChanged;
             playerName.OnValueChanged += OnPlayerNameChanged;
-            health.OnValueChanged += OnHealthChanged;
+            role.OnValueChanged += OnRoleChanged;
+            isDead.OnValueChanged += OnIsDeadChanged;
 
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
+            OnIsDeadChanged(false, isDead.Value);
 
             if (!IsOwner) return;
 
+            health.OnValueChanged += OnHealthChanged;
+
+            NetworkManager.Singleton.SceneManager.OnLoadComplete += OnNetworkSceneLoadComplete;
+
             playerName.Value = AuthenticationService.Instance.PlayerName;
             clientId.Value = NetworkManager.LocalClientId;
+
+            CameraManager.Instance.EnableCamera(true);
         }
 
         public override void OnNetworkDespawn()
@@ -50,12 +72,37 @@ namespace Players
 
             playerName.OnValueChanged -= OnPlayerNameChanged;
             clientId.OnValueChanged -= OnClientIdChanged;
+            role.OnValueChanged -= OnRoleChanged;
+            isDead.OnValueChanged -= OnIsDeadChanged;
+            health.OnValueChanged -= OnHealthChanged;
+            NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
+
+            CameraManager.Instance.EnableCamera(false);
+        }
+
+        private void OnNetworkSceneLoadComplete(ulong _, string sceneName, LoadSceneMode mode)
+        {
+            if (!IsOwner) return;
+
+            if (sceneName.Equals("Lobby"))
+            {
+                MyLogger.Print(this, "옵저버 리스트 구독 해체");
+                if (!PlayManager.Instance) return;
+
+                PlayManager.Instance.ObserverManager.observerIds.OnListChanged -= OnObserverListChanged;
+            }
+            else if (sceneName.Equals("InGame"))
+            {
+                MyLogger.Print(this, "옵저버 리스트 구독");
+                if (!PlayManager.Instance) return;
+
+                PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+            }
         }
 
         public void Damaged()
         {
             health.Value -= 1;
-            hitEffectPrefab.Play();
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)
@@ -77,7 +124,6 @@ namespace Players
                     gameObject.layer = LayerMask.NameToLayer("Hider");
                     gameObject.GetComponent<SeekerRole>().enabled = false;
                     gameObject.GetComponent<HiderRole>().enabled = true;
-                    
                     break;
                 case Role.Seeker:
                     gameObject.layer = LayerMask.NameToLayer("Seeker");
@@ -88,17 +134,68 @@ namespace Players
                     gameObject.layer = LayerMask.NameToLayer("Default");
                     gameObject.GetComponent<SeekerRole>().enabled = false;
                     gameObject.GetComponent<HiderRole>().enabled = false;
-
+                    playerRenderer.UseOriginShader();
                     break;
             }
         }
 
-        private void OnHealthChanged(int previousValue, int newValue)
+        private void OnIsDeadChanged(bool previousValue, bool newValue)
         {
+            if (!newValue)
+            {
+                playerRenderer.UseOriginShader();
+                return;
+            }
+
+            playerRenderer.UseObserverShader();
+
+            gameObject.layer = LayerMask.NameToLayer("Observer");
+
             if (!IsOwner) return;
 
+            PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
+        }
+
+        private void OnHealthChanged(int previousValue, int newValue)
+        {
             print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
-            if (newValue != 0) return;
+        }
+
+        private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            print("observer list changed");
+
+            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+
+            if (OwnerClientId == changeEvent.Value)
+                foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
+                {
+                    if (PlayManager.Instance.ObserverManager.observerIds.Contains(client)) continue;
+
+                    NetworkHide(client);
+                }
+
+            if (!isDead.Value) return;
+            foreach (var observer in PlayManager.Instance.ObserverManager.observerIds)
+                NetworkShow(observer);
+        }
+
+        internal void NetworkShow(ulong fromId)
+        {
+            if (OwnerClientId == fromId) return;
+
+            if (NetworkObject.IsNetworkVisibleTo(fromId)) return;
+
+            NetworkObject.NetworkShow(fromId);
+        }
+
+        internal void NetworkHide(ulong fromId)
+        {
+            if (OwnerClientId == fromId) return;
+
+            if (!NetworkObject.IsNetworkVisibleTo(fromId)) return;
+
+            NetworkObject.NetworkHide(fromId);
         }
     }
 }

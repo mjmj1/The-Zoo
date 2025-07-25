@@ -1,9 +1,6 @@
 using System;
-using Characters;
 using Networks;
-using TMPro;
 using UI.PlayerList;
-using Unity.Netcode;
 using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,11 +22,11 @@ namespace UI
 
             var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged += OnSessionHostChanged;
-            
+
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
             gameReadyButton.onClick.AddListener(OnGameReadyButtonClick);
-            
+
             SwitchUI(session.IsHost);
         }
 
@@ -40,7 +37,7 @@ namespace UI
             if (session == null) return;
 
             session.SessionHostChanged -= OnSessionHostChanged;
-            
+
             quitButton.onClick.RemoveListener(OnQuitButtonClick);
             gameStartButton.onClick.RemoveListener(OnGameStartButtonClick);
             gameReadyButton.onClick.RemoveListener(OnGameReadyButtonClick);
@@ -51,9 +48,18 @@ namespace UI
             SwitchUI(ConnectionManager.Instance.CurrentSession.IsHost);
         }
 
-        private void OnQuitButtonClick()
+        private async void OnQuitButtonClick()
         {
-            ConnectionManager.Instance.DisconnectSessionAsync();
+            try
+            {
+                var task = ConnectionManager.Instance.DisconnectSessionAsync();
+
+                await task;
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
 
         private void OnGameStartButtonClick()

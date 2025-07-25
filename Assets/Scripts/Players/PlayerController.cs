@@ -1,8 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections;
-using Characters;
+using System.Linq;
 using EventHandler;
-using GamePlay;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -10,7 +9,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
-using Random = UnityEngine.Random;
 
 namespace Players
 {
@@ -67,7 +65,7 @@ namespace Players
     }
 #endif
 
-    public class PlayerController : NetworkTransform, ICameraTarget
+    public class PlayerController : NetworkTransform
     {
 #if UNITY_EDITOR
         public bool controllerPropertiesVisible;
@@ -78,25 +76,27 @@ namespace Players
         public float runSpeed = 7f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
-        public float minPitch = -10f;
-        public float maxPitch = 20f;
-
-        internal bool CanMove = true;
-        private bool isSpin;
-        private float slowdownRate = 1f;
 
         private PlayerNetworkAnimator animator;
+
+        internal bool CanMove = true;
         private PlayerEntity entity;
         private InputHandler input;
+        private bool isAround;
+        private bool isSpin;
 
         private float moveSpeed;
         private Quaternion previousRotation;
 
-        private CharacterController cc;
-
         private Rigidbody rb;
 
-        public float Pitch { get; set; }
+        private PlayerReadyChecker readyChecker;
+        private float slowdownRate = 1f;
+
+        public void Reset()
+        {
+            CanMove = true;
+        }
 
         private void Start()
         {
@@ -109,7 +109,6 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            Look(null);
             AlignToSurface();
         }
 
@@ -120,11 +119,19 @@ namespace Players
             HandleMovement();
         }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(transform.position, 0.05f);
+        }
+
         public override void OnNetworkSpawn()
         {
             InitializeComponent();
             InitializeFollowCamera();
             Subscribe();
+
+            InitializeGravity();
 
             base.OnNetworkSpawn();
         }
@@ -139,25 +146,27 @@ namespace Players
 
         private bool IsGrounded()
         {
-            return Physics.CheckSphere(transform.position, 0.05f, groundMask);;
-        }
-
-        void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, 0.05f);
+            return Physics.CheckSphere(transform.position, 0.05f, groundMask);
         }
 
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
-            if (OwnerClientId != clientId) return;
+            if (!IsOwner) return;
 
-            InitializeFollowCamera();
             InitializeGravity();
 
-            if (sceneName != "Lobby") return;
+            if (!sceneName.Equals("Lobby")) return;
 
-            var pos = Util.GetCirclePositions(Vector3.zero, Random.Range(0, 8), 5f, 8);
+            Reset();
+            entity.Reset();
+            readyChecker.Reset();
+
+            var clients = NetworkManager.ConnectedClientsIds.ToList();
+
+            MyLogger.Print(this, $"{clients.Count}");
+            MyLogger.Print(this, $"{clients.IndexOf(clientId)}");
+
+            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 5f, 8);
 
             transform.SetPositionAndRotation(pos,
                 Quaternion.LookRotation((Vector3.zero - pos).normalized));
@@ -169,8 +178,10 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            //input.InputActions.Player.Look.performed += Look;
-            //input.InputActions.Player.Look.canceled += Look;
+            input.InputActions.Player.Look.performed += Look;
+            input.InputActions.Player.Look.canceled += Look;
+            input.InputActions.Player.RightClick.performed += Rmb;
+            input.InputActions.Player.RightClick.canceled += Rmb;
             input.InputActions.Player.Move.performed += Movement;
             input.InputActions.Player.Move.canceled += Movement;
             input.InputActions.Player.Run.performed += Run;
@@ -189,8 +200,10 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            //input.InputActions.Player.Look.performed -= Look;
-            //input.InputActions.Player.Look.canceled -= Look;
+            input.InputActions.Player.Look.performed -= Look;
+            input.InputActions.Player.Look.canceled -= Look;
+            input.InputActions.Player.RightClick.performed -= Rmb;
+            input.InputActions.Player.RightClick.canceled -= Rmb;
             input.InputActions.Player.Move.performed -= Movement;
             input.InputActions.Player.Move.canceled -= Movement;
             input.InputActions.Player.Run.performed -= Run;
@@ -201,6 +214,11 @@ namespace Players
             input.InputActions.Player.Attack.performed -= Attack;
 
             entity.health.OnValueChanged -= Hit;
+        }
+
+        private void Rmb(InputAction.CallbackContext ctx)
+        {
+            isAround = ctx.performed;
         }
 
         private void InitializeComponent()
@@ -214,15 +232,16 @@ namespace Players
             input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
             animator = GetComponent<PlayerNetworkAnimator>();
+            readyChecker = GetComponent<PlayerReadyChecker>();
         }
 
         private void InitializeFollowCamera()
         {
             if (!IsOwner) return;
 
-            CameraManager.Instance.Find();
-
             CameraManager.Instance.SetFollowTarget(transform);
+            CameraManager.Instance.LookMove();
+            CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
         }
 
         private void InitializeGravity()
@@ -231,7 +250,7 @@ namespace Players
 
             rb.useGravity = !PlanetGravity.Instance;
 
-            PlanetGravity.Instance.Subscribe(rb);
+            PlanetGravity.Instance?.Subscribe(rb);
         }
 
         private void HandleMovement()
@@ -245,7 +264,8 @@ namespace Players
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+            rb.MovePosition(rb.position +
+                            moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
         }
 
         private void AlignToSurface()
@@ -260,34 +280,43 @@ namespace Players
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
-        private void Look(InputAction.CallbackContext? ctx)
+        private void Look(InputAction.CallbackContext ctx)
         {
-            // if (rb.linearVelocity.magnitude < 0.001f) return;
+            if (!CanMove) return;
 
-            /*
-            var lookInput = input.LookInput;
+            if (isAround)
+            {
+                CameraManager.Instance.LookAround();
+            }
+            else
+            {
+                CameraManager.Instance.LookMove();
 
-            transform.Rotate(Vector3.up * (lookInput.x * mouseSensitivity));
-            */
+                transform.Rotate(Vector3.up * (input.LookInput.x * mouseSensitivity));
 
-            /*var euler = transform.rotation.eulerAngles;
-            euler.y = CameraManager.Instance.GetEulerAnglesY();
-            transform.rotation = Quaternion.Euler(euler);*/
+                CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
+            }
+        }
 
-            var rotation = transform.localRotation;
-            rotation.y = CameraManager.Instance.follow.transform.localRotation.y;
-            transform.localRotation = rotation;
+        private void AlignForward()
+        {
+            var forward = Vector3.Cross(
+                CameraManager.Instance.Orbit.transform.right,
+                transform.up).normalized;
 
-            /*var camForward = Vector3.ProjectOnPlane(CameraManager.Instance.follow.transform.forward, transform.up).normalized;
+            transform.rotation = Quaternion.LookRotation(forward, transform.up);
 
-            var targetRotation = Quaternion.LookRotation(camForward, transform.up);
-
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation, targetRotation, Time.deltaTime);*/
+            CameraManager.Instance.LookMove();
         }
 
         private void Movement(InputAction.CallbackContext ctx)
         {
+            if (ctx.canceled)
+            {
+                CameraManager.Instance.Orbit.HorizontalAxis.Value = 0;
+                CameraManager.Instance.LookAround();
+            }
+
             animator.OnMove(ctx);
         }
 
@@ -317,6 +346,8 @@ namespace Players
             if (!IsGrounded()) return;
             if (isSpin) return;
 
+            AlignForward();
+
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
@@ -336,23 +367,20 @@ namespace Players
             StartCoroutine(Slowdown());
 
             if (newValue > 0) animator.OnHit();
-            else Death();
-        }
-
-        private void Death()
-        {
-            StartCoroutine(DeathCoroutine());
-
-            animator.OnDeath();
+            else StartCoroutine(DeathCoroutine());
         }
 
         private IEnumerator DeathCoroutine()
         {
-            yield return new WaitForSeconds(1f);
+            animator.OnDeath();
 
-            NetworkObject.Despawn();
+            yield return new WaitForSeconds(3f);
 
-            PlayManager.Instance.ChangeObserverMode(transform);
+            entity.isDead.Value = true;
+
+            CanMove = true;
+
+            animator.OnRebind();
         }
 
         private IEnumerator Slowdown()

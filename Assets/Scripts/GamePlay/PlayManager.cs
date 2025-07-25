@@ -1,10 +1,6 @@
 using System.Collections;
-using System.Linq;
-using Characters;
-using Characters.Roles;
 using Players;
 using Unity.Netcode;
-using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using Utils;
 using Characters.Roles;
@@ -13,58 +9,45 @@ namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
-        [SerializeField] private GameObject observerPrefab;
         [SerializeField] private float spawnRadius = 7.5f;
-
-        public static PlayManager Instance { get; private set; }
 
         public NetworkVariable<int> currentTime = new();
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
-        private NetworkList<ulong> hiderIds = new();
-        private NetworkList<ulong> seekerIds = new();
+        internal ObserverManager ObserverManager;
+        internal RoleManager RoleManager;
 
         private bool isGameStarted;
 
+        public static PlayManager Instance { get; private set; }
+
         public void Awake()
         {
-            if (Instance == null) Instance = this;
+            if (Instance == null)
+            {
+                Instance = this;
+
+                ObserverManager = GetComponent<ObserverManager>();
+                RoleManager = GetComponent<RoleManager>();
+            }
             else Destroy(gameObject);
         }
 
-        public override void OnNetworkSpawn()
+        public override void OnDestroy()
         {
-            base.OnNetworkSpawn();
+            MyLogger.Print(this, "OnDestroy");
+            OnGameEnd();
 
-            hiderIds.OnListChanged += OnHiderListChanged;
-            seekerIds.OnListChanged += OnSeekerListChanged;
+            base.OnDestroy();
+        }
+
+        protected override void OnInSceneObjectsSpawned()
+        {
+            base.OnInSceneObjectsSpawned();
 
             if (!IsSessionOwner) return;
 
             OnGameStart();
-        }
-
-        public override void OnNetworkDespawn()
-        {
-            base.OnNetworkDespawn();
-
-            OnGameEnd();
-        }
-
-        private void OnHiderListChanged(NetworkListEvent<ulong> changeEvent)
-        {
-            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
-
-            SetRoleRpc(PlayerEntity.Role.Hider,
-                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
-        }
-
-        private void OnSeekerListChanged(NetworkListEvent<ulong> changeEvent)
-        {
-            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
-
-            SetRoleRpc(PlayerEntity.Role.Seeker,
-                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
         }
 
         private void OnGameStart()
@@ -77,61 +60,14 @@ namespace GamePlay
 
             MoveRandomPositionRpc();
 
-            AssignRole();
+            RoleManager.AssignRole();
         }
 
         private void OnGameEnd()
         {
             isGameStarted = false;
 
-            UnassignRole();
-        }
-
-        private void AssignRole()
-        {
-            var clients = NetworkManager.Singleton.ConnectedClientsList;
-            var seeker = Random.Range(0, clients.Count);
-
-            for (var i = 0; i < clients.Count; i++)
-            {
-                if (seeker == i)
-                {
-                    seekerIds.Add(clients[i].ClientId);
-                }
-                else
-                {
-                    hiderIds.Add(clients[i].ClientId);
-                }
-            }
-        }
-
-        private void UnassignRole()
-        {
-            var clients = NetworkManager.Singleton.ConnectedClientsList;
-
-            foreach (var client in clients)
-            {
-                client.PlayerObject.GetComponent<PlayerEntity>().role.Value
-                    = (PlayerEntity.Role.None);
-            }
-        }
-
-        [Rpc(SendTo.SpecifiedInParams)]
-        private void SetRoleRpc(PlayerEntity.Role role, RpcParams rpcParams)
-        {
-            var target = NetworkManager.Singleton
-                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
-
-            target.role.Value = role;
-        }
-
-        [Rpc(SendTo.SpecifiedInParams)]
-        public void HitRpc(RpcParams rpcParams)
-        {
-            var target = NetworkManager.Singleton
-                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
-
-            target.Damaged();
+            RoleManager.UnassignRole();
         }
 
         [Rpc(SendTo.Everyone)]
@@ -145,13 +81,6 @@ namespace GamePlay
             obj.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
 
             print($"Client {clientId}: Position = {randomPos}");
-        }
-
-        internal void ChangeObserverMode(Transform player)
-        {
-            print("Change Observer Mode");
-
-            var observer = Instantiate(observerPrefab, player.position, player.rotation);
         }
 
         private IEnumerator CountTime()

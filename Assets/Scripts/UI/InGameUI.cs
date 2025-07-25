@@ -34,7 +34,7 @@ namespace UI
 
         private void OnGameEndButtonClicked()
         {
-            GameManager.Instance.LoadSceneRpc("Lobby");
+            GameManager.Instance.GameEndRpc();
         }
 
         private void Update()

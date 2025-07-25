@@ -1,43 +1,74 @@
-using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraManager : MonoBehaviour
 {
-    public CinemachineVirtualCameraBase follow;
-    public CinemachineOrbitalFollow orbit;
+    [SerializeField] internal GameObject cameraPrefab;
 
+    private readonly Vector2 range = new(-180, 180);
+
+    internal CinemachineOrbitalFollow Orbit;
+    
     public static CameraManager Instance { get; private set; }
 
     public void Awake()
     {
-        if(Instance == null) Instance = this;
-        else Destroy(gameObject);
-
-        Find();
-        follow.enabled = false;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    public void Find()
+    public void Start()
     {
-        follow = FindFirstObjectByType<CinemachineVirtualCameraBase>();
-        orbit = follow.GetComponent<CinemachineOrbitalFollow>();
-        follow.enabled = true;
+        Orbit = Instantiate(cameraPrefab).GetComponent<CinemachineOrbitalFollow>();
+
+        DontDestroyOnLoad(Orbit.gameObject);
+
+        EnableCamera(false);
     }
 
     public void EnableCamera(bool enable)
     {
-        follow.enabled = enable;
+        Orbit.gameObject.SetActive(enable);
     }
 
     public void SetFollowTarget(Transform target)
     {
-        follow.Follow = target;
-        follow.LookAt = target;
+        Orbit.VirtualCamera.Follow = target;
+        Orbit.VirtualCamera.LookAt = target;
     }
 
-    public float GetEulerAnglesY()
+    public void LookAround()
     {
-        return follow.transform.rotation.y;
+        Orbit.HorizontalAxis.Range = range;
+    }
+
+    public void LookMove()
+    {
+        Orbit.HorizontalAxis.Range = Vector2.zero;
+    }
+
+    public void SetEulerAngles(float angle)
+    {
+        Orbit.HorizontalAxis.Value = angle;
+    }
+
+    public float GetY()
+    {
+        return Orbit.transform.rotation.eulerAngles.y;
+    }
+
+    public void LookMoveSmooth(float targetYaw)
+    {
+        var current = Orbit.HorizontalAxis.Value;
+
+        var smooth = Mathf.MoveTowardsAngle(current, targetYaw, 100 * Time.deltaTime);
+        Orbit.HorizontalAxis.Value = smooth;
     }
 }
