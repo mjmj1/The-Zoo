@@ -106,7 +106,7 @@ namespace GamePlay
         private void HiderWin()
         {
             OnGameEnd();
-            
+
             if (!isGameStarted) return;
 
             gameResult.SetTitle("Hider Win !");
