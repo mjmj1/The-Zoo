@@ -1,11 +1,9 @@
 using EventHandler;
 using GamePlay;
-using Players;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-namespace Characters.Roles
+namespace Players.Roles
 {
     public class SeekerRole : NetworkBehaviour
     {
@@ -46,7 +44,7 @@ namespace Characters.Roles
             Gizmos.DrawWireSphere(attackOrigin.position + (transform.forward * attackRange), attackRadius);
         }
 
-        public void OnPlayerAttack()
+        private void OnPlayerAttack()
         {
             print($"client-{entity.clientId.Value} Seeker Attack");
 
@@ -57,7 +55,16 @@ namespace Characters.Roles
 
             print($"target-{target.OwnerClientId} Seeker Hit");
 
-            PlayManager.Instance.HitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
+            OnPlayerHitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void OnPlayerHitRpc(RpcParams rpcParams)
+        {
+            var target = NetworkManager.Singleton
+                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
+
+            target.Damaged();
         }
     }
 }

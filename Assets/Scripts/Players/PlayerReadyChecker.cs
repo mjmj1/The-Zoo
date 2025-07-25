@@ -36,7 +36,7 @@ namespace Players
 
         public void Reset()
         {
-            isReady.Value = false;
+            isReady.Value = IsSessionOwner;
         }
     }
 }

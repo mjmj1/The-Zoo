@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 3155749932161914919}
   - component: {fileID: 2736765177486910086}
   - component: {fileID: -553120260605898663}
+  - component: {fileID: 6675916858937408846}
   - component: {fileID: 3755982930554864778}
   - component: {fileID: 5100048763366486770}
   - component: {fileID: 6934204017717181489}
@@ -150,6 +151,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   playerNameText: {fileID: 2518985482572109005}
+  clientId:
+    m_InternalValue: 0
   playerName:
     m_InternalValue:
       utf8LengthInBytes: 0
@@ -185,12 +188,26 @@ MonoBehaviour:
         byte0027: 0
         byte0028: 0
         byte0029: 0
-  health:
-    m_InternalValue: 3
-  clientId:
-    m_InternalValue: 0
   role:
     m_InternalValue: 0
+  health:
+    m_InternalValue: 3
+  isDead:
+    m_InternalValue: 0
+--- !u!114 &6675916858937408846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978094491091307183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7178414fa0f245338ecd1f353644dbbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  ghostShader: {fileID: 4800000, guid: 8282f0c5abc468e4bafab4d0228290c5, type: 3}
 --- !u!136 &3755982930554864778
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -233,7 +250,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 513
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1

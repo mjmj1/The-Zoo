@@ -1,8 +1,6 @@
-using Players;
 using Unity.Netcode;
-using UnityEngine;
 
-namespace Characters.Roles
+namespace Players.Roles
 {
     public class HiderRole : NetworkBehaviour
     {

@@ -846,6 +846,8 @@ GameObject:
   - component: {fileID: 1316204684}
   - component: {fileID: 1316204685}
   - component: {fileID: 1316204686}
+  - component: {fileID: 1316204687}
+  - component: {fileID: 1316204688}
   m_Layer: 0
   m_Name: PlayManager
   m_TagString: Untagged
@@ -920,10 +922,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  observerPrefab: {fileID: 8973117195894818204, guid: 3d794a758d110b0489d8263bd1fa2a02, type: 3}
   spawnRadius: 7.5
   currentTime:
     m_InternalValue: 0
+--- !u!114 &1316204687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316204680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36e79a5e9d984c00ab9e75449c9a5101, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+--- !u!114 &1316204688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316204680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a5aa8b1f9a1404c9d2448fbb04aef79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
 --- !u!1 &1439727997
 GameObject:
   m_ObjectHideFlags: 0
