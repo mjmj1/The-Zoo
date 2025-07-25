@@ -20,9 +20,9 @@ namespace Interactions
 
         private void Start()
         {
-            treeCountText.text = " : " + TargetCount.ToString();
+            //treeCountText.text = " : " + TargetCount.ToString();
 
-            playerCountText.text = " : " + GameManager.Instance.PlayerCount.ToString();
+            //playerCountText.text = " : " + GameManager.Instance.PlayerCount.ToString();
 
             SpawnInteractionObjects(InteractionsNumber);
         }

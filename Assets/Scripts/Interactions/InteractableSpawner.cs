@@ -1,5 +1,4 @@
 using UnityEngine;
-using Characters.Roles;
 
 namespace Interactions
 {

@@ -20,6 +20,7 @@ namespace Players
         }
 
         [SerializeField] private TMP_Text playerNameText;
+        [SerializeField] private ParticleSystem hitEffectPrefab;
 
         public NetworkVariable<ulong> clientId = new();
         public NetworkVariable<FixedString32Bytes> playerName = new();
@@ -103,6 +104,7 @@ namespace Players
         public void Damaged()
         {
             health.Value -= 1;
+            hitEffectPrefab.Play();
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)

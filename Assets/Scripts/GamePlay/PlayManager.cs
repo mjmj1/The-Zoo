@@ -3,7 +3,6 @@ using Players;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
-using Characters.Roles;
 
 namespace GamePlay
 {
