@@ -1,13 +1,18 @@
 using Players;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
 
 namespace GamePlay
 {
     public class RoleManager : NetworkBehaviour
     {
-        public NetworkList<ulong> hiderIds = new();
-        public NetworkList<ulong> seekerIds = new();
+        public NetworkList<ulong> hiderIds = new(
+            writePerm: NetworkVariableWritePermission.Owner,
+            readPerm: NetworkVariableReadPermission.Everyone);
+        public NetworkList<ulong> seekerIds = new(
+            writePerm: NetworkVariableWritePermission.Owner,
+            readPerm: NetworkVariableReadPermission.Everyone);
 
         public override void OnNetworkSpawn()
         {
@@ -43,14 +48,24 @@ namespace GamePlay
 
         internal void AssignRole()
         {
+            MyLogger.Print(this, $"assigning role");
+
             var clients = NetworkManager.Singleton.ConnectedClientsList;
             var seeker = Random.Range(0, clients.Count);
 
             for (var i = 0; i < clients.Count; i++)
+            {
                 if (seeker == i)
+                {
+                    if (seekerIds.Contains(clients[i].ClientId)) continue;
                     seekerIds.Add(clients[i].ClientId);
+                }
                 else
+                {
+                    if (hiderIds.Contains(clients[i].ClientId)) continue;
                     hiderIds.Add(clients[i].ClientId);
+                }
+            }
         }
 
         internal void UnassignRole()

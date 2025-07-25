@@ -877,7 +877,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -1146,6 +1146,8 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   gameResult: {fileID: 1094264009}
   spawnRadius: 7.5
+  isGameStarted:
+    m_InternalValue: 0
   currentTime:
     m_InternalValue: 0
 --- !u!114 &1316204687

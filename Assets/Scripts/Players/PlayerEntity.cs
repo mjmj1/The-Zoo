@@ -80,23 +80,28 @@ namespace Players
             CameraManager.Instance.EnableCamera(false);
         }
 
-        private void OnNetworkSceneLoadComplete(ulong _, string sceneName, LoadSceneMode mode)
+        private void OnNetworkSceneLoadComplete(ulong id, string sceneName, LoadSceneMode mode)
         {
-            if (!IsOwner) return;
-
-            if (sceneName.Equals("Lobby"))
+            if (!NetworkManager.Singleton.LocalClientId.Equals(id)) return;
+            MyLogger.Print(this, $"{id}");
+            switch (sceneName)
             {
-                MyLogger.Print(this, "옵저버 리스트 구독 해체");
-                if (!PlayManager.Instance) return;
+                case "Lobby":
+                {
+                    MyLogger.Print(this, "옵저버 리스트 구독 해체");
+                    if (!PlayManager.Instance) return;
 
-                PlayManager.Instance.ObserverManager.observerIds.OnListChanged -= OnObserverListChanged;
-            }
-            else if (sceneName.Equals("InGame"))
-            {
-                MyLogger.Print(this, "옵저버 리스트 구독");
-                if (!PlayManager.Instance) return;
+                    PlayManager.Instance.ObserverManager.observerIds.OnListChanged -= OnObserverListChanged;
+                    break;
+                }
+                case "InGame":
+                {
+                    MyLogger.Print(this, "옵저버 리스트 구독");
+                    if (!PlayManager.Instance) return;
 
-                PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+                    PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+                    break;
+                }
             }
         }
 

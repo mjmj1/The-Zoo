@@ -163,9 +163,6 @@ namespace Players
 
             var clients = NetworkManager.ConnectedClientsIds.ToList();
 
-            MyLogger.Print(this, $"{clients.Count}");
-            MyLogger.Print(this, $"{clients.IndexOf(clientId)}");
-
             var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 5f, 8);
 
             transform.SetPositionAndRotation(pos,
