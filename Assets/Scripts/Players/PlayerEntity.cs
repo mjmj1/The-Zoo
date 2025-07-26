@@ -74,6 +74,9 @@ namespace Players
             clientId.OnValueChanged -= OnClientIdChanged;
             role.OnValueChanged -= OnRoleChanged;
             isDead.OnValueChanged -= OnIsDeadChanged;
+
+            if (!IsOwner) return;
+
             health.OnValueChanged -= OnHealthChanged;
             NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
 
@@ -108,6 +111,17 @@ namespace Players
         public void Damaged()
         {
             health.Value -= 1;
+        }
+
+        internal void AlignForward()
+        {
+            var forward = Vector3.Cross(
+                CameraManager.Instance.Orbit.transform.right,
+                transform.up).normalized;
+
+            transform.rotation = Quaternion.LookRotation(forward, transform.up);
+
+            CameraManager.Instance.LookMove();
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)
@@ -181,6 +195,7 @@ namespace Players
                 }
 
             if (!isDead.Value) return;
+
             foreach (var observer in PlayManager.Instance.ObserverManager.observerIds)
                 NetworkShow(observer);
         }

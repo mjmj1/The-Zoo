@@ -7,12 +7,8 @@ namespace GamePlay
 {
     public class RoleManager : NetworkBehaviour
     {
-        public NetworkList<ulong> hiderIds = new(
-            writePerm: NetworkVariableWritePermission.Owner,
-            readPerm: NetworkVariableReadPermission.Everyone);
-        public NetworkList<ulong> seekerIds = new(
-            writePerm: NetworkVariableWritePermission.Owner,
-            readPerm: NetworkVariableReadPermission.Everyone);
+        public NetworkList<PlayerData> hiderIds = new();
+        public NetworkList<PlayerData> seekerIds = new();
 
         public override void OnNetworkSpawn()
         {
@@ -30,41 +26,40 @@ namespace GamePlay
             seekerIds.OnListChanged -= OnSeekerListChanged;
         }
 
-        private void OnHiderListChanged(NetworkListEvent<ulong> changeEvent)
+        private void OnHiderListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
-            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+            if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Add) return;
 
             SetRoleRpc(PlayerEntity.Role.Hider,
-                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+                RpcTarget.Single(changeEvent.Value.ClientId, RpcTargetUse.Temp));
         }
 
-        private void OnSeekerListChanged(NetworkListEvent<ulong> changeEvent)
+        private void OnSeekerListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
-            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+            if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Add) return;
 
             SetRoleRpc(PlayerEntity.Role.Seeker,
-                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+                RpcTarget.Single(changeEvent.Value.ClientId, RpcTargetUse.Temp));
         }
 
         internal void AssignRole()
         {
-            MyLogger.Print(this, $"assigning role");
+            MyLogger.Print(this, "assigning role");
 
             var clients = NetworkManager.Singleton.ConnectedClientsList;
             var seeker = Random.Range(0, clients.Count);
 
             for (var i = 0; i < clients.Count; i++)
             {
+                var playerName = clients[i].PlayerObject
+                    .GetComponent<PlayerEntity>().playerName.Value;
+
+                var data = new PlayerData(clients[i].ClientId, playerName);
+
                 if (seeker == i)
-                {
-                    if (seekerIds.Contains(clients[i].ClientId)) continue;
-                    seekerIds.Add(clients[i].ClientId);
-                }
+                    seekerIds.Add(data);
                 else
-                {
-                    if (hiderIds.Contains(clients[i].ClientId)) continue;
-                    hiderIds.Add(clients[i].ClientId);
-                }
+                    hiderIds.Add(data);
             }
         }
 

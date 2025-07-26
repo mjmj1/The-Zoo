@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using GamePlay;
-using Players;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils;
 
 namespace UI.GameResult
 {
@@ -33,6 +30,11 @@ namespace UI.GameResult
             returnLobbyButton.onClick.RemoveListener(OnReturnLobbyButtonClicked);
         }
 
+        internal void SetButtonActive(bool isHost)
+        {
+            returnLobbyButton.interactable = isHost;
+        }
+
         private void ClearResults()
         {
             for (var i = playersParent.childCount - 1; i >= 0; i--)
@@ -41,56 +43,37 @@ namespace UI.GameResult
 
         public void OnGameResult(bool isSeekerWin)
         {
-            MyLogger.Print(this, "On Game Result");
-
             ClearResults();
 
             titleText.text = isSeekerWin
                 ? "Seeker Win !"
                 : "Hider Win !";
 
-            MyLogger.Print(this,
-                $"Seeker Count: {PlayManager.Instance.RoleManager.seekerIds.Count}");
-            MyLogger.Print(this,
-                $"Hider Count: {PlayManager.Instance.RoleManager.seekerIds.Count}");
+            var uniqueIds = new HashSet<ulong>();
 
             if (isSeekerWin)
-            {
-                var uniqueIds = new HashSet<ulong>();
                 foreach (var seeker in PlayManager.Instance.RoleManager.seekerIds)
                 {
-                    if (!uniqueIds.Add(seeker)) continue;
+                    if (!uniqueIds.Add(seeker.ClientId)) continue;
 
                     var item = Instantiate(seekerView, playersParent);
 
-                    var client = NetworkManager.Singleton.ConnectedClients[seeker];
-                    var playerName = client
-                        .PlayerObject.GetComponent<PlayerEntity>()
-                        .playerName.Value.Value;
-
-                    item.SetPlayerName(playerName);
+                    item.SetPlayerName(seeker.Name.Value);
                 }
-            }
             else
-            {
-                var uniqueIds = new HashSet<ulong>();
                 foreach (var hider in PlayManager.Instance.RoleManager.hiderIds)
                 {
-                    if (!uniqueIds.Add(hider)) continue;
+                    if (!uniqueIds.Add(hider.ClientId)) continue;
 
-                    var prefab = PlayManager.Instance.ObserverManager.observerIds.Contains(hider)
-                        ? hiderDeath
-                        : hiderAlive;
+                    var prefab =
+                        PlayManager.Instance.ObserverManager.observerIds.Contains(hider.ClientId)
+                            ? hiderDeath
+                            : hiderAlive;
 
                     var item = Instantiate(prefab, playersParent);
-                    var client = NetworkManager.Singleton.ConnectedClients[hider];
-                    var playerName = client
-                        .PlayerObject.GetComponent<PlayerEntity>()
-                        .playerName.Value.Value;
 
-                    item.SetPlayerName(playerName);
+                    item.SetPlayerName(hider.Name.Value);
                 }
-            }
         }
 
         private void OnReturnLobbyButtonClicked()

@@ -22,12 +22,16 @@ namespace UI
 
             var session = ConnectionManager.Instance.CurrentSession;
             session.SessionHostChanged += OnSessionHostChanged;
+            session.PlayerJoined += OnPlayerChanged;
+            session.PlayerHasLeft += OnPlayerChanged;
 
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
             gameReadyButton.onClick.AddListener(OnGameReadyButtonClick);
 
             SwitchUI(session.IsHost);
+
+            gameStartButton.interactable = session.PlayerCount > 1;
         }
 
         private void OnDisable()
@@ -41,6 +45,13 @@ namespace UI
             quitButton.onClick.RemoveListener(OnQuitButtonClick);
             gameStartButton.onClick.RemoveListener(OnGameStartButtonClick);
             gameReadyButton.onClick.RemoveListener(OnGameReadyButtonClick);
+        }
+
+        private void OnPlayerChanged(string obj)
+        {
+            var session = ConnectionManager.Instance.CurrentSession;
+            if (session == null) return;
+            gameStartButton.interactable = session.PlayerCount > 1;
         }
 
         private void OnSessionHostChanged(string obj)

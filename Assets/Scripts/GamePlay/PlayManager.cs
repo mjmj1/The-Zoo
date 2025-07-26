@@ -1,5 +1,4 @@
 using System.Collections;
-using Players;
 using UI.GameResult;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,7 +18,6 @@ namespace GamePlay
         internal ObserverManager ObserverManager;
         internal RoleManager RoleManager;
 
-
         public static PlayManager Instance { get; private set; }
 
         public void Awake()
@@ -35,18 +33,18 @@ namespace GamePlay
 
             if (!IsOwner) return;
 
-            currentTime.OnValueChanged += OnValueChanged;
+            currentTime.OnValueChanged += OnHiderWinChecked;
             isGameStarted.OnValueChanged += OnGameStartedValueChanged;
-            ObserverManager.observerIds.OnListChanged += OnListChanged;
+            ObserverManager.observerIds.OnListChanged += OnSeekerWinChecked;
         }
 
         public override void OnNetworkDespawn()
         {
             if (!IsOwner) return;
 
-            currentTime.OnValueChanged -= OnValueChanged;
+            currentTime.OnValueChanged -= OnHiderWinChecked;
             isGameStarted.OnValueChanged -= OnGameStartedValueChanged;
-            ObserverManager.observerIds.OnListChanged -= OnListChanged;
+            ObserverManager.observerIds.OnListChanged -= OnSeekerWinChecked;
         }
 
         private void OnGameStartedValueChanged(bool previousValue, bool newValue)
@@ -67,20 +65,26 @@ namespace GamePlay
             }
         }
 
-        private void OnValueChanged(int previousValue, int newValue)
+        private void OnHiderWinChecked(int previousValue, int newValue)
         {
-            if (newValue >= 20)
-            {
-                HiderWin();
-            }
+            if (!isGameStarted.Value) return;
+
+            if (newValue < 300) return;
+
+            isGameStarted.Value = false;
+
+            ShowResultRpc(false);
         }
 
-        private void OnListChanged(NetworkListEvent<ulong> changeEvent)
+        private void OnSeekerWinChecked(NetworkListEvent<ulong> changeEvent)
         {
-            if (RoleManager.hiderIds.Count <= ObserverManager.observerIds.Count)
-            {
-                SeekerWin();
-            }
+            if (!isGameStarted.Value) return;
+
+            if (RoleManager.hiderIds.Count > ObserverManager.observerIds.Count) return;
+
+            isGameStarted.Value = false;
+
+            ShowResultRpc(true);
         }
 
         protected override void OnInSceneObjectsSpawned()
@@ -92,28 +96,11 @@ namespace GamePlay
             isGameStarted.Value = true;
         }
 
-        private void SeekerWin()
-        {
-            if (!isGameStarted.Value) return;
-
-            isGameStarted.Value = false;
-
-            ShowResultRpc(true);
-        }
-
-        private void HiderWin()
-        {
-            if (!isGameStarted.Value) return;
-
-            isGameStarted.Value = false;
-
-            ShowResultRpc(false);
-        }
-
         [Rpc(SendTo.Everyone)]
         private void ShowResultRpc(bool isSeekerWin)
         {
             gameResult.OnGameResult(isSeekerWin);
+            gameResult.SetButtonActive(IsSessionOwner);
             gameResult.gameObject.SetActive(true);
         }
 

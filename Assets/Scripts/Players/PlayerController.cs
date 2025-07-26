@@ -295,17 +295,6 @@ namespace Players
             }
         }
 
-        private void AlignForward()
-        {
-            var forward = Vector3.Cross(
-                CameraManager.Instance.Orbit.transform.right,
-                transform.up).normalized;
-
-            transform.rotation = Quaternion.LookRotation(forward, transform.up);
-
-            CameraManager.Instance.LookMove();
-        }
-
         private void Movement(InputAction.CallbackContext ctx)
         {
             if (ctx.canceled)
@@ -343,7 +332,7 @@ namespace Players
             if (!IsGrounded()) return;
             if (isSpin) return;
 
-            AlignForward();
+            entity.AlignForward();
 
             GamePlayEventHandler.OnPlayerAttack();
 
