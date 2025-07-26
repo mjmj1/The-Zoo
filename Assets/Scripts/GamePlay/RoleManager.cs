@@ -1,13 +1,14 @@
 using Players;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
 
 namespace GamePlay
 {
     public class RoleManager : NetworkBehaviour
     {
-        public NetworkList<ulong> hiderIds = new();
-        public NetworkList<ulong> seekerIds = new();
+        public NetworkList<PlayerData> hiderIds = new();
+        public NetworkList<PlayerData> seekerIds = new();
 
         public override void OnNetworkSpawn()
         {
@@ -25,32 +26,41 @@ namespace GamePlay
             seekerIds.OnListChanged -= OnSeekerListChanged;
         }
 
-        private void OnHiderListChanged(NetworkListEvent<ulong> changeEvent)
+        private void OnHiderListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
-            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+            if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Add) return;
 
             SetRoleRpc(PlayerEntity.Role.Hider,
-                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+                RpcTarget.Single(changeEvent.Value.ClientId, RpcTargetUse.Temp));
         }
 
-        private void OnSeekerListChanged(NetworkListEvent<ulong> changeEvent)
+        private void OnSeekerListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
-            if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
+            if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Add) return;
 
             SetRoleRpc(PlayerEntity.Role.Seeker,
-                RpcTarget.Single(changeEvent.Value, RpcTargetUse.Temp));
+                RpcTarget.Single(changeEvent.Value.ClientId, RpcTargetUse.Temp));
         }
 
         internal void AssignRole()
         {
+            MyLogger.Print(this, "assigning role");
+
             var clients = NetworkManager.Singleton.ConnectedClientsList;
             var seeker = Random.Range(0, clients.Count);
 
             for (var i = 0; i < clients.Count; i++)
+            {
+                var playerName = clients[i].PlayerObject
+                    .GetComponent<PlayerEntity>().playerName.Value;
+
+                var data = new PlayerData(clients[i].ClientId, playerName);
+
                 if (seeker == i)
-                    seekerIds.Add(clients[i].ClientId);
+                    seekerIds.Add(data);
                 else
-                    hiderIds.Add(clients[i].ClientId);
+                    hiderIds.Add(data);
+            }
         }
 
         internal void UnassignRole()

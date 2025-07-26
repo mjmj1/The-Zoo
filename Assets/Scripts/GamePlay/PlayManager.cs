@@ -1,5 +1,5 @@
 using System.Collections;
-using Players;
+using UI.GameResult;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
@@ -8,65 +8,100 @@ namespace GamePlay
 {
     public class PlayManager : NetworkBehaviour
     {
+        [SerializeField] private GameResultUI gameResult;
         [SerializeField] private float spawnRadius = 7.5f;
 
+        public NetworkVariable<bool> isGameStarted;
         public NetworkVariable<int> currentTime = new();
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
         internal ObserverManager ObserverManager;
         internal RoleManager RoleManager;
 
-        private bool isGameStarted;
-
         public static PlayManager Instance { get; private set; }
 
         public void Awake()
         {
-            if (Instance == null)
-            {
-                Instance = this;
-
-                ObserverManager = GetComponent<ObserverManager>();
-                RoleManager = GetComponent<RoleManager>();
-            }
+            if (Instance == null) Instance = this;
             else Destroy(gameObject);
         }
 
-        public override void OnDestroy()
+        public override void OnNetworkSpawn()
         {
-            MyLogger.Print(this, "OnDestroy");
-            OnGameEnd();
+            ObserverManager = GetComponent<ObserverManager>();
+            RoleManager = GetComponent<RoleManager>();
 
-            base.OnDestroy();
+            if (!IsOwner) return;
+
+            currentTime.OnValueChanged += OnHiderWinChecked;
+            isGameStarted.OnValueChanged += OnGameStartedValueChanged;
+            ObserverManager.observerIds.OnListChanged += OnSeekerWinChecked;
+        }
+
+        public override void OnNetworkDespawn()
+        {
+            if (!IsOwner) return;
+
+            currentTime.OnValueChanged -= OnHiderWinChecked;
+            isGameStarted.OnValueChanged -= OnGameStartedValueChanged;
+            ObserverManager.observerIds.OnListChanged -= OnSeekerWinChecked;
+        }
+
+        private void OnGameStartedValueChanged(bool previousValue, bool newValue)
+        {
+            if (!IsSessionOwner) return;
+
+            if (newValue)
+            {
+                StartCoroutine(CountTime());
+
+                MoveRandomPositionRpc();
+
+                RoleManager.AssignRole();
+            }
+            else
+            {
+                RoleManager.UnassignRole();
+            }
+        }
+
+        private void OnHiderWinChecked(int previousValue, int newValue)
+        {
+            if (!isGameStarted.Value) return;
+
+            if (newValue < 300) return;
+
+            isGameStarted.Value = false;
+
+            ShowResultRpc(false);
+        }
+
+        private void OnSeekerWinChecked(NetworkListEvent<ulong> changeEvent)
+        {
+            if (!isGameStarted.Value) return;
+
+            if (RoleManager.hiderIds.Count > ObserverManager.observerIds.Count) return;
+
+            isGameStarted.Value = false;
+
+            ShowResultRpc(true);
         }
 
         protected override void OnInSceneObjectsSpawned()
         {
+            if (!IsSessionOwner) return;
+
             base.OnInSceneObjectsSpawned();
 
-            if (!IsSessionOwner) return;
-
-            OnGameStart();
+            isGameStarted.Value = true;
         }
 
-        private void OnGameStart()
+        [Rpc(SendTo.Everyone)]
+        private void ShowResultRpc(bool isSeekerWin)
         {
-            if (!IsSessionOwner) return;
-
-            isGameStarted = true;
-
-            StartCoroutine(CountTime());
-
-            MoveRandomPositionRpc();
-
-            RoleManager.AssignRole();
-        }
-
-        private void OnGameEnd()
-        {
-            isGameStarted = false;
-
-            RoleManager.UnassignRole();
+            gameResult.OnGameResult(isSeekerWin);
+            gameResult.SetButtonActive(IsSessionOwner);
+            gameResult.gameObject.SetActive(true);
         }
 
         [Rpc(SendTo.Everyone)]
@@ -78,15 +113,11 @@ namespace GamePlay
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
             obj.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
-
-            print($"Client {clientId}: Position = {randomPos}");
         }
 
         private IEnumerator CountTime()
         {
-            print("Count Time Started");
-
-            while (isGameStarted)
+            while (isGameStarted.Value)
             {
                 yield return waitDelay;
 

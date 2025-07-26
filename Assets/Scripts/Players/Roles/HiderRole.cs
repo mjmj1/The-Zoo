@@ -10,10 +10,5 @@ namespace Players.Roles
         {
             entity = GetComponent<PlayerEntity>();
         }
-
-        private void OnEnable()
-        {
-            print($"client-{entity.clientId.Value} Assigned Hider");
-        }
     }
 }
