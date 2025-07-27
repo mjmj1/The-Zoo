@@ -54,6 +54,8 @@ public class GameManager : NetworkBehaviour
     {
         print("Game EndRpc called");
 
+        NpcSpawner.Instance.DespawnNpcRpc();
+
         LoadSceneRpc("Lobby");
     }
 

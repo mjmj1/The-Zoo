@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71515ce028aaa4b4cb6bee13e96ef6f3, type: 3}
-  m_Name: The Zoo.mlagents.settings
+  m_Script: {fileID: 11500000, guid: 8dedd8068bb3463f97d10eaff64ed5f3, type: 3}
+  m_Name: MultiplayerWidgetsSettings
   m_EditorClassIdentifier: 
-  m_ConnectTrainer: 0
-  m_EditorPort: 5004
+  m_UseCustomServiceInitialization: 0
