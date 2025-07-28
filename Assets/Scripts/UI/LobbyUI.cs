@@ -75,7 +75,7 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
-            GameManager.Instance.PlayerCount = playerListView.transform.childCount;
+            GameManager.Instance.PlayerCount = playerListView.transform.childCount - 1; // µø±‚»≠ æ»µ 
             GameManager.Instance.GameStartRpc();
         }
 

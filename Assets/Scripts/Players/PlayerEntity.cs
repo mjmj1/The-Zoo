@@ -196,7 +196,6 @@ namespace Players
 
         private void OnHitChanged(bool previousValue, bool newValue)
         {
-            //HitEffect();
             print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
         }
 
