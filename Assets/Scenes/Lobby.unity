@@ -1639,7 +1639,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2387924095
+  GlobalObjectIdHash: 2540070967
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -1666,6 +1666,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   animalPrefabs:
+  - {fileID: 1564656635851268393, guid: b4fe5a14ac59dbd47a616a219e6982bd, type: 3}
   - {fileID: 2849502634785990281, guid: 0ae0cd14878445742932175c6c0cefe2, type: 3}
   - {fileID: 318294403579560259, guid: ab6080e5b1b89894b9be1bea78553986, type: 3}
   - {fileID: 2435742947954084045, guid: fd4164b74a7584849ac021e4091237be, type: 3}
@@ -1681,7 +1682,6 @@ MonoBehaviour:
   - {fileID: 8860913659795016502, guid: 645f06e8a64d1f3469579abd7ac977e0, type: 3}
   - {fileID: 3242550351487029896, guid: 6ddb4842fff4b244c9762d2a693a0eef, type: 3}
   - {fileID: 9171409375890668218, guid: 5e6404754f361a74698e5d05669e7624, type: 3}
-  - {fileID: 1564656635851268393, guid: b4fe5a14ac59dbd47a616a219e6982bd, type: 3}
   - {fileID: 7582840583034539398, guid: 24e84b314b1f75346870e33a9b884a4b, type: 3}
   - {fileID: 956477058676263179, guid: b8eb18e09b544ee4fbda195ee5b8d3fc, type: 3}
   - {fileID: 818637052757675923, guid: 7218288aae65cab40afe5a7055153c76, type: 3}

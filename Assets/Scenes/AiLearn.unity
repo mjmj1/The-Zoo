@@ -949,14 +949,14 @@ PrefabInstance:
     - target: {fileID: 7890667387728245030, guid: 8c8367f039197df4c9f008f4664db192, type: 3}
       propertyPath: m_Model
       value: 
-      objectReference: {fileID: 5022602860645237092, guid: c03aa44d77a4de54e8d449159755794d, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 7890667387728245030, guid: 8c8367f039197df4c9f008f4664db192, type: 3}
       propertyPath: m_BehaviorType
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7890667387728245030, guid: 8c8367f039197df4c9f008f4664db192, type: 3}
       propertyPath: m_InferenceDevice
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
