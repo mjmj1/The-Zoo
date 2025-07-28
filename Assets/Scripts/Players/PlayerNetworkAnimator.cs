@@ -19,6 +19,11 @@ namespace Players
             return false;
         }
 
+        internal void SetBool(int id, bool value)
+        {
+            Animator.SetBool(id, value);
+        }
+
         internal void OnSpin(InputAction.CallbackContext ctx)
         {
             Animator.SetBool(SpinHash, ctx.performed);

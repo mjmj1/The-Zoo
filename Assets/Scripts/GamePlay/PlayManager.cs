@@ -1,4 +1,5 @@
 using System.Collections;
+using Networks;
 using UI.GameResult;
 using Unity.Netcode;
 using UnityEngine;
@@ -53,6 +54,8 @@ namespace GamePlay
 
             if (newValue)
             {
+                NpcSpawner.Instance.SpawnNpcRpc(0, 5);
+
                 StartCoroutine(CountTime());
 
                 MoveRandomPositionRpc();

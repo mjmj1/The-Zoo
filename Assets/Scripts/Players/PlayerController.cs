@@ -65,7 +65,7 @@ namespace Players
     }
 #endif
 
-    public class PlayerController : NetworkTransform
+    public class PlayerController : NetworkTransform, IMoveState
     {
 #if UNITY_EDITOR
         public bool controllerPropertiesVisible;
@@ -79,7 +79,6 @@ namespace Players
 
         private PlayerNetworkAnimator animator;
 
-        internal bool CanMove = true;
         private PlayerEntity entity;
         private InputHandler input;
         private bool isAround;
@@ -92,6 +91,10 @@ namespace Players
 
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
+
+        public bool CanMove { get; set; } = true;
+        public bool IsJumping { get; set; }
+        public bool IsSpinning { get; set; }
 
         public void Reset()
         {
