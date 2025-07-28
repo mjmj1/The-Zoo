@@ -75,29 +75,37 @@ namespace Players
             clientId.OnValueChanged -= OnClientIdChanged;
             role.OnValueChanged -= OnRoleChanged;
             isDead.OnValueChanged -= OnIsDeadChanged;
+
+            if (!IsOwner) return;
+
             health.OnValueChanged -= OnHealthChanged;
             NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
 
             CameraManager.Instance.EnableCamera(false);
         }
 
-        private void OnNetworkSceneLoadComplete(ulong _, string sceneName, LoadSceneMode mode)
+        private void OnNetworkSceneLoadComplete(ulong id, string sceneName, LoadSceneMode mode)
         {
-            if (!IsOwner) return;
-
-            if (sceneName.Equals("Lobby"))
+            if (!NetworkManager.Singleton.LocalClientId.Equals(id)) return;
+            MyLogger.Print(this, $"{id}");
+            switch (sceneName)
             {
-                MyLogger.Print(this, "옵저버 리스트 구독 해체");
-                if (!PlayManager.Instance) return;
+                case "Lobby":
+                {
+                    MyLogger.Print(this, "옵저버 리스트 구독 해체");
+                    if (!PlayManager.Instance) return;
 
-                PlayManager.Instance.ObserverManager.observerIds.OnListChanged -= OnObserverListChanged;
-            }
-            else if (sceneName.Equals("InGame"))
-            {
-                MyLogger.Print(this, "옵저버 리스트 구독");
-                if (!PlayManager.Instance) return;
+                    PlayManager.Instance.ObserverManager.observerIds.OnListChanged -= OnObserverListChanged;
+                    break;
+                }
+                case "InGame":
+                {
+                    MyLogger.Print(this, "옵저버 리스트 구독");
+                    if (!PlayManager.Instance) return;
 
-                PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+                    PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+                    break;
+                }
             }
         }
 
@@ -105,6 +113,17 @@ namespace Players
         {
             health.Value -= 1;
             hitEffectPrefab.Play();
+        }
+
+        internal void AlignForward()
+        {
+            var forward = Vector3.Cross(
+                CameraManager.Instance.Orbit.transform.right,
+                transform.up).normalized;
+
+            transform.rotation = Quaternion.LookRotation(forward, transform.up);
+
+            CameraManager.Instance.LookMove();
         }
 
         private void OnPlayerNameChanged(FixedString32Bytes prev, FixedString32Bytes current)
@@ -178,6 +197,7 @@ namespace Players
                 }
 
             if (!isDead.Value) return;
+
             foreach (var observer in PlayManager.Instance.ObserverManager.observerIds)
                 NetworkShow(observer);
         }

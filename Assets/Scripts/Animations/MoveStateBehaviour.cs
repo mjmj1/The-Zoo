@@ -7,13 +7,13 @@ namespace Animations
     {
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            var mover = animator.GetComponent<PlayerController>();
+            var mover = animator.GetComponent<IMoveState>();
             if (mover != null) mover.CanMove = false;
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
         {
-            var mover = animator.GetComponent<PlayerController>();
+            var mover = animator.GetComponent<IMoveState>();
             if (mover != null) mover.CanMove = true;
         }
     }

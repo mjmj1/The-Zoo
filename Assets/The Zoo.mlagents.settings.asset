@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71515ce028aaa4b4cb6bee13e96ef6f3, type: 3}
   m_Name: The Zoo.mlagents.settings
   m_EditorClassIdentifier: 
-  m_ConnectTrainer: 1
+  m_ConnectTrainer: 0
   m_EditorPort: 5004
