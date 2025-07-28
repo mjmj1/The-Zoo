@@ -27,9 +27,9 @@ namespace UI
         {
             NetworkManager.OnDestroying -= OnDestroying;
 
-            PlayManager.Instance.currentTime.OnValueChanged -= OnTimerChanged;
-            NetworkManager.Singleton.LocalClient.PlayerObject
+            obj.LocalClient.PlayerObject
                 .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
+            PlayManager.Instance.currentTime.OnValueChanged -= OnTimerChanged;
         }
 
         private void OnTimerChanged(int previousValue, int newValue)

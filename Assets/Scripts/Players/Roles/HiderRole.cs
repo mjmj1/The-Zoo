@@ -9,6 +9,7 @@ namespace Players.Roles
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
+            entity.playerMarker.color = entity.roleColor.hiderColors;
         }
     }
 }
