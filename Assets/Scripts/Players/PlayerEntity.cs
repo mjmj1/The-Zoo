@@ -1,5 +1,6 @@
 using GamePlay;
 using Players.Roles;
+using System;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -22,6 +23,8 @@ namespace Players
         [SerializeField] private TMP_Text playerNameText;
         [SerializeField] private ParticleSystem hitEffectPrefab;
 
+        public NetworkVariable<bool> hit = new();
+
         public NetworkVariable<ulong> clientId = new();
         public NetworkVariable<FixedString32Bytes> playerName = new();
 
@@ -39,6 +42,7 @@ namespace Players
             role.Value = Role.None;
             isDead.Value = false;
             health.Value = 3;
+            hit.Value = false;
             CameraManager.Instance.EnableCamera(true);
         }
 
@@ -50,10 +54,12 @@ namespace Players
             playerName.OnValueChanged += OnPlayerNameChanged;
             role.OnValueChanged += OnRoleChanged;
             isDead.OnValueChanged += OnIsDeadChanged;
+            hit.OnValueChanged += OnHitChanged;
 
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
             OnIsDeadChanged(false, isDead.Value);
+            OnHitChanged(false, hit.Value);
 
             if (!IsOwner) return;
 
@@ -75,6 +81,7 @@ namespace Players
             clientId.OnValueChanged -= OnClientIdChanged;
             role.OnValueChanged -= OnRoleChanged;
             isDead.OnValueChanged -= OnIsDeadChanged;
+            hit.OnValueChanged -= OnHitChanged;
 
             if (!IsOwner) return;
 
@@ -112,7 +119,12 @@ namespace Players
         public void Damaged()
         {
             health.Value -= 1;
+        }
+
+        public void HitEffect()
+        {
             hitEffectPrefab.Play();
+            MyLogger.Print(this, "hit : " + hit + "from Damaged");
         }
 
         internal void AlignForward()
@@ -179,6 +191,12 @@ namespace Players
 
         private void OnHealthChanged(int previousValue, int newValue)
         {
+            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
+        }
+
+        private void OnHitChanged(bool previousValue, bool newValue)
+        {
+            //HitEffect();
             print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
         }
 

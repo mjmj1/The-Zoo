@@ -54,7 +54,7 @@ namespace Players.Roles
             var target = hit.collider.gameObject.GetComponent<PlayerEntity>();
 
             print($"target-{target.OwnerClientId} Seeker Hit");
-
+            target.HitEffect();
             OnPlayerHitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
         }
 
@@ -65,6 +65,7 @@ namespace Players.Roles
                 .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
 
             target.Damaged();
+            target.HitEffect();
         }
     }
 }
