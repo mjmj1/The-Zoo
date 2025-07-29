@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace UI.Scriptable
+namespace Scriptable
 {
     [CreateAssetMenu(fileName = "HPImageData", menuName = "UI/InGame/HPImages", order = 0)]
     public class HpImageData : ScriptableObject

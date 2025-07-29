@@ -2,7 +2,6 @@ using GamePlay;
 using Players.Roles;
 using Scriptable;
 using TMPro;
-using UI.Scriptable;
 using Unity.Collections;
 using Unity.Netcode;
 using Unity.Services.Authentication;

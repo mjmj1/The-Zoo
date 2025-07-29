@@ -1,7 +1,7 @@
 using GamePlay;
 using Players;
+using Scriptable;
 using TMPro;
-using UI.Scriptable;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
