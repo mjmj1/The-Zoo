@@ -27,8 +27,8 @@ namespace Players.Roles
         private void OnEnable()
         {
             if (!IsOwner) return;
-
             GamePlayEventHandler.PlayerAttack += OnPlayerAttack;
+            entity.playerMarker.color = entity.roleColor.seekerColor;
         }
 
         private void OnDisable()
@@ -53,14 +53,14 @@ namespace Players.Roles
 
             var target = hit.collider.gameObject.GetComponent<PlayerEntity>();
 
-            print($"target-{target.OwnerClientId} Seeker Hit");
-
             OnPlayerHitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
         private void OnPlayerHitRpc(RpcParams rpcParams)
         {
+            print($"target-{OwnerClientId} Hit");
+
             var target = NetworkManager.Singleton
                 .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
 

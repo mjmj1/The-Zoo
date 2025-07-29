@@ -189,7 +189,7 @@ namespace Players
             input.InputActions.Player.Spin.performed += Spin;
             input.InputActions.Player.Spin.canceled += Spin;
             input.InputActions.Player.Jump.performed += Jump;
-            input.InputActions.Player.Attack.performed += Attack;
+            input.InputActions.Player.Attack.started += Attack;
 
             entity.health.OnValueChanged += Hit;
         }

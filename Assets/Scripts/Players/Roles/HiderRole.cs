@@ -10,5 +10,11 @@ namespace Players.Roles
         {
             entity = GetComponent<PlayerEntity>();
         }
+
+        private void OnEnable()
+        {
+            if (!IsOwner) return;
+            entity.playerMarker.color = entity.roleColor.hiderColor;
+        }
     }
 }
