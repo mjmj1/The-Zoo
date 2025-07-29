@@ -1,6 +1,7 @@
 using GamePlay;
 using Players.Roles;
 using System;
+using Scriptable;
 using TMPro;
 using Unity.Collections;
 using Unity.Netcode;
@@ -22,6 +23,9 @@ namespace Players
 
         [SerializeField] private TMP_Text playerNameText;
         [SerializeField] private ParticleSystem hitEffectPrefab;
+        [SerializeField] internal RoleColor roleColor;
+        [SerializeField] internal TMP_Text playerNameText;
+        [SerializeField] internal SpriteRenderer playerMarker;
 
         public NetworkVariable<ulong> clientId = new();
         public NetworkVariable<FixedString32Bytes> playerName = new();
@@ -40,6 +44,8 @@ namespace Players
             role.Value = Role.None;
             isDead.Value = false;
             health.Value = 3;
+            playerMarker.color = roleColor.defaultColor;
+            
             CameraManager.Instance.EnableCamera(true);
         }
 
@@ -56,7 +62,12 @@ namespace Players
             OnClientIdChanged(0, clientId.Value);
             OnIsDeadChanged(false, isDead.Value);
             
+
+            playerMarker.gameObject.SetActive(false);
+
             if (!IsOwner) return;
+
+            playerMarker.gameObject.SetActive(true);
 
             health.OnValueChanged += OnHealthChanged;
 

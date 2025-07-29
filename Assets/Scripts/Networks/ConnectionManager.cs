@@ -15,8 +15,7 @@ namespace Networks
 {
     public class ConnectionManager : MonoBehaviour
     {
-        private const int MaxPlayers = 8;
-        private bool initialLoad;
+        private const int MaxPlayers = 4;
 
         public static ConnectionManager Instance { get; private set; }
 

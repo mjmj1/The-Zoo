@@ -27,6 +27,11 @@ namespace GamePlay
             else Destroy(gameObject);
         }
 
+        public void OnEnable()
+        {
+            gameResult.gameObject.SetActive(false);
+        }
+
         public override void OnNetworkSpawn()
         {
             ObserverManager = GetComponent<ObserverManager>();
@@ -54,7 +59,7 @@ namespace GamePlay
 
             if (newValue)
             {
-                NpcSpawner.Instance.SpawnNpcRpc(0, 5);
+                // NpcSpawner.Instance.SpawnNpcRpc(0, 5);
 
                 StartCoroutine(CountTime());
 
