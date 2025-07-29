@@ -24,7 +24,6 @@ namespace Players
         [SerializeField] private TMP_Text playerNameText;
         [SerializeField] private ParticleSystem hitEffectPrefab;
         [SerializeField] internal RoleColor roleColor;
-        [SerializeField] internal TMP_Text playerNameText;
         [SerializeField] internal SpriteRenderer playerMarker;
 
         public NetworkVariable<ulong> clientId = new();
