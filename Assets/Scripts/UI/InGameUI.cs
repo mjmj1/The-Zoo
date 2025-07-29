@@ -50,10 +50,10 @@ namespace UI
         }
         private void KeyDown_Tab()
         {
-            if (missions.activeSelf)
-                missions.SetActive(false);
-            else
-                missions.SetActive(true);
+            if (missions != null)
+            {
+                missions.SetActive(!missions.activeSelf);
+            }
         }
 
         private void OnPlayerHealthChanged(int oldValue, int newValue)
