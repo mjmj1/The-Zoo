@@ -2131,6 +2131,7 @@ GameObject:
   - component: {fileID: 1316204687}
   - component: {fileID: 1316204688}
   - component: {fileID: 1316204689}
+  - component: {fileID: 1316204690}
   m_Layer: 0
   m_Name: PlayManager
   m_TagString: Untagged
@@ -2256,6 +2257,21 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   npcPrefabs:
   - {fileID: 4108932776260164882, guid: 10f85277d56dfc4438fd640a7f2d1a43, type: 3}
+--- !u!114 &1316204690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1316204680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5bbdb2cf7ea03a408660d37febfe74c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HiderCount: 0
+  treeCountText: {fileID: 1381030671}
+  HiderCountText: {fileID: 1614060595}
 --- !u!1 &1381030669
 GameObject:
   m_ObjectHideFlags: 0
