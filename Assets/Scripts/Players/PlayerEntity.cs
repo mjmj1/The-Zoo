@@ -1,5 +1,6 @@
 using GamePlay;
 using Players.Roles;
+using Scriptable;
 using TMPro;
 using UI.Scriptable;
 using Unity.Collections;
@@ -41,6 +42,7 @@ namespace Players
             role.Value = Role.None;
             isDead.Value = false;
             health.Value = 3;
+            playerMarker.color = roleColor.defaultColor;
             
             CameraManager.Instance.EnableCamera(true);
         }

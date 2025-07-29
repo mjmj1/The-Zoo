@@ -14,7 +14,7 @@ namespace Players.Roles
         private void OnEnable()
         {
             if (!IsOwner) return;
-            entity.playerMarker.color = entity.roleColor.hiderColors;
+            entity.playerMarker.color = entity.roleColor.hiderColor;
         }
     }
 }

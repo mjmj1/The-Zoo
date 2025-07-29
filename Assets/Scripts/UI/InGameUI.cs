@@ -23,12 +23,16 @@ namespace UI
             NetworkManager.OnDestroying += OnDestroying;
         }
 
+        private void OnDestroy()
+        {
+            NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
+        }
+
         private void OnDestroying(NetworkManager obj)
         {
             NetworkManager.OnDestroying -= OnDestroying;
 
-            obj.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
             PlayManager.Instance.currentTime.OnValueChanged -= OnTimerChanged;
         }
 

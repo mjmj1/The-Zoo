@@ -28,7 +28,7 @@ namespace Players.Roles
         {
             if (!IsOwner) return;
             GamePlayEventHandler.PlayerAttack += OnPlayerAttack;
-            entity.playerMarker.color = entity.roleColor.seekerColors;
+            entity.playerMarker.color = entity.roleColor.seekerColor;
         }
 
         private void OnDisable()

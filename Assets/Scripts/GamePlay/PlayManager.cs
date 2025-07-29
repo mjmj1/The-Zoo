@@ -27,6 +27,11 @@ namespace GamePlay
             else Destroy(gameObject);
         }
 
+        public void OnEnable()
+        {
+            gameResult.gameObject.SetActive(false);
+        }
+
         public override void OnNetworkSpawn()
         {
             ObserverManager = GetComponent<ObserverManager>();
