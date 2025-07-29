@@ -54,7 +54,7 @@ namespace GamePlay
 
             if (newValue)
             {
-                NpcSpawner.Instance.SpawnNpcRpc(0, 5);
+                // NpcSpawner.Instance.SpawnNpcRpc(0, 5);
 
                 StartCoroutine(CountTime());
 
