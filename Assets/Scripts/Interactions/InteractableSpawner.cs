@@ -1,17 +1,23 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 namespace Interactions
 {
     public class InteractableSpawner : Interactable
     {
-        [SerializeField] private GameObject spawnObject;
+        [SerializeField] private NetworkObject spawnObject;
         [SerializeField] private BoxCollider[] spawnPoints;
         [SerializeField] private Vector2 downForceRange = new (0f, 1f);
         
         private bool isInteracting = false;
         private int maxSpawnCount = 4;
         public bool TargetMission = false;
-        
+
+        private List<NetworkObject> spawnedFruit = new();
+
 #if UNITY_EDITOR
         void OnDrawGizmosSelected()
         {
@@ -49,7 +55,7 @@ namespace Interactions
 
                     isInteracting = true;
 
-                    Spawn();
+                    SpawnRpc();
 
                     print($"{gameObject.name} is interacting...");
 
@@ -65,7 +71,8 @@ namespace Interactions
             print($"{gameObject.name} is stop interacting...");
         }
 
-        private void Spawn()
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        private void SpawnRpc(RpcParams rpcParams = default)
         {
             var spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
             
@@ -77,18 +84,31 @@ namespace Interactions
                 Random.Range(min.z, max.z)
             );
 
-            var fruit = Instantiate(spawnObject, spawnPos, Quaternion.identity, spawnPoint.transform);
+            //var fruit = Instantiate(spawnObject, spawnPos, Quaternion.identity, spawnPoint.transform);
+            var fruit = spawnObject.InstantiateAndSpawn(NetworkManager,
+                    position: spawnPos,
+                    rotation: Quaternion.identity);
+            spawnedFruit.Add(fruit);
+
+            //var rb = fruit.GetComponent<Rigidbody>();
             
-            var rb = fruit.GetComponent<Rigidbody>();
-            
-            if (rb == null)
-            {
-                var force = Random.Range(downForceRange.x, downForceRange.y);
-                rb.AddForce(Vector3.down * force, ForceMode.Impulse);
-            }
+            //if (rb == null)
+            //{
+            //    var force = Random.Range(downForceRange.x, downForceRange.y);
+            //    rb.AddForce(Vector3.down * force, ForceMode.Impulse);
+            //}
             maxSpawnCount--;
         }
-        
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        internal void DespawnInteractionRpc(RpcParams rpcParams = default)
+        {
+            foreach (var obj in spawnedFruit)
+            {
+                obj.Despawn();
+            }
+        }
+
         public override InteractableType GetInteractableType()
         {
             return InteractableType.LeftClick;

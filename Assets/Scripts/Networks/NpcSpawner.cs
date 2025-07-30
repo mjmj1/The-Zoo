@@ -25,7 +25,7 @@ namespace Networks
             SpawnNpcRpc(0, 5);
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
+        [Rpc(SendTo.Server, RequireOwnership = true)]
         internal void SpawnNpcRpc(int index, int count, RpcParams rpcParams = default)
         {
             var prefab = npcPrefabs[index];

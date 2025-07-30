@@ -1,10 +1,11 @@
 using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Interactions
 {
-    public abstract class Interactable : MonoBehaviour
+    public abstract class Interactable : NetworkBehaviour
     {
         public enum InteractableType
         {

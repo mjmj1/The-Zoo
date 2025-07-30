@@ -35,7 +35,7 @@ namespace Interactions
             SpawnInteractionObjectsRpc(0, InteractionsNumber);
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
+        [Rpc(SendTo.Server, RequireOwnership = true)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
             List<int> allIndexes = new List<int>();
@@ -75,24 +75,6 @@ namespace Interactions
 
                 interaction.GetComponent<InteractableSpawner>().Initailize(targetMission);
             }
-        }
-
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        internal void SpawnInteractionRpc(int index, int count, RpcParams rpcParams = default)
-        {
-            var prefab = interactionPrefabs[index];
-
-            for (var i = 0; i < count; i++)
-            {
-                var pos = Util.GetRandomPositionInSphere(7.5f);
-
-                var npc = prefab.InstantiateAndSpawn(NetworkManager,
-                    position: pos,
-                    rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
-
-                spawnedInteractions.Add(npc);
-            }
-
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
