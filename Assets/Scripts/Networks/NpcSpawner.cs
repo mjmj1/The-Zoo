@@ -22,10 +22,12 @@ namespace Networks
 
         private void Start()
         {
+            if (!IsOwner) return;
+
             SpawnNpcRpc(0, 5);
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = true)]
+        [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void SpawnNpcRpc(int index, int count, RpcParams rpcParams = default)
         {
             var prefab = npcPrefabs[index];

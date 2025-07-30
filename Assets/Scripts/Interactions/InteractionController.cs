@@ -32,10 +32,12 @@ namespace Interactions
         }
         private void Start()
         {
+            if (!IsOwner) return;
+
             SpawnInteractionObjectsRpc(0, InteractionsNumber);
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = true)]
+        [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
             List<int> allIndexes = new List<int>();
