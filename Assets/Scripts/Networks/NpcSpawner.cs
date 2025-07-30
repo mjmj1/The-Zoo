@@ -20,6 +20,11 @@ namespace Networks
             else Destroy(gameObject);
         }
 
+        private void Start()
+        {
+            SpawnNpcRpc(0, 5);
+        }
+
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void SpawnNpcRpc(int index, int count, RpcParams rpcParams = default)
         {
