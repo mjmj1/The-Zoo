@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using Players;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,31 +11,20 @@ namespace AI
 {
     public class HiderAgentv2 : Agent, IMoveState
     {
-        public enum AgentMoveState
-        {
-            Idle,
-            Walking,
-            Running,
-        }
-
         public enum AgentActionState
         {
             None,
             Jumping,
-            Looking,
             Attacking,
             Interacting,
-            Spinning,
+            Spinning
         }
 
-        public enum HiderState
+        public enum AgentMoveState
         {
-            Peaceful,
-            FindingMission,
-            DoMission,
-            SeekerDetected,
-            IsChased,
-            HasHit,
+            Idle,
+            Walking,
+            Running
         }
 
         [SerializeField] private Transform seeker;
@@ -47,23 +34,28 @@ namespace AI
         [SerializeField] private float jumpForce = 3f;
         [SerializeField] private float rotationSpeed = 500f;
 
-        private RayPerceptionSensorComponent3D raySensor;
-        private PlayerInputActions input;
-        private Animator animator;
-        private Rigidbody rb;
-
         public Vector2 moveInput;
         public Vector2 lookInput;
 
         public AgentMoveState currentMoveState;
         public AgentActionState currentAAState;
-        public HiderState currentHiderState;
 
         private readonly float slowdownRate = 1f;
+        private Animator animator;
+        private PlayerInputActions input;
         private float moveSpeed;
 
-        public bool CanMove { get; set; }
-        public bool IsSpinning { get; set; }
+        private RayPerceptionSensorComponent3D raySensor;
+        private Rigidbody rb;
+        public Transform foundSeeker;
+        public bool isAction;
+        public bool isSpinningAction;
+        public bool nowSpinning;
+
+        private void Start()
+        {
+            PlanetGravity.Instance.Subscribe(rb);
+        }
 
         private void Update()
         {
@@ -84,11 +76,6 @@ namespace AI
             input.Disable();
         }
 
-        private void Start()
-        {
-            PlanetGravity.Instance.Subscribe(rb);
-        }
-
         private void OnDestroy()
         {
             input.UI.Escape.performed -= EscapePressed;
@@ -96,6 +83,9 @@ namespace AI
 
             PlanetGravity.Instance.Unsubscribe(rb);
         }
+
+        public bool CanMove { get; set; }
+        public bool IsSpinning { get; set; }
 
         public override void Initialize()
         {
@@ -136,6 +126,28 @@ namespace AI
             return Physics.CheckSphere(transform.position, 0.05f, groundMask);
         }
 
+        private bool IsSeekerFind(out Transform tr)
+        {
+            tr = null;
+
+            if (raySensor == null) return false;
+
+            var observations = raySensor.RaySensor.RayPerceptionOutput;
+
+            if (observations?.RayOutputs == null) return false;
+
+            foreach (var sub in observations?.RayOutputs)
+            {
+                if (sub.HitTagIndex == 0)
+                {
+                    tr = sub.HitGameObject.transform;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public override void OnEpisodeBegin()
         {
             transform.position = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
@@ -147,7 +159,7 @@ namespace AI
 
             if (seeker != null)
                 seeker.position =
-                    Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
+                    Util.GetRandomPositionInSphere(8f);
         }
 
         public override void CollectObservations(VectorSensor sensor)
@@ -162,7 +174,6 @@ namespace AI
             sensor.AddObservation(IsSpinning);
             sensor.AddObservation((int)currentMoveState);
             sensor.AddObservation((int)currentAAState);
-            sensor.AddObservation((int)currentHiderState);
         }
 
         public override void OnActionReceived(ActionBuffers actions)
@@ -183,7 +194,7 @@ namespace AI
             var continuousActionsOut = actionsOut.ContinuousActions;
             var discreteActionsOut = actionsOut.DiscreteActions;
 
-            continuousActionsOut[0] = Mathf.Clamp(lookInput.x, -1, 1);
+            continuousActionsOut[0] = lookInput.x;
 
             discreteActionsOut[0] = moveInput.y switch
             {
@@ -199,11 +210,7 @@ namespace AI
             };
 
             discreteActionsOut[2] = input.Player.Jump.phase == InputActionPhase.Performed ? 1 : 0;
-
-            if (input.Player.Spin.phase == InputActionPhase.Performed)
-                discreteActionsOut[3] = 1;
-            else if (input.Player.Spin.phase == InputActionPhase.Canceled)
-                discreteActionsOut[3] = 0;
+            discreteActionsOut[3] = input.Player.Spin.phase == InputActionPhase.Performed ? 1 : 0;
 
             if (input.Player.Run.phase == InputActionPhase.Performed)
                 discreteActionsOut[4] = 1;
@@ -246,7 +253,8 @@ namespace AI
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+            rb.MovePosition(rb.position +
+                            moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
         }
 
         private void HandleLookActions(ActionSegment<float> action)
@@ -255,9 +263,7 @@ namespace AI
 
             lookInput.x = action[0];
 
-            currentAAState = lookInput.x != 0 ? AgentActionState.Looking : AgentActionState.None;
-
-            transform.Rotate(Vector3.up * (lookInput.x * 10f));
+            transform.Rotate(Vector3.up * (lookInput.x * 5f));
         }
 
         private void HandleJumpAction(ActionSegment<int> action)
@@ -280,12 +286,15 @@ namespace AI
             {
                 animator.SetBool(PlayerNetworkAnimator.SpinHash, true);
                 currentAAState = AgentActionState.Spinning;
+                currentMoveState = AgentMoveState.Idle;
+                StartCoroutine(SpinAction());
                 IsSpinning = true;
             }
-            else if(action[3] == 0)
+            else if (action[3] == 0)
             {
                 animator.SetBool(PlayerNetworkAnimator.SpinHash, false);
                 currentAAState = AgentActionState.None;
+                StartCoroutine(SpinActionCycle());
                 IsSpinning = false;
             }
         }
@@ -299,22 +308,23 @@ namespace AI
             switch (action[4])
             {
                 case 1:
+                    if (moveInput == Vector2.zero) break;
                     moveSpeed = runSpeed;
                     animator.SetBool(PlayerNetworkAnimator.RunHash, true);
-                    if (moveInput == Vector2.zero) break;
                     currentMoveState = AgentMoveState.Running;
                     break;
                 case 2:
                     moveSpeed = walkSpeed;
                     animator.SetBool(PlayerNetworkAnimator.RunHash, false);
                     animator.SetTrigger(PlayerNetworkAnimator.AttackHash);
+                    StartCoroutine(ActionCycle());
                     currentAAState = AgentActionState.Attacking;
                     break;
                 default:
-                    if (currentAAState == AgentActionState.Looking) break;
                     if (currentAAState == AgentActionState.Jumping) break;
                     moveSpeed = walkSpeed;
                     animator.SetBool(PlayerNetworkAnimator.RunHash, false);
+                    StartCoroutine(ActionCycle());
                     currentAAState = AgentActionState.None;
                     break;
             }
@@ -322,7 +332,65 @@ namespace AI
 
         private void HandleRewards()
         {
+            AddReward(1f / MaxStep);
 
+            var moveDir = rb.linearVelocity.normalized;
+            var lookDir = transform.forward;
+
+            var dot = Vector3.Dot(moveDir, lookDir);
+
+            if (currentMoveState != AgentMoveState.Idle)
+            {
+                var forwardMoveReward = Mathf.Max(0f, dot);
+                AddReward(forwardMoveReward * 0.01f);
+            }
+
+            if (IsSeekerFind(out var tr))
+            {
+                foundSeeker = tr;
+            }
+
+            if (foundSeeker != null)
+            {
+                var dist = Vector3.Distance(transform.position, foundSeeker.position);
+
+                if (dist > 10f)
+                {
+                    AddReward(0.005f);
+                    foundSeeker = null;
+                }
+                else
+                {
+                    var penalty = (1f - dist / 10f) * 0.005f;
+                    AddReward(-penalty);
+                }
+
+                if (currentAAState == AgentActionState.Jumping)
+                {
+                    if(isAction) AddReward(-0.005f);
+                    else
+                    {
+                        AddReward(0.0025f);
+                    }
+                }
+                else if (currentAAState == AgentActionState.Attacking)
+                {
+                    if(isAction) AddReward(-0.005f);
+                    else
+                    {
+                        AddReward(0.0025f);
+                    }
+                }
+                else if (currentAAState == AgentActionState.Spinning)
+                {
+                    if(isSpinningAction) AddReward(-0.01f);
+                    else
+                    {
+                        if(nowSpinning && IsSpinning) AddReward(0.0025f);
+                        else AddReward(-0.0025f);
+                    }
+                }
+            }
         }
 
         private void AlignToSurface()
@@ -335,6 +403,27 @@ namespace AI
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        private IEnumerator ActionCycle()
+        {
+            isAction = true;
+            yield return new WaitForSeconds(Random.Range(5f, 10f));
+            isAction = false;
+        }
+
+        private IEnumerator SpinActionCycle()
+        {
+            isSpinningAction = true;
+            yield return new WaitForSeconds(Random.Range(5f, 10f));
+            isSpinningAction = false;
+        }
+
+        private IEnumerator SpinAction()
+        {
+            nowSpinning = true;
+            yield return new WaitForSeconds(Random.Range(1f, 3f));
+            nowSpinning = false;
         }
     }
 }

@@ -65,7 +65,8 @@ MonoBehaviour:
   lookInput: {x: 0, y: 0}
   currentMoveState: 0
   currentAAState: 0
-  currentHiderState: 0
+  foundSeeker: {fileID: 0}
+  isAction: 0
 --- !u!114 &2550229429905853943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79,7 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 19
+    VectorObservationSize: 18
     NumStackedVectorObservations: 4
     m_ActionSpec:
       m_NumContinuousActions: 1
@@ -131,7 +132,7 @@ MonoBehaviour:
   m_RayLength: 6
   m_RayLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967241
+    m_Bits: 4294967177
   m_ObservationStacks: 5
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
