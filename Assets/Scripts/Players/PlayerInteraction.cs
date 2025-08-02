@@ -1,4 +1,5 @@
 using Interactions;
+using Players.Roles;
 using UnityEngine;
 using Utils;
 
@@ -46,12 +47,12 @@ namespace Players
 
         private void UpdateInteractable(Interactable interactable)
         {
-            if (gameObject.layer != 8)// 8 is layered as Seeker
+            MyLogger.Print(this, "gameObject.layer : " + this.gameObject.layer);
+            if (this.gameObject.layer != 8)// 8 is layered as Seeker
             {
                 currentInteractable = interactable;
+                currentInteractable?.ShowInteractableUI();
             }
-
-            currentInteractable?.ShowInteractableUI();
         }
 
         private void UnfocusInteractable()

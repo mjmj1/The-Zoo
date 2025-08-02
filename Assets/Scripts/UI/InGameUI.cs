@@ -15,6 +15,14 @@ namespace UI
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
 
+        public static InGameUI instance;
+        private void Awake()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+        }
         private void Start()
         {
             PlayManager.Instance.currentTime.OnValueChanged += OnTimerChanged;

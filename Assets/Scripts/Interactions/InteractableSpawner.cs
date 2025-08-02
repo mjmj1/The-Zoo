@@ -1,7 +1,9 @@
 using NUnit.Framework;
 using System.Collections.Generic;
+using UI;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
 using static UnityEditor.PlayerSettings;
 
 namespace Interactions
@@ -13,8 +15,6 @@ namespace Interactions
         [SerializeField] private Vector2 downForceRange = new (0f, 1f);
         
         private bool isInteracting = false;
-        private int maxSpawnCount = 4;
-        public bool TargetMission = false;
 
         private List<NetworkObject> spawnedFruit = new();
 
@@ -42,14 +42,14 @@ namespace Interactions
 #endif
         public void Initailize(bool targeted)
         {
-            TargetMission = targeted;
+            TargetMission.Value = targeted;
         }
 
         public override void StartInteract()
         {
-            if(TargetMission)
+            if(TargetMission.Value)
             {
-                while (maxSpawnCount > 0)
+                while (maxSpawnCount.Value > 0)
                 {
                     if (isInteracting) return;
 
@@ -58,7 +58,6 @@ namespace Interactions
                     SpawnRpc();
 
                     print($"{gameObject.name} is interacting...");
-
                 }
             }
         }
@@ -91,13 +90,13 @@ namespace Interactions
             spawnedFruit.Add(fruit);
 
             //var rb = fruit.GetComponent<Rigidbody>();
-            
+
             //if (rb == null)
             //{
             //    var force = Random.Range(downForceRange.x, downForceRange.y);
             //    rb.AddForce(Vector3.down * force, ForceMode.Impulse);
             //}
-            maxSpawnCount--;
+            maxSpawnCount.Value--;
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]

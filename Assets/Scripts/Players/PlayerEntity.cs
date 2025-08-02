@@ -160,6 +160,7 @@ namespace Players
                     gameObject.layer = LayerMask.NameToLayer("Seeker");
                     gameObject.GetComponent<SeekerRole>().enabled = true;
                     gameObject.GetComponent<HiderRole>().enabled = false;
+                    gameObject.GetComponent<PlayerInteraction>().enabled = false;
                     break;
                 case Role.None:
                     gameObject.layer = LayerMask.NameToLayer("Default");
