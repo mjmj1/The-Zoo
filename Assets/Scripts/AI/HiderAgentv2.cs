@@ -2,10 +2,12 @@ using System.Collections;
 using Players;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
+using Random = UnityEngine.Random;
 
 namespace AI
 {
@@ -39,6 +41,8 @@ namespace AI
 
         public AgentMoveState currentMoveState;
         public AgentActionState currentAAState;
+        public Transform foundSeeker;
+        public bool isAction;
 
         private readonly float slowdownRate = 1f;
         private Animator animator;
@@ -46,11 +50,17 @@ namespace AI
         private float moveSpeed;
 
         private RayPerceptionSensorComponent3D raySensor;
+        private BehaviorParameters bp;
+        private DecisionRequester dr;
         private Rigidbody rb;
-        public Transform foundSeeker;
-        public bool isAction;
-        public bool isSpinningAction;
-        public bool nowSpinning;
+
+        public bool freeze;
+        public float spinHoldTime;
+        private readonly float spinTriggerThreshold = 1.5f;
+
+        public bool started;
+
+        private float stepReward;
 
         private void Start()
         {
@@ -80,7 +90,6 @@ namespace AI
         {
             input.UI.Escape.performed -= EscapePressed;
             input.UI.Click.performed -= MouseLeftClicked;
-
             PlanetGravity.Instance.Unsubscribe(rb);
         }
 
@@ -91,8 +100,12 @@ namespace AI
         {
             base.Initialize();
 
+            stepReward = 1f / MaxStep;
+
             rb = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
+            bp = GetComponent<BehaviorParameters>();
+            dr = GetComponent<DecisionRequester>();
             raySensor = GetComponent<RayPerceptionSensorComponent3D>();
 
             input = new PlayerInputActions();
@@ -105,6 +118,11 @@ namespace AI
 
             input.UI.Escape.performed += EscapePressed;
             input.UI.Click.performed += MouseLeftClicked;
+
+            if (bp.BehaviorType == BehaviorType.HeuristicOnly)
+            {
+                dr.DecisionPeriod = 1;
+            }
         }
 
         private void EscapePressed(InputAction.CallbackContext ctx)
@@ -134,28 +152,41 @@ namespace AI
 
             var observations = raySensor.RaySensor.RayPerceptionOutput;
 
-            if (observations?.RayOutputs == null) return false;
+            if (observations.RayOutputs == null) return false;
 
-            foreach (var sub in observations?.RayOutputs)
-            {
+            foreach (var sub in observations.RayOutputs)
                 if (sub.HitTagIndex == 0)
                 {
                     tr = sub.HitGameObject.transform;
                     return true;
                 }
-            }
 
             return false;
         }
 
         public override void OnEpisodeBegin()
         {
+            StopAllCoroutines();
+
+            started = false;
+
             transform.position = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
 
             CanMove = true;
+            isAction = false;
             IsSpinning = false;
+
+            started = true;
+            freeze = false;
+            StartCoroutine(Freeze());
+
+            foundSeeker = null;
+            spinHoldTime = 0f;
+
+            currentMoveState = AgentMoveState.Idle;
+            currentAAState = AgentActionState.None;
 
             if (seeker != null)
                 seeker.position =
@@ -170,8 +201,11 @@ namespace AI
             sensor.AddObservation(rb.linearVelocity.magnitude);
             sensor.AddObservation(transform.up);
             sensor.AddObservation(transform.forward);
+            sensor.AddObservation(foundSeeker);
+            sensor.AddObservation(isAction);
             sensor.AddObservation(IsGrounded());
             sensor.AddObservation(IsSpinning);
+            sensor.AddObservation(freeze);
             sensor.AddObservation((int)currentMoveState);
             sensor.AddObservation((int)currentAAState);
         }
@@ -268,34 +302,46 @@ namespace AI
 
         private void HandleJumpAction(ActionSegment<int> action)
         {
-            if (action[2] == 0 || !IsGrounded()) return;
             if (!CanMove) return;
+            if (!IsGrounded()) return;
 
-            currentAAState = AgentActionState.Jumping;
+            if (action[2] == 1)
+            {
+                currentAAState = AgentActionState.Jumping;
 
-            if (!IsSpinning) animator.SetTrigger(PlayerNetworkAnimator.JumpHash);
+                if (!IsSpinning)
+                    animator.SetTrigger(PlayerNetworkAnimator.JumpHash);
+                PlayActionCycle();
 
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+                rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            }
+            else
+            {
+                currentAAState = AgentActionState.None;
+            }
         }
 
         private void HandleSpinAction(ActionSegment<int> action)
         {
             if (!CanMove) return;
+            if (!IsGrounded()) return;
 
             if (action[3] == 1)
             {
                 animator.SetBool(PlayerNetworkAnimator.SpinHash, true);
                 currentAAState = AgentActionState.Spinning;
                 currentMoveState = AgentMoveState.Idle;
-                StartCoroutine(SpinAction());
-                IsSpinning = true;
+
+                spinHoldTime += Time.deltaTime;
+
+                if (spinHoldTime >= spinTriggerThreshold)
+                    PlayActionCycle();
             }
-            else if (action[3] == 0)
+            else
             {
                 animator.SetBool(PlayerNetworkAnimator.SpinHash, false);
-                currentAAState = AgentActionState.None;
-                StartCoroutine(SpinActionCycle());
-                IsSpinning = false;
+
+                spinHoldTime = 0f;
             }
         }
 
@@ -317,77 +363,119 @@ namespace AI
                     moveSpeed = walkSpeed;
                     animator.SetBool(PlayerNetworkAnimator.RunHash, false);
                     animator.SetTrigger(PlayerNetworkAnimator.AttackHash);
-                    StartCoroutine(ActionCycle());
                     currentAAState = AgentActionState.Attacking;
+                    PlayActionCycle();
                     break;
                 default:
-                    if (currentAAState == AgentActionState.Jumping) break;
                     moveSpeed = walkSpeed;
                     animator.SetBool(PlayerNetworkAnimator.RunHash, false);
-                    StartCoroutine(ActionCycle());
-                    currentAAState = AgentActionState.None;
                     break;
             }
         }
 
         private void HandleRewards()
         {
-            AddReward(1f / MaxStep);
+            AddReward(-stepReward);
 
-            var moveDir = rb.linearVelocity.normalized;
+            var moveDir = Vector3.ProjectOnPlane(rb.linearVelocity, transform.up).normalized;
             var lookDir = transform.forward;
 
             var dot = Vector3.Dot(moveDir, lookDir);
+            print($"Dot: {dot:F4}");
 
-            if (currentMoveState != AgentMoveState.Idle)
+            if (freeze)
             {
-                var forwardMoveReward = Mathf.Max(0f, dot);
-                AddReward(forwardMoveReward * 0.01f);
+                if (currentMoveState == AgentMoveState.Idle)
+                {
+                    print($"Freeze Reward");
+                    AddReward(stepReward * 3f);
+                }
+                else if (currentMoveState is AgentMoveState.Walking or AgentMoveState.Running)
+                {
+                    print($"Freeze Penalty");
+                    AddReward(-stepReward * 3f);
+                }
+            }
+            else
+            {
+                if (currentMoveState == AgentMoveState.Walking)
+                {
+                    var reward = dot * -stepReward * 5f;
+                    AddReward(reward);
+                }
+                else if (currentMoveState == AgentMoveState.Running)
+                {
+                    var reward = -dot * -stepReward * 5.2f;
+                    AddReward(reward);
+                }
             }
 
-            if (IsSeekerFind(out var tr))
-            {
-                foundSeeker = tr;
-            }
+
+            if (IsSeekerFind(out var tr)) foundSeeker = tr;
 
             if (foundSeeker != null)
             {
+                if (currentAAState == AgentActionState.Spinning)
+                    AddReward(stepReward * -10f);
+
                 var dist = Vector3.Distance(transform.position, foundSeeker.position);
 
                 if (dist > 10f)
                 {
-                    AddReward(0.005f);
+                    print("Seeker Avoided");
+                    AddReward(stepReward * 3f);
                     foundSeeker = null;
                 }
                 else
                 {
-                    var penalty = (1f - dist / 10f) * 0.005f;
+                    print("Seeker closed");
+                    var penalty = (1f - dist / 10f) * stepReward;
                     AddReward(-penalty);
                 }
-
+            }
+            else
+            {
                 if (currentAAState == AgentActionState.Jumping)
                 {
-                    if(isAction) AddReward(-0.005f);
+                    if (isAction)
+                    {
+                        print($"{currentAAState} penalty");
+                        AddReward(stepReward * -5f);
+                    }
+
                     else
                     {
-                        AddReward(0.0025f);
+                        print($"{currentAAState} reward");
+                        AddReward(stepReward * 3f);
                     }
+
                 }
                 else if (currentAAState == AgentActionState.Attacking)
                 {
-                    if(isAction) AddReward(-0.005f);
+                    if (isAction)
+                    {
+                        print($"{currentAAState} penalty");
+                        AddReward(stepReward * -5f);
+                    }
+
                     else
                     {
-                        AddReward(0.0025f);
+                        print($"{currentAAState} reward");
+                        AddReward(stepReward * 3f);
                     }
                 }
                 else if (currentAAState == AgentActionState.Spinning)
                 {
-                    if(isSpinningAction) AddReward(-0.01f);
+                    if (isAction)
+                    {
+                        print($"{currentAAState} penalty");
+                        AddReward(stepReward * -5f);
+                    }
+
                     else
                     {
-                        if(nowSpinning && IsSpinning) AddReward(0.0025f);
-                        else AddReward(-0.0025f);
+                        print($"{currentAAState} reward");
+                        AddReward(stepReward * 3f);
                     }
                 }
             }
@@ -405,25 +493,46 @@ namespace AI
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
 
+        private void PlayActionCycle()
+        {
+            if (isAction) return;
+
+            StartCoroutine(ActionCycle());
+        }
+
         private IEnumerator ActionCycle()
         {
             isAction = true;
-            yield return new WaitForSeconds(Random.Range(5f, 10f));
+            yield return new WaitForSeconds(Random.Range(10f, 20f));
             isAction = false;
         }
 
-        private IEnumerator SpinActionCycle()
+        private IEnumerator Freeze()
         {
-            isSpinningAction = true;
-            yield return new WaitForSeconds(Random.Range(5f, 10f));
-            isSpinningAction = false;
+            while (started)
+            {
+                yield return new WaitForSeconds(Random.Range(15f, 25f));
+
+                PlayFreezeCycle();
+            }
         }
 
-        private IEnumerator SpinAction()
+        private void PlayFreezeCycle()
         {
-            nowSpinning = true;
-            yield return new WaitForSeconds(Random.Range(1f, 3f));
-            nowSpinning = false;
+            if(freeze) return;
+
+            StartCoroutine(FreezeCycle());
+        }
+
+        private IEnumerator FreezeCycle()
+        {
+            freeze = true;
+            print("Freeze");
+
+            yield return new WaitForSeconds(Random.Range(1f, 4f));
+
+            freeze = false;
+            print("Unfreeze");
         }
     }
 }
