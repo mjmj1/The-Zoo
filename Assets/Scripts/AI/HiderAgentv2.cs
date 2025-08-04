@@ -330,7 +330,6 @@ namespace AI
             {
                 animator.SetBool(PlayerNetworkAnimator.SpinHash, true);
                 currentAAState = AgentActionState.Spinning;
-                currentMoveState = AgentMoveState.Idle;
 
                 spinHoldTime += Time.deltaTime;
 
@@ -381,10 +380,16 @@ namespace AI
             var lookDir = transform.forward;
 
             var dot = Vector3.Dot(moveDir, lookDir);
-            print($"Dot: {dot:F4}");
+            // print($"Dot: {dot:F4}");
 
             if (freeze)
             {
+                if (currentAAState != AgentActionState.None)
+                {
+                    print($"Freeze Action Penalty");
+                    AddReward(-stepReward);
+                }
+
                 if (currentMoveState == AgentMoveState.Idle)
                 {
                     print($"Freeze Reward");
@@ -398,15 +403,18 @@ namespace AI
             }
             else
             {
-                if (currentMoveState == AgentMoveState.Walking)
+                if (!IsSpinning)
                 {
-                    var reward = dot * -stepReward * 5f;
-                    AddReward(reward);
-                }
-                else if (currentMoveState == AgentMoveState.Running)
-                {
-                    var reward = -dot * -stepReward * 5.2f;
-                    AddReward(reward);
+                    if (currentMoveState == AgentMoveState.Walking)
+                    {
+                        var reward = dot * -stepReward * 5f;
+                        AddReward(reward);
+                    }
+                    else if (currentMoveState == AgentMoveState.Running)
+                    {
+                        var reward = dot * -stepReward * 5.2f;
+                        AddReward(reward);
+                    }
                 }
             }
 
@@ -433,50 +441,48 @@ namespace AI
                     AddReward(-penalty);
                 }
             }
-            else
+
+            if (currentAAState == AgentActionState.Jumping)
             {
-                if (currentAAState == AgentActionState.Jumping)
+                if (isAction)
                 {
-                    if (isAction)
-                    {
-                        print($"{currentAAState} penalty");
-                        AddReward(stepReward * -5f);
-                    }
-
-                    else
-                    {
-                        print($"{currentAAState} reward");
-                        AddReward(stepReward * 3f);
-                    }
-
+                    print($"{currentAAState} penalty");
+                    AddReward(stepReward * -5f);
                 }
-                else if (currentAAState == AgentActionState.Attacking)
-                {
-                    if (isAction)
-                    {
-                        print($"{currentAAState} penalty");
-                        AddReward(stepReward * -5f);
-                    }
 
-                    else
-                    {
-                        print($"{currentAAState} reward");
-                        AddReward(stepReward * 3f);
-                    }
+                else
+                {
+                    print($"{currentAAState} reward");
+                    AddReward(stepReward * 3f);
                 }
-                else if (currentAAState == AgentActionState.Spinning)
-                {
-                    if (isAction)
-                    {
-                        print($"{currentAAState} penalty");
-                        AddReward(stepReward * -5f);
-                    }
 
-                    else
-                    {
-                        print($"{currentAAState} reward");
-                        AddReward(stepReward * 3f);
-                    }
+            }
+            else if (currentAAState == AgentActionState.Attacking)
+            {
+                if (isAction)
+                {
+                    print($"{currentAAState} penalty");
+                    AddReward(stepReward * -5f);
+                }
+
+                else
+                {
+                    print($"{currentAAState} reward");
+                    AddReward(stepReward * 3f);
+                }
+            }
+            else if (currentAAState == AgentActionState.Spinning)
+            {
+                if (isAction)
+                {
+                    print($"{currentAAState} penalty");
+                    AddReward(stepReward * -5f);
+                }
+
+                else
+                {
+                    print($"{currentAAState} reward");
+                    AddReward(stepReward * 0.5f);
                 }
             }
         }
@@ -511,7 +517,7 @@ namespace AI
         {
             while (started)
             {
-                yield return new WaitForSeconds(Random.Range(15f, 25f));
+                yield return new WaitForSeconds(Random.Range(8f, 12f));
 
                 PlayFreezeCycle();
             }
@@ -529,7 +535,7 @@ namespace AI
             freeze = true;
             print("Freeze");
 
-            yield return new WaitForSeconds(Random.Range(1f, 4f));
+            yield return new WaitForSeconds(Random.Range(5f, 8f));
 
             freeze = false;
             print("Unfreeze");
