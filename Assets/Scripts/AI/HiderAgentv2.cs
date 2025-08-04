@@ -195,6 +195,10 @@ namespace AI
 
             currentMoveState = AgentMoveState.Idle;
             currentAAState = AgentActionState.None;
+            prevAAState = AgentActionState.None;
+
+            hasHit = false;
+            lastHitDirection = Vector3.zero;
 
             if (seeker != null)
                 seeker.position =
@@ -554,7 +558,7 @@ namespace AI
             freeze = true;
             print("Freeze");
 
-            yield return new WaitForSeconds(Random.Range(3f, 6f));
+            yield return new WaitForSeconds(Random.Range(1f, 6f));
 
             freeze = false;
             print("Unfreeze");
@@ -564,13 +568,13 @@ namespace AI
         {
             while (started)
             {
-                yield return new WaitForSeconds(10f);
+                yield return new WaitForSeconds(Random.Range(8f, 15f));
 
                 hasHit = true;
 
                 Damaged();
 
-                yield return new WaitForSeconds(2f);
+                yield return new WaitForSeconds(Random.Range(2f, 4f));
 
                 hasHit = false;
             }
