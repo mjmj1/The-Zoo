@@ -455,8 +455,7 @@ MonoBehaviour:
   - {fileID: 56563758}
   - {fileID: 1665410969}
   hpImageData: {fileID: 11400000, guid: 695c6722337101349b50e3a4c120761f, type: 2}
-  key_UI:
-  - {fileID: 1473586727}
+  KeyUI: {fileID: 1473586727}
 --- !u!224 &358075291
 RectTransform:
   m_ObjectHideFlags: 0

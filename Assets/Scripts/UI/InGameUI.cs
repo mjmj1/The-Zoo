@@ -14,8 +14,11 @@ namespace UI
         [SerializeField] private GameObject missions;
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
+        
+        public GameObject KeyUI;
 
         public static InGameUI instance;
+
         private void Awake()
         {
             if (instance == null)

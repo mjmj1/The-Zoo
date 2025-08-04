@@ -17,7 +17,6 @@ GameObject:
   - component: {fileID: 3755982930554864778}
   - component: {fileID: 5100048763366486770}
   - component: {fileID: 6934204017717181489}
-  - component: {fileID: 8180065815854728596}
   - component: {fileID: 6661343672116730651}
   - component: {fileID: 46057852386042095}
   - component: {fileID: 8991061074975073049}
@@ -281,19 +280,6 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
---- !u!114 &8180065815854728596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1978094491091307183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de72ea536e064d368c96768b45d84ba4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionDistance: 2
 --- !u!114 &6661343672116730651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,6 +343,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  interactionDistance: 2
 --- !u!114 &8991061074975073049
 MonoBehaviour:
   m_ObjectHideFlags: 0
