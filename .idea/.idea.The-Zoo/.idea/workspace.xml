@@ -8,7 +8,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/AI/Agent v2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/AI/Agent v2.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AI/HiderAgentv2.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AI/HiderAgentv2.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,11 +46,10 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/99a6b958c3224b0a8d81abaab1e8dead96000/d5/983f3c82/NetworkListEvent`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/99a6b958c3224b0a8d81abaab1e8dead96000/e6/5121ab5d/SendTo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/07/40faffa6/Transform.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/67/0c43f535/MonoBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/7a/b416e6e7/Component.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e4d9240e78544597a1d42d60268e7da421e00/11/c353d574/Property`2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ea01e77be99618395f448b16bd7cc2bd4248bd9e5d8474964b2d97f39c5d74/System.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/AgentBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/TargetBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/TimeManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Networks/PlayerSpawner.cs" root0="FORCE_HIGHLIGHTING" />
@@ -251,6 +255,7 @@
       <workItem from="1753710458627" duration="6775000" />
       <workItem from="1753797933046" duration="8756000" />
       <workItem from="1754114729998" duration="38037000" />
+      <workItem from="1754306214606" duration="8655000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

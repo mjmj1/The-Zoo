@@ -69,6 +69,8 @@ MonoBehaviour:
   isAction: 0
   freeze: 0
   spinHoldTime: 0
+  hasHit: 0
+  lastHitDirection: {x: 0, y: 0, z: 0}
   started: 0
 --- !u!114 &2550229429905853943
 MonoBehaviour:
@@ -83,7 +85,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 21
+    VectorObservationSize: 25
     NumStackedVectorObservations: 4
     m_ActionSpec:
       m_NumContinuousActions: 1

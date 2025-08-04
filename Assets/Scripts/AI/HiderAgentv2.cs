@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Players;
 using Unity.MLAgents;
@@ -40,6 +41,7 @@ namespace AI
         public Vector2 lookInput;
 
         public AgentMoveState currentMoveState;
+        public AgentActionState prevAAState;
         public AgentActionState currentAAState;
         public Transform foundSeeker;
         public bool isAction;
@@ -54,9 +56,14 @@ namespace AI
         private DecisionRequester dr;
         private Rigidbody rb;
 
+        // freeze
         public bool freeze;
         public float spinHoldTime;
-        private readonly float spinTriggerThreshold = 1.5f;
+        private readonly float spinTriggerThreshold = 1.2f;
+
+        // Hit
+        public bool hasHit;
+        public Vector3 lastHitDirection;
 
         public bool started;
 
@@ -181,6 +188,7 @@ namespace AI
             started = true;
             freeze = false;
             StartCoroutine(Freeze());
+            StartCoroutine(HitCycle());
 
             foundSeeker = null;
             spinHoldTime = 0f;
@@ -206,6 +214,8 @@ namespace AI
             sensor.AddObservation(IsGrounded());
             sensor.AddObservation(IsSpinning);
             sensor.AddObservation(freeze);
+            sensor.AddObservation(hasHit);
+            sensor.AddObservation(lastHitDirection);
             sensor.AddObservation((int)currentMoveState);
             sensor.AddObservation((int)currentAAState);
         }
@@ -311,9 +321,10 @@ namespace AI
 
                 if (!IsSpinning)
                     animator.SetTrigger(PlayerNetworkAnimator.JumpHash);
-                PlayActionCycle();
 
                 rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+                PlayActionCycle();
             }
             else
             {
@@ -380,7 +391,25 @@ namespace AI
             var lookDir = transform.forward;
 
             var dot = Vector3.Dot(moveDir, lookDir);
-            // print($"Dot: {dot:F4}");
+
+            if (hasHit)
+            {
+                var hitDot = Vector3.Dot(moveDir, lastHitDirection);
+
+                if (currentMoveState != AgentMoveState.Idle && hitDot > 0.7f)
+                {
+                    print($"Hit Reward");
+                    AddReward(hitDot * stepReward * 5f);
+
+                    if (currentAAState == AgentActionState.Jumping)
+                    {
+                        print($"Hit Bonus Reward");
+                        AddReward(hitDot * stepReward * 0.01f);
+                    }
+                }
+
+                return;
+            }
 
             if (freeze)
             {
@@ -390,15 +419,15 @@ namespace AI
                     AddReward(-stepReward);
                 }
 
-                if (currentMoveState == AgentMoveState.Idle)
+                if (currentMoveState != AgentMoveState.Idle)
+                {
+                    print($"Freeze Penalty");
+                    AddReward(stepReward * -3f);
+                }
+                else if (currentMoveState == AgentMoveState.Idle)
                 {
                     print($"Freeze Reward");
                     AddReward(stepReward * 3f);
-                }
-                else if (currentMoveState is AgentMoveState.Walking or AgentMoveState.Running)
-                {
-                    print($"Freeze Penalty");
-                    AddReward(-stepReward * 3f);
                 }
             }
             else
@@ -407,83 +436,72 @@ namespace AI
                 {
                     if (currentMoveState == AgentMoveState.Walking)
                     {
-                        var reward = dot * -stepReward * 5f;
+                        print($"Walking Action");
+                        var reward = dot * stepReward * -5f;
                         AddReward(reward);
                     }
                     else if (currentMoveState == AgentMoveState.Running)
                     {
-                        var reward = dot * -stepReward * 5.2f;
+                        print($"Running Action");
+                        var reward = dot * stepReward * -5.2f;
                         AddReward(reward);
                     }
                 }
             }
 
+            if (currentAAState != prevAAState)
+            {
+                switch (currentAAState)
+                {
+                    case AgentActionState.Jumping when isAction:
+                        print("Jumping Penalty");
+                        AddReward(stepReward * -4f);
+                        break;
+                    case AgentActionState.Jumping:
+                        print("Jumping Reward");
+                        AddReward(stepReward * 2f);
+                        break;
+                    case AgentActionState.Attacking when isAction:
+                        print("Attacking Penalty");
+                        AddReward(stepReward * -4f);
+                        break;
+                    case AgentActionState.Attacking:
+                        print("Attacking Reward");
+                        AddReward(stepReward * 2f);
+                        break;
+                    case AgentActionState.Spinning when isAction:
+                        print("Spinning Penalty");
+                        AddReward(stepReward * -4f);
+                        break;
+                    case AgentActionState.Spinning:
+                        print("Spinning Reward");
+                        AddReward(stepReward * 2f);
+                        break;
+                }
+            }
+
+            prevAAState = currentAAState;
 
             if (IsSeekerFind(out var tr)) foundSeeker = tr;
 
-            if (foundSeeker != null)
+            if (foundSeeker == null) return;
+
+            if (currentAAState == AgentActionState.Spinning)
+                AddReward(stepReward * -10f);
+
+            var dist = Vector3.Distance(transform.position, foundSeeker.position);
+
+            if (dist > 10f)
             {
-                if (currentAAState == AgentActionState.Spinning)
-                    AddReward(stepReward * -10f);
-
-                var dist = Vector3.Distance(transform.position, foundSeeker.position);
-
-                if (dist > 10f)
-                {
-                    print("Seeker Avoided");
-                    AddReward(stepReward * 3f);
-                    foundSeeker = null;
-                }
-                else
-                {
-                    print("Seeker closed");
-                    var penalty = (1f - dist / 10f) * stepReward;
-                    AddReward(-penalty);
-                }
+                print("Seeker Avoided");
+                AddReward(stepReward * 3f);
+                foundSeeker = null;
             }
-
-            if (currentAAState == AgentActionState.Jumping)
+            else
             {
-                if (isAction)
-                {
-                    print($"{currentAAState} penalty");
-                    AddReward(stepReward * -5f);
-                }
-
-                else
-                {
-                    print($"{currentAAState} reward");
-                    AddReward(stepReward * 3f);
-                }
-
-            }
-            else if (currentAAState == AgentActionState.Attacking)
-            {
-                if (isAction)
-                {
-                    print($"{currentAAState} penalty");
-                    AddReward(stepReward * -5f);
-                }
-
-                else
-                {
-                    print($"{currentAAState} reward");
-                    AddReward(stepReward * 3f);
-                }
-            }
-            else if (currentAAState == AgentActionState.Spinning)
-            {
-                if (isAction)
-                {
-                    print($"{currentAAState} penalty");
-                    AddReward(stepReward * -5f);
-                }
-
-                else
-                {
-                    print($"{currentAAState} reward");
-                    AddReward(stepReward * 0.5f);
-                }
+                print("Seeker closed");
+                var penalty = (1f - dist / 10f) * stepReward;
+                AddReward(-penalty);
             }
         }
 
@@ -508,8 +526,9 @@ namespace AI
 
         private IEnumerator ActionCycle()
         {
+            yield return new WaitForEndOfFrame();
             isAction = true;
-            yield return new WaitForSeconds(Random.Range(10f, 20f));
+            yield return new WaitForSeconds(Random.Range(10f, 15f));
             isAction = false;
         }
 
@@ -517,7 +536,7 @@ namespace AI
         {
             while (started)
             {
-                yield return new WaitForSeconds(Random.Range(8f, 12f));
+                yield return new WaitForSeconds(Random.Range(4f, 8f));
 
                 PlayFreezeCycle();
             }
@@ -535,10 +554,37 @@ namespace AI
             freeze = true;
             print("Freeze");
 
-            yield return new WaitForSeconds(Random.Range(5f, 8f));
+            yield return new WaitForSeconds(Random.Range(3f, 6f));
 
             freeze = false;
             print("Unfreeze");
+        }
+
+        private IEnumerator HitCycle()
+        {
+            while (started)
+            {
+                yield return new WaitForSeconds(10f);
+
+                hasHit = true;
+
+                Damaged();
+
+                yield return new WaitForSeconds(2f);
+
+                hasHit = false;
+            }
+        }
+
+        private void Damaged()
+        {
+            var randomDir = Random.onUnitSphere;
+            randomDir = Vector3.ProjectOnPlane(randomDir, transform.up).normalized;
+
+            lastHitDirection = (transform.position - (transform.position + randomDir)).normalized;
+
+            Debug.DrawRay(transform.position, lastHitDirection, Color.red, 5f);
+            Debug.DrawRay(transform.position, rb.linearVelocity.normalized, Color.green);
         }
     }
 }
