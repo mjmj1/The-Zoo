@@ -455,7 +455,7 @@ MonoBehaviour:
   - {fileID: 56563758}
   - {fileID: 1665410969}
   hpImageData: {fileID: 11400000, guid: 695c6722337101349b50e3a4c120761f, type: 2}
-  KeyUI: {fileID: 1473586727}
+  keyUI: {fileID: 1473586727}
 --- !u!224 &358075291
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2640,7 +2640,7 @@ RectTransform:
   m_GameObject: {fileID: 1473586727}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.36298665, y: 0.36298665, z: 0.36298665}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1945092378}
@@ -2648,8 +2648,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 108.896484}
-  m_SizeDelta: {x: 300, y: 300}
+  m_AnchoredPosition: {x: 70, y: 0}
+  m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1473586729
 MonoBehaviour:

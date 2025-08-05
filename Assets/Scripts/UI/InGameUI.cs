@@ -1,3 +1,5 @@
+using System;
+using EventHandler;
 using GamePlay;
 using Players;
 using Scriptable;
@@ -15,16 +17,7 @@ namespace UI
         [SerializeField] private GameObject missionsView;
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
-
-        public GameObject KeyUI;
-
-        public static InGameUI instance;
-
-        private void Awake()
-        {
-            if (!instance) instance = this;
-            else Destroy(gameObject);
-        }
+        [SerializeField] private GameObject keyUI;
 
         private void Start()
         {
@@ -38,28 +31,28 @@ namespace UI
             input.InputActions.UI.Tab.performed += OnTabKeyPressed;
             input.InputActions.UI.Tab.canceled += OnTabKeyPressed;
 
-            NetworkManager.OnDestroying += OnDestroying;
+            GamePlayEventHandler.CheckInteractable += OnKeyUI;
 
             missionsView.SetActive(false);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
+            PlayManager.Instance.currentTime.OnValueChanged -= OnTimerChanged;
+
             var input = NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerController>().Input;
 
             input.InputActions.UI.Tab.performed -= OnTabKeyPressed;
             input.InputActions.UI.Tab.canceled -= OnTabKeyPressed;
+
+            NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
         }
 
-        private void OnDestroying(NetworkManager obj)
+        private void OnKeyUI(bool value)
         {
-            NetworkManager.OnDestroying -= OnDestroying;
-
-            obj.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
-
-            PlayManager.Instance.currentTime.OnValueChanged -= OnTimerChanged;
+            keyUI.SetActive(value);
         }
 
         private void OnTimerChanged(int previousValue, int newValue)

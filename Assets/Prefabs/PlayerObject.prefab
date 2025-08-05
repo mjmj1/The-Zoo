@@ -344,6 +344,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   interactionDistance: 2
+  layer:
+    serializedVersion: 2
+    m_Bits: 1024
+  currentInteractable: {fileID: 0}
 --- !u!114 &8991061074975073049
 MonoBehaviour:
   m_ObjectHideFlags: 0
