@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using Players;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -31,6 +32,8 @@ namespace AI
         }
 
         [SerializeField] private Transform seeker;
+        [SerializeField] private Transform target;
+        [SerializeField] private List<Transform> interactables;
         [SerializeField] private LayerMask groundMask;
         [SerializeField] private float walkSpeed = 4f;
         [SerializeField] private float runSpeed = 7f;
@@ -178,6 +181,7 @@ namespace AI
             started = false;
 
             transform.position = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
+
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
 
@@ -203,6 +207,19 @@ namespace AI
             if (seeker != null)
                 seeker.position =
                     Util.GetRandomPositionInSphere(8f);
+
+            if (target != null)
+                target.position =
+                    Util.GetRandomPositionInSphere(8f);
+
+            foreach (var interactable in interactables)
+            {
+                interactable.position = Util.GetRandomPositionInSphere(8.5f);
+
+                var normal = -PlanetGravity.Instance.GetGravityDirection(interactable.position);
+                interactable.rotation = Quaternion.FromToRotation(interactable.transform.up, normal);
+            }
+
         }
 
         public override void CollectObservations(VectorSensor sensor)
@@ -450,6 +467,11 @@ namespace AI
                         var reward = dot * stepReward * -5.2f;
                         AddReward(reward);
                     }
+                    else if (currentMoveState == AgentMoveState.Idle)
+                    {
+                        print($"Idle Penalty");
+                        AddReward(stepReward * -10f);
+                    }
                 }
             }
 
@@ -508,6 +530,23 @@ namespace AI
                 AddReward(-penalty);
             }
         }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.CompareTag("Interactable"))
+            {
+                print("Collision Enter Penalty");
+                AddReward(-0.05f);
+            }
+
+            if (collision.collider.CompareTag("Target"))
+            {
+                print("Target Get");
+                AddReward(1f);
+                EndEpisode();
+            }
+        }
+
 
         private void AlignToSurface()
         {

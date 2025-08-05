@@ -54,6 +54,8 @@ MonoBehaviour:
   hasUpgradedFromAgentParameters: 1
   MaxStep: 1000
   seeker: {fileID: 0}
+  target: {fileID: 0}
+  interactables: []
   groundMask:
     serializedVersion: 2
     m_Bits: 64
@@ -64,6 +66,7 @@ MonoBehaviour:
   moveInput: {x: 0, y: 0}
   lookInput: {x: 0, y: 0}
   currentMoveState: 0
+  prevAAState: 0
   currentAAState: 0
   foundSeeker: {fileID: 0}
   isAction: 0
@@ -131,6 +134,8 @@ MonoBehaviour:
   m_SensorName: RayPerceptionSensor
   m_DetectableTags:
   - Seeker
+  - Target
+  - Interactable
   m_RaysPerDirection: 5
   m_MaxRayDegrees: 90
   m_SphereCastRadius: 0.5
