@@ -328,7 +328,7 @@ namespace AI
 
             lookInput.x = action[0];
 
-            transform.Rotate(Vector3.up * (lookInput.x * 5f));
+            transform.Rotate(Vector3.up * (lookInput.x * 3f));
         }
 
         private void HandleJumpAction(ActionSegment<int> action)
@@ -413,6 +413,8 @@ namespace AI
 
             var dot = Vector3.Dot(moveDir, lookDir);
 
+            AddReward(-Mathf.Abs(lookInput.x) * stepReward * 0.1f);
+
             if (hasHit)
             {
                 var hitDot = Vector3.Dot(moveDir, lastHitDirection);
@@ -470,7 +472,7 @@ namespace AI
                 {
                     case AgentActionState.Jumping when isAction:
                         print("Jumping Penalty");
-                        AddReward(stepReward * -10f);
+                        AddReward(stepReward * -50f);
                         break;
                     case AgentActionState.Jumping:
                         print("Jumping Reward");
@@ -478,7 +480,7 @@ namespace AI
                         break;
                     case AgentActionState.Attacking when isAction:
                         print("Attacking Penalty");
-                        AddReward(stepReward * -10f);
+                        AddReward(stepReward * -50f);
                         break;
                     case AgentActionState.Attacking:
                         print("Attacking Reward");
@@ -486,7 +488,7 @@ namespace AI
                         break;
                     case AgentActionState.Spinning when isAction:
                         print("Spinning Penalty");
-                        AddReward(stepReward * -10f);
+                        AddReward(stepReward * -50f);
                         break;
                     case AgentActionState.Spinning:
                         print("Spinning Reward");
