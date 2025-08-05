@@ -449,7 +449,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1295311494}
-  missions: {fileID: 1137815589}
+  missionsView: {fileID: 1137815589}
   redHealth:
   - {fileID: 1593748936}
   - {fileID: 56563758}
@@ -1645,7 +1645,7 @@ GameObject:
   - component: {fileID: 1137815592}
   - component: {fileID: 1137815591}
   m_Layer: 5
-  m_Name: MissionBackground
+  m_Name: Mission View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

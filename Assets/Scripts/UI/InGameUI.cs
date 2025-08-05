@@ -4,6 +4,7 @@ using Scriptable;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace UI
@@ -11,10 +12,10 @@ namespace UI
     public class InGameUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI timerText;
-        [SerializeField] private GameObject missions;
+        [SerializeField] private GameObject missionsView;
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
-        
+
         public GameObject KeyUI;
 
         public static InGameUI instance;
@@ -24,13 +25,31 @@ namespace UI
             if (!instance) instance = this;
             else Destroy(gameObject);
         }
+
         private void Start()
         {
             PlayManager.Instance.currentTime.OnValueChanged += OnTimerChanged;
             NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerEntity>().health.OnValueChanged += OnPlayerHealthChanged;
 
+            var input = NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerController>().Input;
+
+            input.InputActions.UI.Tab.performed += OnTabKeyPressed;
+            input.InputActions.UI.Tab.canceled += OnTabKeyPressed;
+
             NetworkManager.OnDestroying += OnDestroying;
+
+            missionsView.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            var input = NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerController>().Input;
+
+            input.InputActions.UI.Tab.performed -= OnTabKeyPressed;
+            input.InputActions.UI.Tab.canceled -= OnTabKeyPressed;
         }
 
         private void OnDestroying(NetworkManager obj)
@@ -48,19 +67,9 @@ namespace UI
             timerText.text = $"{newValue / 60:00}:{newValue % 60:00}";
         }
 
-        private void Update()
+        private void OnTabKeyPressed(InputAction.CallbackContext ctx)
         {
-            if (Input.GetKeyDown(KeyCode.Tab))
-            {
-                KeyDown_Tab();
-            }
-        }
-        private void KeyDown_Tab()
-        {
-            if (missions)
-            {
-                missions.SetActive(!missions.activeSelf);
-            }
+            missionsView.SetActive(ctx.performed);
         }
 
         private void OnPlayerHealthChanged(int oldValue, int newValue)
