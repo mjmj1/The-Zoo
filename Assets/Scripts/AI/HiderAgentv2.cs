@@ -421,12 +421,6 @@ namespace AI
                 {
                     print($"Hit Reward");
                     AddReward(hitDot * stepReward * 5f);
-
-                    if (currentAAState == AgentActionState.Jumping)
-                    {
-                        print($"Hit Bonus Reward");
-                        AddReward(hitDot * stepReward * 0.01f);
-                    }
                 }
 
                 return;
@@ -443,7 +437,7 @@ namespace AI
                 if (currentMoveState != AgentMoveState.Idle)
                 {
                     print($"Freeze Penalty");
-                    AddReward(stepReward * -3f);
+                    AddReward(stepReward * -6f);
                 }
                 else if (currentMoveState == AgentMoveState.Idle)
                 {
@@ -464,13 +458,8 @@ namespace AI
                     else if (currentMoveState == AgentMoveState.Running)
                     {
                         print($"Running Action");
-                        var reward = dot * stepReward * -5.2f;
+                        var reward = dot * stepReward * -5.1f;
                         AddReward(reward);
-                    }
-                    else if (currentMoveState == AgentMoveState.Idle)
-                    {
-                        print($"Idle Penalty");
-                        AddReward(stepReward * -10f);
                     }
                 }
             }
@@ -481,7 +470,7 @@ namespace AI
                 {
                     case AgentActionState.Jumping when isAction:
                         print("Jumping Penalty");
-                        AddReward(stepReward * -4f);
+                        AddReward(stepReward * -10f);
                         break;
                     case AgentActionState.Jumping:
                         print("Jumping Reward");
@@ -489,7 +478,7 @@ namespace AI
                         break;
                     case AgentActionState.Attacking when isAction:
                         print("Attacking Penalty");
-                        AddReward(stepReward * -4f);
+                        AddReward(stepReward * -10f);
                         break;
                     case AgentActionState.Attacking:
                         print("Attacking Reward");
@@ -497,7 +486,7 @@ namespace AI
                         break;
                     case AgentActionState.Spinning when isAction:
                         print("Spinning Penalty");
-                        AddReward(stepReward * -4f);
+                        AddReward(stepReward * -10f);
                         break;
                     case AgentActionState.Spinning:
                         print("Spinning Reward");
@@ -536,15 +525,15 @@ namespace AI
             if (collision.collider.CompareTag("Interactable"))
             {
                 print("Collision Enter Penalty");
-                AddReward(-0.05f);
+                AddReward(stepReward * -50f);
             }
 
-            if (collision.collider.CompareTag("Target"))
+            /*if (collision.collider.CompareTag("Target"))
             {
                 print("Target Get");
                 AddReward(1f);
                 EndEpisode();
-            }
+            }*/
         }
 
 
@@ -597,7 +586,7 @@ namespace AI
             freeze = true;
             print("Freeze");
 
-            yield return new WaitForSeconds(Random.Range(1f, 6f));
+            yield return new WaitForSeconds(Random.Range(2f, 6f));
 
             freeze = false;
             print("Unfreeze");
