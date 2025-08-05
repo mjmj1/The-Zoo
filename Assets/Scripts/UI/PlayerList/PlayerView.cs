@@ -1,6 +1,5 @@
 using Networks;
 using TMPro;
-using Unity.Netcode;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -44,9 +43,9 @@ namespace UI.PlayerList
             isHost = false;
 
             otherBg.SetActive(true);
-            
+
             bg.SetActive(false);
-            
+
             hostIcon.SetActive(false);
 
             readyIcon.SetActive(false);
@@ -74,11 +73,6 @@ namespace UI.PlayerList
             actionButtons.SetActive(false);
         }
 
-        public void SetPlayerName(string playerName)
-        {
-            playerNameText.SetText(playerName);
-        }
-
         public void Bind(IReadOnlyPlayer player)
         {
             player.Properties.TryGetValue(Util.PLAYERNAME, out var prop);
@@ -95,7 +89,7 @@ namespace UI.PlayerList
             hostIcon.SetActive(value);
 
             isHost = value;
-            
+
             actionButtons.SetActive(false);
         }
 

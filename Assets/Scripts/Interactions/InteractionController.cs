@@ -1,54 +1,40 @@
-using EventHandler;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using TMPro;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
-using static UnityEditor.PlayerSettings;
 
 namespace Interactions
 {
     public class InteractionController : NetworkBehaviour
     {
-        public static InteractionController instance;
         [SerializeField] private GameObject[] interactionObjects;
-        [SerializeField] private int InteractionsNumber = 15;
-
-        private List<int> RandomNumberList = new List<int>();
-        public int TargetCount = 5;
-
-        // sycn
         [SerializeField] private List<NetworkObject> interactionPrefabs;
 
-        private List<NetworkObject> spawnedInteractions = new();
+        [SerializeField] private int interactionsNumber = 15;
 
-        private void Awake()
-        {
-            if(instance == null)
-                instance = this;
-        }
+        private readonly List<NetworkObject> spawnedInteractions = new();
+        private readonly HashSet<int> targetSet = new();
+
+        public int TargetCount = 5;
+
         private void Start()
         {
             if (!IsOwner) return;
 
-            SpawnInteractionObjectsRpc(0, InteractionsNumber);
+            SpawnInteractionObjectsRpc(0, interactionsNumber);
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
-            List<int> allIndexes = new List<int>();
-            for (int i = 0; i < count; i++)
-                allIndexes.Add(i);
-
-            for (int i = 0; i < TargetCount; i++)
+            while (TargetCount > 0)
             {
-                int rand = UnityEngine.Random.Range(0, allIndexes.Count);
-                RandomNumberList.Add(allIndexes[rand]);
-                allIndexes.RemoveAt(rand);
+                var value = Random.Range(0, count);
+                if (targetSet.Add(value))
+                {
+                    TargetCount--;
+                }
             }
 
             var prefab = interactionPrefabs[index];
@@ -57,35 +43,24 @@ namespace Interactions
             {
                 var spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
 
-                var surfaceUp = spawnPoint.normalized;
+                var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
 
-                var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, surfaceUp);
+                var randomYaw = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
-                var randomYaw = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
-
-                var finalRotation = rotationOnSurface * randomYaw;
-
-                //var obj = Instantiate(interactionObjects[UnityEngine.Random.Range(0, interactionObjects.Length)], spawnPoint, finalRotation);
-                //obj.GetComponent<InteractableSpawner>().Initailize(targetMission);
-
-                var targetMission = RandomNumberList.Contains(i);
-                
                 var interaction = prefab.InstantiateAndSpawn(NetworkManager,
                     position: spawnPoint,
-                    rotation: finalRotation);
+                    rotation: rotationOnSurface * randomYaw);
+
                 spawnedInteractions.Add(interaction);
 
-                interaction.GetComponent<InteractableSpawner>().Initailize(targetMission);
+                interaction.GetComponent<InteractableSpawner>().Initailize(targetSet.Contains(i));
             }
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
-            foreach (var obj in spawnedInteractions)
-            {
-                obj.Despawn();
-            }
+            foreach (var obj in spawnedInteractions) obj.Despawn();
         }
     }
 }
