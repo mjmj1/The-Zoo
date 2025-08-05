@@ -1,37 +1,47 @@
+using System.Collections.Generic;
+using GamePlay;
 using Interactions;
-using Players.Roles;
+using Players;
 using TMPro;
-using UI.PlayerList;
+using Unity.Netcode;
 using UnityEngine;
 
-public class MissionManager : MonoBehaviour
+namespace Mission
 {
-    public static MissionManager instance;
-
-    public int HiderCount = 0;
-
-    [SerializeField] private TMP_Text treeCountText;
-    [SerializeField] private TMP_Text HiderCountText;
-
-    private void Awake()
+    public class MissionManager : MonoBehaviour
     {
-        if(instance == null)
-            instance = this;
-    }
+        public static MissionManager instance;
 
-    private void Start()
-    {
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        for (int i = 0; i < players.Length; i++)
+        [SerializeField] private TMP_Text treeCountText;
+        [SerializeField] private TMP_Text hiderCountText;
+
+        private int hiderCount = 0;
+
+        private void Awake()
         {
-            var player = players[i];
-            if(player.GetComponent<HiderRole>().gameObject.activeSelf)
-            {
-                HiderCount++;
-            }
+            if (!instance) instance = this;
+            else Destroy(gameObject);
         }
 
-        treeCountText.text = ": " + this.GetComponent<InteractionController>().TargetCount.ToString();
-        HiderCountText.text = ": " + HiderCount;
+        private void Start()
+        {
+            PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnListChanged;
+
+            var uniqueIds = new HashSet<ulong>();
+
+            foreach (var hider in PlayManager.Instance.RoleManager.hiderIds)
+            {
+                if (!uniqueIds.Add(hider.ClientId)) continue;
+                hiderCount++;
+            }
+
+            hiderCountText.text = $": {hiderCount}";
+            treeCountText.text = $": {GetComponent<InteractionController>().TargetCount}";
+        }
+
+        private void OnListChanged(NetworkListEvent<ulong> changeEvent)
+        {
+            hiderCountText.text = $": {--hiderCount}";
+        }
     }
 }

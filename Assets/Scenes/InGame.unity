@@ -2353,9 +2353,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5bbdb2cf7ea03a408660d37febfe74c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HiderCount: 0
   treeCountText: {fileID: 1381030671}
-  HiderCountText: {fileID: 1614060595}
+  hiderCountText: {fileID: 1614060595}
 --- !u!1 &1381030669
 GameObject:
   m_ObjectHideFlags: 0

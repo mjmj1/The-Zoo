@@ -21,10 +21,8 @@ namespace UI
 
         private void Awake()
         {
-            if (instance == null)
-            {
-                instance = this;
-            }
+            if (!instance) instance = this;
+            else Destroy(gameObject);
         }
         private void Start()
         {
@@ -35,15 +33,12 @@ namespace UI
             NetworkManager.OnDestroying += OnDestroying;
         }
 
-        private void OnDestroy()
-        {
-            NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
-        }
-
         private void OnDestroying(NetworkManager obj)
         {
             NetworkManager.OnDestroying -= OnDestroying;
+
+            obj.LocalClient.PlayerObject
+                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
 
             PlayManager.Instance.currentTime.OnValueChanged -= OnTimerChanged;
         }
@@ -52,6 +47,7 @@ namespace UI
         {
             timerText.text = $"{newValue / 60:00}:{newValue % 60:00}";
         }
+
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Tab))
@@ -61,7 +57,7 @@ namespace UI
         }
         private void KeyDown_Tab()
         {
-            if (missions != null)
+            if (missions)
             {
                 missions.SetActive(!missions.activeSelf);
             }

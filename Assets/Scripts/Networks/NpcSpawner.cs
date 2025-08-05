@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Unity.Netcode;
-using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -13,18 +12,12 @@ namespace Networks
 
         [SerializeField] private List<NetworkObject> npcPrefabs;
 
-        private List<NetworkObject> spawnNpcs = new();
+        private List<NetworkObject> spawnedNpcs = new();
+
         public void Awake()
         {
             if (!Instance) Instance = this;
             else Destroy(gameObject);
-        }
-
-        private void Start()
-        {
-            if (!IsOwner) return;
-
-            SpawnNpcRpc(0, 5);
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
@@ -40,7 +33,7 @@ namespace Networks
                     position: pos,
                     rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
 
-                spawnNpcs.Add(npc);
+                spawnedNpcs.Add(npc);
             }
 
         }
@@ -48,7 +41,7 @@ namespace Networks
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnNpcRpc(RpcParams rpcParams = default)
         {
-            foreach (var npc in spawnNpcs)
+            foreach (var npc in spawnedNpcs)
             {
                 npc.Despawn();
             }
