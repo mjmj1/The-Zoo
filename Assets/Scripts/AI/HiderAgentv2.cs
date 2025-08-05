@@ -511,13 +511,13 @@ namespace AI
             if (dist > 10f)
             {
                 print("Seeker Avoided");
-                AddReward(stepReward * 3f);
+                AddReward(stepReward * 10f);
                 foundSeeker = null;
             }
             else
             {
                 print("Seeker closed");
-                var penalty = (1f - dist / 10f) * stepReward;
+                var penalty = (1f - dist / 10f) * stepReward * 5f;
                 AddReward(-penalty);
             }
         }
