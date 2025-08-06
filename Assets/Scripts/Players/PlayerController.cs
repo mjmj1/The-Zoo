@@ -25,6 +25,14 @@ namespace Players
         private SerializedProperty sprintSpeed;
         private SerializedProperty walkSpeed;
 
+        private SerializedProperty walkSound;
+        private SerializedProperty sprintSound;
+        private SerializedProperty jumpSound;
+        private SerializedProperty attackSound;
+        private SerializedProperty hitSound;
+        private SerializedProperty spinSound;
+        private SerializedProperty soundHandler;
+
         public override void OnEnable()
         {
             groundMask = serializedObject.FindProperty(nameof(PlayerController.groundMask));
@@ -34,6 +42,14 @@ namespace Players
             rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
+
+            walkSound = serializedObject.FindProperty(nameof(PlayerController.walkSound));
+            sprintSound = serializedObject.FindProperty(nameof(PlayerController.sprintSound));
+            jumpSound = serializedObject.FindProperty(nameof(PlayerController.jumpSound));
+            attackSound = serializedObject.FindProperty(nameof(PlayerController.attackSound));
+            hitSound = serializedObject.FindProperty(nameof(PlayerController.hitSound));
+            spinSound = serializedObject.FindProperty(nameof(PlayerController.spinSound));
+            soundHandler = serializedObject.FindProperty(nameof(PlayerController.soundHandler));
             base.OnEnable();
         }
 
@@ -45,6 +61,14 @@ namespace Players
             EditorGUILayout.PropertyField(sprintSpeed);
             EditorGUILayout.PropertyField(rotationSpeed);
             EditorGUILayout.PropertyField(mouseSensitivity);
+
+            EditorGUILayout.PropertyField(walkSound);
+            EditorGUILayout.PropertyField(sprintSound);
+            EditorGUILayout.PropertyField(jumpSound);
+            EditorGUILayout.PropertyField(attackSound);
+            EditorGUILayout.PropertyField(hitSound);
+            EditorGUILayout.PropertyField(spinSound);
+            EditorGUILayout.PropertyField(soundHandler);
         }
 
         public override void OnInspectorGUI()
@@ -77,6 +101,17 @@ namespace Players
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
+        public AudioSource walkSound;
+        public AudioSource sprintSound;
+        public AudioSource jumpSound;
+        public AudioSource attackSound;
+        public AudioSource hitSound;
+        public AudioSource spinSound;
+
+        public ActionSoundHandler soundHandler;
+
+        private Vector3 previousMoveInput;
+
         private PlayerNetworkAnimator animator;
 
         private PlayerEntity entity;
@@ -85,7 +120,6 @@ namespace Players
         private bool isSpin;
 
         private float moveSpeed;
-        private Quaternion previousRotation;
 
         private Rigidbody rb;
 
@@ -120,6 +154,8 @@ namespace Players
             if (!IsOwner) return;
 
             HandleMovement();
+
+            HandleMovementSound();
         }
 
         private void OnDrawGizmosSelected()
@@ -233,6 +269,9 @@ namespace Players
             entity = GetComponent<PlayerEntity>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
+            soundHandler = GetComponent<ActionSoundHandler>();
+
+            soundHandler.PauseAll();
         }
 
         private void InitializeFollowCamera()
@@ -266,6 +305,26 @@ namespace Players
 
             rb.MovePosition(rb.position +
                             moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+        }
+
+        private void HandleMovementSound()
+        {
+            if (!CanMove || isSpin || !IsGrounded()) return;
+
+            var moveInput = input.MoveInput;
+
+            bool isMoving = moveInput.magnitude > 0.01f;
+
+            if (!isMoving)
+            {
+                soundHandler.StopCurrent();
+                return;
+            }
+
+            if (moveSpeed == runSpeed)
+                soundHandler.PlaySound(sprintSound);
+            else
+                soundHandler.PlaySound(walkSound);
         }
 
         private void AlignToSurface()
@@ -319,13 +378,20 @@ namespace Players
             if (isSpin) return;
 
             animator.OnJump(ctx);
+
+            soundHandler.PlaySound(jumpSound);
         }
 
         private void Run(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed) moveSpeed = runSpeed;
-            if (ctx.canceled) moveSpeed = walkSpeed;
-
+            if (ctx.performed)
+            {
+                moveSpeed = runSpeed;
+            }
+            if (ctx.canceled)
+            {
+                moveSpeed = walkSpeed;
+            }
             animator.OnRun(ctx);
         }
 
@@ -340,14 +406,21 @@ namespace Players
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
+            soundHandler.PlaySound(attackSound);
         }
 
         private void Spin(InputAction.CallbackContext ctx)
         {
-            if (!CanMove) return;
+            if (!CanMove)
+            {
+                soundHandler.StopCurrent();
+                return;
+            }
 
             isSpin = ctx.performed;
             animator.OnSpin(ctx);
+
+            soundHandler.PlaySound(spinSound);
         }
 
         private void Hit(int previousValue, int newValue)
@@ -356,6 +429,8 @@ namespace Players
 
             if (newValue > 0) animator.OnHit();
             else StartCoroutine(DeathCoroutine());
+
+            soundHandler.PlaySound(hitSound);
         }
 
         private IEnumerator DeathCoroutine()
