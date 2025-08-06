@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class ActionSoundHandler : MonoBehaviour
 {
-    //[SerializeField] private AudioSource walkSound;
-    //[SerializeField] private AudioSource sprintSound;
-    //[SerializeField] private AudioSource jumpSound;
-    //[SerializeField] private AudioSource attackSound;
-    //[SerializeField] private AudioSource hitSound;
-    //[SerializeField] private AudioSource spinSound;
+    public AudioSource walkSound;
+    public AudioSource sprintSound;
+    public AudioSource jumpSound;
+    public AudioSource attackSound;
+    public AudioSource hitSound;
+    public AudioSource spinSound;
 
     private AudioSource current;
 
@@ -15,7 +15,7 @@ public class ActionSoundHandler : MonoBehaviour
     {
         if (current != null && current != target)
         {
-            current.Stop(); // 다른 사운드는 자동 정지
+            current.Stop();
         }
 
         current = target;
@@ -37,19 +37,21 @@ public class ActionSoundHandler : MonoBehaviour
 
     public void PauseAll()
     {
-        foreach (var s in GetComponents<AudioSource>())
-        {
-            if (s.isPlaying)
-                s.Pause();
-        }
+        if (walkSound != null) walkSound.Pause();
+        if (sprintSound != null) sprintSound.Pause();
+        if (jumpSound != null) jumpSound.Pause();
+        if (attackSound != null) attackSound.Pause();
+        if (hitSound != null) hitSound.Pause();
+        if (spinSound != null) spinSound.Pause();
     }
 
-    public void ResumeAll()
+    public void StopAll()
     {
-        foreach (var s in GetComponents<AudioSource>())
-        {
-            if (!s.isPlaying)
-                s.UnPause();
-        }
+        if (walkSound != null) walkSound.Stop();
+        if (sprintSound != null) sprintSound.Stop();
+        if (jumpSound != null) jumpSound.Stop();
+        if (attackSound != null) attackSound.Stop();
+        if (hitSound != null) hitSound.Stop();
+        if (spinSound != null) spinSound.Stop();
     }
 }

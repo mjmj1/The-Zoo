@@ -266,7 +266,6 @@ MonoBehaviour:
   attackSound: {fileID: 7189889933658965684}
   hitSound: {fileID: 1486416152171733636}
   spinSound: {fileID: 2518141323366825539}
-  soundHandler: {fileID: 7625310577876099095}
 --- !u!114 &2736765177486910086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -623,6 +622,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9aaee1243bbd3fc4dbbfef8b92782d80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  walkSound: {fileID: 3974200961931397424}
+  sprintSound: {fileID: 8002381068547345306}
+  jumpSound: {fileID: 8804375806459415833}
+  attackSound: {fileID: 7189889933658965684}
+  hitSound: {fileID: 1486416152171733636}
+  spinSound: {fileID: 2518141323366825539}
 --- !u!114 &2492283528243099242
 MonoBehaviour:
   m_ObjectHideFlags: 0

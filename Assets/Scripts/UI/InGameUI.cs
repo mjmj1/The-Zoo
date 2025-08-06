@@ -52,12 +52,14 @@ namespace UI
             {
                 item.sprite = value-- > 0 ? hpImageData.hpSprites[1] : hpImageData.hpSprites[0];
             }
+
             ShowHitEffect();
         }
 
         public void ShowHitEffect()
         {
             StopAllCoroutines();
+
             StartCoroutine(Flash());
         }
         private IEnumerator Flash()
@@ -65,11 +67,13 @@ namespace UI
             hitOverlay.color = new Color(1, 0, 0, 0.5f);
 
             float elapsed = 0f;
+
             while (elapsed < fadeDuration)
             {
                 elapsed += Time.deltaTime;
                 float alpha = Mathf.Lerp(0.5f, 0, elapsed / fadeDuration);
                 hitOverlay.color = new Color(1, 0, 0, alpha);
+
                 yield return null;
             }
 
