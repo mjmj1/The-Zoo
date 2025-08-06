@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using Players;
@@ -9,7 +8,6 @@ using Unity.MLAgents.Sensors;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Utils;
-using Random = UnityEngine.Random;
 
 namespace AI
 {
@@ -21,7 +19,9 @@ namespace AI
             Jumping,
             Attacking,
             Interacting,
-            Spinning
+            SpinStart,
+            Spinning,
+            SpinEnd
         }
 
         public enum AgentMoveState
@@ -63,6 +63,7 @@ namespace AI
         // freeze
         public bool freeze;
         public float spinHoldTime;
+        private int lastSpinInput = 0;
         private readonly float spinTriggerThreshold = 1.2f;
 
         // Hit
@@ -362,12 +363,21 @@ namespace AI
             if (action[3] == 1)
             {
                 animator.SetBool(PlayerNetworkAnimator.SpinHash, true);
-                currentAAState = AgentActionState.Spinning;
 
-                spinHoldTime += Time.deltaTime;
-
-                if (spinHoldTime >= spinTriggerThreshold)
-                    PlayActionCycle();
+                if (lastSpinInput == 0)
+                {
+                    spinHoldTime = 0f;
+                    currentAAState = AgentActionState.SpinStart;
+                }
+                else
+                {
+                    spinHoldTime += Time.deltaTime;
+                    if (spinHoldTime >= spinTriggerThreshold)
+                        currentAAState = AgentActionState.SpinEnd;
+                    else
+                        currentAAState = AgentActionState.Spinning;
+                }
+                PlayActionCycle();
             }
             else
             {
@@ -375,6 +385,8 @@ namespace AI
 
                 spinHoldTime = 0f;
             }
+
+            lastSpinInput = action[3];
         }
 
         private void HandleExtraActions(ActionSegment<int> action)
@@ -487,24 +499,37 @@ namespace AI
                         //print("Attacking Reward");
                         AddReward(stepReward * 2f);
                         break;
-                    case AgentActionState.Spinning when isAction:
-                        //print("Spinning Penalty");
+                    case AgentActionState.SpinStart when isAction:
+                        //print("SpinStart Penalty");
                         AddReward(stepReward * -50f);
                         break;
-                    case AgentActionState.Spinning:
-                        //print("Spinning Reward");
+                    case AgentActionState.SpinStart:
+                        //print("SpinStart Reward");
                         AddReward(stepReward * 2f);
+                        break;
+                    case AgentActionState.SpinEnd when isAction:
+                        // print("SpinEnd Reward");
+                        AddReward(stepReward);
                         break;
                 }
             }
 
             prevAAState = currentAAState;
 
+            if (currentAAState == AgentActionState.Spinning)
+            {
+                if (isAction)
+                {
+                    //print("Spinning Reward");
+                    AddReward(stepReward * 0.0001f);
+                }
+            }
+
             if (IsSeekerFind(out var tr)) foundSeeker = tr;
 
             if (foundSeeker == null) return;
 
-            if (currentAAState == AgentActionState.Spinning)
+            if (currentAAState == AgentActionState.SpinStart)
                 AddReward(stepReward * -10f);
 
             var dist = Vector3.Distance(transform.position, foundSeeker.position);
