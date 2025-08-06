@@ -39,6 +39,7 @@ namespace AI
         [SerializeField] private float runSpeed = 7f;
         [SerializeField] private float jumpForce = 3f;
         [SerializeField] private float rotationSpeed = 500f;
+        [SerializeField] private LPlanetGravity planet;
 
         public Vector2 moveInput;
         public Vector2 lookInput;
@@ -74,7 +75,7 @@ namespace AI
 
         private void Start()
         {
-            PlanetGravity.Instance.Subscribe(rb);
+            planet.Subscribe(rb);
         }
 
         private void Update()
@@ -100,7 +101,7 @@ namespace AI
         {
             input.UI.Escape.performed -= EscapePressed;
             input.UI.Click.performed -= MouseLeftClicked;
-            PlanetGravity.Instance.Unsubscribe(rb);
+            planet.Unsubscribe(rb);
         }
 
         public bool CanMove { get; set; }
@@ -180,7 +181,7 @@ namespace AI
 
             started = false;
 
-            transform.position = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
+            transform.position = planet.transform.position + Util.GetRandomPositionInSphere(planet.GetRadius());
 
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -206,17 +207,17 @@ namespace AI
 
             if (seeker != null)
                 seeker.position =
-                    Util.GetRandomPositionInSphere(8f);
+                    planet.transform.position + Util.GetRandomPositionInSphere(8f);
 
             if (target != null)
                 target.position =
-                    Util.GetRandomPositionInSphere(8f);
+                    planet.transform.position + Util.GetRandomPositionInSphere(8f);
 
             foreach (var interactable in interactables)
             {
-                interactable.position = Util.GetRandomPositionInSphere(8.5f);
+                interactable.position = planet.transform.position + Util.GetRandomPositionInSphere(8.5f);
 
-                var normal = -PlanetGravity.Instance.GetGravityDirection(interactable.position);
+                var normal = -planet.GetGravityDirection(interactable.position);
                 interactable.rotation = Quaternion.FromToRotation(interactable.transform.up, normal);
             }
 
@@ -421,7 +422,7 @@ namespace AI
 
                 if (currentMoveState != AgentMoveState.Idle && hitDot > 0.7f)
                 {
-                    print($"Hit Reward");
+                    //print($"Hit Reward");
                     AddReward(hitDot * stepReward * 5f);
                 }
 
@@ -432,18 +433,18 @@ namespace AI
             {
                 if (currentAAState != AgentActionState.None)
                 {
-                    print($"Freeze Action Penalty");
+                    //print($"Freeze Action Penalty");
                     AddReward(-stepReward);
                 }
 
                 if (currentMoveState != AgentMoveState.Idle)
                 {
-                    print($"Freeze Penalty");
+                    //print($"Freeze Penalty");
                     AddReward(stepReward * -6f);
                 }
                 else if (currentMoveState == AgentMoveState.Idle)
                 {
-                    print($"Freeze Reward");
+                    //print($"Freeze Reward");
                     AddReward(stepReward * 3f);
                 }
             }
@@ -453,13 +454,13 @@ namespace AI
                 {
                     if (currentMoveState == AgentMoveState.Walking)
                     {
-                        print($"Walking Action");
+                        //print($"Walking Action");
                         var reward = dot * stepReward * -5f;
                         AddReward(reward);
                     }
                     else if (currentMoveState == AgentMoveState.Running)
                     {
-                        print($"Running Action");
+                        //print($"Running Action");
                         var reward = dot * stepReward * -5.1f;
                         AddReward(reward);
                     }
@@ -471,27 +472,27 @@ namespace AI
                 switch (currentAAState)
                 {
                     case AgentActionState.Jumping when isAction:
-                        print("Jumping Penalty");
+                        //print("Jumping Penalty");
                         AddReward(stepReward * -50f);
                         break;
                     case AgentActionState.Jumping:
-                        print("Jumping Reward");
+                        //print("Jumping Reward");
                         AddReward(stepReward * 2f);
                         break;
                     case AgentActionState.Attacking when isAction:
-                        print("Attacking Penalty");
+                        //print("Attacking Penalty");
                         AddReward(stepReward * -50f);
                         break;
                     case AgentActionState.Attacking:
-                        print("Attacking Reward");
+                        //print("Attacking Reward");
                         AddReward(stepReward * 2f);
                         break;
                     case AgentActionState.Spinning when isAction:
-                        print("Spinning Penalty");
+                        //print("Spinning Penalty");
                         AddReward(stepReward * -50f);
                         break;
                     case AgentActionState.Spinning:
-                        print("Spinning Reward");
+                        //print("Spinning Reward");
                         AddReward(stepReward * 2f);
                         break;
                 }
@@ -510,13 +511,13 @@ namespace AI
 
             if (dist > 10f)
             {
-                print("Seeker Avoided");
+                //print("Seeker Avoided");
                 AddReward(stepReward * 10f);
                 foundSeeker = null;
             }
             else
             {
-                print("Seeker closed");
+                //print("Seeker closed");
                 var penalty = (1f - dist / 10f) * stepReward * 5f;
                 AddReward(-penalty);
             }
@@ -526,7 +527,7 @@ namespace AI
         {
             if (collision.collider.CompareTag("Interactable"))
             {
-                print("Collision Enter Penalty");
+                //print("Collision Enter Penalty");
                 AddReward(stepReward * -50f);
             }
 
@@ -541,9 +542,9 @@ namespace AI
 
         private void AlignToSurface()
         {
-            if (!PlanetGravity.Instance) return;
+            if (!planet) return;
 
-            var gravityDirection = -PlanetGravity.Instance.GetGravityDirection(transform.position);
+            var gravityDirection = -planet.GetGravityDirection(transform.position);
 
             var targetRotation = Quaternion.FromToRotation(
                 transform.up, gravityDirection) * transform.rotation;
@@ -560,7 +561,6 @@ namespace AI
 
         private IEnumerator ActionCycle()
         {
-            yield return new WaitForEndOfFrame();
             isAction = true;
             yield return new WaitForSeconds(Random.Range(10f, 15f));
             isAction = false;
@@ -572,26 +572,19 @@ namespace AI
             {
                 yield return new WaitForSeconds(Random.Range(4f, 8f));
 
-                PlayFreezeCycle();
+                yield return StartCoroutine(FreezeCycle());
             }
-        }
-
-        private void PlayFreezeCycle()
-        {
-            if(freeze) return;
-
-            StartCoroutine(FreezeCycle());
         }
 
         private IEnumerator FreezeCycle()
         {
             freeze = true;
-            print("Freeze");
+            //print("Freeze");
 
             yield return new WaitForSeconds(Random.Range(2f, 6f));
 
             freeze = false;
-            print("Unfreeze");
+            //print("Unfreeze");
         }
 
         private IEnumerator HitCycle()
