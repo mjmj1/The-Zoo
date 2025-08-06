@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class ActionSoundHandler : MonoBehaviour
 {
-    public AudioSource walkSound;
-    public AudioSource sprintSound;
-    public AudioSource jumpSound;
-    public AudioSource attackSound;
-    public AudioSource hitSound;
-    public AudioSource spinSound;
+    [SerializeField] internal AudioSource walkSound;
+    [SerializeField] internal AudioSource sprintSound;
+    [SerializeField] internal AudioSource jumpSound;
+    [SerializeField] internal AudioSource attackSound;
+    [SerializeField] internal AudioSource hitSound;
+    [SerializeField] internal AudioSource spinSound;
 
     private AudioSource current;
 

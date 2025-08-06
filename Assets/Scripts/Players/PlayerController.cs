@@ -78,13 +78,6 @@ namespace Players
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
-        public AudioSource walkSound;
-        public AudioSource sprintSound;
-        public AudioSource jumpSound;
-        public AudioSource attackSound;
-        public AudioSource hitSound;
-        public AudioSource spinSound;
-
         private ActionSoundHandler soundHandler;
 
         private PlayerNetworkAnimator animator;
@@ -271,8 +264,13 @@ namespace Players
             if (!CanMove || isSpin) return;
 
             var moveInput = input.MoveInput;
+            bool isMoving = moveInput.magnitude > 0.01f;
 
-            if (moveInput == Vector2.zero) return;
+            if (moveInput == Vector2.zero && !isMoving)
+            {
+                soundHandler.StopCurrent();
+                return;
+            }
 
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
@@ -280,14 +278,7 @@ namespace Players
             rb.MovePosition(rb.position +
                             moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
 
-            bool isMoving = moveInput.magnitude > 0.01f;
-
-            if (!isMoving)
-            {
-                soundHandler.StopCurrent();
-                return;
-            }
-
+            
             if (moveSpeed == runSpeed)
                 soundHandler.PlaySound(soundHandler.spinSound);
             else
