@@ -15,7 +15,6 @@ namespace UI
         private void OnEnable()
         {
             enterButton.onClick.AddListener(OnEnterButtonClick);
-            GamePlayEventHandler.OnUIChanged("Title");
         }
 
         private void OnDisable()
