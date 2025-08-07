@@ -35,6 +35,7 @@ namespace Players
             rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
+
             base.OnEnable();
         }
 
@@ -86,7 +87,6 @@ namespace Players
         private bool isSpin;
 
         private float moveSpeed;
-        private Quaternion previousRotation;
 
         private Rigidbody rb;
 
@@ -160,6 +160,8 @@ namespace Players
             InitializeGravity();
 
             if (!sceneName.Equals("Lobby")) return;
+
+            GamePlayEventHandler.OnUIChanged("Lobby");
 
             Reset();
             entity.Reset();
@@ -269,6 +271,7 @@ namespace Players
 
             rb.MovePosition(rb.position +
                             moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+
         }
 
         private void AlignToSurface()
@@ -326,9 +329,14 @@ namespace Players
 
         private void Run(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed) moveSpeed = runSpeed;
-            if (ctx.canceled) moveSpeed = walkSpeed;
-
+            if (ctx.performed)
+            {
+                moveSpeed = runSpeed;
+            }
+            if (ctx.canceled)
+            {
+                moveSpeed = walkSpeed;
+            }
             animator.OnRun(ctx);
         }
 
