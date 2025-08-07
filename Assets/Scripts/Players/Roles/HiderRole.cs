@@ -2,6 +2,7 @@ using EventHandler;
 using Interactions;
 using Unity.Netcode;
 using UnityEngine;
+using Utils;
 
 namespace Players.Roles
 {
@@ -52,7 +53,7 @@ namespace Players.Roles
             }
 
             if (!hit.collider.TryGetComponent<Interactable>(out var interactable)) return;
-
+            
             FocusInteractable(interactable);
         }
 
@@ -61,7 +62,9 @@ namespace Players.Roles
             if (interactable && currentInteractable == interactable) return;
 
             currentInteractable = interactable;
-            GamePlayEventHandler.OnCheckInteractable(true);
+            var target = currentInteractable.targetMission.Value;
+            var count = currentInteractable.maxSpawnCount.Value;
+            GamePlayEventHandler.OnCheckInteractable(true, target, count);
         }
 
         private void UnfocusInteractable()
@@ -69,7 +72,7 @@ namespace Players.Roles
             if (!currentInteractable) return;
 
             currentInteractable = null;
-            GamePlayEventHandler.OnCheckInteractable(false);
+            GamePlayEventHandler.OnCheckInteractable(false, false, 0);
         }
     }
 }

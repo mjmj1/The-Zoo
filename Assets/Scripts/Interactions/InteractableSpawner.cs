@@ -1,4 +1,6 @@
+using EventHandler;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -43,7 +45,7 @@ namespace Interactions
         public override void StartInteract()
         {
             if (targetMission.Value)
-                while (maxSpawnCount.Value > 0)
+                if (maxSpawnCount.Value > 0)
                 {
                     if (isInteracting) return;
 
@@ -52,6 +54,10 @@ namespace Interactions
                     SpawnRpc();
 
                     print($"{gameObject.name} is interacting...");
+                }
+                else
+                {
+                    GamePlayEventHandler.OnCheckInteractable(true, true, 0);
                 }
         }
 

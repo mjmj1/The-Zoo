@@ -34,6 +34,7 @@ namespace UI
             GamePlayEventHandler.CheckInteractable += OnKeyUI;
 
             missionsView.SetActive(false);
+            keyUI.SetActive(false);
         }
 
         private void OnDisable()
@@ -49,10 +50,28 @@ namespace UI
             NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
         }
-
-        private void OnKeyUI(bool value)
+   
+        private void OnKeyUI(bool value, bool isTarget, int count)
         {
             keyUI.SetActive(value);
+
+            var background = keyUI.transform.GetChild(0).GetComponent<Image>();
+
+            if (isTarget)
+            {
+                if (count == 0)
+                {
+                    background.color = Color.white;
+                }
+                else
+                {
+                    background.color = new Color32(150, 255, 150, 255); // Light Green
+                }
+            }
+            else
+            {
+                background.color = new Color32(255, 150, 150, 255); // Light Red
+            } 
         }
 
         private void OnTimerChanged(int previousValue, int newValue)
