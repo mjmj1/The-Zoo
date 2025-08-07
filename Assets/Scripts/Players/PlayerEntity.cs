@@ -190,7 +190,11 @@ namespace Players
         private void OnHealthChanged(int previousValue, int newValue)
         {
             print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
+<<<<<<< HEAD
             this.GetComponent<PlayerVFX>().HitEffect();
+=======
+            this.GetComponent<PlayerVfx>().HitEffect();
+>>>>>>> main
         }
 
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
