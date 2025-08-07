@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UI.GameResult;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -16,7 +17,7 @@ namespace Interactions
         private readonly List<NetworkObject> spawnedInteractions = new();
         private readonly HashSet<int> targetSet = new();
 
-        public int TargetCount = 5;
+        [SerializeField] internal int TargetCount = 5;
 
         private void Start()
         {
@@ -60,7 +61,11 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
-            foreach (var obj in spawnedInteractions) obj.Despawn();
+            foreach (var obj in spawnedInteractions)
+            {
+                MyLogger.Print(this, "despawn interactions");
+                obj.Despawn();
+            }
         }
     }
 }

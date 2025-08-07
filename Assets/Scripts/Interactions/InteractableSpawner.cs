@@ -76,19 +76,11 @@ namespace Interactions
                 Random.Range(min.z, max.z)
             );
 
-            //var fruit = Instantiate(spawnObject, spawnPos, Quaternion.identity, spawnPoint.transform);
             var fruit = spawnObject.InstantiateAndSpawn(NetworkManager,
                 position: spawnPos,
                 rotation: Quaternion.identity);
             spawnedFruit.Add(fruit);
 
-            //var rb = fruit.GetComponent<Rigidbody>();
-
-            //if (rb == null)
-            //{
-            //    var force = Random.Range(downForceRange.x, downForceRange.y);
-            //    rb.AddForce(Vector3.down * force, ForceMode.Impulse);
-            //}
             maxSpawnCount.Value--;
         }
 

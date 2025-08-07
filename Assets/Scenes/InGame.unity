@@ -1633,6 +1633,7 @@ MonoBehaviour:
   hiderAlive: {fileID: 6969009238718150421, guid: 0b059f3bba03d5549b965b1d37019102, type: 3}
   hiderDeath: {fileID: 4201210769911665739, guid: 9730afd0f2752eb43ba9c72b99d7509a, type: 3}
   seekerView: {fileID: 1886361828428153876, guid: 1da044f64e4d9be4faf084ecb4b49f8f, type: 3}
+  controller: {fileID: 1316204684}
 --- !u!1 &1137815589
 GameObject:
   m_ObjectHideFlags: 0
@@ -2252,10 +2253,10 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   interactionObjects:
   - {fileID: 1183728168525978545, guid: bb02e8d356baeab4284417fb46d7ab5b, type: 3}
-  InteractionsNumber: 15
-  TargetCount: 5
   interactionPrefabs:
   - {fileID: -6495250992968162393, guid: bb02e8d356baeab4284417fb46d7ab5b, type: 3}
+  interactionsNumber: 15
+  TargetCount: 5
 --- !u!114 &1316204685
 MonoBehaviour:
   m_ObjectHideFlags: 0
