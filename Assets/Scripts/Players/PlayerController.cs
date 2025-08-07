@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using EventHandler;
+using Players.Roles;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -190,6 +191,7 @@ namespace Players
             Input.InputActions.Player.Spin.canceled += Spin;
             Input.InputActions.Player.Jump.performed += Jump;
             Input.InputActions.Player.Attack.started += Attack;
+            Input.InputActions.Player.PickUp.performed += PickUp;
 
             entity.health.OnValueChanged += Hit;
         }
@@ -212,6 +214,7 @@ namespace Players
             Input.InputActions.Player.Spin.canceled -= Spin;
             Input.InputActions.Player.Jump.performed -= Jump;
             Input.InputActions.Player.Attack.performed -= Attack;
+            Input.InputActions.Player.PickUp.performed -= PickUp;
 
             entity.health.OnValueChanged -= Hit;
         }
@@ -335,12 +338,30 @@ namespace Players
             if (!IsGrounded()) return;
             if (isSpin) return;
 
+            print("gameObject.GetComponent<SeekerRole>().enabled : " + gameObject.GetComponent<SeekerRole>().enabled);
+
             entity.AlignForward();
 
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
+        }
 
+        private void PickUp(InputAction.CallbackContext ctx)
+        {
+            if (!CanMove) return;
+
+            print("gameObject.GetComponent<HiderRole>().enabled : " + gameObject.GetComponent<HiderRole>().enabled);
+
+            var colliders = Physics.OverlapSphere(transform.position, 2f);
+            foreach (var col in colliders)
+            {
+                if (col.CompareTag("PickUp"))
+                {
+                    Destroy(col.gameObject);
+                    break;
+                }
+            }
         }
 
         private void Spin(InputAction.CallbackContext ctx)

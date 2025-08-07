@@ -22,7 +22,7 @@ namespace Players
 
             InputActions.Player.Look.performed += ctx => LookInput = ctx.ReadValue<Vector2>();
             InputActions.Player.Look.canceled += ctx => LookInput = Vector2.zero;
-
+            
             InputActions.UI.Escape.performed += EscapePressed;
             InputActions.UI.Click.performed += MouseLeftClicked;
         }
