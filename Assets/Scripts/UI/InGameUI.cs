@@ -3,8 +3,6 @@ using EventHandler;
 using GamePlay;
 using Players;
 using Scriptable;
-using System.Collections;
-using EventHandler;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,12 +17,7 @@ namespace UI
         [SerializeField] private GameObject missionsView;
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
-<<<<<<< HEAD
         [SerializeField] private GameObject keyUI;
-=======
-        [SerializeField] private Image hitOverlay;
-        [SerializeField] private float fadeDuration = 0.2f;
->>>>>>> main
 
         private void Start()
         {
@@ -32,7 +25,6 @@ namespace UI
             NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerEntity>().health.OnValueChanged += OnPlayerHealthChanged;
 
-<<<<<<< HEAD
             var input = NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerController>().Input;
 
@@ -43,11 +35,6 @@ namespace UI
 
             missionsView.SetActive(false);
             keyUI.SetActive(false);
-=======
-            NetworkManager.OnDestroying += OnDestroying;
-
-            GamePlayEventHandler.OnUIChanged("InGame");
->>>>>>> main
         }
 
         private void OnDisable()
@@ -105,32 +92,6 @@ namespace UI
             {
                 item.sprite = value-- > 0 ? hpImageData.hpSprites[1] : hpImageData.hpSprites[0];
             }
-
-            ShowHitEffect();
-        }
-
-        public void ShowHitEffect()
-        {
-            StopAllCoroutines();
-
-            StartCoroutine(Flash());
-        }
-        private IEnumerator Flash()
-        {
-            hitOverlay.color = new Color(1, 0, 0, 0.5f);
-
-            float elapsed = 0f;
-
-            while (elapsed < fadeDuration)
-            {
-                elapsed += Time.deltaTime;
-                float alpha = Mathf.Lerp(0.5f, 0, elapsed / fadeDuration);
-                hitOverlay.color = new Color(1, 0, 0, alpha);
-
-                yield return null;
-            }
-
-            hitOverlay.color = new Color(1, 0, 0, 0);
         }
     }
 }
