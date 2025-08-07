@@ -72,8 +72,6 @@ namespace AI
 
         public bool started;
 
-        private float stepReward;
-
         private void Start()
         {
             planet.Subscribe(rb);
@@ -111,8 +109,6 @@ namespace AI
         public override void Initialize()
         {
             base.Initialize();
-
-            stepReward = 1f / MaxStep;
 
             rb = GetComponent<Rigidbody>();
             animator = GetComponent<Animator>();
@@ -419,14 +415,14 @@ namespace AI
 
         private void HandleRewards()
         {
-            AddReward(-stepReward);
+            AddReward(-0.0001f);
 
             var moveDir = Vector3.ProjectOnPlane(rb.linearVelocity, transform.up).normalized;
             var lookDir = transform.forward;
 
             var dot = Vector3.Dot(moveDir, lookDir);
 
-            AddReward(-Mathf.Abs(lookInput.x) * stepReward * 0.1f);
+            AddReward(-Mathf.Abs(lookInput.x) * 0.0001f);
 
             if (hasHit)
             {
@@ -435,7 +431,7 @@ namespace AI
                 if (currentMoveState != AgentMoveState.Idle && hitDot > 0.7f)
                 {
                     //print($"Hit Reward");
-                    AddReward(hitDot * stepReward * 5f);
+                    AddReward(hitDot * 0.0005f);
                 }
 
                 return;
@@ -446,18 +442,18 @@ namespace AI
                 if (currentAAState != AgentActionState.None)
                 {
                     //print($"Freeze Action Penalty");
-                    AddReward(-stepReward);
+                    AddReward(-0.005f);
                 }
 
                 if (currentMoveState != AgentMoveState.Idle)
                 {
                     //print($"Freeze Penalty");
-                    AddReward(stepReward * -6f);
+                    AddReward(-0.005f);
                 }
                 else if (currentMoveState == AgentMoveState.Idle)
                 {
                     //print($"Freeze Reward");
-                    AddReward(stepReward * 3f);
+                    AddReward(-0.0025f);
                 }
             }
             else
@@ -467,13 +463,13 @@ namespace AI
                     if (currentMoveState == AgentMoveState.Walking)
                     {
                         //print($"Walking Action");
-                        var reward = dot * stepReward * -5f;
+                        var reward = dot * 0.001f;
                         AddReward(reward);
                     }
                     else if (currentMoveState == AgentMoveState.Running)
                     {
                         //print($"Running Action");
-                        var reward = dot * stepReward * -5.1f;
+                        var reward = dot * 0.0011f;
                         AddReward(reward);
                     }
                 }
@@ -483,33 +479,49 @@ namespace AI
             {
                 switch (currentAAState)
                 {
-                    case AgentActionState.Jumping when isAction:
-                        //print("Jumping Penalty");
-                        AddReward(stepReward * -50f);
-                        break;
                     case AgentActionState.Jumping:
-                        //print("Jumping Reward");
-                        AddReward(stepReward * 2f);
-                        break;
-                    case AgentActionState.Attacking when isAction:
-                        //print("Attacking Penalty");
-                        AddReward(stepReward * -50f);
+                        if (isAction)
+                        {
+                            //print("Jumping Penalty");
+                            AddReward(-0.005f);
+                        }
+                        else
+                        {
+                            //print("Jumping Reward");
+                            AddReward(0.001f);
+                        }
+
                         break;
                     case AgentActionState.Attacking:
-                        //print("Attacking Reward");
-                        AddReward(stepReward * 2f);
-                        break;
-                    case AgentActionState.SpinStart when isAction:
-                        //print("SpinStart Penalty");
-                        AddReward(stepReward * -50f);
+                        if (isAction)
+                        {
+                            //print("Attacking Penalty");
+                            AddReward(-0.005f);
+                        }
+                        else
+                        {
+                            //print("Attacking Reward");
+                            AddReward(0.001f);
+                        }
                         break;
                     case AgentActionState.SpinStart:
-                        //print("SpinStart Reward");
-                        AddReward(stepReward * 2f);
+                        if (isAction)
+                        {
+                            //print("SpinStart Penalty");
+                            AddReward(-0.005f);
+                        }
+                        else
+                        {
+                            //print("SpinStart Reward");
+                            AddReward(0.001f);
+                        }
                         break;
-                    case AgentActionState.SpinEnd when isAction:
-                        // print("SpinEnd Reward");
-                        AddReward(stepReward);
+                    case AgentActionState.SpinEnd:
+                        if (isAction)
+                        {
+                            // print("SpinEnd Reward");
+                            AddReward(0.001f);
+                        }
                         break;
                 }
             }
@@ -521,7 +533,7 @@ namespace AI
                 if (isAction)
                 {
                     //print("Spinning Reward");
-                    AddReward(stepReward * 0.0001f);
+                    AddReward(0.000001f);
                 }
             }
 
@@ -529,21 +541,21 @@ namespace AI
 
             if (foundSeeker == null) return;
 
-            if (currentAAState == AgentActionState.SpinStart)
-                AddReward(stepReward * -10f);
+            if (currentAAState != AgentActionState.None)
+                AddReward(-0.01f);
 
             var dist = Vector3.Distance(transform.position, foundSeeker.position);
 
             if (dist > 10f)
             {
                 //print("Seeker Avoided");
-                AddReward(stepReward * 10f);
+                AddReward(0.005f);
                 foundSeeker = null;
             }
             else
             {
                 //print("Seeker closed");
-                var penalty = (1f - dist / 10f) * stepReward * 5f;
+                var penalty = (1f - dist / 10f) * 0.005f;
                 AddReward(-penalty);
             }
         }
@@ -553,7 +565,7 @@ namespace AI
             if (collision.collider.CompareTag("Interactable"))
             {
                 //print("Collision Enter Penalty");
-                AddReward(stepReward * -50f);
+                AddReward(-0.01f);
             }
 
             /*if (collision.collider.CompareTag("Target"))
@@ -595,7 +607,7 @@ namespace AI
         {
             while (started)
             {
-                yield return new WaitForSeconds(Random.Range(4f, 8f));
+                yield return new WaitForSeconds(Random.Range(8f, 15f));
 
                 yield return StartCoroutine(FreezeCycle());
             }
@@ -606,7 +618,7 @@ namespace AI
             freeze = true;
             //print("Freeze");
 
-            yield return new WaitForSeconds(Random.Range(2f, 6f));
+            yield return new WaitForSeconds(Random.Range(2f, 5f));
 
             freeze = false;
             //print("Unfreeze");
@@ -616,7 +628,7 @@ namespace AI
         {
             while (started)
             {
-                yield return new WaitForSeconds(Random.Range(8f, 15f));
+                yield return new WaitForSeconds(Random.Range(10f, 15f));
 
                 hasHit = true;
 
