@@ -2,6 +2,7 @@ using GamePlay;
 using Players;
 using Scriptable;
 using System.Collections;
+using EventHandler;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -24,6 +25,8 @@ namespace UI
                 .GetComponent<PlayerEntity>().health.OnValueChanged += OnPlayerHealthChanged;
 
             NetworkManager.OnDestroying += OnDestroying;
+
+            GamePlayEventHandler.OnUIChanged("InGame");
         }
 
         private void OnDestroy()

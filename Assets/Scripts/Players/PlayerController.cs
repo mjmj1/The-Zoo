@@ -78,7 +78,7 @@ namespace Players
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
-        private ActionSoundHandler soundHandler;
+        private PlayerSfx sfx;
 
         private PlayerNetworkAnimator animator;
 
@@ -162,6 +162,8 @@ namespace Players
 
             if (!sceneName.Equals("Lobby")) return;
 
+            GamePlayEventHandler.OnUIChanged("Lobby");
+
             Reset();
             entity.Reset();
             readyChecker.Reset();
@@ -231,14 +233,11 @@ namespace Players
             Cursor.visible = false;
 
             rb = GetComponent<Rigidbody>();
+            sfx = GetComponent<PlayerSfx>();
             input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
-
-            soundHandler = GetComponent<ActionSoundHandler>();
-
-            soundHandler.StopAll();
         }
 
         private void InitializeFollowCamera()
@@ -264,13 +263,8 @@ namespace Players
             if (!CanMove || isSpin) return;
 
             var moveInput = input.MoveInput;
-            bool isMoving = moveInput.magnitude > 0.01f;
 
-            if (moveInput == Vector2.zero && !isMoving)
-            {
-                soundHandler.StopCurrent();
-                return;
-            }
+            if (moveInput == Vector2.zero) return;
 
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
@@ -278,11 +272,6 @@ namespace Players
             rb.MovePosition(rb.position +
                             moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
 
-            
-            if (moveSpeed == runSpeed)
-                soundHandler.PlaySound(soundHandler.spinSound);
-            else
-                soundHandler.PlaySound(soundHandler.walkSound);
         }
 
         private void AlignToSurface()
@@ -336,8 +325,6 @@ namespace Players
             if (isSpin) return;
 
             animator.OnJump(ctx);
-
-            soundHandler.PlaySound(soundHandler.jumpSound);
         }
 
         private void Run(InputAction.CallbackContext ctx)
@@ -364,21 +351,14 @@ namespace Players
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
-            soundHandler.PlaySound(soundHandler.attackSound);
         }
 
         private void Spin(InputAction.CallbackContext ctx)
         {
-            if (!CanMove)
-            {
-                soundHandler.StopCurrent();
-                return;
-            }
+            if (!CanMove) return;
 
             isSpin = ctx.performed;
             animator.OnSpin(ctx);
-
-            soundHandler.PlaySound(soundHandler.spinSound);
         }
 
         private void Hit(int previousValue, int newValue)
@@ -387,8 +367,6 @@ namespace Players
 
             if (newValue > 0) animator.OnHit();
             else StartCoroutine(DeathCoroutine());
-
-            soundHandler.PlaySound(soundHandler.hitSound);
         }
 
         private IEnumerator DeathCoroutine()
