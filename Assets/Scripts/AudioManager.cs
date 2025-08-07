@@ -1,46 +1,52 @@
+using System.Collections;
 using EventHandler;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Pool;
-using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance { get; private set; }
-
-    [Header("Mixer & Groups")]
     [SerializeField] private AudioMixer mixer;
+
     [SerializeField] private AudioMixerGroup bgmGroup;
     [SerializeField] private AudioMixerGroup sfxGroup;
 
-    [Header("BGM Clips")]
-    [Tooltip("Title 씬에서 재생할 BGM")]
     [SerializeField] private AudioClip titleBGM;
-    [Tooltip("Lobby 씬에서 재생할 BGM")]
     [SerializeField] private AudioClip lobbyBGM;
-    [Tooltip("InGame 씬에서 재생할 BGM")]
     [SerializeField] private AudioClip inGameBGM;
 
-    [Header("BGM Source")]
     [SerializeField] private AudioSource bgmSource;
 
-    [Header("SFX Pool Settings")]
     [SerializeField] private int poolCapacity = 10;
     [SerializeField] private int poolMaxSize = 20;
+
     private ObjectPool<AudioSource> sfxPool;
 
-    void Awake()
+    public static AudioManager Instance { get; private set; }
+
+    private void Awake()
     {
-        if (!Instance) {
+        if (!Instance)
+        {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            InitSfxPool();
         }
-        else Destroy(gameObject);
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         GamePlayEventHandler.UIChanged += OnUIChanged;
+    }
+
+    private void OnDisable()
+    {
+        GamePlayEventHandler.UIChanged -= OnUIChanged;
     }
 
     private void OnUIChanged(string obj)
@@ -59,12 +65,8 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    void OnDisable()
-    {
-        GamePlayEventHandler.UIChanged -= OnUIChanged;
-    }
-
     #region BGM API
+
     public void PlayBGM(AudioClip clip, float volume = 1f, bool loop = true)
     {
         if (bgmSource.clip == clip && bgmSource.isPlaying) return;
@@ -75,9 +77,81 @@ public class AudioManager : MonoBehaviour
         bgmSource.Play();
     }
 
-    public void StopBGM() => bgmSource.Stop();
+    public void StopBGM()
+    {
+        bgmSource.Stop();
+    }
 
     public void SetBGMVolume(float linear)
-        => mixer.SetFloat("BGMVolume", Mathf.Log10(Mathf.Clamp01(linear)) * 20f);
+    {
+        mixer.SetFloat("BGMVolume", Mathf.Log10(Mathf.Clamp01(linear)) * 20f);
+    }
+
+    #endregion
+
+    #region SFX Pool 초기화
+
+    private void InitSfxPool()
+    {
+        sfxPool = new ObjectPool<AudioSource>(
+            () =>
+            {
+                var go = new GameObject("PooledSFX");
+                go.transform.SetParent(transform);
+                var src = go.AddComponent<AudioSource>();
+                src.outputAudioMixerGroup = sfxGroup;
+                src.spatialBlend = 1f; // 3D 사운드
+                src.minDistance = 1f;
+                src.minDistance = 10f;
+                src.dopplerLevel = 1f;
+                src.spread = 360f;
+                src.rolloffMode = AudioRolloffMode.Linear;
+                go.SetActive(false);
+                return src;
+            },
+            src => src.gameObject.SetActive(true),
+            src =>
+            {
+                src.Stop();
+                src.clip = null;
+                src.gameObject.SetActive(false);
+            },
+            src => Destroy(src.gameObject),
+            false,
+            poolCapacity,
+            poolMaxSize
+        );
+    }
+
+    #endregion
+
+    #region SFX API
+
+    /// <summary>
+    ///     위치 기반으로 효과음 재생
+    /// </summary>
+    public void PlaySfx(AudioClip clip, Vector3 position, float volume = 1f, float pitch = 1f)
+    {
+        if (clip == null) return;
+        var src = sfxPool.Get();
+        src.transform.position = position;
+        src.clip = clip;
+        src.volume = volume;
+        src.pitch = pitch;
+        src.Play();
+        StartCoroutine(ReleaseWhenDone(src));
+    }
+
+    public void SetSfxVolume(float linear)
+    {
+        mixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Clamp01(linear)) * 20f);
+    }
+
+    private IEnumerator ReleaseWhenDone(AudioSource src)
+    {
+        yield return new WaitUntil(() => !src.isPlaying);
+        sfxPool.Release(src);
+    }
+
     #endregion
 }

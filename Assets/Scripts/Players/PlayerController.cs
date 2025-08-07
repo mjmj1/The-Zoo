@@ -78,8 +78,6 @@ namespace Players
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
-        private PlayerSfx sfx;
-
         private PlayerNetworkAnimator animator;
 
         private PlayerEntity entity;
@@ -233,7 +231,6 @@ namespace Players
             Cursor.visible = false;
 
             rb = GetComponent<Rigidbody>();
-            sfx = GetComponent<PlayerSfx>();
             input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
             animator = GetComponent<PlayerNetworkAnimator>();

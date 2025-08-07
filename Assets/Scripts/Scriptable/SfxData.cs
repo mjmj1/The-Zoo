@@ -7,5 +7,6 @@ namespace Scriptable
     {
         public AudioClip clip;
         [Range(0f,1f)] public float volume = 1f;
+        public float pitch = 1f;
     }
 }
