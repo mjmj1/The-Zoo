@@ -1,14 +1,11 @@
 using UnityEngine;
 
-namespace Players
+public class PlayerVFX : MonoBehaviour
 {
-    public class PlayerVfx : MonoBehaviour
-    {
-        [SerializeField] private ParticleSystem hitEffectPrefab;
+    [SerializeField] private ParticleSystem hitEffectPrefab;
 
-        public void HitEffect()
-        {
-            hitEffectPrefab.Play();
-        }
+    public void HitEffect()
+    {
+        hitEffectPrefab.Play();
     }
 }
