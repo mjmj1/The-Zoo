@@ -8,6 +8,7 @@ namespace EventHandler
         internal static event Action PlayerLogin;
         internal static event Action PlayerAttack;
         internal static event Action<bool, bool, int> CheckInteractable;
+        internal static event Action<string> UIChanged;
 
         internal static void OnPlayerReady(string id, bool value)
         {
@@ -27,6 +28,10 @@ namespace EventHandler
         internal static void OnCheckInteractable(bool value, bool isTarget, int count)
         {
             CheckInteractable?.Invoke(value, isTarget, count);
+        }
+        internal static void OnUIChanged(string name)
+        {
+            UIChanged?.Invoke(name);
         }
     }
 }

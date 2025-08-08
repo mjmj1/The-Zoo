@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utils;
 using System;
+using EventHandler;
 using WebSocketSharp;
 
 namespace UI
@@ -23,6 +24,7 @@ namespace UI
             joinButton.onClick.AddListener(OnJoinButtonClick);
             quickStartButton.onClick.AddListener(OnQuickStartButtonClick);
             sessionListButton.onClick.AddListener(sessionsList.Toggle);
+            GamePlayEventHandler.OnUIChanged("Title");
         }
 
         private void OnDisable()
