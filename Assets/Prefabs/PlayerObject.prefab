@@ -369,6 +369,24 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   attackOrigin: {fileID: 5877200157190742088}
+--- !u!114 &7625310577876099095
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978094491091307183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aaee1243bbd3fc4dbbfef8b92782d80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSfx: {fileID: 11400000, guid: 142eda586581caa4788765579e8ab941, type: 2}
+  runSfx: {fileID: 0}
+  jumpSfx: {fileID: 11400000, guid: fdf34cf13dbf94b418d89f052b451f59, type: 2}
+  attackSfx: {fileID: 11400000, guid: f630342595729494c832f252a4a1ed4c, type: 2}
+  hitSfx: {fileID: 11400000, guid: a0685333be464504ea97685c7c7a8dd1, type: 2}
+  spinSfx: {fileID: 11400000, guid: 14ceed1f861498b439c53f3a1017f811, type: 2}
 --- !u!114 &2492283528243099242
 MonoBehaviour:
   m_ObjectHideFlags: 0
