@@ -1627,6 +1627,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  readyCount:
+    m_InternalValue: 0
 --- !u!114 &194974665
 MonoBehaviour:
   m_ObjectHideFlags: 0

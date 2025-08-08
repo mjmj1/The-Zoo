@@ -2,6 +2,7 @@ using System;
 using EventHandler;
 using Networks;
 using UI.PlayerList;
+using Unity.Netcode;
 using Unity.Services.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +26,7 @@ namespace UI
             session.SessionHostChanged += OnSessionHostChanged;
             session.PlayerJoined += OnPlayerChanged;
             session.PlayerHasLeft += OnPlayerChanged;
+            GameManager.Instance.readyCount.OnValueChanged += OnValueChanged;
 
             quitButton.onClick.AddListener(OnQuitButtonClick);
             gameStartButton.onClick.AddListener(OnGameStartButtonClick);
@@ -32,9 +34,9 @@ namespace UI
 
             SwitchUI(session.IsHost);
 
-            gameStartButton.interactable = session.PlayerCount > 1;
-
             GamePlayEventHandler.OnUIChanged("Lobby");
+
+            gameStartButton.interactable = false;
         }
 
         private void OnDisable()
@@ -44,6 +46,9 @@ namespace UI
             if (session == null) return;
 
             session.SessionHostChanged -= OnSessionHostChanged;
+            session.PlayerJoined -= OnPlayerChanged;
+            session.PlayerHasLeft -= OnPlayerChanged;
+            GameManager.Instance.readyCount.OnValueChanged += OnValueChanged;
 
             quitButton.onClick.RemoveListener(OnQuitButtonClick);
             gameStartButton.onClick.RemoveListener(OnGameStartButtonClick);
@@ -52,9 +57,14 @@ namespace UI
 
         private void OnPlayerChanged(string obj)
         {
-            var session = ConnectionManager.Instance.CurrentSession;
-            if (session == null) return;
-            gameStartButton.interactable = session.PlayerCount > 1;
+            OnValueChanged(0, GameManager.Instance.readyCount.Value);
+        }
+
+        private void OnValueChanged(int previousValue, int newValue)
+        {
+            gameStartButton.interactable =
+                NetworkManager.Singleton.ConnectedClientsIds.Count > 1 &&
+                newValue >= NetworkManager.Singleton.ConnectedClientsIds.Count - 1;
         }
 
         private void OnSessionHostChanged(string obj)
@@ -78,6 +88,8 @@ namespace UI
 
         private void OnGameStartButtonClick()
         {
+            GameManager.Instance.CanGameStart();
+
             GameManager.Instance.GameStartRpc();
         }
 

@@ -41,7 +41,7 @@ namespace Networks
         {
             ConnectionEventHandler.SessionDisconnected -= OnSessionDisconnect;
 
-            // RemoveRpc(index);
+            RemoveRpc(index);
         }
 
         protected override void OnNetworkSessionSynchronized()
@@ -53,11 +53,11 @@ namespace Networks
 
         private void Spawn()
         {
-            // index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
+            index = GetRandomIndexExcludingSpawned(animalPrefabs.Count);
 
             SpawnPlayer(index);
 
-            // AddRpc(index);
+            AddRpc(index);
         }
 
         [Rpc(SendTo.Owner)]
