@@ -7,13 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/AI/Agent v2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/AI/Agent v2.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AI/HiderAgentv2.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AI/HiderAgentv2.cs" afterDir="false" />
-    </list>
+    <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -258,7 +252,7 @@
       <workItem from="1754114729998" duration="38037000" />
       <workItem from="1754306214606" duration="8655000" />
       <workItem from="1754751568026" duration="2852000" />
-      <workItem from="1754807085356" duration="3869000" />
+      <workItem from="1754807085356" duration="4307000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />
