@@ -28,7 +28,6 @@ namespace Players
         public NetworkVariable<FixedString32Bytes> playerName = new();
 
         public NetworkVariable<Role> role = new();
-        public NetworkVariable<int> health = new(3);
         public NetworkVariable<bool> isDead = new();
 
         private PlayerRenderer playerRenderer;
@@ -40,9 +39,8 @@ namespace Players
 
             role.Value = Role.None;
             isDead.Value = false;
-            health.Value = 3;
             playerMarker.color = roleColor.defaultColor;
-            
+
             CameraManager.Instance.EnableCamera(true);
         }
 
@@ -65,8 +63,6 @@ namespace Players
 
             playerMarker.gameObject.SetActive(true);
 
-            health.OnValueChanged += OnHealthChanged;
-
             NetworkManager.Singleton.SceneManager.OnLoadComplete += OnNetworkSceneLoadComplete;
 
             playerName.Value = AuthenticationService.Instance.PlayerName;
@@ -86,7 +82,6 @@ namespace Players
 
             if (!IsOwner) return;
 
-            health.OnValueChanged -= OnHealthChanged;
             NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
 
             CameraManager.Instance.EnableCamera(false);
@@ -115,11 +110,6 @@ namespace Players
                     break;
                 }
             }
-        }
-
-        public void Damaged()
-        {
-            health.Value -= 1;
         }
 
         internal void AlignForward()
@@ -187,7 +177,7 @@ namespace Players
         private void OnHealthChanged(int previousValue, int newValue)
         {
             print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
-            this.GetComponent<PlayerVfx>().HitEffect();
+            GetComponent<PlayerVfx>().HitEffect();
         }
 
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)

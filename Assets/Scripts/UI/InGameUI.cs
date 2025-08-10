@@ -22,7 +22,7 @@ namespace UI
         {
             PlayManager.Instance.currentTime.OnValueChanged += OnTimerChanged;
             NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>().health.OnValueChanged += OnPlayerHealthChanged;
+                .GetComponent<Hittable>().health.OnValueChanged += OnPlayerHealthChanged;
 
             NetworkManager.OnDestroying += OnDestroying;
 
@@ -32,7 +32,7 @@ namespace UI
         private void OnDestroy()
         {
             NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
+                .GetComponent<Hittable>().health.OnValueChanged -= OnPlayerHealthChanged;
         }
 
         private void OnDestroying(NetworkManager obj)

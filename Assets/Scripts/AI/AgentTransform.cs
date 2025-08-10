@@ -1,3 +1,6 @@
+using System.Collections;
+using Players;
+using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 
@@ -5,7 +8,10 @@ namespace AI
 {
     public class AgentTransform : NetworkTransform
     {
+        public NetworkVariable<int> health = new (3);
+
         private Rigidbody rb;
+        private NPAv2 npa;
 
         protected override void Awake()
         {
@@ -29,6 +35,7 @@ namespace AI
             rb.isKinematic = false;
             PlanetGravity.Instance?.Subscribe(rb);
 
+            health.OnValueChanged += npa.Hit;
         }
 
         public override void OnNetworkDespawn()
@@ -36,6 +43,13 @@ namespace AI
             base.OnNetworkDespawn();
 
             PlanetGravity.Instance?.Unsubscribe(rb);
+
+            health.OnValueChanged -= npa.Hit;
+        }
+
+        internal void OnDeath()
+        {
+            OnDeferringDespawn(1);
         }
     }
 }

@@ -81,24 +81,24 @@ namespace Players
         private PlayerNetworkAnimator animator;
 
         private PlayerEntity entity;
+        private Hittable hittable;
         private InputHandler input;
         private bool isAround;
         private bool isSpin;
 
         private float moveSpeed;
+        private PlayerVfx playerVfx;
 
         private Rigidbody rb;
 
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
 
-        public bool CanMove { get; set; } = true;
-        public bool IsJumping { get; set; }
-        public bool IsSpinning { get; set; }
-
         public void Reset()
         {
             CanMove = true;
+
+            hittable.Reset();
         }
 
         private void Start()
@@ -127,6 +127,9 @@ namespace Players
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, 0.05f);
         }
+
+        public bool CanMove { get; set; } = true;
+        public bool IsSpinning { get; set; }
 
         public override void OnNetworkSpawn()
         {
@@ -193,7 +196,7 @@ namespace Players
             input.InputActions.Player.Jump.performed += Jump;
             input.InputActions.Player.Attack.started += Attack;
 
-            entity.health.OnValueChanged += Hit;
+            hittable.health.OnValueChanged += Hit;
         }
 
         private void Unsubscribe()
@@ -215,7 +218,7 @@ namespace Players
             input.InputActions.Player.Jump.performed -= Jump;
             input.InputActions.Player.Attack.performed -= Attack;
 
-            entity.health.OnValueChanged -= Hit;
+            hittable.health.OnValueChanged -= Hit;
         }
 
         private void Rmb(InputAction.CallbackContext ctx)
@@ -233,6 +236,8 @@ namespace Players
             rb = GetComponent<Rigidbody>();
             input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
+            playerVfx = GetComponent<PlayerVfx>();
+            hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
         }
@@ -268,7 +273,6 @@ namespace Players
 
             rb.MovePosition(rb.position +
                             moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
-
         }
 
         private void AlignToSurface()
@@ -326,14 +330,8 @@ namespace Players
 
         private void Run(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed)
-            {
-                moveSpeed = runSpeed;
-            }
-            if (ctx.canceled)
-            {
-                moveSpeed = walkSpeed;
-            }
+            if (ctx.performed) moveSpeed = runSpeed;
+            if (ctx.canceled) moveSpeed = walkSpeed;
             animator.OnRun(ctx);
         }
 
@@ -360,6 +358,10 @@ namespace Players
 
         private void Hit(int previousValue, int newValue)
         {
+            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
+
+            playerVfx.HitEffect();
+
             StartCoroutine(Slowdown());
 
             if (newValue > 0) animator.OnHit();

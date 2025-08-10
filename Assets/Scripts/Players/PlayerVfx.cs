@@ -6,7 +6,7 @@ namespace Players
     {
         [SerializeField] private ParticleSystem hitEffectPrefab;
 
-        public void HitEffect()
+        internal void HitEffect()
         {
             hitEffectPrefab.Play();
         }

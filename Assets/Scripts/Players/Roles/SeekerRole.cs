@@ -51,7 +51,7 @@ namespace Players.Roles
             if (!Physics.SphereCast(attackOrigin.position, attackRadius, transform.forward,
                     out var hit, attackRange, hiderMask)) return;
 
-            var target = hit.collider.gameObject.GetComponent<PlayerEntity>();
+            var target = hit.collider.gameObject.GetComponent<NetworkBehaviour>();
             target.GetComponent<PlayerVfx>().HitEffect();
             OnPlayerHitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
         }
@@ -62,7 +62,7 @@ namespace Players.Roles
             print($"target-{OwnerClientId} Hit");
 
             var target = NetworkManager.Singleton
-                .LocalClient.PlayerObject.GetComponent<PlayerEntity>();
+                .LocalClient.PlayerObject.GetComponent<Hittable>();
 
             target.Damaged();
         }

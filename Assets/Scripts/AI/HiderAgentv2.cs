@@ -217,7 +217,6 @@ namespace AI
                 var normal = -planet.GetGravityDirection(interactable.position);
                 interactable.rotation = Quaternion.FromToRotation(interactable.transform.up, normal);
             }
-
         }
 
         public override void CollectObservations(VectorSensor sensor)

@@ -1425,7 +1425,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   npcPrefabs:
-  - {fileID: 4108932776260164882, guid: 10f85277d56dfc4438fd640a7f2d1a43, type: 3}
+  - {fileID: 4108932776260164882, guid: 9c3a64bd91c62bf46a76149c1b407307, type: 3}
 --- !u!1 &1439727997
 GameObject:
   m_ObjectHideFlags: 0
