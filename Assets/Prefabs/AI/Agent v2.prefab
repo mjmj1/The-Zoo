@@ -63,6 +63,7 @@ MonoBehaviour:
   runSpeed: 7
   jumpForce: 3
   rotationSpeed: 500
+  planet: {fileID: 0}
   moveInput: {x: 0, y: 0}
   lookInput: {x: 0, y: 0}
   currentMoveState: 0

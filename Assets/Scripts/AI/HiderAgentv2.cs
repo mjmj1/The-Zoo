@@ -226,8 +226,8 @@ namespace AI
             sensor.AddObservation(lookInput);
             sensor.AddObservation(rb.linearVelocity.normalized);
             sensor.AddObservation(rb.linearVelocity.magnitude);
-            sensor.AddObservation(transform.up);
-            sensor.AddObservation(transform.forward);
+            sensor.AddObservation(transform.up.normalized);
+            sensor.AddObservation(transform.forward.normalized);
             sensor.AddObservation(foundSeeker);
             sensor.AddObservation(isAction);
             sensor.AddObservation(IsGrounded());
@@ -326,7 +326,7 @@ namespace AI
 
             lookInput.x = action[0];
 
-            transform.Rotate(Vector3.up * (lookInput.x * 3f));
+            transform.Rotate(Vector3.up * (lookInput.x * 10f));
         }
 
         private void HandleJumpAction(ActionSegment<int> action)
@@ -422,16 +422,17 @@ namespace AI
 
             var dot = Vector3.Dot(moveDir, lookDir);
 
-            AddReward(-Mathf.Abs(lookInput.x) * 0.0001f);
+            if(lookInput.x == 0)
+                AddReward(0.0000001f);
 
             if (hasHit)
             {
                 var hitDot = Vector3.Dot(moveDir, lastHitDirection);
 
-                if (currentMoveState != AgentMoveState.Idle && hitDot > 0.7f)
+                if (currentMoveState != AgentMoveState.Idle && hitDot > 0.8f)
                 {
                     //print($"Hit Reward");
-                    AddReward(hitDot * 0.0005f);
+                    AddReward(hitDot * 0.01f);
                 }
 
                 return;
@@ -453,7 +454,7 @@ namespace AI
                 else if (currentMoveState == AgentMoveState.Idle)
                 {
                     //print($"Freeze Reward");
-                    AddReward(-0.0025f);
+                    AddReward(-0.005f);
                 }
             }
             else
@@ -463,13 +464,13 @@ namespace AI
                     if (currentMoveState == AgentMoveState.Walking)
                     {
                         //print($"Walking Action");
-                        var reward = dot * 0.001f;
+                        var reward = -dot * 0.000001f;
                         AddReward(reward);
                     }
                     else if (currentMoveState == AgentMoveState.Running)
                     {
                         //print($"Running Action");
-                        var reward = dot * 0.0011f;
+                        var reward = -dot * 0.0000011f;
                         AddReward(reward);
                     }
                 }
@@ -488,7 +489,7 @@ namespace AI
                         else
                         {
                             //print("Jumping Reward");
-                            AddReward(0.001f);
+                            AddReward(0.02f);
                         }
 
                         break;
@@ -501,7 +502,7 @@ namespace AI
                         else
                         {
                             //print("Attacking Reward");
-                            AddReward(0.001f);
+                            AddReward(0.02f);
                         }
                         break;
                     case AgentActionState.SpinStart:
@@ -513,14 +514,14 @@ namespace AI
                         else
                         {
                             //print("SpinStart Reward");
-                            AddReward(0.001f);
+                            AddReward(0.02f);
                         }
                         break;
                     case AgentActionState.SpinEnd:
                         if (isAction)
                         {
                             // print("SpinEnd Reward");
-                            AddReward(0.001f);
+                            AddReward(0.02f);
                         }
                         break;
                 }
@@ -549,7 +550,7 @@ namespace AI
             if (dist > 10f)
             {
                 //print("Seeker Avoided");
-                AddReward(0.005f);
+                AddReward(0.02f);
                 foundSeeker = null;
             }
             else
