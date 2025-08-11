@@ -44,6 +44,8 @@ namespace Interactions
 
         public override void StartInteract()
         {
+            base.StartInteract();
+
             if (targetMission.Value)
                 if (maxSpawnCount.Value > 0)
                 {

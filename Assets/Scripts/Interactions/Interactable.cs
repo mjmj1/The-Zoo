@@ -1,5 +1,6 @@
-using EventHandler;
+using Scriptable;
 using Unity.Netcode;
+using UnityEngine;
 
 namespace Interactions
 {
@@ -15,6 +16,9 @@ namespace Interactions
 
         public NetworkVariable<bool> targetMission;
         public NetworkVariable<int> maxSpawnCount;
+
+        [SerializeField] private SfxData sfxData;
+        [SerializeField] private ParticleSystem vfxData;
 
         private void Reset()
         {
@@ -49,8 +53,21 @@ namespace Interactions
             maxSpawnCount.Value = newValue;
         }
 
-        public abstract void StartInteract();
+        public virtual void StartInteract()
+        {
+            PlayFxRpc();
+        }
+
         public abstract void StopInteract();
+
+
+        [Rpc(SendTo.Everyone)]
+        private void PlayFxRpc()
+        {
+            AudioManager.Instance.PlaySfx(sfxData.clip, transform.position, sfxData.volume, sfxData.pitch);
+
+            vfxData.Play();
+        }
 
         public abstract InteractableType GetInteractableType();
     }

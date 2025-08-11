@@ -1,18 +1,22 @@
+using System;
+using System.Collections;
 using EventHandler;
 using Interactions;
 using Unity.Netcode;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace Players.Roles
 {
     public class HiderRole : NetworkBehaviour
     {
-        [SerializeField] private float interactionDistance = 2f;
-        [SerializeField] private LayerMask layer;
-        [SerializeField] private float attackRange = 1f;
-        [SerializeField] private float attackRadius = 1f;
-        [SerializeField] private Transform attackOrigin;
+        [SerializeField] private LayerMask interactLayer;
+        [SerializeField] private LayerMask pickupLayer;
+        [SerializeField] private float interactRange = 0.7f;
+        [SerializeField] private float interactRadius = 0.3f;
+        [SerializeField] private Transform origin;
 
         private Interactable currentInteractable;
 
@@ -22,16 +26,7 @@ namespace Players.Roles
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
-        }
-
-        private void Start()
-        {
             inputHandler = GetComponent<InputHandler>();
-
-            inputHandler.InputActions.Player.Interact.performed +=
-                _ => currentInteractable?.StartInteract();
-            inputHandler.InputActions.Player.Interact.canceled +=
-                _ => currentInteractable?.StopInteract();
         }
 
         private void FixedUpdate()
@@ -44,29 +39,46 @@ namespace Players.Roles
             if (!IsOwner) return;
 
             entity.playerMarker.color = entity.roleColor.hiderColor;
+
+            inputHandler.InputActions.Player.Interact.performed += Interact;
+            inputHandler.InputActions.Player.Interact.canceled += Interact;
+
+            GamePlayEventHandler.PlayerAttack += TryInteract;
         }
 
-        private void OnPlayerAttack()
+        private void OnDisable()
         {
-            print($"client-{entity.clientId.Value} Seeker Attack");
+            inputHandler.InputActions.Player.Interact.performed -= Interact;
+            inputHandler.InputActions.Player.Interact.canceled -= Interact;
 
-            if (!Physics.SphereCast(attackOrigin.position, attackRadius, transform.forward,
-                    out var hit, attackRange, layer)) return;
+            GamePlayEventHandler.PlayerAttack -= TryInteract;
+        }
 
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawWireSphere(origin.position + (transform.forward * interactRange), interactRadius);
+        }
 
+        private void Interact(InputAction.CallbackContext ctx)
+        {
+            if(ctx.performed)
+                currentInteractable?.StartInteract();
+            else
+                currentInteractable?.StopInteract();
         }
 
         private void CheckForInteractable()
         {
             if (!Physics.Raycast(transform.position, transform.forward, out var hit,
-                    interactionDistance, layer))
+                    interactRange, interactLayer))
             {
                 UnfocusInteractable();
                 return;
             }
 
             if (!hit.collider.TryGetComponent<Interactable>(out var interactable)) return;
-            
+
             FocusInteractable(interactable);
         }
 
@@ -86,6 +98,48 @@ namespace Players.Roles
 
             currentInteractable = null;
             GamePlayEventHandler.OnCheckInteractable(false, false, 0);
+        }
+
+        private void TryInteract()
+        {
+            if (!IsOwner) return;
+            if (!Physics.SphereCast(origin.position, interactRadius, transform.forward,
+                    out var hit, interactRange, pickupLayer)) return;
+
+            if (!hit.collider.TryGetComponent<NetworkObject>(out var no)) return;
+
+            RequestPickupRpc(new NetworkObjectReference(no),
+                RpcTarget.Single(no.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void RequestPickupRpc(NetworkObjectReference pickupRef, RpcParams param = default)
+        {
+            if (!pickupRef.TryGet(out var no) || !no.IsSpawned) return;
+
+            if (!no.TryGetComponent<Pickup>(out var p)) return;
+            if (p.consumed.Value) return;
+
+            p.consumed.Value = true;
+
+            StartCoroutine(PickupRoutine(no, pickupRef));
+        }
+
+        [Rpc(SendTo.Everyone)]
+        private void ApplyPickedVisualsRpc(NetworkObjectReference pickupRef)
+        {
+            if (!pickupRef.TryGet(out var no)) return;
+
+            no.GetComponent<Pickup>().PickUp();
+        }
+
+        private IEnumerator PickupRoutine(NetworkObject no, NetworkObjectReference pickupRef)
+        {
+            ApplyPickedVisualsRpc(pickupRef);
+
+            yield return new WaitForSeconds(0.3f);
+
+            no.DeferDespawn(2);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace UI
         [SerializeField] private GameObject missionsView;
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
-        [SerializeField] private GameObject keyUI;
+        [SerializeField] private KeyUI keyUI;
         [SerializeField] private Image hitOverlay;
         [SerializeField] private float fadeDuration = 0.2f;
 
@@ -36,7 +36,7 @@ namespace UI
             GamePlayEventHandler.CheckInteractable += OnKeyUI;
 
             missionsView.SetActive(false);
-            keyUI.SetActive(false);
+            keyUI.gameObject.SetActive(false);
             GamePlayEventHandler.OnUIChanged("InGame");
         }
 
@@ -56,24 +56,22 @@ namespace UI
 
         private void OnKeyUI(bool value, bool isTarget, int count)
         {
-            keyUI.SetActive(value);
+            keyUI.gameObject.SetActive(value);
 
-            var background = keyUI.transform.GetChild(0).GetComponent<Image>();
-
-            if (isTarget)
+            if (!isTarget)
             {
-                if (count == 0)
-                {
-                    background.color = Color.white;
-                }
-                else
-                {
-                    background.color = new Color32(150, 255, 150, 255); // Light Green
-                }
+                keyUI.NonInteractable();
             }
             else
             {
-                background.color = new Color32(255, 150, 150, 255); // Light Red
+                if (count == 0)
+                {
+                    keyUI.Unable();
+                }
+                else
+                {
+                    keyUI.Interactable();
+                }
             }
         }
 

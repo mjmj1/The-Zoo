@@ -194,7 +194,6 @@ namespace Players
             Input.InputActions.Player.Spin.canceled += Spin;
             Input.InputActions.Player.Jump.performed += Jump;
             Input.InputActions.Player.Attack.started += Attack;
-            Input.InputActions.Player.PickUp.performed += PickUp;
 
             entity.health.OnValueChanged += Hit;
         }
@@ -217,7 +216,6 @@ namespace Players
             Input.InputActions.Player.Spin.canceled -= Spin;
             Input.InputActions.Player.Jump.performed -= Jump;
             Input.InputActions.Player.Attack.performed -= Attack;
-            Input.InputActions.Player.PickUp.performed -= PickUp;
 
             entity.health.OnValueChanged -= Hit;
         }
@@ -341,78 +339,12 @@ namespace Players
             if (!CanMove) return;
             if (!IsGrounded()) return;
             if (isSpin) return;
-            
-            print("gameObject.GetComponent<SeekerRole>().enabled : " + gameObject.GetComponent<SeekerRole>().enabled);
 
             entity.AlignForward();
 
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
-        }
-
-        [SerializeField] private float pickupRadius = 1f;
-        private static readonly Collider[] _hits = new Collider[16];
-
-        private void PickUp(InputAction.CallbackContext ctx)
-        {
-            if (!IsOwner || !CanMove) return;
-            if (gameObject.GetComponent<HiderRole>().enabled)
-            {
-                int n = Physics.OverlapSphereNonAlloc(
-                transform.position, pickupRadius, _hits, ~0, QueryTriggerInteraction.Collide);
-
-                NetworkObject fruit = null;
-                for (int i = 0; i < n; i++)
-                {
-                    var col = _hits[i];
-                    if (!col || !col.CompareTag("PickUp")) continue;
-                    fruit = col.GetComponentInParent<NetworkObject>();
-                    if (fruit) break;
-                }
-                if (!fruit) return;
-
-                RequestPickupServerRpc(fruit);
-            }
-        }
-
-        [Rpc(SendTo.Authority, RequireOwnership = false)]
-        private void RequestPickupServerRpc(NetworkObjectReference pickupRef, RpcParams rpc = default)
-        {
-            if (!pickupRef.TryGet(out var pickup)) return;
-            if(!pickup.IsSpawned) return;
-
-            var sender = rpc.Receive.SenderClientId;
-            var owner = pickup.OwnerClientId;
-
-            if (pickup.IsOwnedByServer || owner == sender)
-            {
-                pickup.DeferDespawn(5);
-                return;
-            }
-
-            if (NetworkManager.ConnectedClients.TryGetValue(owner, out var client))
-            {
-                var ownerPc = client.PlayerObject.GetComponent<PlayerController>();
-                if (ownerPc != null)
-                    ownerPc.RequestDespawnRpc(pickupRef);
-            }
-        }
-
-        [Rpc(SendTo.Owner)]
-        private void RequestDespawnRpc(NetworkObjectReference fruitRef)
-        {
-            PickupDespawnRpc(fruitRef);
-        }
-
-        [Rpc(SendTo.Authority)]
-        private void PickupDespawnRpc(NetworkObjectReference pickupRef, RpcParams rpc = default)
-        {
-            if (!pickupRef.TryGet(out var pickup)) return;
-            if (!pickup.IsSpawned) return;
-            if (pickup.OwnerClientId != rpc.Receive.SenderClientId) return;
-
-            pickup.DeferDespawn(5);
         }
 
         private void Spin(InputAction.CallbackContext ctx)
