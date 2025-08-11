@@ -1,8 +1,9 @@
 #if UNITY_EDITOR
-using System.Collections;
-using System.Linq;
 using EventHandler;
 using Players.Roles;
+using System.Collections;
+using System.Linq;
+using Unity.Netcode;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -342,10 +343,11 @@ namespace Players
 
         private void Attack(InputAction.CallbackContext ctx)
         {
+            if (!IsOwner) return;
             if (!CanMove) return;
             if (!IsGrounded()) return;
             if (isSpin) return;
-
+            
             print("gameObject.GetComponent<SeekerRole>().enabled : " + gameObject.GetComponent<SeekerRole>().enabled);
 
             entity.AlignForward();
@@ -355,21 +357,66 @@ namespace Players
             animator.OnAttack(ctx);
         }
 
+        [SerializeField] private float pickupRadius = 2f;
+        private static readonly Collider[] _hits = new Collider[16];
+
         private void PickUp(InputAction.CallbackContext ctx)
         {
-            if (!CanMove) return;
-
-            print("gameObject.GetComponent<HiderRole>().enabled : " + gameObject.GetComponent<HiderRole>().enabled);
-
-            var colliders = Physics.OverlapSphere(transform.position, 2f);
-            foreach (var col in colliders)
+            if (!IsOwner || !CanMove) return;
+            if (gameObject.GetComponent<HiderRole>().enabled)
             {
-                if (col.CompareTag("PickUp"))
+                int n = Physics.OverlapSphereNonAlloc(
+                transform.position, pickupRadius, _hits, ~0, QueryTriggerInteraction.Collide);
+
+                NetworkObject fruit = null;
+                for (int i = 0; i < n; i++)
                 {
-                    Destroy(col.gameObject);
-                    break;
+                    var col = _hits[i];
+                    if (!col || !col.CompareTag("PickUp")) continue;
+                    fruit = col.GetComponentInParent<NetworkObject>();
+                    if (fruit) break;
                 }
+                if (!fruit) return;
+
+                RequestPickupServerRpc(fruit);
             }
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        private void RequestPickupServerRpc(NetworkObjectReference fruitRef, RpcParams rpc = default)
+        {
+            if (!fruitRef.TryGet(out var fruit) || !fruit || !fruit.IsSpawned) return;
+
+            var requester = rpc.Receive.SenderClientId;
+            var owner = fruit.OwnerClientId;
+
+            if (fruit.IsOwnedByServer || owner == requester)
+            {
+                fruit.Despawn(true);
+                return;
+            }
+
+            if (NetworkManager.ConnectedClients.TryGetValue(owner, out var ownerClient))
+            {
+                var ownerPc = ownerClient.PlayerObject?.GetComponent<PlayerController>();
+                if (ownerPc != null)
+                    ownerPc.AskOwnerToDespawnClientRpc(fruitRef);
+            }
+        }
+
+        [Rpc(SendTo.Owner)]
+        private void AskOwnerToDespawnClientRpc(NetworkObjectReference fruitRef)
+        {
+            ConfirmDespawnServerRpc(fruitRef);
+        }
+
+        [Rpc(SendTo.Server)]
+        private void ConfirmDespawnServerRpc(NetworkObjectReference fruitRef, RpcParams rpc = default)
+        {
+            if (!fruitRef.TryGet(out var fruit) || !fruit || !fruit.IsSpawned) return;
+            if (fruit.OwnerClientId != rpc.Receive.SenderClientId) return; // 보안 체크
+
+            fruit.Despawn(true);
         }
 
         private void Spin(InputAction.CallbackContext ctx)
