@@ -38,8 +38,6 @@ namespace UI
 
             missionsView.SetActive(false);
             keyUI.SetActive(false);
-            //NetworkManager.OnDestroying += OnDestroying;
-
             GamePlayEventHandler.OnUIChanged("InGame");
         }
 
