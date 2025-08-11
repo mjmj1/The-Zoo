@@ -160,8 +160,6 @@ namespace Players
 
             if (!sceneName.Equals("Lobby")) return;
 
-            GamePlayEventHandler.OnUIChanged("Lobby");
-
             Reset();
             entity.Reset();
             readyChecker.Reset();

@@ -1,8 +1,12 @@
 fileFormatVersion: 2
-guid: 4cf20aa01fccb0648b932b8c13f914a1
+guid: 36ee4051434481c41b2e62d245851cfd
 NativeFormatImporter:
   externalObjects: {}
+<<<<<<<< HEAD:Assets/Resources/Sounds/AudioMixer.mixer.meta
   mainObjectFileID: 0
+========
+  mainObjectFileID: 2100000
+>>>>>>>> main:Assets/TextMesh Pro/Sprites/Apple.mat.meta
   userData: 
   assetBundleName: 
   assetBundleVariant: 
