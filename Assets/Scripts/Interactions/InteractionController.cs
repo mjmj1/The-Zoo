@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
@@ -15,8 +16,11 @@ namespace Interactions
         private readonly List<NetworkObject> spawnedInteractions = new();
         private readonly HashSet<int> targetSet = new();
 
-        public int TargetCount = 5;
+        public int TargetCount = 5; // interactionable tree count
 
+        public event Action OnTargetCompleted;
+        [SerializeField] private int targetTotal = 25;
+        
         private void Start()
         {
             if (!IsOwner) return;
@@ -27,9 +31,21 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
+            //while (TargetCount > 0)
+            //{
+            //    var value = UnityEngine.Random.Range(0, count);
+
+            //    print("here is the problem");
+            //    targetSet.Clear();
+            //    while (targetSet.Count < TargetCount)
+            //    {
+            //        targetSet.Add(UnityEngine.Random.Range(0, count));
+            //    }
+            //    print("or not");
+            //}
             while (TargetCount > 0)
             {
-                var value = Random.Range(0, count);
+                var value = UnityEngine.Random.Range(0, count);
                 if (targetSet.Add(value))
                 {
                     TargetCount--;
@@ -44,7 +60,7 @@ namespace Interactions
 
                 var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
 
-                var randomYaw = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+                var randomYaw = Quaternion.Euler(0, UnityEngine.Random.Range(0f, 360f), 0);
 
                 var interaction = prefab.InstantiateAndSpawn(NetworkManager,
                     position: spawnPoint,
@@ -60,6 +76,16 @@ namespace Interactions
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
             foreach (var obj in spawnedInteractions) obj.Despawn();
+        }
+
+        public int CompletedTargetCount { get; private set; }
+        public int RemainingTargetCount => Mathf.Max(0, TargetCount - CompletedTargetCount);
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void ReportTargetCompletedRpc(RpcParams _ = default)
+        {
+            if (!IsServer) return;
+            CompletedTargetCount = Mathf.Min(TargetCount, CompletedTargetCount + 1);
+            OnTargetCompleted?.Invoke();
         }
     }
 }
