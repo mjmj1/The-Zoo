@@ -1,61 +1,73 @@
+using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Interactions
 {
     public class InteractableSpawner : Interactable
     {
-        [SerializeField] private GameObject spawnObject;
+        [SerializeField] private NetworkObject spawnObject;
         [SerializeField] private BoxCollider[] spawnPoints;
-        [SerializeField] private Vector2 downForceRange = new (0f, 1f);
-        
-        private bool isInteracting = false;
-        
+
+        private bool isInteracting;
+
+        private readonly List<NetworkObject> spawnedFruit = new();
+
 #if UNITY_EDITOR
-        void OnDrawGizmosSelected()
+        private void OnDrawGizmosSelected()
         {
             if (spawnPoints == null) return;
-            
+
             var spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
             Gizmos.color = Color.yellow;
 
-            Vector3 halfSize = spawnPoint.size * 0.5f;
-            Vector3 center   = spawnPoint.center;
+            var halfSize = spawnPoint.size * 0.5f;
+            var center = spawnPoint.center;
 
             // 로컬 그리기: 8개 모서리 구하기
-            for (int x = -1; x <= 1; x += 2)
-            for (int y = -1; y <= 1; y += 2)
-            for (int z = -1; z <= 1; z += 2)
+            for (var x = -1; x <= 1; x += 2)
+            for (var y = -1; y <= 1; y += 2)
+            for (var z = -1; z <= 1; z += 2)
             {
-                Vector3 localCorner = center + Vector3.Scale(halfSize, new Vector3(x,y,z));
-                Vector3 worldCorner = spawnPoint.transform.TransformPoint(localCorner);
+                var localCorner = center + Vector3.Scale(halfSize, new Vector3(x, y, z));
+                var worldCorner = spawnPoint.transform.TransformPoint(localCorner);
                 Gizmos.DrawSphere(worldCorner, 0.05f);
             }
         }
 #endif
-        
+        public void Initailize(bool targeted)
+        {
+            targetMission.Value = targeted;
+        }
+
         public override void StartInteract()
         {
-            if (isInteracting) return;
-            
-            isInteracting = true;
+            if (targetMission.Value)
+                while (maxSpawnCount.Value > 0)
+                {
+                    if (isInteracting) return;
 
-            Spawn();
-            
-            print($"{gameObject.name} is interacting...");
+                    isInteracting = true;
+
+                    SpawnRpc();
+
+                    print($"{gameObject.name} is interacting...");
+                }
         }
 
         public override void StopInteract()
         {
             if (!isInteracting) return;
-            
+
             isInteracting = false;
             print($"{gameObject.name} is stop interacting...");
         }
 
-        private void Spawn()
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        private void SpawnRpc(RpcParams rpcParams = default)
         {
             var spawnPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
-            
+
             var min = spawnPoint.bounds.min;
             var max = spawnPoint.bounds.max;
             var spawnPos = new Vector3(
@@ -64,17 +76,28 @@ namespace Interactions
                 Random.Range(min.z, max.z)
             );
 
-            var fruit = Instantiate(spawnObject, spawnPos, Quaternion.identity, spawnPoint.transform);
-            
-            var rb = fruit.GetComponent<Rigidbody>();
-            
-            if (rb == null)
-            {
-                var force = Random.Range(downForceRange.x, downForceRange.y);
-                rb.AddForce(Vector3.down * force, ForceMode.Impulse);
-            }
+            //var fruit = Instantiate(spawnObject, spawnPos, Quaternion.identity, spawnPoint.transform);
+            var fruit = spawnObject.InstantiateAndSpawn(NetworkManager,
+                position: spawnPos,
+                rotation: Quaternion.identity);
+            spawnedFruit.Add(fruit);
+
+            //var rb = fruit.GetComponent<Rigidbody>();
+
+            //if (rb == null)
+            //{
+            //    var force = Random.Range(downForceRange.x, downForceRange.y);
+            //    rb.AddForce(Vector3.down * force, ForceMode.Impulse);
+            //}
+            maxSpawnCount.Value--;
         }
-        
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        internal void DespawnInteractionRpc(RpcParams rpcParams = default)
+        {
+            foreach (var obj in spawnedFruit) obj.Despawn();
+        }
+
         public override InteractableType GetInteractableType()
         {
             return InteractableType.LeftClick;

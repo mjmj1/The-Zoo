@@ -13,7 +13,7 @@ public class CameraManager : MonoBehaviour
 
     public void Awake()
     {
-        if (Instance == null)
+        if (!Instance)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);

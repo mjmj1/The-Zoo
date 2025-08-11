@@ -1,5 +1,4 @@
 using System;
-using UnityEngine.InputSystem;
 
 namespace EventHandler
 {
@@ -8,7 +7,7 @@ namespace EventHandler
         internal static event Action<string, bool> PlayerReady;
         internal static event Action PlayerLogin;
         internal static event Action PlayerAttack;
-        internal static event Action<string> UIChanged;
+        internal static event Action<bool> CheckInteractable;
 
         internal static void OnPlayerReady(string id, bool value)
         {
@@ -25,9 +24,9 @@ namespace EventHandler
             PlayerAttack?.Invoke();
         }
 
-        internal static void OnUIChanged(string name)
+        internal static void OnCheckInteractable(bool value)
         {
-            UIChanged?.Invoke(name);
+            CheckInteractable?.Invoke(value);
         }
     }
 }

@@ -1,5 +1,4 @@
 using System;
-using EventHandler;
 using Networks;
 using UI.PlayerList;
 using Unity.Services.Core;
@@ -33,8 +32,6 @@ namespace UI
             SwitchUI(session.IsHost);
 
             gameStartButton.interactable = session.PlayerCount > 1;
-
-            GamePlayEventHandler.OnUIChanged("Lobby");
         }
 
         private void OnDisable()

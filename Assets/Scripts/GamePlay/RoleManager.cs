@@ -1,7 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Players;
 using Unity.Netcode;
-using UnityEngine;
-using Utils;
+using Unity.VisualScripting;
+using Random = UnityEngine.Random;
 
 namespace GamePlay
 {
@@ -44,8 +46,6 @@ namespace GamePlay
 
         internal void AssignRole()
         {
-            MyLogger.Print(this, "assigning role");
-
             var clients = NetworkManager.Singleton.ConnectedClientsList;
             var seeker = Random.Range(0, clients.Count);
 

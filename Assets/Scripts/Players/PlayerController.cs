@@ -34,7 +34,6 @@ namespace Players
             rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
-
             base.OnEnable();
         }
 
@@ -80,12 +79,13 @@ namespace Players
 
         private PlayerNetworkAnimator animator;
 
+        internal InputHandler Input;
         private PlayerEntity entity;
-        private InputHandler input;
         private bool isAround;
         private bool isSpin;
 
         private float moveSpeed;
+        private Quaternion previousRotation;
 
         private Rigidbody rb;
 
@@ -160,8 +160,6 @@ namespace Players
 
             if (!sceneName.Equals("Lobby")) return;
 
-            GamePlayEventHandler.OnUIChanged("Lobby");
-
             Reset();
             entity.Reset();
             readyChecker.Reset();
@@ -180,18 +178,18 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            input.InputActions.Player.Look.performed += Look;
-            input.InputActions.Player.Look.canceled += Look;
-            input.InputActions.Player.RightClick.performed += Rmb;
-            input.InputActions.Player.RightClick.canceled += Rmb;
-            input.InputActions.Player.Move.performed += Movement;
-            input.InputActions.Player.Move.canceled += Movement;
-            input.InputActions.Player.Run.performed += Run;
-            input.InputActions.Player.Run.canceled += Run;
-            input.InputActions.Player.Spin.performed += Spin;
-            input.InputActions.Player.Spin.canceled += Spin;
-            input.InputActions.Player.Jump.performed += Jump;
-            input.InputActions.Player.Attack.started += Attack;
+            Input.InputActions.Player.Look.performed += Look;
+            Input.InputActions.Player.Look.canceled += Look;
+            Input.InputActions.Player.RightClick.performed += Rmb;
+            Input.InputActions.Player.RightClick.canceled += Rmb;
+            Input.InputActions.Player.Move.performed += Movement;
+            Input.InputActions.Player.Move.canceled += Movement;
+            Input.InputActions.Player.Run.performed += Run;
+            Input.InputActions.Player.Run.canceled += Run;
+            Input.InputActions.Player.Spin.performed += Spin;
+            Input.InputActions.Player.Spin.canceled += Spin;
+            Input.InputActions.Player.Jump.performed += Jump;
+            Input.InputActions.Player.Attack.started += Attack;
 
             entity.health.OnValueChanged += Hit;
         }
@@ -202,18 +200,18 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            input.InputActions.Player.Look.performed -= Look;
-            input.InputActions.Player.Look.canceled -= Look;
-            input.InputActions.Player.RightClick.performed -= Rmb;
-            input.InputActions.Player.RightClick.canceled -= Rmb;
-            input.InputActions.Player.Move.performed -= Movement;
-            input.InputActions.Player.Move.canceled -= Movement;
-            input.InputActions.Player.Run.performed -= Run;
-            input.InputActions.Player.Run.canceled -= Run;
-            input.InputActions.Player.Spin.performed -= Spin;
-            input.InputActions.Player.Spin.canceled -= Spin;
-            input.InputActions.Player.Jump.performed -= Jump;
-            input.InputActions.Player.Attack.performed -= Attack;
+            Input.InputActions.Player.Look.performed -= Look;
+            Input.InputActions.Player.Look.canceled -= Look;
+            Input.InputActions.Player.RightClick.performed -= Rmb;
+            Input.InputActions.Player.RightClick.canceled -= Rmb;
+            Input.InputActions.Player.Move.performed -= Movement;
+            Input.InputActions.Player.Move.canceled -= Movement;
+            Input.InputActions.Player.Run.performed -= Run;
+            Input.InputActions.Player.Run.canceled -= Run;
+            Input.InputActions.Player.Spin.performed -= Spin;
+            Input.InputActions.Player.Spin.canceled -= Spin;
+            Input.InputActions.Player.Jump.performed -= Jump;
+            Input.InputActions.Player.Attack.performed -= Attack;
 
             entity.health.OnValueChanged -= Hit;
         }
@@ -231,7 +229,7 @@ namespace Players
             Cursor.visible = false;
 
             rb = GetComponent<Rigidbody>();
-            input = GetComponent<InputHandler>();
+            Input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
@@ -259,7 +257,7 @@ namespace Players
         {
             if (!CanMove || isSpin) return;
 
-            var moveInput = input.MoveInput;
+            var moveInput = Input.MoveInput;
 
             if (moveInput == Vector2.zero) return;
 
@@ -268,7 +266,6 @@ namespace Players
 
             rb.MovePosition(rb.position +
                             moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
-
         }
 
         private void AlignToSurface()
@@ -295,7 +292,7 @@ namespace Players
             {
                 CameraManager.Instance.LookMove();
 
-                transform.Rotate(Vector3.up * (input.LookInput.x * mouseSensitivity));
+                transform.Rotate(Vector3.up * (Input.LookInput.x * mouseSensitivity));
 
                 CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
             }
@@ -326,14 +323,9 @@ namespace Players
 
         private void Run(InputAction.CallbackContext ctx)
         {
-            if (ctx.performed)
-            {
-                moveSpeed = runSpeed;
-            }
-            if (ctx.canceled)
-            {
-                moveSpeed = walkSpeed;
-            }
+            if (ctx.performed) moveSpeed = runSpeed;
+            if (ctx.canceled) moveSpeed = walkSpeed;
+
             animator.OnRun(ctx);
         }
 
@@ -348,6 +340,7 @@ namespace Players
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
+
         }
 
         private void Spin(InputAction.CallbackContext ctx)
