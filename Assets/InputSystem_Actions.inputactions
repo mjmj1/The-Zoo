@@ -680,6 +680,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Tab",
+                    "type": "Button",
+                    "id": "543c9f1c-c0e4-4df7-94d4-eb78acde30b7",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1120,6 +1129,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
                     "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b2a6b2a5-b05e-4064-ae11-d9f19e48e130",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse;Gamepad;Touch;Joystick;XR",
+                    "action": "Tab",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

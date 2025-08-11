@@ -29,9 +29,9 @@ namespace Players
             GamePlayEventHandler.OnPlayerReady(playerId.Value.Value, newValue);
         }
 
-        public void Toggle()
+        public bool Toggle()
         {
-            isReady.Value = !isReady.Value;
+            return isReady.Value = !isReady.Value;
         }
 
         public void Reset()

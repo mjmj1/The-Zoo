@@ -20,15 +20,15 @@ namespace UI.SessionList
         [SerializeField] private Button createButton;
         [SerializeField] private Button refreshButton;
 
-        private readonly LinkedList<SessionView> _activeViews = new();
+        private readonly LinkedList<SessionView> activeViews = new();
 
-        private IObjectPool<SessionView> _pool;
+        private IObjectPool<SessionView> pool;
 
-        private ISessionInfo _selectedSession;
+        private ISessionInfo selectedSession;
 
         private void Awake()
         {
-            _pool = new ObjectPool<SessionView>
+            pool = new ObjectPool<SessionView>
             (
                 OnCreatePooledObjects,
                 OnGetPooledObjects,
@@ -59,23 +59,23 @@ namespace UI.SessionList
             refreshButton.onClick.RemoveListener(OnRefreshButtonClick);
         }
 
-        private void OnCreateButtonClick()
+        private async void OnCreateButtonClick()
         {
             var data = new ConnectionData(ConnectionData.ConnectionType.Create);
 
-            ConnectionManager.Instance.ConnectAsync(data);
+            await ConnectionManager.Instance.ConnectAsync(data);
         }
 
-        private void OnJoinButtonClick()
+        private async void OnJoinButtonClick()
         {
-            if (_selectedSession == null) return;
+            if (selectedSession == null) return;
 
             var data = new ConnectionData(ConnectionData.ConnectionType.JoinById,
-                _selectedSession.Id);
+                selectedSession.Id);
 
-            ConnectionManager.Instance.ConnectAsync(data);
+            await ConnectionManager.Instance.ConnectAsync(data);
 
-            _selectedSession = null;
+            selectedSession = null;
             joinButton.interactable = false;
             gameObject.SetActive(false);
         }
@@ -89,9 +89,9 @@ namespace UI.SessionList
         {
             try
             {
-                foreach (var view in _activeViews) _pool.Release(view);
+                foreach (var view in activeViews) pool.Release(view);
 
-                _activeViews.Clear();
+                activeViews.Clear();
 
                 var infos = await ConnectionManager.Instance.QuerySessionsAsync();
 
@@ -99,9 +99,9 @@ namespace UI.SessionList
 
                 foreach (var info in infos)
                 {
-                    var view = _pool.Get();
+                    var view = pool.Get();
 
-                    _activeViews.AddLast(view);
+                    activeViews.AddLast(view);
 
                     view.Bind(info);
                 }
@@ -114,9 +114,9 @@ namespace UI.SessionList
 
         private void OnSelect(ISessionInfo sessionInfo)
         {
-            _selectedSession = sessionInfo;
+            selectedSession = sessionInfo;
 
-            if (_selectedSession != null)
+            if (selectedSession != null)
                 joinButton.interactable = true;
         }
 

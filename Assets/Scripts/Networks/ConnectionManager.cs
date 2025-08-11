@@ -74,6 +74,7 @@ namespace Networks
             }
             catch (Exception e)
             {
+                OnConnectionFailed();
                 OnSessionDisconnected();
                 Debug.LogError(e);
             }
@@ -99,7 +100,7 @@ namespace Networks
             Debug.LogWarning($"Sign in via Authentication failed: e.ErrorCode {e.ErrorCode}");
         }
 
-        public async void ConnectAsync(ConnectionData data)
+        public async Task ConnectAsync(ConnectionData data)
         {
             try
             {
@@ -125,6 +126,8 @@ namespace Networks
             catch (Exception e)
             {
                 Debug.LogException(e);
+
+                OnConnectionFailed();
             }
         }
 

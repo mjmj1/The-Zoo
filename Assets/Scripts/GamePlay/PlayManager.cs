@@ -1,5 +1,7 @@
 using System.Collections;
 using Networks;
+using Players;
+using UI;
 using UI.GameResult;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,6 +12,7 @@ namespace GamePlay
     public class PlayManager : NetworkBehaviour
     {
         [SerializeField] private GameResultUI gameResult;
+        [SerializeField] private LoadingUI loading;
         [SerializeField] private float spawnRadius = 7.5f;
 
         public NetworkVariable<bool> isGameStarted;
@@ -23,13 +26,20 @@ namespace GamePlay
 
         public void Awake()
         {
-            if (Instance == null) Instance = this;
+            if (!Instance) Instance = this;
             else Destroy(gameObject);
         }
 
         public void OnEnable()
         {
             gameResult.gameObject.SetActive(false);
+        }
+
+        protected override void OnNetworkSessionSynchronized()
+        {
+            base.OnNetworkSessionSynchronized();
+
+            MyLogger.Print(this, "OnNetworkSessionSynchronized");
         }
 
         public override void OnNetworkSpawn()
@@ -53,19 +63,14 @@ namespace GamePlay
             ObserverManager.observerIds.OnListChanged -= OnSeekerWinChecked;
         }
 
+
         private void OnGameStartedValueChanged(bool previousValue, bool newValue)
         {
             if (!IsSessionOwner) return;
 
             if (newValue)
             {
-                NpcSpawner.Instance.SpawnNpcRpc(0, 1);
-
-                StartCoroutine(CountTime());
-
-                MoveRandomPositionRpc();
-
-                RoleManager.AssignRole();
+                StartCoroutine(GameStartRoutine());
             }
             else
             {
@@ -97,6 +102,8 @@ namespace GamePlay
 
         protected override void OnInSceneObjectsSpawned()
         {
+            MyLogger.Print(this, "OnInSceneObjectsSpawned");
+
             if (!IsSessionOwner) return;
 
             base.OnInSceneObjectsSpawned();
@@ -113,6 +120,12 @@ namespace GamePlay
         }
 
         [Rpc(SendTo.Everyone)]
+        private void HideLoadingRpc()
+        {
+            loading.gameObject.SetActive(false);
+        }
+
+        [Rpc(SendTo.Everyone)]
         private void MoveRandomPositionRpc()
         {
             var clientId = NetworkManager.Singleton.LocalClientId;
@@ -121,6 +134,27 @@ namespace GamePlay
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
             obj.GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+            obj.GetComponent<PlayerEntity>().AlignForward();
+        }
+
+        private IEnumerator GameStartRoutine()
+        {
+            MoveRandomPositionRpc();
+
+            yield return StartCoroutine(SpawnNpc());
+
+            HideLoadingRpc();
+
+            StartCoroutine(CountTime());
+
+            RoleManager.AssignRole();
+        }
+
+        private IEnumerator SpawnNpc()
+        {
+            yield return new WaitForSeconds(2f);
+
+            NpcSpawner.Instance.SpawnNpcRpc(0, 1);
         }
 
         private IEnumerator CountTime()
