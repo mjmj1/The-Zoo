@@ -10,6 +10,8 @@ TagManager:
   - Target
   - Interactable
   - Tree
+  - FxTemporaire
+  - PickUp
   layers:
   - Default
   - TransparentFX
@@ -23,7 +25,8 @@ TagManager:
   - Observer
   - Interactable
   - Death
-  - 
+  - Pickup
+  -
   - 
   - 
   - 

@@ -1,5 +1,6 @@
-using System.Collections.Generic;
 using GamePlay;
+using Interactions;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +15,8 @@ namespace UI.GameResult
         [SerializeField] private ResultItem hiderAlive;
         [SerializeField] private ResultItem hiderDeath;
         [SerializeField] private ResultItem seekerView;
+
+        [SerializeField] private InteractionController controller;
 
         private void Awake()
         {
@@ -78,6 +81,7 @@ namespace UI.GameResult
 
         private void OnReturnLobbyButtonClicked()
         {
+            controller.DespawnInteractionRpc();
             GameManager.Instance.GameEndRpc();
         }
     }
