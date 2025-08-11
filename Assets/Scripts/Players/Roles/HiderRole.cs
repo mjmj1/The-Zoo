@@ -10,6 +10,9 @@ namespace Players.Roles
     {
         [SerializeField] private float interactionDistance = 2f;
         [SerializeField] private LayerMask layer;
+        [SerializeField] private float attackRange = 1f;
+        [SerializeField] private float attackRadius = 1f;
+        [SerializeField] private Transform attackOrigin;
 
         private Interactable currentInteractable;
 
@@ -41,6 +44,16 @@ namespace Players.Roles
             if (!IsOwner) return;
 
             entity.playerMarker.color = entity.roleColor.hiderColor;
+        }
+
+        private void OnPlayerAttack()
+        {
+            print($"client-{entity.clientId.Value} Seeker Attack");
+
+            if (!Physics.SphereCast(attackOrigin.position, attackRadius, transform.forward,
+                    out var hit, attackRange, layer)) return;
+
+
         }
 
         private void CheckForInteractable()

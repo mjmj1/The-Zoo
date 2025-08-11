@@ -376,41 +376,43 @@ namespace Players
             }
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        private void RequestPickupServerRpc(NetworkObjectReference fruitRef, RpcParams rpc = default)
+        [Rpc(SendTo.Authority, RequireOwnership = false)]
+        private void RequestPickupServerRpc(NetworkObjectReference pickupRef, RpcParams rpc = default)
         {
-            if (!fruitRef.TryGet(out var fruit) || !fruit || !fruit.IsSpawned) return;
+            if (!pickupRef.TryGet(out var pickup)) return;
+            if(!pickup.IsSpawned) return;
 
-            var requester = rpc.Receive.SenderClientId;
-            var owner = fruit.OwnerClientId;
+            var sender = rpc.Receive.SenderClientId;
+            var owner = pickup.OwnerClientId;
 
-            if (fruit.IsOwnedByServer || owner == requester)
+            if (pickup.IsOwnedByServer || owner == sender)
             {
-                fruit.Despawn(true);
+                pickup.DeferDespawn(5);
                 return;
             }
 
-            if (NetworkManager.ConnectedClients.TryGetValue(owner, out var ownerClient))
+            if (NetworkManager.ConnectedClients.TryGetValue(owner, out var client))
             {
-                var ownerPc = ownerClient.PlayerObject?.GetComponent<PlayerController>();
+                var ownerPc = client.PlayerObject.GetComponent<PlayerController>();
                 if (ownerPc != null)
-                    ownerPc.AskOwnerToDespawnClientRpc(fruitRef);
+                    ownerPc.RequestDespawnRpc(pickupRef);
             }
         }
 
         [Rpc(SendTo.Owner)]
-        private void AskOwnerToDespawnClientRpc(NetworkObjectReference fruitRef)
+        private void RequestDespawnRpc(NetworkObjectReference fruitRef)
         {
-            ConfirmDespawnServerRpc(fruitRef);
+            PickupDespawnRpc(fruitRef);
         }
 
-        [Rpc(SendTo.Server)]
-        private void ConfirmDespawnServerRpc(NetworkObjectReference fruitRef, RpcParams rpc = default)
+        [Rpc(SendTo.Authority)]
+        private void PickupDespawnRpc(NetworkObjectReference pickupRef, RpcParams rpc = default)
         {
-            if (!fruitRef.TryGet(out var fruit) || !fruit || !fruit.IsSpawned) return;
-            if (fruit.OwnerClientId != rpc.Receive.SenderClientId) return; // 보안 체크
+            if (!pickupRef.TryGet(out var pickup)) return;
+            if (!pickup.IsSpawned) return;
+            if (pickup.OwnerClientId != rpc.Receive.SenderClientId) return;
 
-            fruit.Despawn(true);
+            pickup.DeferDespawn(5);
         }
 
         private void Spin(InputAction.CallbackContext ctx)
