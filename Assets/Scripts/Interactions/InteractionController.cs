@@ -8,7 +8,6 @@ namespace Interactions
 {
     public class InteractionController : NetworkBehaviour
     {
-        [SerializeField] private GameObject[] interactionObjects;
         [SerializeField] private List<NetworkObject> interactionPrefabs;
 
         [SerializeField] private int interactionsNumber = 15;

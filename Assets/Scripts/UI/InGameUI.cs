@@ -1,4 +1,4 @@
-using System;
+using System.Collections;
 using EventHandler;
 using GamePlay;
 using Players;
@@ -18,6 +18,8 @@ namespace UI
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
         [SerializeField] private GameObject keyUI;
+        [SerializeField] private Image hitOverlay;
+        [SerializeField] private float fadeDuration = 0.2f;
 
         private void Start()
         {
@@ -34,6 +36,8 @@ namespace UI
             GamePlayEventHandler.CheckInteractable += OnKeyUI;
 
             missionsView.SetActive(false);
+            
+            GamePlayEventHandler.OnUIChanged("InGame");
         }
 
         private void OnDisable()
@@ -70,9 +74,34 @@ namespace UI
             var value = newValue;
 
             foreach (var item in redHealth)
-            {
                 item.sprite = value-- > 0 ? hpImageData.hpSprites[1] : hpImageData.hpSprites[0];
+
+            ShowHitEffect();
+        }
+
+        public void ShowHitEffect()
+        {
+            StopAllCoroutines();
+
+            StartCoroutine(Flash());
+        }
+
+        private IEnumerator Flash()
+        {
+            hitOverlay.color = new Color(1, 0, 0, 0.5f);
+
+            var elapsed = 0f;
+
+            while (elapsed < fadeDuration)
+            {
+                elapsed += Time.deltaTime;
+                var alpha = Mathf.Lerp(0.5f, 0, elapsed / fadeDuration);
+                hitOverlay.color = new Color(1, 0, 0, alpha);
+
+                yield return null;
             }
+
+            hitOverlay.color = new Color(1, 0, 0, 0);
         }
     }
 }

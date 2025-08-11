@@ -52,9 +52,7 @@ namespace Players.Roles
                     out var hit, attackRange, hiderMask)) return;
 
             var target = hit.collider.gameObject.GetComponent<PlayerEntity>();
-
-            print($"target-{target.OwnerClientId} Seeker Hit");
-            //target.GetComponent<PlayerVFX>().HitEffect();
+            target.GetComponent<PlayerVfx>().HitEffect();
             OnPlayerHitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
         }
 

@@ -1,6 +1,5 @@
 using GamePlay;
 using Players.Roles;
-using System;
 using Scriptable;
 using TMPro;
 using Unity.Collections;
@@ -21,9 +20,8 @@ namespace Players
             Seeker
         }
 
-        [SerializeField] private TMP_Text playerNameText;
-        [SerializeField] private ParticleSystem hitEffectPrefab;
         [SerializeField] internal RoleColor roleColor;
+        [SerializeField] internal TMP_Text playerNameText;
         [SerializeField] internal SpriteRenderer playerMarker;
 
         public NetworkVariable<ulong> clientId = new();
@@ -56,11 +54,10 @@ namespace Players
             playerName.OnValueChanged += OnPlayerNameChanged;
             role.OnValueChanged += OnRoleChanged;
             isDead.OnValueChanged += OnIsDeadChanged;
-            
+
             OnPlayerNameChanged("", playerName.Value);
             OnClientIdChanged(0, clientId.Value);
             OnIsDeadChanged(false, isDead.Value);
-            
 
             playerMarker.gameObject.SetActive(false);
 
@@ -86,7 +83,7 @@ namespace Players
             clientId.OnValueChanged -= OnClientIdChanged;
             role.OnValueChanged -= OnRoleChanged;
             isDead.OnValueChanged -= OnIsDeadChanged;
-            
+
             if (!IsOwner) return;
 
             health.OnValueChanged -= OnHealthChanged;
@@ -190,7 +187,7 @@ namespace Players
         private void OnHealthChanged(int previousValue, int newValue)
         {
             print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
-            //GetComponent<PlayerVfx>().HitEffect();
+            this.GetComponent<PlayerVfx>().HitEffect();
         }
 
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
