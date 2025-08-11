@@ -65,30 +65,6 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    #region BGM API
-
-    public void PlayBGM(AudioClip clip, float volume = 1f, bool loop = true)
-    {
-        if (bgmSource.clip == clip && bgmSource.isPlaying) return;
-        bgmSource.clip = clip;
-        bgmSource.outputAudioMixerGroup = bgmGroup;
-        bgmSource.volume = volume;
-        bgmSource.loop = loop;
-        bgmSource.Play();
-    }
-
-    public void StopBGM()
-    {
-        bgmSource.Stop();
-    }
-
-    public void SetBGMVolume(float linear)
-    {
-        mixer.SetFloat("BGMVolume", Mathf.Log10(Mathf.Clamp01(linear)) * 20f);
-    }
-
-    #endregion
-
     #region SFX Pool 초기화
 
     private void InitSfxPool()
@@ -121,6 +97,30 @@ public class AudioManager : MonoBehaviour
             poolCapacity,
             poolMaxSize
         );
+    }
+
+    #endregion
+
+    #region BGM API
+
+    public void PlayBGM(AudioClip clip, float volume = 1f, bool loop = true)
+    {
+        if (bgmSource.clip == clip && bgmSource.isPlaying) return;
+        bgmSource.clip = clip;
+        bgmSource.outputAudioMixerGroup = bgmGroup;
+        bgmSource.volume = volume;
+        bgmSource.loop = loop;
+        bgmSource.Play();
+    }
+
+    public void StopBGM()
+    {
+        bgmSource.Stop();
+    }
+
+    public void SetBGMVolume(float linear)
+    {
+        mixer.SetFloat("BGMVolume", Mathf.Log10(Mathf.Clamp01(linear)) * 20f);
     }
 
     #endregion
