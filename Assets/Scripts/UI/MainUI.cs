@@ -34,27 +34,42 @@ namespace UI
             sessionListButton.onClick.RemoveListener(sessionsList.Toggle);
         }
         
-        private void OnQuickStartButtonClick()
+        private async void OnQuickStartButtonClick()
         {
-            var data = new ConnectionData(ConnectionData.ConnectionType.Quick, null, null, Util.GetRandomSessionName());
+            try
+            {
+                var data = new ConnectionData(ConnectionData.ConnectionType.Quick, null, null,
+                    Util.GetRandomSessionName());
 
-            ConnectionManager.Instance.ConnectAsync(data);
+                await ConnectionManager.Instance.ConnectAsync(data);
+            }
+            catch (Exception ex)
+            {
+                InformationPopup.instance.ShowPopup(ex.Message);
+            }
         }
 
-        private void OnJoinButtonClick()
+        private async void OnJoinButtonClick()
         {
-            var code = codeInput.text;
-            
-            if (code.IsNullOrEmpty())
+            try
             {
-                InformationPopup.instance.ShowPopup("코드를 입력해주세요");
+                var code = codeInput.text;
 
-                return;
+                if (code.IsNullOrEmpty())
+                {
+                    InformationPopup.instance.ShowPopup("코드를 입력해주세요");
+
+                    return;
+                }
+
+                var data = new ConnectionData(ConnectionData.ConnectionType.JoinByCode, codeInput.text);
+
+                await ConnectionManager.Instance.ConnectAsync(data);
             }
-            
-            var data = new ConnectionData(ConnectionData.ConnectionType.JoinByCode, codeInput.text);
-
-            ConnectionManager.Instance.ConnectAsync(data);
+            catch (Exception ex)
+            {
+                InformationPopup.instance.ShowPopup(ex.Message);
+            }
         }
     }
 }
