@@ -92,7 +92,7 @@ namespace Networks
 
         private void SpawnPlayer(int i)
         {
-            var prefab = animalPrefabs[0];
+            var prefab = animalPrefabs[i];
 
             var pos = Util.GetCirclePositions(Vector3.zero, spawnedAnimals.Count, 5f, 8);
 

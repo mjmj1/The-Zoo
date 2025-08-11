@@ -26,7 +26,7 @@ namespace GamePlay
 
         public void Awake()
         {
-            if (Instance == null) Instance = this;
+            if (!Instance) Instance = this;
             else Destroy(gameObject);
         }
 
