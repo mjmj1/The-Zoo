@@ -357,7 +357,7 @@ namespace Players
             animator.OnAttack(ctx);
         }
 
-        [SerializeField] private float pickupRadius = 2f;
+        [SerializeField] private float pickupRadius = 1f;
         private static readonly Collider[] _hits = new Collider[16];
 
         private void PickUp(InputAction.CallbackContext ctx)

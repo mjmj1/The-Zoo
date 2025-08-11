@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 46057852386042095}
   - component: {fileID: 8991061074975073049}
   - component: {fileID: 7625310577876099095}
-  - component: {fileID: 2492283528243099242}
+  - component: {fileID: 5797060271022687091}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Player
@@ -128,6 +128,7 @@ MonoBehaviour:
   runSpeed: 7
   rotationSpeed: 500
   mouseSensitivity: 0.25
+  pickupRadius: 2
 --- !u!114 &2736765177486910086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -381,7 +382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   ghostShader: {fileID: 4800000, guid: 8282f0c5abc468e4bafab4d0228290c5, type: 3}
---- !u!114 &2492283528243099242
+--- !u!114 &5797060271022687091
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -390,7 +391,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1978094491091307183}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d468339340c0eec40beb314b09aeea02, type: 3}
+  m_Script: {fileID: 11500000, guid: 880df90388a7a1d438d6dccc82a97a08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   hitEffectPrefab: {fileID: 1658659785865829136}
