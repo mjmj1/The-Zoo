@@ -1,8 +1,8 @@
-using System.Collections;
-using EventHandler;
 using GamePlay;
 using Players;
 using Scriptable;
+using System.Collections;
+using EventHandler;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -17,7 +17,7 @@ namespace UI
         [SerializeField] private GameObject missionsView;
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
-        [SerializeField] private GameObject keyUI;
+        [SerializeField] private KeyUI keyUI;
         [SerializeField] private Image hitOverlay;
         [SerializeField] private float fadeDuration = 0.2f;
 
@@ -36,7 +36,7 @@ namespace UI
             GamePlayEventHandler.CheckInteractable += OnKeyUI;
 
             missionsView.SetActive(false);
-            
+            keyUI.gameObject.SetActive(false);
             GamePlayEventHandler.OnUIChanged("InGame");
         }
 
@@ -54,9 +54,25 @@ namespace UI
                 .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
         }
 
-        private void OnKeyUI(bool value)
+        private void OnKeyUI(bool value, bool isTarget, int count)
         {
-            keyUI.SetActive(value);
+            keyUI.gameObject.SetActive(value);
+
+            if (!isTarget)
+            {
+                keyUI.NonInteractable();
+            }
+            else
+            {
+                if (count == 0)
+                {
+                    keyUI.Unable();
+                }
+                else
+                {
+                    keyUI.Interactable();
+                }
+            }
         }
 
         private void OnTimerChanged(int previousValue, int newValue)

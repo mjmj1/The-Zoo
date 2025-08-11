@@ -1,7 +1,9 @@
 #if UNITY_EDITOR
+using EventHandler;
+using Players.Roles;
 using System.Collections;
 using System.Linq;
-using EventHandler;
+using Unity.Netcode;
 using Unity.Netcode.Components;
 using Unity.Netcode.Editor;
 using UnityEditor;
@@ -333,6 +335,7 @@ namespace Players
 
         private void Attack(InputAction.CallbackContext ctx)
         {
+            if (!IsOwner) return;
             if (!CanMove) return;
             if (!IsGrounded()) return;
             if (isSpin) return;
@@ -342,7 +345,6 @@ namespace Players
             GamePlayEventHandler.OnPlayerAttack();
 
             animator.OnAttack(ctx);
-
         }
 
         private void Spin(InputAction.CallbackContext ctx)

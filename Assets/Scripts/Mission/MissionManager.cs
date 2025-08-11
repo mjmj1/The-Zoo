@@ -12,7 +12,7 @@ namespace Mission
     {
         public static MissionManager instance;
 
-        [SerializeField] private TMP_Text treeCountText;
+        [SerializeField] private TMP_Text appleCountText;
         [SerializeField] private TMP_Text hiderCountText;
 
         private int hiderCount = 0;
@@ -36,7 +36,7 @@ namespace Mission
             }
 
             hiderCountText.text = $": {hiderCount}";
-            treeCountText.text = $": {GetComponent<InteractionController>().TargetCount}";
+            appleCountText.text = $": {GetComponent<InteractionController>().TargetCount}";
         }
 
         private void OnListChanged(NetworkListEvent<ulong> changeEvent)

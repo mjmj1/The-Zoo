@@ -7,14 +7,9 @@ namespace Players.Roles
 {
     public class SeekerRole : NetworkBehaviour
     {
-        [Tooltip("공격 사정거리")] [SerializeField] private float attackRange = 1f;
-
-        [Tooltip("공격 판정 구체 반경")] [SerializeField]
-        private float attackRadius = 1f;
-
-        [Tooltip("Hider 레이어 마스크")] [SerializeField]
-        private LayerMask hiderMask;
-
+        [SerializeField] private float attackRange = 1f;
+        [SerializeField] private float attackRadius = 1f;
+        [SerializeField] private LayerMask hiderMask;
         [SerializeField] private Transform attackOrigin;
 
         private PlayerEntity entity;
