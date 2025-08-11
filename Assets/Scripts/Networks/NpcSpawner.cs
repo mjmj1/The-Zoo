@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.VisualScripting;
 using UnityEngine;
 using Utils;
 
@@ -12,7 +14,7 @@ namespace Networks
 
         [SerializeField] private List<NetworkObject> npcPrefabs;
 
-        private List<NetworkObject> spawnedNpcs = new();
+        private readonly List<NetworkObject> spawnedNpcs = new();
 
         public void Awake()
         {
@@ -22,6 +24,11 @@ namespace Networks
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void SpawnNpcRpc(int index, int count, RpcParams rpcParams = default)
+        {
+            StartCoroutine(SpawnNpcCoroutine(index, count));
+        }
+
+        private IEnumerator SpawnNpcCoroutine(int index, int count)
         {
             var prefab = npcPrefabs[index];
 
@@ -34,6 +41,7 @@ namespace Networks
                     rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
 
                 spawnedNpcs.Add(npc);
+                yield return null;
             }
 
         }

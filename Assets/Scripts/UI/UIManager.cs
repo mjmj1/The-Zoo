@@ -10,6 +10,8 @@ namespace UI
 {
     public class UIManager : MonoBehaviour
     {
+        public static UIManager Instance { get; private set; }
+
         [SerializeField] private string titleCanvasName = "TitleCanvas";
         [SerializeField] private string mainCanvasName = "MainCanvas";
         [SerializeField] private string lobbyCanvasName = "LobbyCanvas";
@@ -32,6 +34,7 @@ namespace UI
 
             GamePlayEventHandler.PlayerLogin += PlayerLogin;
             ConnectionEventHandler.SessionConnectStart += OnSessionConnectStart;
+            ConnectionEventHandler.ConnectionFailed += OnConnectionFailed;
 
             NetworkManager.OnDestroying += OnDestroying;
             NetworkManager.Singleton.OnClientConnectedCallback += OnClientConnectedCallback;
@@ -58,7 +61,7 @@ namespace UI
             AuthenticationService.Instance.SignedIn -= OnSignedIn;
 
             ConnectionEventHandler.SessionConnectStart -= OnSessionConnectStart;
-
+            ConnectionEventHandler.ConnectionFailed -= OnConnectionFailed;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode sceneMode)
@@ -136,6 +139,11 @@ namespace UI
         private void OnSessionConnectStart()
         {
             loadingCanvas.SetActive(true);
+        }
+
+        private void OnConnectionFailed()
+        {
+            loadingCanvas.SetActive(false);
         }
 
         private void OnClientConnectedCallback(ulong clientId)

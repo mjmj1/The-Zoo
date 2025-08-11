@@ -7,6 +7,7 @@ namespace EventHandler
         internal static event Action SessionConnectStart;
         internal static event Action SessionConnected;
         internal static event Action SessionDisconnected;
+        internal static event Action ConnectionFailed;
 
         internal static void OnSessionConnectStart()
         {
@@ -21,6 +22,11 @@ namespace EventHandler
         internal static void OnSessionConnected()
         {
             SessionConnected?.Invoke();
+        }
+
+        internal static void OnConnectionFailed()
+        {
+            ConnectionFailed?.Invoke();
         }
     }
 }
