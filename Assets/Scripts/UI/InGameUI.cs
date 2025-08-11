@@ -4,7 +4,6 @@ using GamePlay;
 using Players;
 using Scriptable;
 using System.Collections;
-using EventHandler;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -39,7 +38,7 @@ namespace UI
 
             missionsView.SetActive(false);
             keyUI.SetActive(false);
-            NetworkManager.OnDestroying += OnDestroying;
+            //NetworkManager.OnDestroying += OnDestroying;
 
             GamePlayEventHandler.OnUIChanged("InGame");
         }

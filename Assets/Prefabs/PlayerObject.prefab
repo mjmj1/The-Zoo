@@ -44,7 +44,6 @@ Transform:
   m_Children:
   - {fileID: 3038864158766904284}
   - {fileID: 5877200157190742088}
-  - {fileID: 5007454819632667308}
   - {fileID: 9033041952778005903}
   - {fileID: 1658659785865829143}
   m_Father: {fileID: 0}
@@ -155,7 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   playerNameText: {fileID: 2518985482572109005}
-  hitEffectPrefab: {fileID: 5007454819632667307}
+  hitEffectPrefab: {fileID: 1658659785865829136}
   roleColor: {fileID: 11400000, guid: c9897484e8a15d1449cbc2b57dd39dc4, type: 2}
   playerMarker: {fileID: 4172300448067951555}
   clientId:
@@ -349,7 +348,6 @@ MonoBehaviour:
   layer:
     serializedVersion: 2
     m_Bits: 1024
-  currentInteractable: {fileID: 0}
 --- !u!114 &8991061074975073049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -378,15 +376,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1978094491091307183}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9aaee1243bbd3fc4dbbfef8b92782d80, type: 3}
+  m_Script: {fileID: 11500000, guid: 7178414fa0f245338ecd1f353644dbbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSfx: {fileID: 11400000, guid: 142eda586581caa4788765579e8ab941, type: 2}
-  runSfx: {fileID: 0}
-  jumpSfx: {fileID: 11400000, guid: fdf34cf13dbf94b418d89f052b451f59, type: 2}
-  attackSfx: {fileID: 11400000, guid: f630342595729494c832f252a4a1ed4c, type: 2}
-  hitSfx: {fileID: 11400000, guid: a0685333be464504ea97685c7c7a8dd1, type: 2}
-  spinSfx: {fileID: 11400000, guid: 14ceed1f861498b439c53f3a1017f811, type: 2}
+  ShowTopMostFoldoutHeaderGroup: 1
+  ghostShader: {fileID: 4800000, guid: 8282f0c5abc468e4bafab4d0228290c5, type: 3}
 --- !u!114 &2492283528243099242
 MonoBehaviour:
   m_ObjectHideFlags: 0
