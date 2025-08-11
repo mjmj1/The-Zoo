@@ -1,9 +1,8 @@
-using System;
-using EventHandler;
 using GamePlay;
 using Players;
 using Scriptable;
 using System.Collections;
+using EventHandler;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -54,7 +53,7 @@ namespace UI
             NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
         }
-   
+
         private void OnKeyUI(bool value, bool isTarget, int count)
         {
             keyUI.SetActive(value);
@@ -75,7 +74,7 @@ namespace UI
             else
             {
                 background.color = new Color32(255, 150, 150, 255); // Light Red
-            } 
+            }
         }
 
         private void OnTimerChanged(int previousValue, int newValue)
@@ -93,9 +92,7 @@ namespace UI
             var value = newValue;
 
             foreach (var item in redHealth)
-            {
                 item.sprite = value-- > 0 ? hpImageData.hpSprites[1] : hpImageData.hpSprites[0];
-            }
 
             ShowHitEffect();
         }
@@ -106,16 +103,17 @@ namespace UI
 
             StartCoroutine(Flash());
         }
+
         private IEnumerator Flash()
         {
             hitOverlay.color = new Color(1, 0, 0, 0.5f);
 
-            float elapsed = 0f;
+            var elapsed = 0f;
 
             while (elapsed < fadeDuration)
             {
                 elapsed += Time.deltaTime;
-                float alpha = Mathf.Lerp(0.5f, 0, elapsed / fadeDuration);
+                var alpha = Mathf.Lerp(0.5f, 0, elapsed / fadeDuration);
                 hitOverlay.color = new Color(1, 0, 0, alpha);
 
                 yield return null;
