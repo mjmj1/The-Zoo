@@ -17,11 +17,10 @@ GameObject:
   - component: {fileID: 3755982930554864778}
   - component: {fileID: 5100048763366486770}
   - component: {fileID: 6934204017717181489}
-  - component: {fileID: 8180065815854728596}
   - component: {fileID: 6661343672116730651}
   - component: {fileID: 46057852386042095}
   - component: {fileID: 8991061074975073049}
-  - component: {fileID: 2492283528243099242}
+  - component: {fileID: 3099247870186568857}
   m_Layer: 0
   m_Name: PlayerObject
   m_TagString: Player
@@ -44,8 +43,8 @@ Transform:
   m_Children:
   - {fileID: 3038864158766904284}
   - {fileID: 5877200157190742088}
+  - {fileID: 5007454819632667308}
   - {fileID: 9033041952778005903}
-  - {fileID: 1658659785865829143}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5884640447956715888
@@ -153,8 +152,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  roleColor: {fileID: 11400000, guid: c9897484e8a15d1449cbc2b57dd39dc4, type: 2}
   playerNameText: {fileID: 2518985482572109005}
+  hitEffectPrefab: {fileID: 5007454819632667307}
+  roleColor: {fileID: 11400000, guid: c9897484e8a15d1449cbc2b57dd39dc4, type: 2}
   playerMarker: {fileID: 4172300448067951555}
   clientId:
     m_InternalValue: 0
@@ -280,19 +280,6 @@ MonoBehaviour:
   UseRigidBodyForMotion: 1
   AutoUpdateKinematicState: 1
   AutoSetKinematicOnDespawn: 1
---- !u!114 &8180065815854728596
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1978094491091307183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de72ea536e064d368c96768b45d84ba4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  interactionDistance: 2
 --- !u!114 &6661343672116730651
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,6 +343,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  interactionDistance: 2
+  layer:
+    serializedVersion: 2
+    m_Bits: 1024
+  currentInteractable: {fileID: 0}
 --- !u!114 &8991061074975073049
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -375,7 +367,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   attackOrigin: {fileID: 5877200157190742088}
---- !u!114 &2492283528243099242
+--- !u!114 &3099247870186568857
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -387,7 +379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d468339340c0eec40beb314b09aeea02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitEffectPrefab: {fileID: 1658659785865829136}
+  hitEffectPrefab: {fileID: 5007454819632667307}
 --- !u!1 &3760930727023377504
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,7 +736,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1001 &7014032204788133162
+--- !u!1001 &3687439610378202257
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -754,7 +746,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8525990746615576120, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
       propertyPath: m_Name
-      value: HitVfx
+      value: CFXR4 Sword Hit PLAIN (Cross)
       objectReference: {fileID: 0}
     - target: {fileID: 8525990746615576122, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
       propertyPath: playOnAwake
@@ -766,15 +758,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8525990746615576125, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.059
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8525990746615576125, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.349
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 8525990746615576125, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.462
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8525990746615576125, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
       propertyPath: m_LocalRotation.w
@@ -825,13 +817,13 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
---- !u!198 &1658659785865829136 stripped
+--- !u!198 &5007454819632667307 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 8525990746615576122, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
-  m_PrefabInstance: {fileID: 7014032204788133162}
+  m_PrefabInstance: {fileID: 3687439610378202257}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1658659785865829143 stripped
+--- !u!4 &5007454819632667308 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8525990746615576125, guid: b85d21f3b8fed714bacf0c4fd50fa512, type: 3}
-  m_PrefabInstance: {fileID: 7014032204788133162}
+  m_PrefabInstance: {fileID: 3687439610378202257}
   m_PrefabAsset: {fileID: 0}
