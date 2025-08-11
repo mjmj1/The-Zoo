@@ -7,23 +7,23 @@ namespace GamePlay
 {
     public class RoleManager : NetworkBehaviour
     {
-        public NetworkList<PlayerData> hiderIds = new();
-        public NetworkList<PlayerData> seekerIds = new();
+        internal NetworkList<PlayerData> HiderIds = new();
+        internal NetworkList<PlayerData> SeekerIds = new();
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            hiderIds.OnListChanged += OnHiderListChanged;
-            seekerIds.OnListChanged += OnSeekerListChanged;
+            HiderIds.OnListChanged += OnHiderListChanged;
+            SeekerIds.OnListChanged += OnSeekerListChanged;
         }
 
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
 
-            hiderIds.OnListChanged -= OnHiderListChanged;
-            seekerIds.OnListChanged -= OnSeekerListChanged;
+            HiderIds.OnListChanged -= OnHiderListChanged;
+            SeekerIds.OnListChanged -= OnSeekerListChanged;
         }
 
         private void OnHiderListChanged(NetworkListEvent<PlayerData> changeEvent)
@@ -57,9 +57,9 @@ namespace GamePlay
                 var data = new PlayerData(clients[i].ClientId, playerName);
 
                 if (seeker == i)
-                    seekerIds.Add(data);
+                    SeekerIds.Add(data);
                 else
-                    hiderIds.Add(data);
+                    HiderIds.Add(data);
             }
         }
 

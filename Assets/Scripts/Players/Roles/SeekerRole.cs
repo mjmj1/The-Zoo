@@ -1,3 +1,4 @@
+using AI;
 using EventHandler;
 using GamePlay;
 using Unity.Netcode;
@@ -7,14 +8,9 @@ namespace Players.Roles
 {
     public class SeekerRole : NetworkBehaviour
     {
-        [Tooltip("공격 사정거리")] [SerializeField] private float attackRange = 1f;
-
-        [Tooltip("공격 판정 구체 반경")] [SerializeField]
-        private float attackRadius = 1f;
-
-        [Tooltip("Hider 레이어 마스크")] [SerializeField]
-        private LayerMask hiderMask;
-
+        [SerializeField] private float attackRange = 1f;
+        [SerializeField] private float attackRadius = 1f;
+        [SerializeField] private LayerMask hiderMask;
         [SerializeField] private Transform attackOrigin;
 
         private PlayerEntity entity;
@@ -51,9 +47,17 @@ namespace Players.Roles
             if (!Physics.SphereCast(attackOrigin.position, attackRadius, transform.forward,
                     out var hit, attackRange, hiderMask)) return;
 
-            var target = hit.collider.gameObject.GetComponent<NetworkBehaviour>();
-            target.GetComponent<PlayerVfx>().HitEffect();
-            OnPlayerHitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
+            var target = hit.collider.gameObject.GetComponent<NetworkObject>();
+            hit.collider.GetComponent<PlayerVfx>().HitEffect();
+
+            var targetRef = new NetworkObjectReference(target);
+
+            OnPlayerHitRpc(
+                targetRef,
+                RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp)
+            );
+
+            // OnPlayerHitRpc(RpcTarget.Single(target.OwnerClientId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
@@ -65,6 +69,24 @@ namespace Players.Roles
                 .LocalClient.PlayerObject.GetComponent<Hittable>();
 
             target.Damaged();
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        private void OnPlayerHitRpc(NetworkObjectReference targetRef, RpcParams rpcParams = default)
+        {
+            if (!targetRef.TryGet(out var nob)) return;
+
+            var hittable = nob.GetComponent<Hittable>();
+            if (hittable != null)
+            {
+                hittable.Damaged();
+            }
+
+            if (!nob.TryGetComponent<Npa>(out var npa)) return;
+
+            var dir = Vector3.ProjectOnPlane(transform.position, transform.up).normalized;
+
+            npa.lastHitDirection = (transform.position - (transform.position + dir)).normalized;
         }
     }
 }

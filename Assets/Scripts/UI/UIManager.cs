@@ -17,12 +17,12 @@ namespace UI
         [SerializeField] private string loadingCanvasName = "LoadingCanvas";
         [SerializeField] private string popupCanvasName = "InformationPopup";
 
-        public GameObject backgroundCanvas;
-        public GameObject titleCanvas;
-        public GameObject mainCanvas;
-        public GameObject lobbyCanvas;
-        public GameObject loadingCanvas;
-        public GameObject popupCanvas;
+        private GameObject backgroundCanvas;
+        private GameObject titleCanvas;
+        private GameObject mainCanvas;
+        private GameObject lobbyCanvas;
+        private GameObject loadingCanvas;
+        private GameObject popupCanvas;
 
         private void OnEnable()
         {

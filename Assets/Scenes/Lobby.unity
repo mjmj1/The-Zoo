@@ -8151,12 +8151,6 @@ MonoBehaviour:
   backgroundCanvasName: BackgroundCanvas
   loadingCanvasName: LoadingCanvas
   popupCanvasName: InformationPopup
-  backgroundCanvas: {fileID: 0}
-  titleCanvas: {fileID: 0}
-  mainCanvas: {fileID: 0}
-  lobbyCanvas: {fileID: 0}
-  loadingCanvas: {fileID: 0}
-  popupCanvas: {fileID: 0}
 --- !u!1 &946058794
 GameObject:
   m_ObjectHideFlags: 0

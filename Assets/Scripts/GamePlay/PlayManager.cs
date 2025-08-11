@@ -88,7 +88,7 @@ namespace GamePlay
         {
             if (!isGameStarted.Value) return;
 
-            if (RoleManager.hiderIds.Count > ObserverManager.observerIds.Count) return;
+            if (RoleManager.HiderIds.Count > ObserverManager.observerIds.Count) return;
 
             isGameStarted.Value = false;
 

@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using Players;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using Unity.Netcode;
 using UnityEngine;
@@ -11,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace AI
 {
-    public class NPAv2 : Agent, IMoveState
+    public class Npa : Agent, IMoveState
     {
         public enum AgentActionState
         {
@@ -49,6 +47,7 @@ namespace AI
         private float moveSpeed;
 
         private AgentTransform agent;
+        private Hittable hittable;
         private RayPerceptionSensorComponent3D raySensor;
         private PlayerNetworkAnimator animator;
         private Rigidbody rb;
@@ -81,7 +80,6 @@ namespace AI
         }
 
         public bool CanMove { get; set; }
-        public bool IsJumping { get; set; }
         public bool IsSpinning { get; set; }
 
         public override void Initialize()
@@ -90,6 +88,7 @@ namespace AI
 
             rb = GetComponent<Rigidbody>();
             agent = GetComponent<AgentTransform>();
+            hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             raySensor = GetComponent<RayPerceptionSensorComponent3D>();
         }
@@ -119,6 +118,11 @@ namespace AI
             return false;
         }
 
+        private void OnDestroy()
+        {
+            hittable.health.OnValueChanged -= Hit;
+        }
+
         public override void OnEpisodeBegin()
         {
             StopAllCoroutines();
@@ -141,6 +145,8 @@ namespace AI
 
             hasHit = false;
             lastHitDirection = Vector3.zero;
+
+            hittable.health.OnValueChanged += Hit;
         }
 
         public override void CollectObservations(VectorSensor sensor)
@@ -161,10 +167,21 @@ namespace AI
             sensor.AddObservation(lastHitDirection);
             sensor.AddObservation((int)currentMoveState);
             sensor.AddObservation((int)currentAAState);
+
+            if (!foundSeeker) return;
+
+            var dist = Vector3.Distance(transform.position, foundSeeker.position);
+
+            if (dist > 10f)
+            {
+                foundSeeker = null;
+            }
         }
 
         public override void OnActionReceived(ActionBuffers actions)
         {
+            if (agent.isDead.Value) return;
+
             var continuousActions = actions.ContinuousActions;
             var discreteActions = actions.DiscreteActions;
 
@@ -363,11 +380,31 @@ namespace AI
             StartCoroutine(Slowdown());
 
             if (newValue > 0) animator.OnHit();
-            else StartCoroutine(DeathCoroutine());
+            else
+            {
+                gameObject.layer = LayerMask.NameToLayer("Death");
+                StartCoroutine(DeathCoroutine());
+            }
         }
 
         private IEnumerator DeathCoroutine()
         {
+            agent.isDead.Value = true;
+
+            yield return new WaitForEndOfFrame();
+
+            moveInput = Vector2.zero;
+
+            currentMoveState = AgentMoveState.Idle;
+            currentAAState = AgentActionState.None;
+
+            yield return new WaitForEndOfFrame();
+
+            animator.SetBool(PlayerNetworkAnimator.MoveHash, false);
+            animator.SetBool(PlayerNetworkAnimator.RunHash, false);
+
+            yield return new WaitForEndOfFrame();
+
             animator.OnDeath();
 
             yield return new WaitForSeconds(3f);
@@ -377,7 +414,7 @@ namespace AI
 
         private IEnumerator Slowdown()
         {
-            slowdownRate = 0.7f;
+            slowdownRate = 0.5f;
 
             yield return new WaitForSeconds(0.3f);
 

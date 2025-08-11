@@ -88,7 +88,6 @@ namespace Players
 
         private float moveSpeed;
         private PlayerVfx playerVfx;
-
         private Rigidbody rb;
 
         private PlayerReadyChecker readyChecker;
@@ -97,8 +96,6 @@ namespace Players
         public void Reset()
         {
             CanMove = true;
-
-            hittable.Reset();
         }
 
         private void Start()
@@ -167,6 +164,7 @@ namespace Players
 
             Reset();
             entity.Reset();
+            hittable.Reset();
             readyChecker.Reset();
 
             var clients = NetworkManager.ConnectedClientsIds.ToList();
@@ -365,7 +363,11 @@ namespace Players
             StartCoroutine(Slowdown());
 
             if (newValue > 0) animator.OnHit();
-            else StartCoroutine(DeathCoroutine());
+            else
+            {
+                gameObject.layer = LayerMask.NameToLayer("Death");
+                StartCoroutine(DeathCoroutine());
+            }
         }
 
         private IEnumerator DeathCoroutine()
@@ -383,7 +385,7 @@ namespace Players
 
         private IEnumerator Slowdown()
         {
-            slowdownRate = 0.7f;
+            slowdownRate = 0.5f;
 
             yield return new WaitForSeconds(0.3f);
 
