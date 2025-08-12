@@ -1,19 +1,19 @@
-#if UNITY_EDITOR
-using EventHandler;
-using Players.Roles;
 using System.Collections;
 using System.Linq;
-using Unity.Netcode;
+using EventHandler;
 using Unity.Netcode.Components;
-using Unity.Netcode.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
+#if UNITY_EDITOR
+using Unity.Netcode.Editor;
+#endif
 
 namespace Players
 {
+#if UNITY_EDITOR
     /// <summary>
     ///     The custom editor for the <see cref="PlayerController" /> component.
     /// </summary>
@@ -80,9 +80,9 @@ namespace Players
         public float mouseSensitivity = 0.1f;
 
         private PlayerNetworkAnimator animator;
+        private PlayerEntity entity;
 
         internal InputHandler Input;
-        private PlayerEntity entity;
         private bool isAround;
         private bool isSpin;
 
@@ -94,10 +94,6 @@ namespace Players
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
 
-        public bool CanMove { get; set; } = true;
-        public bool IsJumping { get; set; }
-        public bool IsSpinning { get; set; }
-
         public void Reset()
         {
             CanMove = true;
@@ -106,6 +102,10 @@ namespace Players
         private void Start()
         {
             if (!IsOwner) return;
+
+            var saved = PlayerPrefs.GetFloat("opt_mouse_sens", mouseSensitivity);
+
+            ApplyMouseSensitivity(saved);
 
             moveSpeed = walkSpeed;
         }
@@ -128,6 +128,15 @@ namespace Players
         {
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, 0.05f);
+        }
+
+        public bool CanMove { get; set; } = true;
+        public bool IsJumping { get; set; }
+        public bool IsSpinning { get; set; }
+
+        public void ApplyMouseSensitivity(float value)
+        {
+            mouseSensitivity = Mathf.Clamp(value, 0.02f, 5f);
         }
 
         public override void OnNetworkSpawn()
