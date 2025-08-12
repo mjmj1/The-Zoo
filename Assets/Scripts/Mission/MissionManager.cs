@@ -19,7 +19,6 @@ namespace Mission
             instance = this;
         }
 
-        // 게임 시작 시 하이더 수 세팅
         public void InitializeHiderCount()
         {
             hiderCountInitial = 0;
@@ -31,7 +30,6 @@ namespace Mission
             }
         }
 
-        // 하이더가 죽을 때 호출
         public void OnHiderCaptured()
         {
             capturedCount++;
