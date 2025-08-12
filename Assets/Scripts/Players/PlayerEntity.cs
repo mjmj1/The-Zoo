@@ -8,6 +8,7 @@ using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
+using Mission;
 
 namespace Players
 {
@@ -174,6 +175,8 @@ namespace Players
                 playerRenderer.UseOriginShader();
                 return;
             }
+            
+            MissionManager.instance?.OnHiderCaptured();
 
             playerRenderer.UseObserverShader();
 
@@ -192,8 +195,6 @@ namespace Players
 
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
         {
-            print("observer list changed");
-
             if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
 
             if (OwnerClientId == changeEvent.Value)

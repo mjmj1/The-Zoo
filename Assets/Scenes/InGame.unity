@@ -349,7 +349,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &177150967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -568,7 +568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1295311494}
-  missionsView: {fileID: 1137815589}
+  missionsView: {fileID: 1580630676}
   redHealth:
   - {fileID: 1593748936}
   - {fileID: 56563758}
@@ -2835,7 +2835,6 @@ MonoBehaviour:
   - {fileID: -6495250992968162393, guid: bb02e8d356baeab4284417fb46d7ab5b, type: 3}
   interactionsNumber: 15
   TargetCount: 5
-  targetTotal: 25
 --- !u!114 &1316204685
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2934,8 +2933,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5bbdb2cf7ea03a408660d37febfe74c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  treeCountText: {fileID: 1381030671}
-  hiderCountText: {fileID: 1614060595}
   state: {fileID: 1577412846}
   interaction: {fileID: 1316204684}
 --- !u!1 &1380322666
@@ -4239,55 +4236,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1665410967}
   m_CullTransparentMesh: 1
---- !u!1 &1755264489
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1755264491}
-  - component: {fileID: 1755264490}
-  m_Layer: 0
-  m_Name: MissionDebugHotkeys
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1755264490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1755264489}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9894c8e471fe9f4c90654833160598d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: {fileID: 1577412846}
-  ic: {fileID: 1316204684}
-  useControllerForHider: 1
-  seekerStep: 0.05
-  hiderStep: 0.02
---- !u!4 &1755264491
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1755264489}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500.86395, y: 0, z: 6638.948}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1796452511
 GameObject:
   m_ObjectHideFlags: 0
@@ -4788,4 +4736,3 @@ SceneRoots:
   - {fileID: 308475599}
   - {fileID: 2104136137}
   - {fileID: 1577412847}
-  - {fileID: 1755264491}

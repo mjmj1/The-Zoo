@@ -19,8 +19,11 @@ namespace Interactions
         public int TargetCount = 5; // interactionable tree count
 
         public event Action OnTargetCompleted;
-        [SerializeField] private int targetTotal = 25;
-        
+
+        public NetworkVariable<int> TargetTotalNv { get; } =
+            new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
+        public NetworkVariable<int> CompletedTargetsNv { get; } =
+            new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         private void Start()
         {
             if (!IsOwner) return;
@@ -31,18 +34,6 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
-            //while (TargetCount > 0)
-            //{
-            //    var value = UnityEngine.Random.Range(0, count);
-
-            //    print("here is the problem");
-            //    targetSet.Clear();
-            //    while (targetSet.Count < TargetCount)
-            //    {
-            //        targetSet.Add(UnityEngine.Random.Range(0, count));
-            //    }
-            //    print("or not");
-            //}
             while (TargetCount > 0)
             {
                 var value = UnityEngine.Random.Range(0, count);
@@ -70,6 +61,10 @@ namespace Interactions
 
                 interaction.GetComponent<InteractableSpawner>().Initailize(targetSet.Contains(i));
             }
+
+            var total = targetSet.Count * 5;
+            TargetTotalNv.Value = total;
+            CompletedTargetsNv.Value = 0;
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
@@ -79,13 +74,22 @@ namespace Interactions
         }
 
         public int CompletedTargetCount { get; private set; }
+
         public int RemainingTargetCount => Mathf.Max(0, TargetCount - CompletedTargetCount);
+
         [Rpc(SendTo.Server, RequireOwnership = false)]
         public void ReportTargetCompletedRpc(RpcParams _ = default)
         {
             if (!IsServer) return;
+
+            int cap = Mathf.Max(1, TargetTotalNv.Value);
+            CompletedTargetsNv.Value = Mathf.Min(CompletedTargetsNv.Value + 1, cap);
+
             CompletedTargetCount = Mathf.Min(TargetCount, CompletedTargetCount + 1);
             OnTargetCompleted?.Invoke();
+
+            Debug.Log($"[Server] Completed={CompletedTargetsNv.Value + 1}/{TargetTotalNv.Value}");
+
         }
     }
 }

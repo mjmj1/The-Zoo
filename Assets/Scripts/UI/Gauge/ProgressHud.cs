@@ -7,13 +7,13 @@ using Unity.Netcode; // NetworkVariable 읽기용
 public class ProgressHUD : MonoBehaviour
 {
     [Header("Drag & Drop")]
-    [SerializeField] private Gameplay.TeamProgressState state; // 씬에 배치된 그 컴포넌트
-    [SerializeField] private Image leftGauge;    // Seeker  (Image Type=Filled, Vertical, Origin=Bottom)
-    [SerializeField] private Image rightGauge;   // Hider   (Image Type=Filled, Vertical, Origin=Bottom)
+    [SerializeField] private Gameplay.TeamProgressState state;
+    [SerializeField] private Image leftGauge;    // Seeker  
+    [SerializeField] private Image rightGauge;   // Hider   
     [SerializeField] private TMP_Text leftText;  // "0~100%"
     [SerializeField] private TMP_Text rightText; // "0~100%"
 
-    [SerializeField] private float lerpSpeed = 6f; // 부드럽게 보간 속도
+    [SerializeField] private float lerpSpeed = 6f; 
 
     float _seekerTarget, _hiderTarget;
 
@@ -26,15 +26,12 @@ public class ProgressHUD : MonoBehaviour
             return;
         }
 
-        // 네트워크 값 변경에 반응
         state.SeekerProgress.OnValueChanged += OnSeekerChanged;
         state.HiderProgress.OnValueChanged += OnHiderChanged;
 
-        // 초기 동기화
         OnSeekerChanged(0f, state.SeekerProgress.Value);
         OnHiderChanged(0f, state.HiderProgress.Value);
 
-        // 레이캐스트 막지 않게
         if (leftGauge) leftGauge.raycastTarget = false;
         if (rightGauge) rightGauge.raycastTarget = false;
     }
@@ -48,13 +45,13 @@ public class ProgressHUD : MonoBehaviour
 
     void Update()
     {
-        // 좌(Seeker)
+        // (Seeker)
         if (leftGauge)
         {
             leftGauge.fillAmount = Mathf.MoveTowards(leftGauge.fillAmount, _seekerTarget, Time.deltaTime * lerpSpeed);
             if (leftText) leftText.text = Mathf.RoundToInt(leftGauge.fillAmount * 100f) + "%";
         }
-        // 우(Hider)
+        // (Hider)
         if (rightGauge)
         {
             rightGauge.fillAmount = Mathf.MoveTowards(rightGauge.fillAmount, _hiderTarget, Time.deltaTime * lerpSpeed);
