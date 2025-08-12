@@ -1,4 +1,6 @@
+using EventHandler;
 using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -42,8 +44,10 @@ namespace Interactions
 
         public override void StartInteract()
         {
+            base.StartInteract();
+
             if (targetMission.Value)
-                while (maxSpawnCount.Value > 0)
+                if (maxSpawnCount.Value > 0)
                 {
                     if (isInteracting) return;
 
@@ -52,6 +56,10 @@ namespace Interactions
                     SpawnRpc();
 
                     print($"{gameObject.name} is interacting...");
+                }
+                else
+                {
+                    GamePlayEventHandler.OnCheckInteractable(true, true, 0);
                 }
         }
 
@@ -76,19 +84,11 @@ namespace Interactions
                 Random.Range(min.z, max.z)
             );
 
-            //var fruit = Instantiate(spawnObject, spawnPos, Quaternion.identity, spawnPoint.transform);
             var fruit = spawnObject.InstantiateAndSpawn(NetworkManager,
                 position: spawnPos,
                 rotation: Quaternion.identity);
             spawnedFruit.Add(fruit);
 
-            //var rb = fruit.GetComponent<Rigidbody>();
-
-            //if (rb == null)
-            //{
-            //    var force = Random.Range(downForceRange.x, downForceRange.y);
-            //    rb.AddForce(Vector3.down * force, ForceMode.Impulse);
-            //}
             maxSpawnCount.Value--;
         }
 
