@@ -8,7 +8,6 @@ using Unity.Services.Authentication;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Utils;
-using Mission;
 
 namespace Players
 {
@@ -176,7 +175,7 @@ namespace Players
                 return;
             }
             
-            MissionManager.instance?.OnHiderCaptured();
+            //MissionManager.instance?.OnHiderCaptured();
 
             playerRenderer.UseObserverShader();
 

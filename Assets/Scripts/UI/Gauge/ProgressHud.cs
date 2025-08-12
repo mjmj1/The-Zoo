@@ -1,9 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.Netcode; // NetworkVariable 읽기용
 
-// 좌=Seeker, 우=Hider 고정 HUD
 public class ProgressHUD : MonoBehaviour
 {
     [Header("Drag & Drop")]

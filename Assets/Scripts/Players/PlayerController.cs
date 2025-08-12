@@ -1,6 +1,6 @@
 #if UNITY_EDITOR
 using EventHandler;
-using Players.Roles;
+using Mission;
 using System.Collections;
 using System.Linq;
 using Unity.Netcode;
@@ -366,6 +366,8 @@ namespace Players
         private IEnumerator DeathCoroutine()
         {
             animator.OnDeath();
+
+            MissionManager.instance?.OnHiderCaptured();
 
             yield return new WaitForSeconds(3f);
 
