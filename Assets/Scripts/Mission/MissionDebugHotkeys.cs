@@ -17,37 +17,38 @@ public class MissionDebugHotkeys : MonoBehaviour
 
     void Update()
     {
-    //    if (Input.GetKeyDown(KeyCode.Alpha1))
-    //    {
-    //        if (useControllerForHider && ic != null)
-    //        {
-    //            ic.ReportTargetCompletedRpc();
-    //        }
-    //        else
-    //        {
-    //            _tmpCompleted = Mathf.Min(_tmpCompleted + 1, Mathf.Max(1, ic != null ? ic.TargetCount : 1));
-    //            float norm = (ic != null && ic.TargetCount > 0)
-    //                ? (float)_tmpCompleted / ic.TargetCount
-    //                : (float)_tmpCompleted / 5f;
-    //            state.SetProgressRpc(TeamRole.Hider, Mathf.Clamp01(norm));
-    //        }
-    //    }
+        //    if (Input.GetKeyDown(KeyCode.Alpha1))
+        //    {
+        //        if (useControllerForHider && ic != null)
+        //        {
+        //            ic.ReportTargetCompletedRpc();
+        //        }
+        //        else
+        //        {
+        //            _tmpCompleted = Mathf.Min(_tmpCompleted + 1, Mathf.Max(1, ic != null ? ic.TargetCount : 1));
+        //            float norm = (ic != null && ic.TargetCount > 0)
+        //                ? (float)_tmpCompleted / ic.TargetCount
+        //                : (float)_tmpCompleted / 5f;
+        //            state.SetProgressRpc(TeamRole.Hider, Mathf.Clamp01(norm));
+        //        }
+        //    }
 
-    //    if (Input.GetKeyDown(KeyCode.Alpha2))
-    //    {
-    //        state.AddProgressRpc(TeamRole.Seeker, seekerStep);
-    //    }
+        //    if (Input.GetKeyDown(KeyCode.Alpha2))
+        //    {
+        //        state.AddProgressRpc(TeamRole.Seeker, seekerStep);
+        //    }
 
-    //    if (Input.GetKeyDown(KeyCode.Alpha3))
-    //    {
-    //        state.AddProgressRpc(TeamRole.Hider, hiderStep);
-    //    }
+        //    if (Input.GetKeyDown(KeyCode.Alpha3))
+        //    {
+        //        state.AddProgressRpc(TeamRole.Hider, hiderStep);
+        //    }
 
-    //    if (Input.GetKeyDown(KeyCode.Alpha0))
-    //    {
-    //        _tmpCompleted = 0;
-    //        state.SetProgressRpc(TeamRole.Seeker, 0f);
-    //        state.SetProgressRpc(TeamRole.Hider, 0f);
-    //    }
-    //}
+        //    if (Input.GetKeyDown(KeyCode.Alpha0))
+        //    {
+        //        _tmpCompleted = 0;
+        //        state.SetProgressRpc(TeamRole.Seeker, 0f);
+        //        state.SetProgressRpc(TeamRole.Hider, 0f);
+        //    }
+        //}
+    }
 }
