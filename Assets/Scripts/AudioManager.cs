@@ -42,6 +42,8 @@ public class AudioManager : MonoBehaviour
     private void OnEnable()
     {
         GamePlayEventHandler.UIChanged += OnUIChanged;
+
+        ApplySavedVolumesOnBoot();
     }
 
     private void OnDisable()
@@ -65,6 +67,27 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    private void ApplySavedVolumesOnBoot()
+    {
+        var bgm = PlayerPrefs.GetFloat("opt_bgm", 0.75f);
+        var sfx = PlayerPrefs.GetFloat("opt_sfx", 0.75f);
+
+        SetBGMVolume(bgm);
+        SetSfxVolume(sfx);
+    }
+
+    public void SetBGMVolume(float linear)
+    {
+        var db = linear <= 0.0001f ? -80f : Mathf.Log10(Mathf.Clamp01(linear)) * 20f;
+        mixer.SetFloat("BGM", db);
+    }
+
+    public void SetSfxVolume(float linear)
+    {
+        var db = linear <= 0.0001f ? -80f : Mathf.Log10(Mathf.Clamp01(linear)) * 20f;
+        mixer.SetFloat("SFX", db);
+    }
+
     #region SFX Pool 초기화
 
     private void InitSfxPool()
@@ -76,9 +99,9 @@ public class AudioManager : MonoBehaviour
                 go.transform.SetParent(transform);
                 var src = go.AddComponent<AudioSource>();
                 src.outputAudioMixerGroup = sfxGroup;
-                src.spatialBlend = 1f; // 3D 사운드
+                src.spatialBlend = 1f;
                 src.minDistance = 1f;
-                src.minDistance = 10f;
+                src.maxDistance = 8f;
                 src.dopplerLevel = 1f;
                 src.spread = 360f;
                 src.rolloffMode = AudioRolloffMode.Linear;
@@ -118,11 +141,6 @@ public class AudioManager : MonoBehaviour
         bgmSource.Stop();
     }
 
-    public void SetBGMVolume(float linear)
-    {
-        mixer.SetFloat("BGMVolume", Mathf.Log10(Mathf.Clamp01(linear)) * 20f);
-    }
-
     #endregion
 
     #region SFX API
@@ -132,7 +150,7 @@ public class AudioManager : MonoBehaviour
     /// </summary>
     public void PlaySfx(AudioClip clip, Vector3 position, float volume = 1f, float pitch = 1f)
     {
-        if (clip == null) return;
+        if (!clip) return;
         var src = sfxPool.Get();
         src.transform.position = position;
         src.clip = clip;
@@ -140,11 +158,6 @@ public class AudioManager : MonoBehaviour
         src.pitch = pitch;
         src.Play();
         StartCoroutine(ReleaseWhenDone(src));
-    }
-
-    public void SetSfxVolume(float linear)
-    {
-        mixer.SetFloat("SFXVolume", Mathf.Log10(Mathf.Clamp01(linear)) * 20f);
     }
 
     private IEnumerator ReleaseWhenDone(AudioSource src)
