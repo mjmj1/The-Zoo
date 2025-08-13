@@ -1,4 +1,5 @@
 using GamePlay;
+using Mission;
 using Players.Roles;
 using Scriptable;
 using TMPro;
@@ -95,7 +96,7 @@ namespace Players
         private void OnNetworkSceneLoadComplete(ulong id, string sceneName, LoadSceneMode mode)
         {
             if (!NetworkManager.Singleton.LocalClientId.Equals(id)) return;
-            MyLogger.Print(this, $"{id}");
+            
             switch (sceneName)
             {
                 case "Lobby":

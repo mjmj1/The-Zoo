@@ -1,3 +1,4 @@
+using Mission;
 using Players;
 using Unity.Netcode;
 using UnityEngine;
@@ -58,6 +59,7 @@ namespace GamePlay
                 else
                     hiderIds.Add(data);
             }
+            MissionManager.instance.hiderCountInitial = hiderIds.Count;
         }
 
         internal void UnassignRole()
