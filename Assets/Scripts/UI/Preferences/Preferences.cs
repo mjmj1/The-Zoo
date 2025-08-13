@@ -55,9 +55,6 @@ namespace UI.Preferences
             sfxSlider.onValueChanged.AddListener(SetSfx);
             mouseSensSlider.onValueChanged.AddListener(OnMouseSensChanged);
 
-            resolutionDropdown.onValueChanged.AddListener(_ => { /* 미리보기 원하면 ApplyDisplay 호출 */ });
-            screenModeDropdown.onValueChanged.AddListener(_ => { /* same */ });
-
             saveButton.onClick.AddListener(OnSave);
             cancelButton.onClick.AddListener(OnCancel);
         }

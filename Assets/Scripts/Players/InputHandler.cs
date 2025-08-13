@@ -60,6 +60,11 @@ namespace Players
 
         private void MouseLeftClicked(InputAction.CallbackContext ctx)
         {
+            MouseLeftClicked();
+        }
+
+        internal void MouseLeftClicked()
+        {
             if (isOverUI) return;
 
             Cursor.lockState = CursorLockMode.Locked;

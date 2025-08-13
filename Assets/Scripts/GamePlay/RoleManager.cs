@@ -6,23 +6,23 @@ namespace GamePlay
 {
     public class RoleManager : NetworkBehaviour
     {
-        public NetworkList<PlayerData> hiderIds = new();
-        public NetworkList<PlayerData> seekerIds = new();
+        public NetworkList<PlayerData> HiderIds = new();
+        public NetworkList<PlayerData> SeekerIds = new();
 
         public override void OnNetworkSpawn()
         {
             base.OnNetworkSpawn();
 
-            hiderIds.OnListChanged += OnHiderListChanged;
-            seekerIds.OnListChanged += OnSeekerListChanged;
+            HiderIds.OnListChanged += OnHiderListChanged;
+            SeekerIds.OnListChanged += OnSeekerListChanged;
         }
 
         public override void OnNetworkDespawn()
         {
             base.OnNetworkDespawn();
 
-            hiderIds.OnListChanged -= OnHiderListChanged;
-            seekerIds.OnListChanged -= OnSeekerListChanged;
+            HiderIds.OnListChanged -= OnHiderListChanged;
+            SeekerIds.OnListChanged -= OnSeekerListChanged;
         }
 
         private void OnHiderListChanged(NetworkListEvent<PlayerData> changeEvent)
@@ -48,15 +48,17 @@ namespace GamePlay
 
             for (var i = 0; i < clients.Count; i++)
             {
-                var playerName = clients[i].PlayerObject
-                    .GetComponent<PlayerEntity>().playerName.Value;
+                var entity = clients[i].PlayerObject.GetComponent<PlayerEntity>();
 
-                var data = new PlayerData(clients[i].ClientId, playerName);
+                var playerName = entity.playerName.Value;
+                var index = entity.animalIndex.Value;
+
+                var data = new PlayerData(clients[i].ClientId, playerName, index);
 
                 if (seeker == i)
-                    seekerIds.Add(data);
+                    SeekerIds.Add(data);
                 else
-                    hiderIds.Add(data);
+                    HiderIds.Add(data);
             }
         }
 
@@ -65,6 +67,26 @@ namespace GamePlay
             foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
                 SetRoleRpc(PlayerEntity.Role.None,
                     RpcTarget.Single(client, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.Authority)]
+        internal void RemoveHiderRpc(ulong clientId)
+        {
+            foreach (var data in HiderIds)
+            {
+                if(data.ClientId == clientId)
+                    HiderIds.Remove(data);
+            }
+        }
+
+        [Rpc(SendTo.Authority)]
+        internal void RemoveSeekerRpc(ulong clientId)
+        {
+            foreach (var data in SeekerIds)
+            {
+                if(data.ClientId == clientId)
+                    SeekerIds.Remove(data);
+            }
         }
 
         [Rpc(SendTo.SpecifiedInParams)]

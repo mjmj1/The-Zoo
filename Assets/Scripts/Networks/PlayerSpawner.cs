@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EventHandler;
+using Players;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
@@ -13,9 +14,9 @@ namespace Networks
         public static PlayerSpawner Instance { get; private set; }
 
         [SerializeField] private List<NetworkObject> animalPrefabs;
-        private readonly NetworkList<int> spawnedAnimals = new();
+        public readonly NetworkList<int> SpawnedAnimals = new();
 
-        public int index;
+        private int index;
 
         public void Awake()
         {
@@ -63,20 +64,20 @@ namespace Networks
         [Rpc(SendTo.Owner)]
         private void AddRpc(int i)
         {
-            spawnedAnimals.Add(i);
+            SpawnedAnimals.Add(i);
         }
 
         [Rpc(SendTo.Owner)]
         private void RemoveRpc(int i)
         {
-            spawnedAnimals.Remove(i);
+            SpawnedAnimals.Remove(i);
         }
 
         private int GetRandomIndexExcludingSpawned(int max)
         {
             var candidates = Enumerable
                 .Range(0, max)
-                .Where(i => !spawnedAnimals.Contains(i))
+                .Where(i => !SpawnedAnimals.Contains(i))
                 .ToList();
 
             if (candidates.Count == 0)
@@ -94,13 +95,15 @@ namespace Networks
         {
             var prefab = animalPrefabs[i];
 
-            var pos = Util.GetCirclePositions(Vector3.zero, spawnedAnimals.Count, 5f, 8);
+            var pos = Util.GetCirclePositions(Vector3.zero, SpawnedAnimals.Count, 5f, 8);
 
-            prefab.InstantiateAndSpawn(NetworkManager,
+            var netObj = prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,
                 isPlayerObject: true,
                 position: pos,
                 rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
+
+            netObj.GetComponent<PlayerEntity>().animalIndex.Value = i;
         }
     }
 }

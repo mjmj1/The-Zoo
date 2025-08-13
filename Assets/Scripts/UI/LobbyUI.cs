@@ -48,7 +48,7 @@ namespace UI
             session.SessionHostChanged -= OnSessionHostChanged;
             session.PlayerJoined -= OnPlayerChanged;
             session.PlayerHasLeft -= OnPlayerChanged;
-            GameManager.Instance.readyCount.OnValueChanged += OnValueChanged;
+            GameManager.Instance.readyCount.OnValueChanged -= OnValueChanged;
 
             quitButton.onClick.RemoveListener(OnQuitButtonClick);
             gameStartButton.onClick.RemoveListener(OnGameStartButtonClick);

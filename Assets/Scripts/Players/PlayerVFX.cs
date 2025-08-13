@@ -9,7 +9,7 @@ namespace Players
         [SerializeField] private ParticleSystem hitEffect;
         [SerializeField] private ParticleSystem pickupEffect;
 
-        public void HitEffect()
+        internal void HitEffect()
         {
             hitEffect.Play();
         }

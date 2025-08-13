@@ -24,8 +24,9 @@ TagManager:
   - Seeker
   - Observer
   - Interactable
+  - Death
   - Pickup
-  - 
+  -
   - 
   - 
   - 

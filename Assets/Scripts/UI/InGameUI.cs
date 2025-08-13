@@ -1,3 +1,4 @@
+using System;
 using GamePlay;
 using Players;
 using Scriptable;
@@ -24,8 +25,9 @@ namespace UI
         private void Start()
         {
             PlayManager.Instance.currentTime.OnValueChanged += OnTimerChanged;
+
             NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>().health.OnValueChanged += OnPlayerHealthChanged;
+                .GetComponent<Hittable>().health.OnValueChanged += OnPlayerHealthChanged;
 
             var input = NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerController>().Input;
@@ -50,8 +52,10 @@ namespace UI
             input.InputActions.UI.Tab.performed -= OnTabKeyPressed;
             input.InputActions.UI.Tab.canceled -= OnTabKeyPressed;
 
+            GamePlayEventHandler.CheckInteractable -= OnKeyUI;
+
             NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerEntity>().health.OnValueChanged -= OnPlayerHealthChanged;
+                .GetComponent<Hittable>().health.OnValueChanged -= OnPlayerHealthChanged;
         }
 
         private void OnKeyUI(bool value, bool isTarget, int count)

@@ -79,10 +79,10 @@ namespace Players
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
+        internal InputHandler Input;
         private PlayerNetworkAnimator animator;
         private PlayerEntity entity;
-
-        internal InputHandler Input;
+        private Hittable hittable;
         private bool isAround;
         private bool isSpin;
 
@@ -131,7 +131,6 @@ namespace Players
         }
 
         public bool CanMove { get; set; } = true;
-        public bool IsJumping { get; set; }
         public bool IsSpinning { get; set; }
 
         public void ApplyMouseSensitivity(float value)
@@ -169,6 +168,10 @@ namespace Players
 
             InitializeGravity();
 
+            Input.MouseLeftClicked();
+
+            entity.AlignForward();
+
             if (!sceneName.Equals("Lobby")) return;
 
             GamePlayEventHandler.OnUIChanged("Lobby");
@@ -204,7 +207,7 @@ namespace Players
             Input.InputActions.Player.Jump.performed += Jump;
             Input.InputActions.Player.Attack.started += Attack;
 
-            entity.health.OnValueChanged += Hit;
+            hittable.health.OnValueChanged += Hit;
         }
 
         private void Unsubscribe()
@@ -226,7 +229,7 @@ namespace Players
             Input.InputActions.Player.Jump.performed -= Jump;
             Input.InputActions.Player.Attack.performed -= Attack;
 
-            entity.health.OnValueChanged -= Hit;
+            hittable.health.OnValueChanged -= Hit;
         }
 
         private void Rmb(InputAction.CallbackContext ctx)
@@ -244,6 +247,7 @@ namespace Players
             rb = GetComponent<Rigidbody>();
             Input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
+            hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
         }
@@ -387,7 +391,7 @@ namespace Players
 
         private IEnumerator Slowdown()
         {
-            slowdownRate = 0.7f;
+            slowdownRate = 0.5f;
 
             yield return new WaitForSeconds(0.3f);
 

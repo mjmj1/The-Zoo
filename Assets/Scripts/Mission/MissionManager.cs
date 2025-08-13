@@ -29,7 +29,7 @@ namespace Mission
 
             var uniqueIds = new HashSet<ulong>();
 
-            foreach (var hider in PlayManager.Instance.RoleManager.hiderIds)
+            foreach (var hider in PlayManager.Instance.RoleManager.HiderIds)
             {
                 if (!uniqueIds.Add(hider.ClientId)) continue;
                 hiderCount++;
