@@ -30,7 +30,7 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
-            MissionManager.instance.fruitTotal = TargetCount * 4;
+            //MissionManager.instance.fruitTotal = TargetCount * 4;
 
             while (TargetCount > 0)
             {

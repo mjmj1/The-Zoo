@@ -1,5 +1,5 @@
 using UnityEngine;
-using Gameplay;
+using ProgressState;
 using Interactions;
 // Gauge Test Code
 public class MissionDebugHotkeys : MonoBehaviour

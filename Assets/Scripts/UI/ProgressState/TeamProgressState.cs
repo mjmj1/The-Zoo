@@ -1,7 +1,7 @@
 using Unity.Netcode;
 using UnityEngine;
 
-namespace Gameplay
+namespace ProgressState
 {
     public enum TeamRole : byte
     {

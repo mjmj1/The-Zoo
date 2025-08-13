@@ -61,8 +61,6 @@ namespace GamePlay
                 else
                     HiderIds.Add(data);
             }
-            MissionManager.instance.hiderCountInitial = hiderIds.Count;
-            print("MissionManager.instance.hiderCountInitial : " + MissionManager.instance.hiderCountInitial);
         }
 
         internal void UnassignRole()

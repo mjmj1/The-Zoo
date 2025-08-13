@@ -1,3 +1,4 @@
+using ProgressState;
 using GamePlay;
 using Players;
 using Unity.Netcode;
@@ -37,7 +38,6 @@ namespace Mission
         public void OnHiderCapturedRpc(RpcParams _ = default)
         {
             OnHiderCaptured_Server();
-        }
 
             foreach (var hider in PlayManager.Instance.RoleManager.HiderIds)
             {
@@ -55,7 +55,7 @@ namespace Mission
         [Rpc(SendTo.Server, RequireOwnership = false)]
         public void OnFruitCollectedRpc(RpcParams _ = default)
         {
-            OnFruitCollected_Server();
+            //OnFruitCollected_Server();
         }
     }
 }

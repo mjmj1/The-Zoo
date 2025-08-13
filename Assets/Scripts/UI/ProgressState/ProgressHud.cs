@@ -5,7 +5,7 @@ using TMPro;
 public class ProgressHUD : MonoBehaviour
 {
     [Header("Drag & Drop")]
-    [SerializeField] private Gameplay.TeamProgressState state;
+    [SerializeField] private ProgressState.TeamProgressState state;
     [SerializeField] private Image leftGauge;    // Seeker  
     [SerializeField] private Image rightGauge;   // Hider   
     [SerializeField] private TMP_Text leftText;  // "0~100%"
