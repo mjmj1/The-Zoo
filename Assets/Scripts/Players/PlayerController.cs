@@ -1,19 +1,19 @@
-#if UNITY_EDITOR
-using EventHandler;
-using Players.Roles;
 using System.Collections;
 using System.Linq;
-using Unity.Netcode;
+using EventHandler;
 using Unity.Netcode.Components;
-using Unity.Netcode.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
+#if UNITY_EDITOR
+using Unity.Netcode.Editor;
+#endif
 
 namespace Players
 {
+#if UNITY_EDITOR
     /// <summary>
     ///     The custom editor for the <see cref="PlayerController" /> component.
     /// </summary>
@@ -80,16 +80,13 @@ namespace Players
         public float mouseSensitivity = 0.1f;
 
         private PlayerNetworkAnimator animator;
-
         internal InputHandler Input;
         private PlayerEntity entity;
         private Hittable hittable;
-        private InputHandler input;
         private bool isAround;
         private bool isSpin;
 
         private float moveSpeed;
-        private PlayerVfx playerVfx;
         private Quaternion previousRotation;
 
         private Rigidbody rb;
@@ -105,6 +102,10 @@ namespace Players
         private void Start()
         {
             if (!IsOwner) return;
+
+            var saved = PlayerPrefs.GetFloat("opt_mouse_sens", mouseSensitivity);
+
+            ApplyMouseSensitivity(saved);
 
             moveSpeed = walkSpeed;
         }
@@ -131,6 +132,11 @@ namespace Players
 
         public bool CanMove { get; set; } = true;
         public bool IsSpinning { get; set; }
+
+        public void ApplyMouseSensitivity(float value)
+        {
+            mouseSensitivity = Mathf.Clamp(value, 0.02f, 5f);
+        }
 
         public override void OnNetworkSpawn()
         {
@@ -168,7 +174,6 @@ namespace Players
 
             Reset();
             entity.Reset();
-            hittable.Reset();
             readyChecker.Reset();
 
             var clients = NetworkManager.ConnectedClientsIds.ToList();
@@ -238,8 +243,6 @@ namespace Players
             rb = GetComponent<Rigidbody>();
             Input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
-            playerVfx = GetComponent<PlayerVfx>();
-            hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
         }
@@ -334,6 +337,7 @@ namespace Players
         {
             if (ctx.performed) moveSpeed = runSpeed;
             if (ctx.canceled) moveSpeed = walkSpeed;
+
             animator.OnRun(ctx);
         }
 
@@ -361,18 +365,10 @@ namespace Players
 
         private void Hit(int previousValue, int newValue)
         {
-            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
-
-            playerVfx.HitEffect();
-
             StartCoroutine(Slowdown());
 
             if (newValue > 0) animator.OnHit();
-            else
-            {
-                gameObject.layer = LayerMask.NameToLayer("Death");
-                StartCoroutine(DeathCoroutine());
-            }
+            else StartCoroutine(DeathCoroutine());
         }
 
         private IEnumerator DeathCoroutine()
