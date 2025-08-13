@@ -48,10 +48,12 @@ namespace GamePlay
 
             for (var i = 0; i < clients.Count; i++)
             {
-                var playerName = clients[i].PlayerObject
-                    .GetComponent<PlayerEntity>().playerName.Value;
+                var entity = clients[i].PlayerObject.GetComponent<PlayerEntity>();
 
-                var data = new PlayerData(clients[i].ClientId, playerName);
+                var playerName = entity.playerName.Value;
+                var index = entity.animalIndex.Value;
+
+                var data = new PlayerData(clients[i].ClientId, playerName, index);
 
                 if (seeker == i)
                     SeekerIds.Add(data);

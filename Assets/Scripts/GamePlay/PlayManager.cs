@@ -141,20 +141,27 @@ namespace GamePlay
         {
             MoveRandomPositionRpc();
 
+            yield return null;
+
+            RoleManager.AssignRole();
+
+            yield return null;
+
             yield return StartCoroutine(SpawnNpc());
 
             HideLoadingRpc();
 
             StartCoroutine(CountTime());
-
-            RoleManager.AssignRole();
         }
 
         private IEnumerator SpawnNpc()
         {
             yield return new WaitForSeconds(2f);
 
-            NpcSpawner.Instance.SpawnNpcRpc(0, 1);
+            foreach (var data in RoleManager.HiderIds)
+            {
+                NpcSpawner.Instance.SpawnNpcRpc(data.AnimalIndex, 4);
+            }
         }
 
         private IEnumerator CountTime()

@@ -29,6 +29,7 @@ namespace Players
 
         public NetworkVariable<Role> role = new();
         public NetworkVariable<bool> isDead = new();
+        public NetworkVariable<int> animalIndex = new();
 
         private PlayerRenderer playerRenderer;
 

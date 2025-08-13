@@ -243,6 +243,7 @@ namespace Players
             rb = GetComponent<Rigidbody>();
             Input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
+            hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
         }

@@ -7327,7 +7327,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa5eead2a0844e39fd402510a0d61f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mixer: {fileID: 24100000, guid: 4cf20aa01fccb0648b932b8c13f914a1, type: 2}
   bgmSlider: {fileID: 424418620}
   sfxSlider: {fileID: 451181716}
   mouseSensSlider: {fileID: 168667572}
