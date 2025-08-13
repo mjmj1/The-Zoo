@@ -1646,7 +1646,6 @@ MonoBehaviour:
   - {fileID: 7582840583034539398, guid: 24e84b314b1f75346870e33a9b884a4b, type: 3}
   - {fileID: 956477058676263179, guid: b8eb18e09b544ee4fbda195ee5b8d3fc, type: 3}
   - {fileID: 818637052757675923, guid: 7218288aae65cab40afe5a7055153c76, type: 3}
-  index: 0
 --- !u!114 &194974669
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7327,7 +7326,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0aa5eead2a0844e39fd402510a0d61f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mixer: {fileID: 24100000, guid: 4cf20aa01fccb0648b932b8c13f914a1, type: 2}
   bgmSlider: {fileID: 424418620}
   sfxSlider: {fileID: 451181716}
   mouseSensSlider: {fileID: 168667572}
@@ -9118,12 +9116,6 @@ MonoBehaviour:
   backgroundCanvasName: BackgroundCanvas
   loadingCanvasName: LoadingCanvas
   popupCanvasName: InformationPopup
-  backgroundCanvas: {fileID: 0}
-  titleCanvas: {fileID: 0}
-  mainCanvas: {fileID: 0}
-  lobbyCanvas: {fileID: 0}
-  loadingCanvas: {fileID: 0}
-  popupCanvas: {fileID: 0}
 --- !u!1 &946058794
 GameObject:
   m_ObjectHideFlags: 0

@@ -29,8 +29,8 @@ namespace Players
         public NetworkVariable<FixedString32Bytes> playerName = new();
 
         public NetworkVariable<Role> role = new();
-        public NetworkVariable<int> health = new(3);
         public NetworkVariable<bool> isDead = new();
+        public NetworkVariable<int> animalIndex = new();
 
         private PlayerRenderer playerRenderer;
 
@@ -41,9 +41,8 @@ namespace Players
 
             role.Value = Role.None;
             isDead.Value = false;
-            health.Value = 3;
             playerMarker.color = roleColor.defaultColor;
-            
+
             CameraManager.Instance.EnableCamera(true);
         }
 
@@ -66,12 +65,12 @@ namespace Players
 
             playerMarker.gameObject.SetActive(true);
 
-            health.OnValueChanged += OnHealthChanged;
-
             NetworkManager.Singleton.SceneManager.OnLoadComplete += OnNetworkSceneLoadComplete;
 
             playerName.Value = AuthenticationService.Instance.PlayerName;
             clientId.Value = NetworkManager.LocalClientId;
+
+            gameObject.AddComponent<AudioListener>();
 
             CameraManager.Instance.EnableCamera(true);
         }
@@ -87,7 +86,6 @@ namespace Players
 
             if (!IsOwner) return;
 
-            health.OnValueChanged -= OnHealthChanged;
             NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
 
             CameraManager.Instance.EnableCamera(false);
@@ -116,11 +114,6 @@ namespace Players
                     break;
                 }
             }
-        }
-
-        public void Damaged()
-        {
-            health.Value -= 1;
         }
 
         internal void AlignForward()
@@ -182,6 +175,11 @@ namespace Players
 
             if (!IsOwner) return;
 
+            if(role.Value == Role.Hider)
+                PlayManager.Instance.RoleManager.RemoveHiderRpc(OwnerClientId);
+            else if(role.Value == Role.Seeker)
+                PlayManager.Instance.RoleManager.RemoveSeekerRpc(OwnerClientId);
+
             PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
         }
 
@@ -209,7 +207,7 @@ namespace Players
                 NetworkShow(observer);
         }
 
-        internal void NetworkShow(ulong fromId)
+        private void NetworkShow(ulong fromId)
         {
             if (OwnerClientId == fromId) return;
 
@@ -218,7 +216,7 @@ namespace Players
             NetworkObject.NetworkShow(fromId);
         }
 
-        internal void NetworkHide(ulong fromId)
+        private void NetworkHide(ulong fromId)
         {
             if (OwnerClientId == fromId) return;
 

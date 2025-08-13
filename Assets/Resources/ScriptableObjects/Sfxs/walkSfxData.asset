@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: walkSfxData
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 4e146eb196fece74a98c0d225222183d, type: 3}
-  volume: 1
+  volume: 0.2
   pitch: 2

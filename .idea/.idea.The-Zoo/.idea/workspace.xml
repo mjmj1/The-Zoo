@@ -8,9 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Scriptable/RoleColor.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Scriptable/RoleColor.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/InteractionController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Interactions/InteractionController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerView.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/PlayManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/PlayManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerEntity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/HiderRole.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/HiderRole.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/SeekerRole.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/SeekerRole.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUI.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,6 +50,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/99a6b958c3224b0a8d81abaab1e8dead96000/d5/983f3c82/NetworkListEvent`1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/99a6b958c3224b0a8d81abaab1e8dead96000/e6/5121ab5d/SendTo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/07/40faffa6/Transform.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/67/0c43f535/MonoBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/7a/b416e6e7/Component.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e4d9240e78544597a1d42d60268e7da421e00/11/c353d574/Property`2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ea01e77be99618395f448b16bd7cc2bd4248bd9e5d8474964b2d97f39c5d74/System.cs" root0="FORCE_HIGHLIGHTING" />
@@ -62,6 +70,7 @@
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.cinemachine@b66fdb7cd1f2/Runtime/Core/UnityVectorExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.collections@56bff8827a7e/Unity.Collections/NativeArrayExtensions.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.collections@56bff8827a7e/Unity.Collections/NativeList.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ide.rider@4d374c7eb6db/Rider/Editor/RiderScriptEditor.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Runtime/Actuators/ActionSegment.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Runtime/Actuators/VectorActuator.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Runtime/Agent.cs" root0="SKIP_HIGHLIGHTING" />
@@ -104,7 +113,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "Unity 에디터에 연결.Unity 에디터에 연결.executor": "Debug",
     "XThreadsFramesViewSplitterKey": "0.68524593",
-    "git-widget-placeholder": "IG/Interaction__Key__Ui",
+    "git-widget-placeholder": "IG/gp/hp-role-ui",
     "ignore.virus.scanning.warn.message": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -114,7 +123,7 @@
     "settings.editor.selected.configurable": "preferences.sourceCode.C#",
     "vue.rearranger.settings.migration": "true"
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Unity 에디터에 연결.Unity 에디터에 연결">
     <configuration name="유닛 테스트(배치 모드)" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\6000.1.12f1\Editor\Unity.exe" />
@@ -250,7 +259,6 @@
       <workItem from="1753439668790" duration="21183000" />
       <workItem from="1753522348002" duration="3916000" />
       <workItem from="1753710458627" duration="6775000" />
-      <workItem from="1754391137915" duration="10668000" />
     </task>
     <task id="LOCAL-00001" summary="[chore]: 일부 수정">
       <option name="closed" value="true" />

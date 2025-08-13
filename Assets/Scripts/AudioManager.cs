@@ -57,12 +57,15 @@ public class AudioManager : MonoBehaviour
         {
             case "Title":
                 PlayBGM(titleBGM);
+                if (Camera.main != null) Camera.main.GetComponent<AudioListener>().enabled = true;
                 break;
             case "Lobby":
                 PlayBGM(lobbyBGM);
+                if (Camera.main != null) Camera.main.GetComponent<AudioListener>().enabled = false;
                 break;
             case "InGame":
                 PlayBGM(inGameBGM);
+                if (Camera.main != null) Camera.main.GetComponent<AudioListener>().enabled = false;
                 break;
         }
     }

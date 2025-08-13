@@ -1,4 +1,3 @@
-using Gameplay;
 using GamePlay;
 using Players;
 using Unity.Netcode;
@@ -40,10 +39,7 @@ namespace Mission
             OnHiderCaptured_Server();
         }
 
-        private void OnFruitCollected_Server()
-        {
-            fruitCollected = Mathf.Min(fruitCollected + 1, fruitTotal);
-            if (state)
+            foreach (var hider in PlayManager.Instance.RoleManager.HiderIds)
             {
                 float norm = (float)fruitCollected / fruitTotal;
                 state.SetProgressRpc(TeamRole.Hider, norm);

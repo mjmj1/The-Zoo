@@ -55,7 +55,7 @@ namespace UI.GameResult
             var uniqueIds = new HashSet<ulong>();
 
             if (isSeekerWin)
-                foreach (var seeker in PlayManager.Instance.RoleManager.seekerIds)
+                foreach (var seeker in PlayManager.Instance.RoleManager.SeekerIds)
                 {
                     if (!uniqueIds.Add(seeker.ClientId)) continue;
 
@@ -64,7 +64,7 @@ namespace UI.GameResult
                     item.SetPlayerName(seeker.Name.Value);
                 }
             else
-                foreach (var hider in PlayManager.Instance.RoleManager.hiderIds)
+                foreach (var hider in PlayManager.Instance.RoleManager.HiderIds)
                 {
                     if (!uniqueIds.Add(hider.ClientId)) continue;
 

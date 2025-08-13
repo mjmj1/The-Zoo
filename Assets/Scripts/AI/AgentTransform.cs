@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
 
@@ -5,6 +6,7 @@ namespace AI
 {
     public class AgentTransform : NetworkTransform
     {
+        public NetworkVariable<bool> isDead = new();
         private Rigidbody rb;
 
         protected override void Awake()
@@ -28,14 +30,26 @@ namespace AI
             rb.useGravity = !PlanetGravity.Instance;
             rb.isKinematic = false;
             PlanetGravity.Instance?.Subscribe(rb);
-
         }
 
         public override void OnNetworkDespawn()
         {
-            base.OnNetworkDespawn();
-
             PlanetGravity.Instance?.Unsubscribe(rb);
+
+            base.OnNetworkDespawn();
+        }
+
+        internal void OnDeath()
+        {
+            RequestDespawnRpc(new NetworkObjectReference(NetworkObject));
+        }
+
+        [Rpc(SendTo.Authority, RequireOwnership = false)]
+        private void RequestDespawnRpc(NetworkObjectReference targetRef)
+        {
+            if (!targetRef.TryGet(out var no)) return;
+            if (!no.IsSpawned) return;
+            no.DeferDespawn(1);
         }
     }
 }

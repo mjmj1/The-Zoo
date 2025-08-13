@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 5884640447956715888}
   - component: {fileID: 3155749932161914919}
   - component: {fileID: 2736765177486910086}
+  - component: {fileID: 2149746142852815131}
   - component: {fileID: -553120260605898663}
   - component: {fileID: 6675916858937408846}
   - component: {fileID: 3755982930554864778}
@@ -20,7 +21,6 @@ GameObject:
   - component: {fileID: 6661343672116730651}
   - component: {fileID: 46057852386042095}
   - component: {fileID: 8991061074975073049}
-  - component: {fileID: 7625310577876099095}
   - component: {fileID: 5797060271022687091}
   m_Layer: 0
   m_Name: PlayerObject
@@ -141,6 +141,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3227f934a5ddafe4ead114f8b708af77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2149746142852815131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978094491091307183}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd65d805e98e4fa2b735051416e9cd18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  health:
+    m_InternalValue: 3
 --- !u!114 &-553120260605898663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,9 +211,9 @@ MonoBehaviour:
         byte0029: 0
   role:
     m_InternalValue: 0
-  health:
-    m_InternalValue: 3
   isDead:
+    m_InternalValue: 0
+  animalIndex:
     m_InternalValue: 0
 --- !u!114 &6675916858937408846
 MonoBehaviour:
@@ -227,7 +242,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2561
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -256,7 +271,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 513
+    m_Bits: 2561
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -372,20 +387,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   attackOrigin: {fileID: 5877200157190742088}
---- !u!114 &7625310577876099095
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1978094491091307183}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7178414fa0f245338ecd1f353644dbbe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ShowTopMostFoldoutHeaderGroup: 1
-  ghostShader: {fileID: 4800000, guid: 8282f0c5abc468e4bafab4d0228290c5, type: 3}
 --- !u!114 &5797060271022687091
 MonoBehaviour:
   m_ObjectHideFlags: 0
