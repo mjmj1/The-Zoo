@@ -176,8 +176,6 @@ namespace Players
                 return;
             }
             
-            //MissionManager.instance?.OnHiderCaptured();
-
             playerRenderer.UseObserverShader();
 
             gameObject.layer = LayerMask.NameToLayer("Observer");

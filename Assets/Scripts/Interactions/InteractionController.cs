@@ -1,3 +1,4 @@
+using Mission;
 using System;
 using System.Collections.Generic;
 using UI.GameResult;
@@ -19,12 +20,6 @@ namespace Interactions
 
         [SerializeField] internal int TargetCount = 5;
 
-        public event Action OnTargetCompleted;
-
-        public NetworkVariable<int> TargetTotalNv { get; } =
-            new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
-        public NetworkVariable<int> CompletedTargetsNv { get; } =
-            new(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Server);
         private void Start()
         {
             if (!IsOwner) return;
@@ -35,6 +30,9 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
+            MissionManager.instance.fruitTotal = TargetCount * 4;
+            print("MissionManager.instance.fruitTotal : " + MissionManager.instance.fruitTotal);
+
             while (TargetCount > 0)
             {
                 var value = UnityEngine.Random.Range(0, count);
@@ -62,10 +60,6 @@ namespace Interactions
 
                 interaction.GetComponent<InteractableSpawner>().Initailize(targetSet.Contains(i));
             }
-
-            var total = targetSet.Count * 5;
-            TargetTotalNv.Value = total;
-            CompletedTargetsNv.Value = 0;
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
@@ -76,25 +70,6 @@ namespace Interactions
                 MyLogger.Print(this, "despawn interactions");
                 obj.Despawn();
             }
-        }
-
-        public int CompletedTargetCount { get; private set; }
-
-        public int RemainingTargetCount => Mathf.Max(0, TargetCount - CompletedTargetCount);
-
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void ReportTargetCompletedRpc(RpcParams _ = default)
-        {
-            if (!IsServer) return;
-
-            int cap = Mathf.Max(1, TargetTotalNv.Value);
-            CompletedTargetsNv.Value = Mathf.Min(CompletedTargetsNv.Value + 1, cap);
-
-            CompletedTargetCount = Mathf.Min(TargetCount, CompletedTargetCount + 1);
-            OnTargetCompleted?.Invoke();
-
-            Debug.Log($"[Server] Completed={CompletedTargetsNv.Value + 1}/{TargetTotalNv.Value}");
-
         }
     }
 }

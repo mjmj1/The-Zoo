@@ -367,7 +367,7 @@ namespace Players
         {
             animator.OnDeath();
 
-            MissionManager.instance.OnHiderCaptured();
+            MissionManager.instance.OnHiderCapturedRpc();
 
             yield return new WaitForSeconds(3f);
 
