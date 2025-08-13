@@ -79,8 +79,8 @@ namespace Players
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
-        private PlayerNetworkAnimator animator;
         internal InputHandler Input;
+        private PlayerNetworkAnimator animator;
         private PlayerEntity entity;
         private Hittable hittable;
         private bool isAround;
