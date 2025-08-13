@@ -19,7 +19,7 @@ namespace Networks
         public bool IsPrivate { get; private set; }
 
         public ConnectionData(ConnectionType type, string code = null, string password = null,
-            string sessionName = null, int playerSlot = 8, bool isPrivate = false)
+            string sessionName = null, int playerSlot = 4, bool isPrivate = false)
         {
             Type = type;
             PlayerName = "";

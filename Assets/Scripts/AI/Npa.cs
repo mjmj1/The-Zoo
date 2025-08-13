@@ -1,4 +1,5 @@
 using System.Collections;
+using EventHandler;
 using Players;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -406,6 +407,8 @@ namespace AI
             yield return new WaitForEndOfFrame();
 
             animator.OnDeath();
+
+            GamePlayEventHandler.OnNpcDeath();
 
             yield return new WaitForSeconds(3f);
 

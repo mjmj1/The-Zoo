@@ -6,8 +6,8 @@ namespace GamePlay
 {
     public class RoleManager : NetworkBehaviour
     {
-        internal NetworkList<PlayerData> HiderIds = new();
-        internal NetworkList<PlayerData> SeekerIds = new();
+        public NetworkList<PlayerData> HiderIds = new();
+        public NetworkList<PlayerData> SeekerIds = new();
 
         public override void OnNetworkSpawn()
         {
@@ -67,6 +67,26 @@ namespace GamePlay
             foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
                 SetRoleRpc(PlayerEntity.Role.None,
                     RpcTarget.Single(client, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.Authority)]
+        internal void RemoveHiderRpc(ulong clientId)
+        {
+            foreach (var data in HiderIds)
+            {
+                if(data.ClientId == clientId)
+                    HiderIds.Remove(data);
+            }
+        }
+
+        [Rpc(SendTo.Authority)]
+        internal void RemoveSeekerRpc(ulong clientId)
+        {
+            foreach (var data in SeekerIds)
+            {
+                if(data.ClientId == clientId)
+                    SeekerIds.Remove(data);
+            }
         }
 
         [Rpc(SendTo.SpecifiedInParams)]

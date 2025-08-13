@@ -35,13 +35,6 @@ namespace GamePlay
             gameResult.gameObject.SetActive(false);
         }
 
-        protected override void OnNetworkSessionSynchronized()
-        {
-            base.OnNetworkSessionSynchronized();
-
-            MyLogger.Print(this, "OnNetworkSessionSynchronized");
-        }
-
         public override void OnNetworkSpawn()
         {
             ObserverManager = GetComponent<ObserverManager>();
@@ -51,7 +44,8 @@ namespace GamePlay
 
             currentTime.OnValueChanged += OnHiderWinChecked;
             isGameStarted.OnValueChanged += OnGameStartedValueChanged;
-            ObserverManager.observerIds.OnListChanged += OnSeekerWinChecked;
+            RoleManager.SeekerIds.OnListChanged += OnHiderWinChecked;
+            RoleManager.HiderIds.OnListChanged += OnSeekerWinChecked;
         }
 
         public override void OnNetworkDespawn()
@@ -60,7 +54,8 @@ namespace GamePlay
 
             currentTime.OnValueChanged -= OnHiderWinChecked;
             isGameStarted.OnValueChanged -= OnGameStartedValueChanged;
-            ObserverManager.observerIds.OnListChanged -= OnSeekerWinChecked;
+
+            RoleManager.SeekerIds.OnListChanged -= OnHiderWinChecked;
         }
 
 
@@ -78,6 +73,19 @@ namespace GamePlay
             }
         }
 
+        private void OnHiderWinChecked(NetworkListEvent<PlayerData> changeEvent)
+        {
+            if (!isGameStarted.Value) return;
+
+            if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Remove) return;
+
+            if (RoleManager.SeekerIds.Count != 0) return;
+
+            isGameStarted.Value = false;
+
+            ShowResultRpc(false);
+        }
+
         private void OnHiderWinChecked(int previousValue, int newValue)
         {
             if (!isGameStarted.Value) return;
@@ -89,11 +97,13 @@ namespace GamePlay
             ShowResultRpc(false);
         }
 
-        private void OnSeekerWinChecked(NetworkListEvent<ulong> changeEvent)
+        private void OnSeekerWinChecked(NetworkListEvent<PlayerData> changeEvent)
         {
             if (!isGameStarted.Value) return;
 
-            if (RoleManager.HiderIds.Count > ObserverManager.observerIds.Count) return;
+            if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Remove) return;
+
+            if (RoleManager.HiderIds.Count != 0) return;
 
             isGameStarted.Value = false;
 
@@ -102,8 +112,6 @@ namespace GamePlay
 
         protected override void OnInSceneObjectsSpawned()
         {
-            MyLogger.Print(this, "OnInSceneObjectsSpawned");
-
             if (!IsSessionOwner) return;
 
             base.OnInSceneObjectsSpawned();

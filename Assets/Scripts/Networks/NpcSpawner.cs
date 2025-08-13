@@ -51,6 +51,8 @@ namespace Networks
         {
             foreach (var npc in spawnedNpcs)
             {
+                if(!npc.IsSpawned) continue;
+
                 npc.Despawn();
             }
         }

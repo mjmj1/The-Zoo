@@ -69,8 +69,6 @@ namespace Players
             playerName.Value = AuthenticationService.Instance.PlayerName;
             clientId.Value = NetworkManager.LocalClientId;
 
-            if (Camera.main != null) Camera.main.GetComponent<AudioListener>().enabled = false;
-
             gameObject.AddComponent<AudioListener>();
 
             CameraManager.Instance.EnableCamera(true);
@@ -175,6 +173,11 @@ namespace Players
             gameObject.layer = LayerMask.NameToLayer("Observer");
 
             if (!IsOwner) return;
+
+            if(role.Value == Role.Hider)
+                PlayManager.Instance.RoleManager.RemoveHiderRpc(OwnerClientId);
+            else if(role.Value == Role.Seeker)
+                PlayManager.Instance.RoleManager.RemoveSeekerRpc(OwnerClientId);
 
             PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
         }

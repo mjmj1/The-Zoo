@@ -168,6 +168,10 @@ namespace Players
 
             InitializeGravity();
 
+            Input.MouseLeftClicked();
+
+            entity.AlignForward();
+
             if (!sceneName.Equals("Lobby")) return;
 
             GamePlayEventHandler.OnUIChanged("Lobby");

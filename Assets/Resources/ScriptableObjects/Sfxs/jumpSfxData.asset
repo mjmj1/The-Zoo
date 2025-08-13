@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: jumpSfxData
   m_EditorClassIdentifier: 
   clip: {fileID: 8300000, guid: 3b79900f944c3ee4188fd2b2861e1bda, type: 3}
-  volume: 1
-  pitchRange: 1
+  volume: 0.5
+  pitch: 0.9

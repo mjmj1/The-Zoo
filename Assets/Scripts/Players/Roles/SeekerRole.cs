@@ -14,16 +14,19 @@ namespace Players.Roles
         [SerializeField] private Transform attackOrigin;
 
         private PlayerEntity entity;
+        private Hittable hittable;
 
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
+            hittable = GetComponent<Hittable>();
         }
 
         private void OnEnable()
         {
             if (!IsOwner) return;
             GamePlayEventHandler.PlayerAttack += OnPlayerAttack;
+            GamePlayEventHandler.NpcDeath += OnNpcDeath;
             entity.playerMarker.color = entity.roleColor.seekerColor;
         }
 
@@ -32,12 +35,18 @@ namespace Players.Roles
             if (!IsOwner) return;
 
             GamePlayEventHandler.PlayerAttack -= OnPlayerAttack;
+            GamePlayEventHandler.NpcDeath -= OnNpcDeath;
         }
 
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(attackOrigin.position + (transform.forward * attackRange), attackRadius);
+        }
+
+        private void OnNpcDeath()
+        {
+            hittable.Damaged();
         }
 
         private void OnPlayerAttack()
