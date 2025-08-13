@@ -1,11 +1,11 @@
 using UnityEngine;
-using ProgressState;
+using Mission;
 using Interactions;
 // Gauge Test Code
 public class MissionDebugHotkeys : MonoBehaviour
 {
     [Header("Drag & Drop")]
-    [SerializeField] private TeamProgressState state;
+    [SerializeField] private HiderMissionProgress state;
     [SerializeField] private InteractionController ic;
     [SerializeField] private bool useControllerForHider = true;
 

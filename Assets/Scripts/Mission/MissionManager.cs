@@ -1,10 +1,12 @@
-using ProgressState;
+using EventHandler;
 using GamePlay;
+using Mission;
 using Players;
-using Unity.Netcode;
-using UnityEngine;
 using System;
 using TMPro;
+using Unity.Collections.LowLevel.Unsafe;
+using Unity.Netcode;
+using UnityEngine;
 
 namespace Mission
 {
@@ -12,12 +14,11 @@ namespace Mission
     {
         public static MissionManager instance;
 
-        [SerializeField] private TeamProgressState state;
+        private HiderMissionProgress missionGauge;
 
-        public NetworkVariable<int> capturedCount = new();
+        public NetworkVariable<int> pickupCount = new();
 
-        public NetworkVariable<int> fruitTotal = new();
-        public NetworkVariable<int> fruitCollected = new();
+        internal readonly int MaxPickup = 20;
 
         [SerializeField] private TMP_Text hiderCountText;
         [SerializeField] private TMP_Text missionCountText;
@@ -30,15 +31,15 @@ namespace Mission
 
         public override void OnNetworkSpawn()
         {
-            capturedCount.OnValueChanged += OnCapturedChanged;
-            
+            missionGauge = GetComponent<HiderMissionProgress>();
+
             PlayManager.Instance.RoleManager.HiderIds.OnListChanged += HiderListChanged;
 
-            fruitCollected.OnValueChanged += OnFruitChanged;
-            fruitTotal.OnValueChanged += OnFruitChanged;
+            pickupCount.OnValueChanged += OnPickupCountChanged;
             
-            OnCapturedChanged(0, capturedCount.Value);
-            OnFruitChanged(0, fruitCollected.Value);
+            GamePlayEventHandler.PlayerPickup += OnPlayerPickup;
+
+            missionCountText.text = $"0 / {MaxPickup}";
         }
 
         private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
@@ -48,61 +49,26 @@ namespace Mission
 
         public override void OnNetworkDespawn()
         {
-            capturedCount.OnValueChanged -= OnCapturedChanged;
-            
-            fruitCollected.OnValueChanged -= OnFruitChanged;
-            fruitTotal.OnValueChanged -= OnFruitChanged;
+            pickupCount.OnValueChanged -= OnPickupCountChanged;
         }
 
-        private void OnCapturedChanged(int _, int __)
+        private void OnPickupCountChanged(int prev, int newValue)
         {
-            if (!state) return;
+            missionGauge.HiderProgress.Value += 1;
 
-            //state.SetProgressRpc(TeamRole.Seeker, norm);
+            missionCountText.text = $"{newValue.ToString()} / {MaxPickup}";
         }
-
-        private void OnFruitChanged(int _, int __)
+        private void OnPlayerPickup()
         {
-            if (!state) return;
-
-            var total = Mathf.Max(0, fruitTotal.Value);
-            float norm = (total > 0) ? (float)fruitCollected.Value / total : 0f;
-            state.SetProgressRpc(TeamRole.Hider, norm);
-
-            if (IsServer && PlayManager.Instance.isGameStarted.Value && fruitCollected.Value >= total && total > 0)
-            {
-                PlayManager.Instance.isGameStarted.Value = false;
-                PlayManager.Instance.ShowResultRpc(false);
-            }
+            OnPickupRpc();
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void SetTotalsRpc(int hiderInitial, int fruitTotalCount)
+        public void OnPickupRpc(RpcParams _ = default)
         {
-            hiderInitial = Mathf.Max(0, hiderInitial);
-            fruitTotalCount = Mathf.Max(0, fruitTotalCount);
-
-            fruitTotal.Value = fruitTotalCount;
-
-            capturedCount.Value = 0;
-            fruitCollected.Value = 0;
-
-            OnCapturedChanged(0, 0);
-            OnFruitChanged(0, 0);
+            pickupCount.Value -= 1;
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void OnHiderCapturedRpc(RpcParams _ = default)
-        {
-            //var total = Mathf.Max(0, hiderCount.Value);
-            //capturedCount.Value = Mathf.Min(capturedCount.Value + 1, total);
-        }
-
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void OnFruitCollectedRpc(RpcParams _ = default)
-        {
-            var total = Mathf.Max(0, fruitTotal.Value);
-            fruitCollected.Value = Mathf.Min(fruitCollected.Value + 1, total);
-        }
+        // 스핀 관련 추가 (OnPickupCountChanged와 같이)
     }
 }

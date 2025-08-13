@@ -10,6 +10,7 @@ namespace EventHandler
         internal static event Action<bool, bool, int> CheckInteractable;
         internal static event Action<string> UIChanged;
         internal static event Action NpcDeath;
+        internal static event Action PlayerPickup;
 
         internal static void OnPlayerReady(string id, bool value)
         {
@@ -39,5 +40,12 @@ namespace EventHandler
         {
             NpcDeath?.Invoke();
         }
+
+        internal static void OnPlayerPickup()
+        {
+            PlayerPickup?.Invoke();
+        }
+
+        // 스핀 액션 추가
     }
 }

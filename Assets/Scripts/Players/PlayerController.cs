@@ -369,6 +369,11 @@ namespace Players
 
             isSpin = ctx.performed;
             animator.OnSpin(ctx);
+
+            if(isSpin)
+            {
+                // 초 늘어나도록 false 되는 순간 측정 완료해서 추가.
+            }
         }
 
         private void Hit(int previousValue, int newValue)
@@ -382,8 +387,6 @@ namespace Players
         private IEnumerator DeathCoroutine()
         {
             animator.OnDeath();
-
-            MissionManager.instance.OnHiderCapturedRpc();
 
             yield return new WaitForSeconds(3f);
 

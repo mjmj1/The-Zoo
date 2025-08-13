@@ -142,7 +142,8 @@ namespace Players.Roles
             yield return new WaitForSeconds(0.3f);
 
             no.DeferDespawn(2);
-            MissionManager.instance.OnFruitCollectedRpc();
+
+            GamePlayEventHandler.OnPlayerPickup();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace UI
         [SerializeField] private TextMeshProUGUI seekerMissionText;
         [SerializeField] private TextMeshProUGUI hiderMissionText;
 
-        [SerializeField] private ProgressState.TeamProgressState state;
+        [SerializeField] private Mission.HiderMissionProgress state;
         [SerializeField] private Mission.MissionManager mission;
 
         private void Start()
@@ -54,12 +54,6 @@ namespace UI
             hiderMissionsView.SetActive(false);
             keyUI.gameObject.SetActive(false);
             GamePlayEventHandler.OnUIChanged("InGame");
-
-            state.SeekerProgress.OnValueChanged += OnSeekerProgressChanged;
-            state.HiderProgress.OnValueChanged += OnHiderProgressChanged;
-
-            OnSeekerProgressChanged(0f, state.SeekerProgress.Value);
-            OnHiderProgressChanged(0f, state.HiderProgress.Value);
         }
 
         private void OnDisable()
@@ -77,8 +71,6 @@ namespace UI
             NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<Hittable>().health.OnValueChanged -= OnPlayerHealthChanged;
 
-            state.SeekerProgress.OnValueChanged -= OnSeekerProgressChanged;
-            state.HiderProgress.OnValueChanged -= OnHiderProgressChanged;
         }
 
         private void OnKeyUI(bool value, bool isTarget, int count)
@@ -120,8 +112,6 @@ namespace UI
                 seekerMissionsView.SetActive(ctx.performed);
             }
 
-            OnSeekerProgressChanged(0f, state.SeekerProgress.Value);
-            OnHiderProgressChanged(0f, state.HiderProgress.Value);
         }
 
         private void OnPlayerHealthChanged(int oldValue, int newValue)
@@ -139,32 +129,6 @@ namespace UI
             StopAllCoroutines();
 
             StartCoroutine(Flash());
-        }
-
-        private void OnSeekerProgressChanged(float _, float now)
-        {
-            if (!seekerMissionsView || !seekerMissionText) return;
-
-            //int total = mission.hiderCount;
-            //print("total : " + total);
-            //int done = mission.capturedCount;
-            //print("done : " + done);
-            //int left = total - done;
-            //print("left : " + left);
-            //seekerMissionText.text = $" : {left}";
-        }
-
-        private void OnHiderProgressChanged(float _, float now)
-        {
-            if (!hiderMissionsView || !hiderMissionText) return;
-
-            //int total = mission.fruitTotal;
-            //print("total : " + total);
-            //int done = mission.fruitCollected;
-            //print("done : " + done);
-            //int left = total - done;
-            //print("left : " + left);
-            //hiderMissionText.text = $" : {left}";
         }
 
         private IEnumerator Flash()
