@@ -1201,7 +1201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '  3'
+  m_text: 3
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3ba9053001030a64c932fd795ed1cd29, type: 2}
   m_sharedMaterial: {fileID: -6338156966054185768, guid: 3ba9053001030a64c932fd795ed1cd29, type: 2}
@@ -2731,8 +2731,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   state: {fileID: 483603372}
-  hiderCountInitial: 0
-  fruitTotal: 0
+  capturedCount:
+    m_InternalValue: 0
+  fruitTotal:
+    m_InternalValue: 0
+  fruitCollected:
+    m_InternalValue: 0
+  hiderCountText: {fileID: 585227077}
+  missionCountText: {fileID: 1381030671}
 --- !u!1 &1381030669
 GameObject:
   m_ObjectHideFlags: 0

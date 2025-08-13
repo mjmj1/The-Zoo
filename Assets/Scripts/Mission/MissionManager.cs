@@ -3,6 +3,8 @@ using GamePlay;
 using Players;
 using Unity.Netcode;
 using UnityEngine;
+using System;
+using TMPro;
 
 namespace Mission
 {
@@ -12,40 +14,62 @@ namespace Mission
 
         [SerializeField] private TeamProgressState state;
 
-        [SerializeField] internal int hiderCountInitial;
-        [SerializeField] internal int fruitTotal;
-        private int capturedCount;
-        private int fruitCollected;
+        public NetworkVariable<int> capturedCount = new();
+
+        public NetworkVariable<int> fruitTotal = new();
+        public NetworkVariable<int> fruitCollected = new();
+
+        [SerializeField] private TMP_Text hiderCountText;
+        [SerializeField] private TMP_Text missionCountText;
 
         private void Awake()
         {
-            instance = this;
-            capturedCount = 0;
-            fruitCollected = 0;
+            if (!instance) instance = this;
+            else Destroy(gameObject);
         }
 
-        private void OnHiderCaptured_Server()
+        public override void OnNetworkSpawn()
         {
-            capturedCount = Mathf.Min(capturedCount + 1, hiderCountInitial);
-            if (state)
-            {
-                float norm = (float)capturedCount / hiderCountInitial;
-                state.SetProgressRpc(TeamRole.Seeker, norm);
-            }
+            capturedCount.OnValueChanged += OnCapturedChanged;
+            
+            PlayManager.Instance.RoleManager.HiderIds.OnListChanged += HiderListChanged;
+
+            fruitCollected.OnValueChanged += OnFruitChanged;
+            fruitTotal.OnValueChanged += OnFruitChanged;
+            
+            OnCapturedChanged(0, capturedCount.Value);
+            OnFruitChanged(0, fruitCollected.Value);
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void OnHiderCapturedRpc(RpcParams _ = default)
+        private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
-            OnHiderCaptured_Server();
+            hiderCountText.text = PlayManager.Instance.RoleManager.HiderIds.Count.ToString();
+        }
 
-            foreach (var hider in PlayManager.Instance.RoleManager.HiderIds)
-            {
-                float norm = (float)fruitCollected / fruitTotal;
-                state.SetProgressRpc(TeamRole.Hider, norm);
-            }
+        public override void OnNetworkDespawn()
+        {
+            capturedCount.OnValueChanged -= OnCapturedChanged;
+            
+            fruitCollected.OnValueChanged -= OnFruitChanged;
+            fruitTotal.OnValueChanged -= OnFruitChanged;
+        }
 
-            if (PlayManager.Instance.isGameStarted.Value && fruitCollected >= fruitTotal)
+        private void OnCapturedChanged(int _, int __)
+        {
+            if (!state) return;
+
+            //state.SetProgressRpc(TeamRole.Seeker, norm);
+        }
+
+        private void OnFruitChanged(int _, int __)
+        {
+            if (!state) return;
+
+            var total = Mathf.Max(0, fruitTotal.Value);
+            float norm = (total > 0) ? (float)fruitCollected.Value / total : 0f;
+            state.SetProgressRpc(TeamRole.Hider, norm);
+
+            if (IsServer && PlayManager.Instance.isGameStarted.Value && fruitCollected.Value >= total && total > 0)
             {
                 PlayManager.Instance.isGameStarted.Value = false;
                 PlayManager.Instance.ShowResultRpc(false);
@@ -53,9 +77,32 @@ namespace Mission
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void SetTotalsRpc(int hiderInitial, int fruitTotalCount)
+        {
+            hiderInitial = Mathf.Max(0, hiderInitial);
+            fruitTotalCount = Mathf.Max(0, fruitTotalCount);
+
+            fruitTotal.Value = fruitTotalCount;
+
+            capturedCount.Value = 0;
+            fruitCollected.Value = 0;
+
+            OnCapturedChanged(0, 0);
+            OnFruitChanged(0, 0);
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void OnHiderCapturedRpc(RpcParams _ = default)
+        {
+            //var total = Mathf.Max(0, hiderCount.Value);
+            //capturedCount.Value = Mathf.Min(capturedCount.Value + 1, total);
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
         public void OnFruitCollectedRpc(RpcParams _ = default)
         {
-            //OnFruitCollected_Server();
+            var total = Mathf.Max(0, fruitTotal.Value);
+            fruitCollected.Value = Mathf.Min(fruitCollected.Value + 1, total);
         }
     }
 }
