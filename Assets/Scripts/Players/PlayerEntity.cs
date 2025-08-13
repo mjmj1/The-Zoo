@@ -69,6 +69,10 @@ namespace Players
             playerName.Value = AuthenticationService.Instance.PlayerName;
             clientId.Value = NetworkManager.LocalClientId;
 
+            if (Camera.main != null) Camera.main.GetComponent<AudioListener>().enabled = false;
+
+            gameObject.AddComponent<AudioListener>();
+
             CameraManager.Instance.EnableCamera(true);
         }
 
@@ -201,7 +205,7 @@ namespace Players
                 NetworkShow(observer);
         }
 
-        internal void NetworkShow(ulong fromId)
+        private void NetworkShow(ulong fromId)
         {
             if (OwnerClientId == fromId) return;
 
@@ -210,7 +214,7 @@ namespace Players
             NetworkObject.NetworkShow(fromId);
         }
 
-        internal void NetworkHide(ulong fromId)
+        private void NetworkHide(ulong fromId)
         {
             if (OwnerClientId == fromId) return;
 

@@ -213,6 +213,8 @@ MonoBehaviour:
     m_InternalValue: 0
   isDead:
     m_InternalValue: 0
+  animalIndex:
+    m_InternalValue: 0
 --- !u!114 &6675916858937408846
 MonoBehaviour:
   m_ObjectHideFlags: 0
