@@ -1,4 +1,5 @@
 using Gameplay;
+using GamePlay;
 using Players;
 using Unity.Netcode;
 using UnityEngine;
@@ -23,23 +24,6 @@ namespace Mission
             fruitCollected = 0;
         }
 
-        //public void OnHiderCaptured()
-        //{
-        //    capturedCount++;
-
-        //    float norm = (float)capturedCount / hiderCountInitial;
-        //    state.SetProgressRpc(TeamRole.Seeker, norm);
-        //    Debug.Log($"[Seeker Progress] {capturedCount}/{hiderCountInitial} ({norm:P})");
-        //}
-
-        //public void OnFruitCollected()
-        //{
-        //    fruitCollected++;
-
-        //    float norm = (float)fruitCollected / Mathf.Max(1, fruitTotal);
-        //    state.SetProgressRpc(TeamRole.Hider, norm);
-        //    Debug.Log($"[Hider Progress] {fruitCollected}/{fruitTotal} ({norm:P0})");
-        //}
         private void OnHiderCaptured_Server()
         {
             capturedCount = Mathf.Min(capturedCount + 1, hiderCountInitial);
@@ -48,7 +32,6 @@ namespace Mission
                 float norm = (float)capturedCount / hiderCountInitial;
                 state.SetProgressRpc(TeamRole.Seeker, norm);
             }
-            // Debug.Log($"[Seeker Progress] {capturedCount}/{hiderCountInitial}");
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
@@ -65,7 +48,12 @@ namespace Mission
                 float norm = (float)fruitCollected / fruitTotal;
                 state.SetProgressRpc(TeamRole.Hider, norm);
             }
-            // Debug.Log($"[Hider Progress] {fruitCollected}/{fruitTotal}");
+
+            if (PlayManager.Instance.isGameStarted.Value && fruitCollected >= fruitTotal)
+            {
+                PlayManager.Instance.isGameStarted.Value = false;
+                PlayManager.Instance.ShowResultRpc(false);
+            }
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]

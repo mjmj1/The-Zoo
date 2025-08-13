@@ -31,7 +31,6 @@ namespace Interactions
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
             MissionManager.instance.fruitTotal = TargetCount * 4;
-            print("MissionManager.instance.fruitTotal : " + MissionManager.instance.fruitTotal);
 
             while (TargetCount > 0)
             {

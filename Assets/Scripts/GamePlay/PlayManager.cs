@@ -112,7 +112,7 @@ namespace GamePlay
         }
 
         [Rpc(SendTo.Everyone)]
-        private void ShowResultRpc(bool isSeekerWin)
+        public void ShowResultRpc(bool isSeekerWin)
         {
             gameResult.OnGameResult(isSeekerWin);
             gameResult.SetButtonActive(IsSessionOwner);
