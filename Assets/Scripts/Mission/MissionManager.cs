@@ -46,9 +46,6 @@ namespace Mission
 
             getFoodCountText.text = $"0 / {MaxPickup}";
             spinCountText.text = $"0 / {MaxSpin}";
-
-            pickupCount.Value = 0;
-            spinCount.Value = 0;
         }
 
         public override void OnNetworkDespawn()
@@ -66,7 +63,7 @@ namespace Mission
 
         private void OnPickupCountChanged(int prev, int newValue)
         {
-            missionGauge.HiderProgress.Value += 1;
+            
             getFoodCountText.text = $"{newValue.ToString()} / {MaxPickup}";
         }
         private void OnPlayerPickup()
@@ -78,11 +75,12 @@ namespace Mission
         public void OnPickupRpc(RpcParams _ = default)
         {
             pickupCount.Value += 1;
+            missionGauge.HiderProgress.Value += 1;
         }
 
         private void OnSpinCountChanged(int previousValue, int newValue)
         {
-            missionGauge.HiderProgress.Value += 1;
+            
             
             spinCountText.text = $"{spinCount.Value.ToString()} / {MaxSpin}";
         }
@@ -95,6 +93,7 @@ namespace Mission
         public void OnSpinRpc(RpcParams _ = default)
         {
             spinCount.Value += 1;
+            missionGauge.HiderProgress.Value += 1;
         }
     }
 }

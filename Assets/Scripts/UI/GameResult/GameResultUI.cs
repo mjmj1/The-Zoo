@@ -81,11 +81,6 @@ namespace UI.GameResult
 
         private void OnReturnLobbyButtonClicked()
         {
-            //for (int i = 0; i < controller.spawnedInteractions.Count; i++)
-            //{
-            //    if (controller.spawnedInteractions[i] != null)
-            //        controller.spawnedInteractions[i].GetComponent<InteractableSpawner>().DespawnInteractionRpc();
-            //}
             controller.DespawnInteractionRpc();
             GameManager.Instance.GameEndRpc();
         }

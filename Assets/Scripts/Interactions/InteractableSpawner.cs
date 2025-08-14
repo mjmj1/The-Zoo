@@ -96,7 +96,11 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
-            foreach (var obj in spawnedFruit) obj.Despawn();
+            foreach (var obj in spawnedFruit)
+            {
+                if(obj != null)
+                    obj.Despawn();
+            }
         }
 
         public override InteractableType GetInteractableType()

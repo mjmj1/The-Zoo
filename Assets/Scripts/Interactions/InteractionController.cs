@@ -63,11 +63,17 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
+            print("spawnedInteractions.Count : " + spawnedInteractions.Count);
             foreach (var obj in spawnedInteractions)
             {
-                MyLogger.Print(this, "despawn interactions");
-                obj.GetComponent<InteractableSpawner>().DespawnInteractionRpc();
-                obj.Despawn();
+                if(obj != null)
+                {
+                    print("obj is not null");
+                    MyLogger.Print(this, "despawn interactions");
+                    obj.GetComponent<InteractableSpawner>().DespawnInteractionRpc();
+
+                    obj.Despawn();
+                }
             }
         }
     }
