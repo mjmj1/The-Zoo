@@ -1,16 +1,14 @@
-using System;
 using System.Collections;
 using System.IO;
-using System.Linq;
 using EventHandler;
 using Players;
+using Unity.Barracuda;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using Unity.Netcode;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace AI
 {
@@ -56,7 +54,6 @@ namespace AI
         private RayPerceptionSensorComponent3D raySensor;
         private PlayerNetworkAnimator animator;
         private Rigidbody rb;
-        private BehaviorParameters behaviorParameters;
 
         // freeze
         public bool freeze;
@@ -77,11 +74,6 @@ namespace AI
             {
                 enabled = false;
             }
-
-#if UNITY_EDITOR
-#else
-            behaviorParameters.BehaviorType = BehaviorType.InferenceOnly;
-#endif
         }
 
         private void Update()
@@ -101,7 +93,6 @@ namespace AI
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             raySensor = GetComponent<RayPerceptionSensorComponent3D>();
-            behaviorParameters = GetComponent<BehaviorParameters>();
         }
 
         private bool IsGrounded()
@@ -385,7 +376,7 @@ namespace AI
             hasHit = false;
         }
 
-        internal void Hit(int previousValue, int newValue)
+        private void Hit(int previousValue, int newValue)
         {
             StartCoroutine(HitCycle());
             StartCoroutine(Slowdown());
