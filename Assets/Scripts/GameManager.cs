@@ -1,5 +1,5 @@
 using System;
-using Interactions;
+using GamePlay;
 using Networks;
 using Players;
 using UI;
@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : NetworkBehaviour
 {
     public NetworkVariable<int> readyCount = new();
-    internal PlayerSpawner playerSpawner;
+
     public static GameManager Instance { get; private set; }
 
     private void Awake()
@@ -26,13 +26,8 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    public void Start()
-    {
-        playerSpawner = GetComponent<PlayerSpawner>();
-    }
-
     [Rpc(SendTo.Authority)]
-    internal void ReadyRpc(bool isReady)
+    private void ReadyRpc(bool isReady)
     {
         readyCount.Value = isReady ? readyCount.Value + 1 : readyCount.Value - 1;
     }
@@ -68,6 +63,7 @@ public class GameManager : NetworkBehaviour
         print("Game EndRpc called");
 
         NpcSpawner.Instance.DespawnNpcRpc();
+        PlayManager.Instance.Interactor.DespawnInteractionRpc();
 
         LoadSceneRpc("Lobby");
     }

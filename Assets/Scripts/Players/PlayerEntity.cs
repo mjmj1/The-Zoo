@@ -1,5 +1,4 @@
 using GamePlay;
-using Mission;
 using Players.Roles;
 using Scriptable;
 using TMPro;
@@ -181,12 +180,6 @@ namespace Players
                 PlayManager.Instance.RoleManager.RemoveSeekerRpc(OwnerClientId);
 
             PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
-        }
-
-        private void OnHealthChanged(int previousValue, int newValue)
-        {
-            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
-            GetComponent<PlayerVfx>().HitEffect();
         }
 
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)

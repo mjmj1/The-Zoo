@@ -1,9 +1,6 @@
-#if UNITY_EDITOR
 using EventHandler;
-using Mission;
 using System.Collections;
 using System.Linq;
-using EventHandler;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
@@ -97,8 +94,6 @@ namespace Players
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
 
-        private int startSpinTime = 0;
-
         public void Reset()
         {
             CanMove = true;
@@ -127,6 +122,8 @@ namespace Players
             if (!IsOwner) return;
 
             HandleMovement();
+
+            GamePlayEventHandler.OnPlayerSpined(isSpin);
         }
 
         private void OnDrawGizmosSelected()
@@ -371,16 +368,6 @@ namespace Players
 
             isSpin = ctx.performed;
             animator.OnSpin(ctx);
-
-            if (isSpin && MissionManager.instance.MaxSpin > MissionManager.instance.spinCount.Value)
-            {
-                StartCoroutine(SpinPointCount());
-            }
-            else if(ctx.canceled)
-            {
-                isSpin = false;
-                StopAllCoroutines();
-            }
         }
 
         private void Hit(int previousValue, int newValue)
@@ -412,12 +399,5 @@ namespace Players
 
             slowdownRate = 1f;
         }
-        private IEnumerator SpinPointCount()
-        {
-            yield return new WaitForSeconds(3.0f);
-            startSpinTime += 1;
-            GamePlayEventHandler.OnPlayerSpin(Mathf.FloorToInt(startSpinTime));
-        }
     }
 }
-#endif

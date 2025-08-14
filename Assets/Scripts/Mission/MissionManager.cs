@@ -1,10 +1,7 @@
 using EventHandler;
 using GamePlay;
-using Mission;
 using Players;
-using System;
 using TMPro;
-using Unity.Collections.LowLevel.Unsafe;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -15,16 +12,18 @@ namespace Mission
         public static MissionManager instance;
 
         [SerializeField] internal HiderMissionProgress missionGauge;
+        [SerializeField] private TMP_Text seekerMissionCountText;
+        [SerializeField] private TMP_Text pickupCountText;
+        [SerializeField] private TMP_Text spinCountText;
 
         public NetworkVariable<int> pickupCount = new();
         public NetworkVariable<int> spinCount = new();
+        public float spinTimer;
 
-        internal readonly int MaxPickup = 20;
-        internal readonly int MaxSpin = 10;
+        internal readonly int MaxPickup = 15;
+        internal readonly int MaxSpin = 60;
 
-        [SerializeField] private TMP_Text hiderCountText;
-        [SerializeField] private TMP_Text getFoodCountText;
-        [SerializeField] private TMP_Text spinCountText;
+        private int maxHiderCount;
 
         private void Awake()
         {
@@ -40,39 +39,47 @@ namespace Mission
 
             pickupCount.OnValueChanged += OnPickupCountChanged;
             spinCount.OnValueChanged += OnSpinCountChanged;
-            
-            GamePlayEventHandler.PlayerPickup += OnPlayerPickup;
-            GamePlayEventHandler.PlayerSpin += OnPlayerSpin;
 
-            getFoodCountText.text = $"0 / {MaxPickup}";
-            spinCountText.text = $"0 / {MaxSpin}";
+            GamePlayEventHandler.PlayerPickup += OnPlayerPickup;
+            GamePlayEventHandler.PlayerSpined += OnPlayerSpined;
+
+            pickupCountText.text = $"{pickupCount.Value} / {MaxPickup}";
+            spinCountText.text = $"{spinCount.Value} / {MaxSpin}";
         }
 
         public override void OnNetworkDespawn()
         {
+            PlayManager.Instance.RoleManager.HiderIds.OnListChanged -= HiderListChanged;
+
             pickupCount.OnValueChanged -= OnPickupCountChanged;
             spinCount.OnValueChanged -= OnSpinCountChanged;
 
             GamePlayEventHandler.PlayerPickup -= OnPlayerPickup;
-            GamePlayEventHandler.PlayerSpin -= OnPlayerSpin;
+            GamePlayEventHandler.PlayerSpined -= OnPlayerSpined;
         }
+
+        public int GetTotalMissionCount()
+        {
+            return MaxPickup + MaxSpin;
+        }
+
         private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
-            hiderCountText.text = PlayManager.Instance.RoleManager.HiderIds.Count.ToString();
+            seekerMissionCountText.text = $"{PlayManager.Instance.RoleManager.HiderIds.Count}";
         }
 
         private void OnPickupCountChanged(int prev, int newValue)
         {
-            
-            getFoodCountText.text = $"{newValue.ToString()} / {MaxPickup}";
+            pickupCountText.text = $"{newValue} / {MaxPickup}";
         }
+
         private void OnPlayerPickup()
         {
             OnPickupRpc();
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void OnPickupRpc(RpcParams _ = default)
+        private void OnPickupRpc(RpcParams param = default)
         {
             pickupCount.Value += 1;
             missionGauge.HiderProgress.Value += 1;
@@ -80,17 +87,27 @@ namespace Mission
 
         private void OnSpinCountChanged(int previousValue, int newValue)
         {
-            
-            
-            spinCountText.text = $"{spinCount.Value.ToString()} / {MaxSpin}";
+            spinCountText.text = $"{spinCount.Value} / {MaxSpin}";
         }
-        private void OnPlayerSpin(int spinTime)
+
+        private void OnPlayerSpined(bool value)
         {
+            if (!value)
+            {
+                spinTimer = 0;
+                return;
+            }
+
+            spinTimer += Time.deltaTime;
+
+            if (!(spinTimer >= 1.0f)) return;
+
+            spinTimer = 0f;
             OnSpinRpc();
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
-        public void OnSpinRpc(RpcParams _ = default)
+        private void OnSpinRpc(RpcParams param = default)
         {
             spinCount.Value += 1;
             missionGauge.HiderProgress.Value += 1;

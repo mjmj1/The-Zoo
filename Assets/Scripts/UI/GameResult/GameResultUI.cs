@@ -17,8 +17,6 @@ namespace UI.GameResult
         [SerializeField] private ResultItem hiderDeath;
         [SerializeField] private ResultItem seekerView;
 
-        [SerializeField] private InteractionController controller;
-
         private void Awake()
         {
             gameObject.SetActive(false);
@@ -82,22 +80,13 @@ namespace UI.GameResult
 
         private void OnReturnLobbyButtonClicked()
         {
-            controller.DespawnInteractionRpc();
-            foreach(var obj in controller.spawnedInteractions)
-            {
-                if (obj.GetComponent<InteractableSpawner>().spawnedFruit != null)
-                {
-                    obj.GetComponent<InteractableSpawner>().DespawnInteraction();
-                }
-            }
             StartCoroutine(DelayBeforeEnd());
-
-
         }
 
         private IEnumerator DelayBeforeEnd()
         {
-            yield return new WaitForSecondsRealtime(0.05f);
+            yield return new WaitForSecondsRealtime(0.1f);
+
             GameManager.Instance.GameEndRpc();
         }
     }

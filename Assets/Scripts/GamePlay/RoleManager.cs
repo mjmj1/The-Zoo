@@ -1,4 +1,3 @@
-using Mission;
 using Players;
 using Unity.Netcode;
 using UnityEngine;
@@ -74,20 +73,16 @@ namespace GamePlay
         internal void RemoveHiderRpc(ulong clientId)
         {
             foreach (var data in HiderIds)
-            {
-                if(data.ClientId == clientId)
+                if (data.ClientId == clientId)
                     HiderIds.Remove(data);
-            }
         }
 
         [Rpc(SendTo.Authority)]
         internal void RemoveSeekerRpc(ulong clientId)
         {
             foreach (var data in SeekerIds)
-            {
-                if(data.ClientId == clientId)
+                if (data.ClientId == clientId)
                     SeekerIds.Remove(data);
-            }
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
