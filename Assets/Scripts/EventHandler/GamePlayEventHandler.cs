@@ -10,6 +10,8 @@ namespace EventHandler
         internal static event Action<bool, bool, int> CheckInteractable;
         internal static event Action<string> UIChanged;
         internal static event Action NpcDeath;
+        internal static event Action PlayerPickup;
+        internal static event Action<bool> PlayerSpined;
 
         internal static void OnPlayerReady(string id, bool value)
         {
@@ -38,6 +40,15 @@ namespace EventHandler
         internal static void OnNpcDeath()
         {
             NpcDeath?.Invoke();
+        }
+
+        internal static void OnPlayerPickup()
+        {
+            PlayerPickup?.Invoke();
+        }
+        internal static void OnPlayerSpined(bool value)
+        {
+            PlayerSpined?.Invoke(value);
         }
     }
 }

@@ -1,6 +1,6 @@
+using EventHandler;
 using System.Collections;
 using System.Linq;
-using EventHandler;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
@@ -122,6 +122,8 @@ namespace Players
             if (!IsOwner) return;
 
             HandleMovement();
+
+            GamePlayEventHandler.OnPlayerSpined(isSpin);
         }
 
         private void OnDrawGizmosSelected()

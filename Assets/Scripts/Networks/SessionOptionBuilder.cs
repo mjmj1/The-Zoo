@@ -6,47 +6,47 @@ namespace Networks
 {
     public class SessionOptionBuilder
     {
-        private readonly Dictionary<string, PlayerProperty> _playerProperties = new();
-        private readonly Dictionary<string, SessionProperty> _sessionProperties = new();
+        private readonly Dictionary<string, PlayerProperty> playerProperties = new();
+        private readonly Dictionary<string, SessionProperty> sessionProperties = new();
 
-        private bool _isPrivate;
+        private bool isPrivate;
 
-        private string _name;
-        private string _password;
+        private string name;
+        private string password;
 
-        private int _playerSlot = 8;
+        private int playerSlot = 8;
 
-        public SessionOptionBuilder Name(string name)
+        public SessionOptionBuilder Name(string _name)
         {
-            _name = name;
+            this.name = _name;
             return this;
         }
 
-        public SessionOptionBuilder Password(string password = null)
+        public SessionOptionBuilder Password(string _password = null)
         {
-            _password = password;
+            this.password = _password;
 
-            var prop = new SessionProperty(password, VisibilityPropertyOptions.Private);
+            var prop = new SessionProperty(_password, VisibilityPropertyOptions.Private);
 
-            if (!_sessionProperties.TryAdd(Util.PASSWORD, prop)) _sessionProperties[Util.PASSWORD] = prop;
-
-            return this;
-        }
-
-        public SessionOptionBuilder PlayerSlot(int playerSlot)
-        {
-            _playerSlot = playerSlot;
-
-            var prop = new SessionProperty(playerSlot.ToString());
-
-            if (!_sessionProperties.TryAdd(Util.PLAYERSLOT, prop)) _sessionProperties[Util.PLAYERSLOT] = prop;
+            if (!sessionProperties.TryAdd(Util.PASSWORD, prop)) sessionProperties[Util.PASSWORD] = prop;
 
             return this;
         }
 
-        public SessionOptionBuilder IsPrivate(bool isPrivate = false)
+        public SessionOptionBuilder PlayerSlot(int _playerSlot)
         {
-            _isPrivate = isPrivate;
+            this.playerSlot = _playerSlot;
+
+            var prop = new SessionProperty(_playerSlot.ToString());
+
+            if (!sessionProperties.TryAdd(Util.PLAYERSLOT, prop)) sessionProperties[Util.PLAYERSLOT] = prop;
+
+            return this;
+        }
+
+        public SessionOptionBuilder IsPrivate(bool _isPrivate = false)
+        {
+            this.isPrivate = _isPrivate;
             return this;
         }
 
@@ -54,7 +54,7 @@ namespace Networks
         {
             var prop = new PlayerProperty(value, VisibilityPropertyOptions.Member);
 
-            _playerProperties.Add(key, prop);
+            playerProperties.Add(key, prop);
 
             return this;
         }
@@ -63,12 +63,12 @@ namespace Networks
         {
             return new SessionOptions
             {
-                Name = _name,
-                Password = _password,
-                MaxPlayers = 8,
-                IsPrivate = _isPrivate,
-                PlayerProperties = _playerProperties,
-                SessionProperties = _sessionProperties
+                Name = name,
+                Password = password,
+                MaxPlayers = 4,
+                IsPrivate = isPrivate,
+                PlayerProperties = playerProperties,
+                SessionProperties = sessionProperties
             }.WithDistributedAuthorityNetwork();
         }
 
@@ -76,8 +76,8 @@ namespace Networks
         {
             return new JoinSessionOptions
             {
-                Password = _password,
-                PlayerProperties = _playerProperties
+                Password = password,
+                PlayerProperties = playerProperties
             };
         }
     }

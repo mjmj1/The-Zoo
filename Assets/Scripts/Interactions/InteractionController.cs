@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using UI.GameResult;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Utils;
 
 namespace Interactions
@@ -10,13 +9,13 @@ namespace Interactions
     public class InteractionController : NetworkBehaviour
     {
         [SerializeField] private List<NetworkObject> interactionPrefabs;
-
         [SerializeField] private int interactionsNumber = 15;
+        [SerializeField] internal int targetCount = 5;
 
-        private readonly List<NetworkObject> spawnedInteractions = new();
+        internal readonly List<NetworkObject> SpawnedInteractions = new();
+
         private readonly HashSet<int> targetSet = new();
 
-        [SerializeField] internal int TargetCount = 5;
 
         private void Start()
         {
@@ -28,13 +27,10 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
-            while (TargetCount > 0)
+            while (targetCount > 0)
             {
                 var value = Random.Range(0, count);
-                if (targetSet.Add(value))
-                {
-                    TargetCount--;
-                }
+                if (targetSet.Add(value)) targetCount--;
             }
 
             var prefab = interactionPrefabs[index];
@@ -43,7 +39,8 @@ namespace Interactions
             {
                 var spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
 
-                var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
+                var rotationOnSurface =
+                    Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
 
                 var randomYaw = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
@@ -51,7 +48,7 @@ namespace Interactions
                     position: spawnPoint,
                     rotation: rotationOnSurface * randomYaw);
 
-                spawnedInteractions.Add(interaction);
+                SpawnedInteractions.Add(interaction);
 
                 interaction.GetComponent<InteractableSpawner>().Initailize(targetSet.Contains(i));
             }
@@ -60,9 +57,10 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
-            foreach (var obj in spawnedInteractions)
+            foreach (var obj in SpawnedInteractions.Where(obj => obj.IsSpawned))
             {
-                MyLogger.Print(this, "despawn interactions");
+                obj.GetComponent<InteractableSpawner>().DespawnInteraction();
+
                 obj.Despawn();
             }
         }

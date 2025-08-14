@@ -1,4 +1,6 @@
 using System.Collections;
+using Interactions;
+using Mission;
 using Networks;
 using Players;
 using UI;
@@ -19,6 +21,7 @@ namespace GamePlay
         public NetworkVariable<int> currentTime = new();
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
+        internal InteractionController Interactor;
         internal ObserverManager ObserverManager;
         internal RoleManager RoleManager;
 
@@ -37,13 +40,17 @@ namespace GamePlay
 
         public override void OnNetworkSpawn()
         {
+            Interactor = GetComponent<InteractionController>();
             ObserverManager = GetComponent<ObserverManager>();
             RoleManager = GetComponent<RoleManager>();
 
             if (!IsOwner) return;
 
-            currentTime.OnValueChanged += OnHiderWinChecked;
+            currentTime.OnValueChanged += OnHiderTimeWinChecked;
             isGameStarted.OnValueChanged += OnGameStartedValueChanged;
+            MissionManager.instance.missionGauge.HiderProgress.OnValueChanged +=
+                OnHiderMissionWinChecked;
+
             RoleManager.SeekerIds.OnListChanged += OnHiderWinChecked;
             RoleManager.HiderIds.OnListChanged += OnSeekerWinChecked;
         }
@@ -52,10 +59,14 @@ namespace GamePlay
         {
             if (!IsOwner) return;
 
-            currentTime.OnValueChanged -= OnHiderWinChecked;
+            currentTime.OnValueChanged -= OnHiderTimeWinChecked;
             isGameStarted.OnValueChanged -= OnGameStartedValueChanged;
 
+            MissionManager.instance.missionGauge.HiderProgress.OnValueChanged -=
+                OnHiderMissionWinChecked;
+
             RoleManager.SeekerIds.OnListChanged -= OnHiderWinChecked;
+            RoleManager.HiderIds.OnListChanged -= OnSeekerWinChecked;
         }
 
 
@@ -64,13 +75,9 @@ namespace GamePlay
             if (!IsSessionOwner) return;
 
             if (newValue)
-            {
                 StartCoroutine(GameStartRoutine());
-            }
             else
-            {
                 RoleManager.UnassignRole();
-            }
         }
 
         private void OnHiderWinChecked(NetworkListEvent<PlayerData> changeEvent)
@@ -86,7 +93,22 @@ namespace GamePlay
             ShowResultRpc(false);
         }
 
-        private void OnHiderWinChecked(int previousValue, int newValue)
+        private void OnHiderMissionWinChecked(int previousValue, int newValue)
+        {
+            if (!isGameStarted.Value) return;
+
+            var totalMissionPoint =
+                MissionManager.instance.MaxPickup + MissionManager.instance.MaxSpin;
+
+            if (MissionManager.instance.missionGauge.HiderProgress.Value <
+                totalMissionPoint) return;
+
+            isGameStarted.Value = false;
+
+            ShowResultRpc(false);
+        }
+
+        private void OnHiderTimeWinChecked(int previousValue, int newValue)
         {
             if (!isGameStarted.Value) return;
 
@@ -167,9 +189,7 @@ namespace GamePlay
             yield return new WaitForSeconds(2f);
 
             foreach (var data in RoleManager.HiderIds)
-            {
                 NpcSpawner.Instance.SpawnNpcRpc(data.AnimalIndex, 4);
-            }
         }
 
         private IEnumerator CountTime()

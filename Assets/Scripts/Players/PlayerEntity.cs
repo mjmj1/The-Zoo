@@ -93,7 +93,7 @@ namespace Players
         private void OnNetworkSceneLoadComplete(ulong id, string sceneName, LoadSceneMode mode)
         {
             if (!NetworkManager.Singleton.LocalClientId.Equals(id)) return;
-            MyLogger.Print(this, $"{id}");
+            
             switch (sceneName)
             {
                 case "Lobby":
@@ -167,7 +167,7 @@ namespace Players
                 playerRenderer.UseOriginShader();
                 return;
             }
-
+            
             playerRenderer.UseObserverShader();
 
             gameObject.layer = LayerMask.NameToLayer("Observer");
@@ -182,16 +182,8 @@ namespace Players
             PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
         }
 
-        private void OnHealthChanged(int previousValue, int newValue)
-        {
-            print($"client-{OwnerClientId} OnHealthChanged: {newValue}");
-            GetComponent<PlayerVfx>().HitEffect();
-        }
-
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
         {
-            print("observer list changed");
-
             if (changeEvent.Type != NetworkListEvent<ulong>.EventType.Add) return;
 
             if (OwnerClientId == changeEvent.Value)
