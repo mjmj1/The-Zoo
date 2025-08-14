@@ -14,7 +14,7 @@ namespace Interactions
 
         private bool isInteracting;
 
-        private readonly List<NetworkObject> spawnedFruit = new();
+        internal readonly List<NetworkObject> spawnedFruit = new();
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
@@ -93,8 +93,8 @@ namespace Interactions
             maxSpawnCount.Value--;
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        internal void DespawnInteractionRpc(RpcParams rpcParams = default)
+        //[Rpc(SendTo.Server, RequireOwnership = false)]
+        internal void DespawnInteraction()
         {
             foreach (var obj in spawnedFruit)
             {

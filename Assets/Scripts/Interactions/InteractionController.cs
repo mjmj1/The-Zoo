@@ -16,7 +16,7 @@ namespace Interactions
         [SerializeField] private int interactionsNumber = 15;
 
         internal readonly List<NetworkObject> spawnedInteractions = new();
-        //internal readonly List<NetworkObject> spawnedFruit = new();
+
         private readonly HashSet<int> targetSet = new();
 
         [SerializeField] internal int TargetCount = 5;
@@ -63,14 +63,11 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
-            print("spawnedInteractions.Count : " + spawnedInteractions.Count);
             foreach (var obj in spawnedInteractions)
             {
-                if(obj != null)
+                if (obj.GetComponent<InteractableSpawner>().spawnedFruit != null)
                 {
-                    print("obj is not null");
-                    MyLogger.Print(this, "despawn interactions");
-                    obj.GetComponent<InteractableSpawner>().DespawnInteractionRpc();
+                    obj.GetComponent<InteractableSpawner>().DespawnInteraction();
 
                     obj.Despawn();
                 }

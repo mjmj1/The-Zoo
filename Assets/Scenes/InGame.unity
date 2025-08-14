@@ -424,7 +424,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &177150967
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3012,7 +3012,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  missionGauge: {fileID: 0}
   pickupCount:
+    m_InternalValue: 0
+  spinCount:
     m_InternalValue: 0
   hiderCountText: {fileID: 585227077}
   getFoodCountText: {fileID: 1381030671}
