@@ -24,10 +24,10 @@ namespace Mission
         private void OnHiderProgressChanged(int previousValue, int newValue)
         {
             SetProgressRpc(newValue);
-            percentText.text = $"{newValue / missionGauge.maxValue:0.00}%";
+            percentText.text = $"{newValue / missionGauge.maxValue:0}%";
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
+        [Rpc(SendTo.Everyone)]
         public void SetProgressRpc(int value, RpcParams rpcParams = default)
         {
             missionGauge.value = value;

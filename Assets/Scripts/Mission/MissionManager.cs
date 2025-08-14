@@ -14,49 +14,50 @@ namespace Mission
     {
         public static MissionManager instance;
 
-        private HiderMissionProgress missionGauge;
+        [SerializeField] internal HiderMissionProgress missionGauge;
 
         public NetworkVariable<int> pickupCount = new();
 
         internal readonly int MaxPickup = 20;
+        internal readonly int MaxSpin = 10;
 
         [SerializeField] private TMP_Text hiderCountText;
-        [SerializeField] private TMP_Text missionCountText;
+        [SerializeField] private TMP_Text getFoodCountText;
+        [SerializeField] private TMP_Text spinCountText;
 
         private void Awake()
         {
             if (!instance) instance = this;
             else Destroy(gameObject);
+
+            missionGauge = GetComponent<HiderMissionProgress>();
         }
 
         public override void OnNetworkSpawn()
         {
-            missionGauge = GetComponent<HiderMissionProgress>();
-
             PlayManager.Instance.RoleManager.HiderIds.OnListChanged += HiderListChanged;
 
             pickupCount.OnValueChanged += OnPickupCountChanged;
             
             GamePlayEventHandler.PlayerPickup += OnPlayerPickup;
 
-            missionCountText.text = $"0 / {MaxPickup}";
-        }
-
-        private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
-        {
-            hiderCountText.text = PlayManager.Instance.RoleManager.HiderIds.Count.ToString();
+            getFoodCountText.text = $"0 / {MaxPickup}";
+            spinCountText.text = $"0 / {MaxSpin}";
         }
 
         public override void OnNetworkDespawn()
         {
             pickupCount.OnValueChanged -= OnPickupCountChanged;
         }
+        private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
+        {
+            hiderCountText.text = PlayManager.Instance.RoleManager.HiderIds.Count.ToString();
+        }
 
         private void OnPickupCountChanged(int prev, int newValue)
         {
             missionGauge.HiderProgress.Value += 1;
-
-            missionCountText.text = $"{newValue.ToString()} / {MaxPickup}";
+            getFoodCountText.text = $"{newValue.ToString()} / {MaxPickup}";
         }
         private void OnPlayerPickup()
         {
@@ -66,7 +67,7 @@ namespace Mission
         [Rpc(SendTo.Server, RequireOwnership = false)]
         public void OnPickupRpc(RpcParams _ = default)
         {
-            pickupCount.Value -= 1;
+            pickupCount.Value += 1;
         }
 
         // 스핀 관련 추가 (OnPickupCountChanged와 같이)

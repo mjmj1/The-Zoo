@@ -1,4 +1,6 @@
+using System;
 using System.Collections;
+using Mission;
 using Networks;
 using Players;
 using UI;
@@ -42,9 +44,9 @@ namespace GamePlay
 
             if (!IsOwner) return;
 
-            currentTime.OnValueChanged += OnHiderWinChecked;
+            currentTime.OnValueChanged += OnHiderTimeWinChecked;
             isGameStarted.OnValueChanged += OnGameStartedValueChanged;
-            RoleManager.SeekerIds.OnListChanged += OnHiderWinChecked;
+            MissionManager.instance.missionGauge.HiderProgress.OnValueChanged += OnHiderMissionWinChecked;
             RoleManager.HiderIds.OnListChanged += OnSeekerWinChecked;
         }
 
@@ -52,10 +54,10 @@ namespace GamePlay
         {
             if (!IsOwner) return;
 
-            currentTime.OnValueChanged -= OnHiderWinChecked;
+            currentTime.OnValueChanged -= OnHiderTimeWinChecked;
             isGameStarted.OnValueChanged -= OnGameStartedValueChanged;
 
-            RoleManager.SeekerIds.OnListChanged -= OnHiderWinChecked;
+            MissionManager.instance.missionGauge.HiderProgress.OnValueChanged -= OnHiderMissionWinChecked;
         }
 
 
@@ -73,20 +75,18 @@ namespace GamePlay
             }
         }
 
-        private void OnHiderWinChecked(NetworkListEvent<PlayerData> changeEvent)
+        private void OnHiderMissionWinChecked(int previousValue, int newValue)
         {
             if (!isGameStarted.Value) return;
-
-            if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Remove) return;
-
-            if (RoleManager.SeekerIds.Count != 0) return;
-
+            print("Still going on");
+            if (MissionManager.instance.missionGauge.HiderProgress.Value < MissionManager.instance.MaxPickup) return;
+            print("DONE!!!!");
             isGameStarted.Value = false;
 
             ShowResultRpc(false);
         }
 
-        private void OnHiderWinChecked(int previousValue, int newValue)
+        private void OnHiderTimeWinChecked(int previousValue, int newValue)
         {
             if (!isGameStarted.Value) return;
 
