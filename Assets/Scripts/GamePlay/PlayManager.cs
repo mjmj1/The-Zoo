@@ -78,9 +78,11 @@ namespace GamePlay
         private void OnHiderMissionWinChecked(int previousValue, int newValue)
         {
             if (!isGameStarted.Value) return;
-            print("Still going on");
-            if (MissionManager.instance.missionGauge.HiderProgress.Value < MissionManager.instance.MaxPickup) return;
-            print("DONE!!!!");
+
+            var totalMissionPoint = MissionManager.instance.MaxPickup + MissionManager.instance.MaxSpin;
+
+            if (MissionManager.instance.missionGauge.HiderProgress.Value < totalMissionPoint) return;
+
             isGameStarted.Value = false;
 
             ShowResultRpc(false);

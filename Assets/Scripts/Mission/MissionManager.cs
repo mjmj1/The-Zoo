@@ -17,6 +17,7 @@ namespace Mission
         [SerializeField] internal HiderMissionProgress missionGauge;
 
         public NetworkVariable<int> pickupCount = new();
+        public NetworkVariable<int> spinCount = new();
 
         internal readonly int MaxPickup = 20;
         internal readonly int MaxSpin = 10;
@@ -38,8 +39,10 @@ namespace Mission
             PlayManager.Instance.RoleManager.HiderIds.OnListChanged += HiderListChanged;
 
             pickupCount.OnValueChanged += OnPickupCountChanged;
+            spinCount.OnValueChanged += OnSpinCountChanged;
             
             GamePlayEventHandler.PlayerPickup += OnPlayerPickup;
+            GamePlayEventHandler.PlayerSpin += OnPlayerSpin;
 
             getFoodCountText.text = $"0 / {MaxPickup}";
             spinCountText.text = $"0 / {MaxSpin}";
@@ -48,6 +51,7 @@ namespace Mission
         public override void OnNetworkDespawn()
         {
             pickupCount.OnValueChanged -= OnPickupCountChanged;
+            spinCount.OnValueChanged -= OnSpinCountChanged;
         }
         private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
@@ -70,6 +74,22 @@ namespace Mission
             pickupCount.Value += 1;
         }
 
-        // 스핀 관련 추가 (OnPickupCountChanged와 같이)
+        private void OnSpinCountChanged(int previousValue, int newValue)
+        {
+            missionGauge.HiderProgress.Value += 1;
+            
+            spinCountText.text = $"{spinCount.Value.ToString()} / {MaxSpin}";
+        }
+        private void OnPlayerSpin(int spinTime)
+        {
+            spinCount.Value += spinTime;
+            OnSpinRpc();
+        }
+
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void OnSpinRpc(RpcParams _ = default)
+        {
+            spinCount.Value += 1;
+        }
     }
 }

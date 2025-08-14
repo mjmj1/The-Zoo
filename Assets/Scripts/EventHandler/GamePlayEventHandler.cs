@@ -11,6 +11,7 @@ namespace EventHandler
         internal static event Action<string> UIChanged;
         internal static event Action NpcDeath;
         internal static event Action PlayerPickup;
+        internal static event Action<int> PlayerSpin;
 
         internal static void OnPlayerReady(string id, bool value)
         {
@@ -45,7 +46,9 @@ namespace EventHandler
         {
             PlayerPickup?.Invoke();
         }
-
-        // 스핀 액션 추가
+        internal static void OnPlayerSpin(int spinTime)
+        {
+            PlayerSpin?.Invoke(spinTime);
+        }
     }
 }

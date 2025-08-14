@@ -19,7 +19,7 @@ namespace Mission
         }
         public override void OnNetworkSpawn()
         {
-            missionGauge.maxValue = MissionManager.instance.MaxPickup;
+            missionGauge.maxValue = MissionManager.instance.MaxPickup + MissionManager.instance.MaxSpin;
 
             HiderProgress.OnValueChanged += OnHiderProgressChanged;
         }
@@ -28,7 +28,7 @@ namespace Mission
         {
             SetProgressRpc(newValue);
             var percentage = newValue / missionGauge.maxValue * 100;
-            percentText.text = $"{percentage}%";
+            percentText.text = $"{percentage:F0}%";
         }
 
         [Rpc(SendTo.Everyone)]

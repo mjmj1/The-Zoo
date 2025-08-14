@@ -97,6 +97,8 @@ namespace Players
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
 
+        private int startSpinTime = 0;
+
         public void Reset()
         {
             CanMove = true;
@@ -370,9 +372,13 @@ namespace Players
             isSpin = ctx.performed;
             animator.OnSpin(ctx);
 
-            if(isSpin)
+            if (isSpin && MissionManager.instance.MaxSpin > MissionManager.instance.spinCount.Value)
             {
-                // 초 늘어나도록 false 되는 순간 측정 완료해서 추가.
+                StartCoroutine(SpinPointCount());
+            }
+            else if(ctx.canceled)
+            {
+                isSpin = false;
             }
         }
 
@@ -404,6 +410,13 @@ namespace Players
             yield return new WaitForSeconds(0.3f);
 
             slowdownRate = 1f;
+        }
+        private IEnumerator SpinPointCount()
+        {
+            yield return new WaitForSeconds(1.0f);
+            startSpinTime += 1;
+            print("startSpinTime : " + startSpinTime);
+            GamePlayEventHandler.OnPlayerSpin(Mathf.FloorToInt(startSpinTime));
         }
     }
 }
