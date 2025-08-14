@@ -379,6 +379,7 @@ namespace Players
             else if(ctx.canceled)
             {
                 isSpin = false;
+                StopAllCoroutines();
             }
         }
 
@@ -415,7 +416,6 @@ namespace Players
         {
             yield return new WaitForSeconds(1.0f);
             startSpinTime += 1;
-            print("startSpinTime : " + startSpinTime);
             GamePlayEventHandler.OnPlayerSpin(Mathf.FloorToInt(startSpinTime));
         }
     }

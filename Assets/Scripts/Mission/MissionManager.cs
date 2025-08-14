@@ -82,7 +82,6 @@ namespace Mission
         }
         private void OnPlayerSpin(int spinTime)
         {
-            spinCount.Value += spinTime;
             OnSpinRpc();
         }
 
