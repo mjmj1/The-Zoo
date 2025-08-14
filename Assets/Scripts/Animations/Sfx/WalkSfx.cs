@@ -14,6 +14,7 @@ namespace Animations.Sfx
             var nt = stateInfo.normalizedTime;
             if (!playedThisLoop && nt % 0.5f < 0.05f)
             {
+                if (!AudioManager.Instance) return;
                 AudioManager.Instance.PlaySfx(sfxData.clip, animator.transform.position, sfxData.volume, sfxData.pitch);
                 playedThisLoop = true;
             }

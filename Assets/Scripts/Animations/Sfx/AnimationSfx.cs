@@ -11,6 +11,7 @@ namespace Animations.Sfx
         public override void OnStateEnter(Animator animator,
             AnimatorStateInfo stateInfo, int layerIndex)
         {
+            if (!AudioManager.Instance) return;
             AudioManager.Instance.PlaySfx(sfxData.clip, animator.transform.position, sfxData.volume, sfxData.pitch);
         }
     }

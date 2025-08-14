@@ -422,7 +422,9 @@ namespace AI
             var dot = Vector3.Dot(moveDir, lookDir);
 
             if(lookInput.x == 0)
-                AddReward(0.0000001f);
+                AddReward(0.000001f);
+            else if(lookInput.x != 0)
+                AddReward(-0.00001f);
 
             if (hasHit)
             {
