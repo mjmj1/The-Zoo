@@ -13,7 +13,10 @@ namespace Mission
         [SerializeField] private TMP_Text percentText;
         
         public NetworkVariable<int> HiderProgress = new(); // whole mission
-
+        private void Awake()
+        {
+            percentText.text = "0%";
+        }
         public override void OnNetworkSpawn()
         {
             missionGauge.maxValue = MissionManager.instance.MaxPickup;
@@ -24,7 +27,8 @@ namespace Mission
         private void OnHiderProgressChanged(int previousValue, int newValue)
         {
             SetProgressRpc(newValue);
-            percentText.text = $"{newValue / missionGauge.maxValue:0}%";
+            var percentage = newValue / missionGauge.maxValue * 100;
+            percentText.text = $"{percentage}%";
         }
 
         [Rpc(SendTo.Everyone)]
