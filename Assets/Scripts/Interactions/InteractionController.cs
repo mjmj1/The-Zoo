@@ -15,7 +15,8 @@ namespace Interactions
 
         [SerializeField] private int interactionsNumber = 15;
 
-        private readonly List<NetworkObject> spawnedInteractions = new();
+        internal readonly List<NetworkObject> spawnedInteractions = new();
+        //internal readonly List<NetworkObject> spawnedFruit = new();
         private readonly HashSet<int> targetSet = new();
 
         [SerializeField] internal int TargetCount = 5;
@@ -30,8 +31,6 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int index, int count, RpcParams rpcParams = default)
         {
-            //MissionManager.instance.fruitTotal = TargetCount * 4;
-
             while (TargetCount > 0)
             {
                 var value = UnityEngine.Random.Range(0, count);
@@ -67,6 +66,7 @@ namespace Interactions
             foreach (var obj in spawnedInteractions)
             {
                 MyLogger.Print(this, "despawn interactions");
+                obj.GetComponent<InteractableSpawner>().DespawnInteractionRpc();
                 obj.Despawn();
             }
         }
