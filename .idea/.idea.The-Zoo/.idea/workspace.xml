@@ -1,108 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AnalysisUIOptions">
-    <option name="SCOPE_TYPE" value="3" />
-  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Scriptable/RoleColor.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/UI/Scriptable/RoleColor.cs.meta" afterDir="false" />
+    <list default="true" id="a27d232d-201a-40b0-aa09-700b20bd6f67" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/PlayManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/PlayManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerEntity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerEntity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/HiderRole.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/HiderRole.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/SeekerRole.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/Roles/SeekerRole.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/InGameUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/AI/Config/hider_config.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/AI/Config/hider_config.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/InputSystem_Actions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/InputSystem_Actions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/AI/Agent v2.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/AI/Agent v2.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/Standard_Package.unitypackage.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/URP_2022.3DepthIssue.unitypackage.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/URP_2DPackage.unitypackage.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/URP_Package.unitypackage.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/AI/HiderAgentv2.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/AI/HiderAgentv2.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/Sfx/AnimationSfx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Animations/Sfx/AnimationSfx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/Sfx/RunSfx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Animations/Sfx/RunSfx.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Animations/Sfx/WalkSfx.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Animations/Sfx/WalkSfx.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="DpaMonitoringSettings">
-    <option name="firstShow" value="false" />
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;mjmj1&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/mjmj1/The-Zoo.git&quot;,
-    &quot;accountId&quot;: &quot;7d9b55a4-93b0-4d04-a1a5-8e81648b8109&quot;
-  }
-}</component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0022d4fb3cd44d45a62e51c39f257e7c1ea600/19/777acbd7/Vector3.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/0022d4fb3cd44d45a62e51c39f257e7c1ea600/e0/3c06746c/IObjectPool`1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4d594d2cdb534082903b3f5c27c72cfb96400/46/07340333/IMultiplayerService.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/4d6ee36bacff4f8eaf48aa51bd57615996400/d4/effe4c21/ISession.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/99a6b958c3224b0a8d81abaab1e8dead96000/d5/983f3c82/NetworkListEvent`1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/99a6b958c3224b0a8d81abaab1e8dead96000/e6/5121ab5d/SendTo.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/07/40faffa6/Transform.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/67/0c43f535/MonoBehaviour.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/ce25f60185214755aecd20f4c928c90e1eae00/7a/b416e6e7/Component.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/e4d9240e78544597a1d42d60268e7da421e00/11/c353d574/Property`2.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3ea01e77be99618395f448b16bd7cc2bd4248bd9e5d8474964b2d97f39c5d74/System.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/TimeManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/Networks/PlayerSpawner.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/GameSetup/GameSetupController.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/PlayerList/PlayerListView.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Preferences/PlayerNamePreference.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/Preferences/ResolutionPreference.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Assets/Scripts/UI/UIManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.cinemachine@b66fdb7cd1f2/Runtime/Behaviours/CinemachineFreeLookModifier.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.cinemachine@b66fdb7cd1f2/Runtime/Components/CinemachineOrbitalFollow.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.cinemachine@b66fdb7cd1f2/Runtime/Core/CinemachineCameraManagerBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.cinemachine@b66fdb7cd1f2/Runtime/Core/CinemachineVirtualCameraBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.cinemachine@b66fdb7cd1f2/Runtime/Core/InputAxis.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.cinemachine@b66fdb7cd1f2/Runtime/Core/UnityVectorExtensions.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.collections@56bff8827a7e/Unity.Collections/NativeArrayExtensions.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.collections@56bff8827a7e/Unity.Collections/NativeList.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ide.rider@4d374c7eb6db/Rider/Editor/RiderScriptEditor.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Runtime/Actuators/ActionSegment.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Runtime/Actuators/VectorActuator.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ml-agents@c99f42d6809e/Runtime/Agent.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.center.quickstart@1fcc41c23ee5/Runtime/NetcodeForGameObjectsExample/DistributedAuthority/ConnectionManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.center.quickstart@1fcc41c23ee5/Runtime/NetcodeForGameObjectsExample/DistributedAuthority/Spawner.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.center.quickstart@1fcc41c23ee5/Runtime/NetcodeForGameObjectsExample/DistributedAuthority/SphereMovement.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.center.quickstart@1fcc41c23ee5/Runtime/NetcodeForGameObjectsExample/DistributedAuthority/UI/UIManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Core/Base/CoreData.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Core/Base/Session/SessionConstants.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Core/Base/Widget/Interfaces/WidgetInterfaces.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Session/Session/SessionManager.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Session/Widgets/Base/EnterSessionBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Session/Widgets/SessionItem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Session/Widgets/SessionList.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Session/Widgets/SessionPlayerList/SessionPlayerList.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.multiplayer.widgets@8f9a1d20b6e1/Runtime/Session/Widgets/SessionPlayerList/SessionPlayerListItem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.netcode.gameobjects@837011a5fcd5/Runtime/Connection/NetworkClient.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.netcode.gameobjects@837011a5fcd5/Runtime/NetworkVariable/Collections/NetworkList.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.authentication@868ebdf18f3f/Runtime/AuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.authentication@868ebdf18f3f/Runtime/IAuthenticationService.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.services.core@9e81a5e38245/Runtime/Core/UnityServices.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.visualscripting@b4d700247d4b/Editor/VisualScripting.Core/Plugin/BoltCoreManifest.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
-  <component name="KubernetesApiPersistence">{}</component>
-  <component name="KubernetesApiProvider">{
-  &quot;isMigrated&quot;: true
-}</component>
-  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
-  <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 2
-}</component>
-  <component name="ProjectId" id="2tzhMNS10twUuNGo0wLR4SIlQA6" />
+  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="31EbwGJTogeXOV2Ch9AScbLNZSF" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -111,19 +47,14 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "Unity 에디터에 연결.Unity 에디터에 연결.executor": "Debug",
-    "XThreadsFramesViewSplitterKey": "0.68524593",
-    "git-widget-placeholder": "IG/gp/hp-role-ui",
-    "ignore.virus.scanning.warn.message": "true",
+    "git-widget-placeholder": "IG/ai/001/ml-agents-학습-환경-구현",
     "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.C#",
     "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Unity 에디터에 연결.Unity 에디터에 연결">
     <configuration name="유닛 테스트(배치 모드)" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="C:\Program Files\Unity\Hub\Editor\6000.1.12f1\Editor\Unity.exe" />
@@ -187,94 +118,20 @@
       <method v="2" />
     </configuration>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="애플리케이션 수준" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="디폴트 작업">
-      <changelist id="36108119-6cbb-42b3-b98d-fd0d51194224" name="변경" comment="" />
-      <created>1741360762047</created>
+      <changelist id="a27d232d-201a-40b0-aa09-700b20bd6f67" name="변경" comment="" />
+      <created>1755092418027</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1741360762047</updated>
-      <workItem from="1741360763247" duration="3441000" />
-      <workItem from="1741364320278" duration="1663000" />
-      <workItem from="1741440828234" duration="2647000" />
-      <workItem from="1741513030598" duration="1354000" />
-      <workItem from="1741514609221" duration="3000" />
-      <workItem from="1741514867947" duration="11408000" />
-      <workItem from="1741789216773" duration="4839000" />
-      <workItem from="1741794310454" duration="990000" />
-      <workItem from="1741874632097" duration="5522000" />
-      <workItem from="1742108030614" duration="22080000" />
-      <workItem from="1742307494511" duration="6005000" />
-      <workItem from="1742395103297" duration="365000" />
-      <workItem from="1742646119926" duration="2787000" />
-      <workItem from="1742659415674" duration="425000" />
-      <workItem from="1742822159244" duration="776000" />
-      <workItem from="1742905558970" duration="14739000" />
-      <workItem from="1743004945969" duration="5651000" />
-      <workItem from="1743178417981" duration="4559000" />
-      <workItem from="1743222092608" duration="1196000" />
-      <workItem from="1743225755771" duration="621000" />
-      <workItem from="1743415424441" duration="895000" />
-      <workItem from="1743514564806" duration="9584000" />
-      <workItem from="1743593810816" duration="3848000" />
-      <workItem from="1743922025907" duration="1249000" />
-      <workItem from="1743924098576" duration="728000" />
-      <workItem from="1744112985495" duration="10527000" />
-      <workItem from="1744292438747" duration="1693000" />
-      <workItem from="1744296110924" duration="475000" />
-      <workItem from="1744297360187" duration="1220000" />
-      <workItem from="1744437881066" duration="8089000" />
-      <workItem from="1744484486725" duration="4000" />
-      <workItem from="1744484492301" duration="2694000" />
-      <workItem from="1746855716920" duration="77000" />
-      <workItem from="1747760430136" duration="1875000" />
-      <workItem from="1747936027291" duration="2737000" />
-      <workItem from="1748425638573" duration="10972000" />
-      <workItem from="1748531171685" duration="9009000" />
-      <workItem from="1748756645367" duration="6901000" />
-      <workItem from="1748933996646" duration="20549000" />
-      <workItem from="1749057751139" duration="4267000" />
-      <workItem from="1749202683188" duration="29913000" />
-      <workItem from="1749364847133" duration="122000" />
-      <workItem from="1749364983998" duration="3611000" />
-      <workItem from="1749916409899" duration="934000" />
-      <workItem from="1751192229503" duration="211000" />
-      <workItem from="1751192457070" duration="19703000" />
-      <workItem from="1751288210900" duration="11249000" />
-      <workItem from="1751382052806" duration="6675000" />
-      <workItem from="1751462170252" duration="10731000" />
-      <workItem from="1751732068794" duration="616000" />
-      <workItem from="1751732762932" duration="8897000" />
-      <workItem from="1751803137611" duration="5814000" />
-      <workItem from="1751898220687" duration="4866000" />
-      <workItem from="1752167664729" duration="4892000" />
-      <workItem from="1752664726828" duration="6130000" />
-      <workItem from="1752755796126" duration="4599000" />
-      <workItem from="1752843799811" duration="24717000" />
-      <workItem from="1752990673365" duration="32421000" />
-      <workItem from="1753106375076" duration="7803000" />
-      <workItem from="1753196851662" duration="5908000" />
-      <workItem from="1753355329979" duration="16441000" />
-      <workItem from="1753439668790" duration="21183000" />
-      <workItem from="1753522348002" duration="3916000" />
-      <workItem from="1753710458627" duration="6775000" />
+      <updated>1755092418027</updated>
+      <workItem from="1755092420669" duration="2609000" />
     </task>
-    <task id="LOCAL-00001" summary="[chore]: 일부 수정">
-      <option name="closed" value="true" />
-      <created>1741360847576</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1741360847576</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
-  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
   <component name="UnityProjectDiscoverer">
     <option name="hasUnityReference" value="true" />
@@ -282,38 +139,4 @@
     <option name="unityProjectFolder" value="true" />
   </component>
   <component name="UnityUnitTestConfiguration" currentTestLauncher="Both" />
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="[chore]: 일부 수정" />
-    <option name="LAST_COMMIT_MESSAGE" value="[chore]: 일부 수정" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
-          <option name="timeStamp" value="1" />
-        </breakpoint>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
-          <option name="timeStamp" value="2" />
-        </breakpoint>
-        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
-          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
-          <option name="timeStamp" value="3" />
-        </breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
 </project>

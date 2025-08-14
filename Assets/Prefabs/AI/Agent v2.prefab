@@ -137,8 +137,8 @@ MonoBehaviour:
   - Seeker
   - Target
   - Interactable
-  m_RaysPerDirection: 5
-  m_MaxRayDegrees: 90
+  m_RaysPerDirection: 6
+  m_MaxRayDegrees: 120
   m_SphereCastRadius: 0.5
   m_RayLength: 6
   m_RayLayerMask:
