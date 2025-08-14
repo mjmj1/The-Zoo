@@ -98,8 +98,11 @@ namespace Interactions
         {
             foreach (var obj in spawnedFruit)
             {
-                if(obj != null)
+                if (obj.IsSpawned);
+                {
+                    
                     obj.Despawn();
+                }
             }
         }
 

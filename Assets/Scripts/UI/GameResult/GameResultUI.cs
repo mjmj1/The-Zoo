@@ -83,6 +83,21 @@ namespace UI.GameResult
         private void OnReturnLobbyButtonClicked()
         {
             controller.DespawnInteractionRpc();
+            foreach(var obj in controller.spawnedInteractions)
+            {
+                if (obj.GetComponent<InteractableSpawner>().spawnedFruit != null)
+                {
+                    obj.GetComponent<InteractableSpawner>().DespawnInteraction();
+                }
+            }
+            StartCoroutine(DelayBeforeEnd());
+
+
+        }
+
+        private IEnumerator DelayBeforeEnd()
+        {
+            yield return new WaitForSecondsRealtime(0.05f);
             GameManager.Instance.GameEndRpc();
         }
     }

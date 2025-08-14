@@ -65,12 +65,12 @@ namespace Interactions
         {
             foreach (var obj in spawnedInteractions)
             {
-                if (obj.GetComponent<InteractableSpawner>().spawnedFruit != null)
-                {
-                    obj.GetComponent<InteractableSpawner>().DespawnInteraction();
-
-                    obj.Despawn();
-                }
+                obj.Despawn();
+                //if (obj.GetComponent<InteractableSpawner>().spawnedFruit != null && obj.IsSpawned)
+                //{
+                //    obj.GetComponent<InteractableSpawner>().DespawnInteraction();
+                    
+                //}
             }
         }
     }
