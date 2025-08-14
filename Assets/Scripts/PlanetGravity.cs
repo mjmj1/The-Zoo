@@ -5,7 +5,7 @@ public class PlanetGravity : MonoBehaviour
 {
     public static PlanetGravity Instance { get; private set; }
 
-    public float gravityStrength = 9.81f;
+    private readonly float gravityStrength = 9.81f;
     private readonly HashSet<Rigidbody> affectedBodies = new();
 
     private void Awake()

@@ -465,13 +465,13 @@ namespace AI
                     if (currentMoveState == AgentMoveState.Walking)
                     {
                         //print($"Walking Action");
-                        var reward = -dot * 0.000001f;
+                        var reward = dot * 0.000001f;
                         AddReward(reward);
                     }
                     else if (currentMoveState == AgentMoveState.Running)
                     {
                         //print($"Running Action");
-                        var reward = -dot * 0.0000011f;
+                        var reward = dot * 0.0000011f;
                         AddReward(reward);
                     }
                 }
@@ -570,12 +570,12 @@ namespace AI
                 AddReward(-0.01f);
             }
 
-            /*if (collision.collider.CompareTag("Target"))
+            if (collision.collider.CompareTag("Target"))
             {
                 print("Target Get");
                 AddReward(1f);
                 EndEpisode();
-            }*/
+            }
         }
 
 

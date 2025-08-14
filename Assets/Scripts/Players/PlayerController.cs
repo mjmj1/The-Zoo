@@ -252,6 +252,8 @@ namespace Players
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
+
+            rb.maxDepenetrationVelocity = 3f;
         }
 
         private void InitializeFollowCamera()
@@ -297,6 +299,13 @@ namespace Players
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        private void PreventBouncing()
+        {
+            if(rb.linearVelocity.magnitude > 1.0f)
+                rb.linearVelocity = Vector3.zero;
+            print($"{rb.linearVelocity.magnitude:F2}");
         }
 
         private void Look(InputAction.CallbackContext ctx)

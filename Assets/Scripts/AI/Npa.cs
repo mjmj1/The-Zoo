@@ -1,8 +1,12 @@
+using System;
 using System.Collections;
+using System.IO;
+using System.Linq;
 using EventHandler;
 using Players;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using Unity.Netcode;
 using UnityEngine;
@@ -52,6 +56,7 @@ namespace AI
         private RayPerceptionSensorComponent3D raySensor;
         private PlayerNetworkAnimator animator;
         private Rigidbody rb;
+        private BehaviorParameters behaviorParameters;
 
         // freeze
         public bool freeze;
@@ -65,7 +70,6 @@ namespace AI
 
         public bool started;
 
-
         private void Start()
         {
             if (NetworkManager.Singleton.LocalClientId !=
@@ -73,6 +77,11 @@ namespace AI
             {
                 enabled = false;
             }
+
+#if UNITY_EDITOR
+#else
+            behaviorParameters.BehaviorType = BehaviorType.InferenceOnly;
+#endif
         }
 
         private void Update()
@@ -92,6 +101,7 @@ namespace AI
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             raySensor = GetComponent<RayPerceptionSensorComponent3D>();
+            behaviorParameters = GetComponent<BehaviorParameters>();
         }
 
         private bool IsGrounded()
@@ -234,7 +244,7 @@ namespace AI
 
             lookInput.x = action[0];
 
-            transform.Rotate(Vector3.up * (lookInput.x * 10f));
+            transform.Rotate(Vector3.up * (lookInput.x * 5f));
         }
 
         private void HandleJumpAction(ActionSegment<int> action)
