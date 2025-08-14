@@ -46,12 +46,18 @@ namespace Mission
 
             getFoodCountText.text = $"0 / {MaxPickup}";
             spinCountText.text = $"0 / {MaxSpin}";
+
+            pickupCount.Value = 0;
+            spinCount.Value = 0;
         }
 
         public override void OnNetworkDespawn()
         {
             pickupCount.OnValueChanged -= OnPickupCountChanged;
             spinCount.OnValueChanged -= OnSpinCountChanged;
+
+            GamePlayEventHandler.PlayerPickup -= OnPlayerPickup;
+            GamePlayEventHandler.PlayerSpin -= OnPlayerSpin;
         }
         private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
