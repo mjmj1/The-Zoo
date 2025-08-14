@@ -1,7 +1,8 @@
-using System;
-using System.Collections;
 using EventHandler;
 using Interactions;
+using Mission;
+using System;
+using System.Collections;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -28,7 +29,7 @@ namespace Players.Roles
             entity = GetComponent<PlayerEntity>();
             inputHandler = GetComponent<InputHandler>();
         }
-
+        
         private void FixedUpdate()
         {
             if (IsOwner) CheckForInteractable();
@@ -89,6 +90,7 @@ namespace Players.Roles
             currentInteractable = interactable;
             var target = currentInteractable.targetMission.Value;
             var count = currentInteractable.maxSpawnCount.Value;
+
             GamePlayEventHandler.OnCheckInteractable(true, target, count);
         }
 
@@ -140,6 +142,8 @@ namespace Players.Roles
             yield return new WaitForSeconds(0.3f);
 
             no.DeferDespawn(2);
+
+            GamePlayEventHandler.OnPlayerPickup();
         }
     }
 }

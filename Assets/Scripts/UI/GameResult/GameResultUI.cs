@@ -1,5 +1,6 @@
 using GamePlay;
 using Interactions;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -15,8 +16,6 @@ namespace UI.GameResult
         [SerializeField] private ResultItem hiderAlive;
         [SerializeField] private ResultItem hiderDeath;
         [SerializeField] private ResultItem seekerView;
-
-        [SerializeField] private InteractionController controller;
 
         private void Awake()
         {
@@ -81,7 +80,13 @@ namespace UI.GameResult
 
         private void OnReturnLobbyButtonClicked()
         {
-            controller.DespawnInteractionRpc();
+            StartCoroutine(DelayBeforeEnd());
+        }
+
+        private IEnumerator DelayBeforeEnd()
+        {
+            yield return new WaitForSecondsRealtime(0.1f);
+
             GameManager.Instance.GameEndRpc();
         }
     }

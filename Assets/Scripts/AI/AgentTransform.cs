@@ -48,6 +48,7 @@ namespace AI
         private void RequestDespawnRpc(NetworkObjectReference targetRef)
         {
             if (!targetRef.TryGet(out var no)) return;
+            if (OwnerClientId != no.OwnerClientId) return;
             if (!no.IsSpawned) return;
             no.DeferDespawn(1);
         }

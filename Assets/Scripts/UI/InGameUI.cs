@@ -1,9 +1,9 @@
-using System;
-using GamePlay;
-using Players;
-using Scriptable;
 using System.Collections;
 using EventHandler;
+using GamePlay;
+using Mission;
+using Players;
+using Scriptable;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -15,15 +15,27 @@ namespace UI
     public class InGameUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI timerText;
-        [SerializeField] private GameObject missionsView;
+        [SerializeField] private GameObject seekerMissionsView;
+        [SerializeField] private GameObject[] hiderMissionsView;
         [SerializeField] private Image[] redHealth;
         [SerializeField] private HpImageData hpImageData;
         [SerializeField] private KeyUI keyUI;
         [SerializeField] private Image hitOverlay;
         [SerializeField] private float fadeDuration = 0.2f;
 
+        [SerializeField] private TextMeshProUGUI seekerMissionText;
+        [SerializeField] private TextMeshProUGUI hiderMissionText;
+
+        [SerializeField] private HiderMissionProgress state;
+        [SerializeField] private MissionManager mission;
+
+        private PlayerEntity localPlayer;
+
         private void Start()
         {
+            localPlayer = NetworkManager.Singleton.LocalClient.PlayerObject
+                .GetComponent<PlayerEntity>();
+
             PlayManager.Instance.currentTime.OnValueChanged += OnTimerChanged;
 
             NetworkManager.Singleton.LocalClient.PlayerObject
@@ -37,7 +49,13 @@ namespace UI
 
             GamePlayEventHandler.CheckInteractable += OnKeyUI;
 
-            missionsView.SetActive(false);
+            seekerMissionsView.SetActive(false);
+
+            foreach (var view in hiderMissionsView)
+            {
+                view.SetActive(false);
+            }
+
             keyUI.gameObject.SetActive(false);
             GamePlayEventHandler.OnUIChanged("InGame");
         }
@@ -69,13 +87,9 @@ namespace UI
             else
             {
                 if (count == 0)
-                {
                     keyUI.Unable();
-                }
                 else
-                {
                     keyUI.Interactable();
-                }
             }
         }
 
@@ -86,7 +100,15 @@ namespace UI
 
         private void OnTabKeyPressed(InputAction.CallbackContext ctx)
         {
-            missionsView.SetActive(ctx.performed);
+            var isHider = localPlayer.role.Value == PlayerEntity.Role.Hider;
+
+            if (isHider)
+                foreach (var view in hiderMissionsView)
+                {
+                    view.SetActive(ctx.performed);
+                }
+            else
+                seekerMissionsView.SetActive(ctx.performed);
         }
 
         private void OnPlayerHealthChanged(int oldValue, int newValue)

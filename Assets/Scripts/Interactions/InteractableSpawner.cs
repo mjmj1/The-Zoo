@@ -1,6 +1,7 @@
 using EventHandler;
+using Mission;
 using System.Collections.Generic;
-using Unity.Collections.LowLevel.Unsafe;
+using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Interactions
 
         private bool isInteracting;
 
-        private readonly List<NetworkObject> spawnedFruit = new();
+        internal readonly List<NetworkObject> SpawnedObject = new();
 
 #if UNITY_EDITOR
         private void OnDrawGizmosSelected()
@@ -84,18 +85,20 @@ namespace Interactions
                 Random.Range(min.z, max.z)
             );
 
-            var fruit = spawnObject.InstantiateAndSpawn(NetworkManager,
+            var no = spawnObject.InstantiateAndSpawn(NetworkManager,
                 position: spawnPos,
                 rotation: Quaternion.identity);
-            spawnedFruit.Add(fruit);
+            SpawnedObject.Add(no);
 
             maxSpawnCount.Value--;
         }
 
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        internal void DespawnInteractionRpc(RpcParams rpcParams = default)
+        internal void DespawnInteraction()
         {
-            foreach (var obj in spawnedFruit) obj.Despawn();
+            foreach (var obj in SpawnedObject.Where(obj => obj.IsSpawned))
+            {
+                obj.Despawn();
+            }
         }
 
         public override InteractableType GetInteractableType()

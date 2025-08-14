@@ -15,24 +15,24 @@ namespace UI.SessionList
         [SerializeField] private TMP_Text sessionNameText;
         [SerializeField] private TMP_Text sessionPlayersText;
         
-        private ISessionInfo _sessionInfo;
+        private ISessionInfo sessionInfo;
         
         internal readonly UnityEvent<ISessionInfo> OnSelected = new();
 
         public void OnSelect(BaseEventData eventData)
         {
-            OnSelected?.Invoke(_sessionInfo);
+            OnSelected?.Invoke(sessionInfo);
         }
 
         public void Bind(ISessionInfo info)
         {
-            _sessionInfo = info;
+            sessionInfo = info;
 
-            IsLock(_sessionInfo.HasPassword);
-            sessionNameText.text = _sessionInfo.Name;
+            IsLock(sessionInfo.HasPassword);
+            sessionNameText.text = sessionInfo.Name;
 
-            var currentPlayers = _sessionInfo.MaxPlayers - _sessionInfo.AvailableSlots;
-            sessionPlayersText.text = $"{currentPlayers}/{_sessionInfo.MaxPlayers}";
+            var currentPlayers = sessionInfo.MaxPlayers - sessionInfo.AvailableSlots;
+            sessionPlayersText.text = $"{currentPlayers}/{sessionInfo.MaxPlayers}";
         }
 
         private void IsLock(bool value)
