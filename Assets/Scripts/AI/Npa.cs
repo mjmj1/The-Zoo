@@ -33,8 +33,8 @@ namespace AI
         }
 
         [SerializeField] private LayerMask groundMask;
-        [SerializeField] private float walkSpeed = 4f;
-        [SerializeField] private float runSpeed = 7f;
+        [SerializeField] private float walkSpeed = 3f;
+        [SerializeField] private float runSpeed = 4.5f;
         [SerializeField] private float jumpForce = 3f;
         [SerializeField] private float rotationSpeed = 500f;
 
@@ -123,6 +123,7 @@ namespace AI
         private void OnDestroy()
         {
             hittable.health.OnValueChanged -= Hit;
+            agent.isDead.OnValueChanged -= Dead;
         }
 
         public override void OnEpisodeBegin()
@@ -149,6 +150,7 @@ namespace AI
             lastHitDirection = Vector3.zero;
 
             hittable.health.OnValueChanged += Hit;
+            agent.isDead.OnValueChanged += Dead;
         }
 
         public override void CollectObservations(VectorSensor sensor)
@@ -389,23 +391,18 @@ namespace AI
             }
         }
 
-        private IEnumerator DeathCoroutine()
+        private void Dead(bool previousValue, bool newValue)
         {
-            agent.isDead.Value = true;
-
-            yield return new WaitForEndOfFrame();
-
+            if (!newValue) return;
             moveInput = Vector2.zero;
-
-            currentMoveState = AgentMoveState.Idle;
-            currentAAState = AgentActionState.None;
-
-            yield return new WaitForEndOfFrame();
 
             animator.SetBool(PlayerNetworkAnimator.MoveHash, false);
             animator.SetBool(PlayerNetworkAnimator.RunHash, false);
+        }
 
-            yield return new WaitForEndOfFrame();
+        private IEnumerator DeathCoroutine()
+        {
+            agent.isDead.Value = true;
 
             animator.OnDeath();
 
@@ -418,9 +415,9 @@ namespace AI
 
         private IEnumerator Slowdown()
         {
-            slowdownRate = 0.5f;
+            slowdownRate = 0.2f;
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(1f);
 
             slowdownRate = 1f;
         }

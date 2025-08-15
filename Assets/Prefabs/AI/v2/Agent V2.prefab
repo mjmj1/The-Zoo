@@ -257,8 +257,8 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  walkSpeed: 4
-  runSpeed: 7
+  walkSpeed: 3
+  runSpeed: 4.5
   jumpForce: 3
   rotationSpeed: 500
   moveInput: {x: 0, y: 0}

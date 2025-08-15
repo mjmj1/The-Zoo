@@ -189,7 +189,7 @@ namespace GamePlay
             yield return new WaitForSeconds(2f);
 
             foreach (var data in RoleManager.HiderIds)
-                NpcSpawner.Instance.SpawnNpcRpc(data.AnimalIndex, 4);
+                NpcSpawner.Instance.SpawnNpcRpc(data.AnimalIndex, 5);
         }
 
         private IEnumerator CountTime()

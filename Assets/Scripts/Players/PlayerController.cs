@@ -74,8 +74,8 @@ namespace Players
 #endif
         public LayerMask groundMask;
         public float jumpForce = 3f;
-        public float walkSpeed = 4f;
-        public float runSpeed = 7f;
+        public float walkSpeed = 3f;
+        public float runSpeed = 4.5f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
@@ -97,6 +97,9 @@ namespace Players
         public void Reset()
         {
             CanMove = true;
+
+            walkSpeed = 3f;
+            runSpeed = 4.5f;
         }
 
         private void Start()
@@ -178,6 +181,7 @@ namespace Players
 
             Reset();
             entity.Reset();
+            hittable.Reset();
             readyChecker.Reset();
 
             var clients = NetworkManager.ConnectedClientsIds.ToList();
@@ -400,9 +404,9 @@ namespace Players
 
         private IEnumerator Slowdown()
         {
-            slowdownRate = 0.5f;
+            slowdownRate = 0.2f;
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(1f);
 
             slowdownRate = 1f;
         }
