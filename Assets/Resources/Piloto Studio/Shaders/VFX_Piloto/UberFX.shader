@@ -4,6 +4,7 @@ Shader "Piloto Studio/UberFX"
 {
 	Properties
 	{
+		[CurvedWorldBendSettings] _CurvedWorldBendSettings("0,5|1|1", Vector) = (0,0,0,0)
 		[HideInInspector] _EmissionColor("Emission Color", Color) = (1,1,1,1)
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
 		[Enum(UnityEngine.Rendering.BlendMode)]_SourceBlendRGB("Blend Mode", Float) = 10
@@ -237,6 +238,14 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _DISABLEEROSION_ON
 			#pragma shader_feature_local _USEALPHAOVERRIDE_ON
 
+			// === Curved World: definitions & keywords (BEGIN) ===
+			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+			#define CURVEDWORLD_BEND_ID_1
+			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
+			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
+			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
+			// === Curved World: definitions & keywords (END) ===
+
 
 			struct VertexInput
 			{
@@ -343,7 +352,17 @@ Shader "Piloto Studio/UberFX"
 
 				v.normalOS = v.normalOS;
 
-				float3 positionWS = TransformObjectToWorld( v.positionOS.xyz );
+				// ▼ Curved World: insert BEGIN
+				float4 posOS4 = float4((float3)v.positionOS, 1.0);
+				#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
+				// 노멀/탱전트도 처리하려면 AND_NORMAL 버전 사용 (입력에 normal/tangent 있을 때)
+				// CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(posOS4, v.normalOS, v.tangentOS);
+				CURVEDWORLD_TRANSFORM_VERTEX(posOS4);
+				#endif
+				// ▲ Curved World: insert END
+
+				float3 positionWS = TransformObjectToWorld(posOS4.xyz); // ← 여기만 posOS4로 교체
+
 				float4 positionCS = TransformWorldToHClip( positionWS );
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
@@ -581,7 +600,7 @@ Shader "Piloto Studio/UberFX"
 				#else
 				float4 staticSwitch403 = temp_output_39_0;
 				#endif
-				
+
 				float3 BakedAlbedo = 0;
 				float3 BakedEmission = 0;
 				float3 Color = staticSwitch403.rgb;
@@ -610,10 +629,10 @@ Shader "Piloto Studio/UberFX"
 			ENDHLSL
 		}
 
-		
+
 		Pass
 		{
-			
+
 			Name "DepthOnly"
 			Tags { "LightMode"="DepthOnly" }
 
@@ -640,6 +659,13 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEALPHAOVERRIDE_ON
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
+			// === Curved World: definitions & keywords (BEGIN) ===
+			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+			#define CURVEDWORLD_BEND_ID_1
+			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
+			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
+			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
+			// === Curved World: definitions & keywords (END) ===
 
 			struct VertexInput
 			{
@@ -708,7 +734,7 @@ Shader "Piloto Studio/UberFX"
 			sampler2D _MainTex;
 
 
-			
+
 			VertexOutput VertexFunction( VertexInput v  )
 			{
 				VertexOutput o = (VertexOutput)0;
@@ -736,7 +762,16 @@ Shader "Piloto Studio/UberFX"
 
 				v.normalOS = v.normalOS;
 
-				float3 positionWS = TransformObjectToWorld( v.positionOS.xyz );
+				// ▼ Curved World: insert BEGIN
+				float4 posOS4 = float4((float3)v.positionOS, 1.0);
+				#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
+				// 노멀/탱전트도 처리하려면 AND_NORMAL 버전 사용 (입력에 normal/tangent 있을 때)
+				// CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(posOS4, v.normalOS, v.tangentOS);
+				CURVEDWORLD_TRANSFORM_VERTEX(posOS4);
+				#endif
+				// ▲ Curved World: insert END
+
+				float3 positionWS = TransformObjectToWorld(posOS4.xyz); // ← 여기만 posOS4로 교체
 
 				#if defined(ASE_NEEDS_FRAG_WORLD_POSITION)
 					o.positionWS = positionWS;
@@ -909,7 +944,7 @@ Shader "Piloto Studio/UberFX"
 				float MainAlpha30 = saturate( ( break2_g210.x + break2_g210.y + break2_g210.z + break2_g210.w ) );
 				float temp_output_55_0 = ( staticSwitch313 * MainAlpha30 );
 				float temp_output_396_0 = ( ( staticSwitch417 * temp_output_55_0 ) * IN.ase_color.a );
-				
+
 
 				float Alpha = temp_output_396_0;
 				float AlphaClipThreshold = 0.5;
@@ -926,10 +961,10 @@ Shader "Piloto Studio/UberFX"
 			ENDHLSL
 		}
 
-		
+
 		Pass
 		{
-			
+
 			Name "SceneSelectionPass"
 			Tags { "LightMode"="SceneSelectionPass" }
 
@@ -961,6 +996,13 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEALPHAOVERRIDE_ON
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
+			// === Curved World: definitions & keywords (BEGIN) ===
+			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+			#define CURVEDWORLD_BEND_ID_1
+			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
+			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
+			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
+			// === Curved World: definitions & keywords (END) ===
 
 			struct VertexInput
 			{
@@ -1023,7 +1065,7 @@ Shader "Piloto Studio/UberFX"
 			sampler2D _MainTex;
 
 
-			
+
 			int _ObjectId;
 			int _PassValue;
 
@@ -1062,7 +1104,16 @@ Shader "Piloto Studio/UberFX"
 
 				v.normalOS = v.normalOS;
 
-				float3 positionWS = TransformObjectToWorld( v.positionOS.xyz );
+				// ▼ Curved World: insert BEGIN
+				float4 posOS4 = float4((float3)v.positionOS, 1.0);
+				#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
+				// 노멀/탱전트도 처리하려면 AND_NORMAL 버전 사용 (입력에 normal/tangent 있을 때)
+				// CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(posOS4, v.normalOS, v.tangentOS);
+				CURVEDWORLD_TRANSFORM_VERTEX(posOS4);
+				#endif
+				// ▲ Curved World: insert END
+
+				float3 positionWS = TransformObjectToWorld(posOS4.xyz); // ← 여기만 posOS4로 교체
 
 				o.positionCS = TransformWorldToHClip(positionWS);
 
@@ -1210,7 +1261,7 @@ Shader "Piloto Studio/UberFX"
 				float MainAlpha30 = saturate( ( break2_g210.x + break2_g210.y + break2_g210.z + break2_g210.w ) );
 				float temp_output_55_0 = ( staticSwitch313 * MainAlpha30 );
 				float temp_output_396_0 = ( ( staticSwitch417 * temp_output_55_0 ) * IN.ase_color.a );
-				
+
 
 				surfaceDescription.Alpha = temp_output_396_0;
 				surfaceDescription.AlphaClipThreshold = 0.5;
@@ -1229,10 +1280,10 @@ Shader "Piloto Studio/UberFX"
 			ENDHLSL
 		}
 
-		
+
 		Pass
 		{
-			
+
 			Name "ScenePickingPass"
 			Tags { "LightMode"="Picking" }
 
@@ -1264,6 +1315,13 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEALPHAOVERRIDE_ON
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
+			// === Curved World: definitions & keywords (BEGIN) ===
+			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+			#define CURVEDWORLD_BEND_ID_1
+			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
+			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
+			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
+			// === Curved World: definitions & keywords (END) ===
 
 			struct VertexInput
 			{
@@ -1326,7 +1384,7 @@ Shader "Piloto Studio/UberFX"
 			sampler2D _MainTex;
 
 
-			
+
 			float4 _SelectionID;
 
 			struct SurfaceDescription
@@ -1364,7 +1422,16 @@ Shader "Piloto Studio/UberFX"
 
 				v.normalOS = v.normalOS;
 
-				float3 positionWS = TransformObjectToWorld( v.positionOS.xyz );
+				// ▼ Curved World: insert BEGIN
+				float4 posOS4 = float4((float3)v.positionOS, 1.0);
+				#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
+				// 노멀/탱전트도 처리하려면 AND_NORMAL 버전 사용 (입력에 normal/tangent 있을 때)
+				// CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(posOS4, v.normalOS, v.tangentOS);
+				CURVEDWORLD_TRANSFORM_VERTEX(posOS4);
+				#endif
+				// ▲ Curved World: insert END
+
+				float3 positionWS = TransformObjectToWorld(posOS4.xyz); // ← 여기만 posOS4로 교체
 				o.positionCS = TransformWorldToHClip(positionWS);
 				return o;
 			}
@@ -1510,7 +1577,7 @@ Shader "Piloto Studio/UberFX"
 				float MainAlpha30 = saturate( ( break2_g210.x + break2_g210.y + break2_g210.z + break2_g210.w ) );
 				float temp_output_55_0 = ( staticSwitch313 * MainAlpha30 );
 				float temp_output_396_0 = ( ( staticSwitch417 * temp_output_55_0 ) * IN.ase_color.a );
-				
+
 
 				surfaceDescription.Alpha = temp_output_396_0;
 				surfaceDescription.AlphaClipThreshold = 0.5;
@@ -1532,10 +1599,10 @@ Shader "Piloto Studio/UberFX"
 			ENDHLSL
 		}
 
-		
+
 		Pass
 		{
-			
+
 			Name "DepthNormals"
 			Tags { "LightMode"="DepthNormalsOnly" }
 
@@ -1570,6 +1637,13 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEALPHAOVERRIDE_ON
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
+			// === Curved World: definitions & keywords (BEGIN) ===
+			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+			#define CURVEDWORLD_BEND_ID_1
+			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
+			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
+			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
+			// === Curved World: definitions & keywords (END) ===
 
 			struct VertexInput
 			{
@@ -1633,7 +1707,7 @@ Shader "Piloto Studio/UberFX"
 			sampler2D _MainTex;
 
 
-			
+
 			struct SurfaceDescription
 			{
 				float Alpha;
@@ -1669,7 +1743,16 @@ Shader "Piloto Studio/UberFX"
 
 				v.normalOS = v.normalOS;
 
-				float3 positionWS = TransformObjectToWorld( v.positionOS.xyz );
+				// ▼ Curved World: insert BEGIN
+				float4 posOS4 = float4((float3)v.positionOS, 1.0);
+				#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
+				// 노멀/탱전트도 처리하려면 AND_NORMAL 버전 사용 (입력에 normal/tangent 있을 때)
+				// CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(posOS4, v.normalOS, v.tangentOS);
+				CURVEDWORLD_TRANSFORM_VERTEX(posOS4);
+				#endif
+				// ▲ Curved World: insert END
+
+				float3 positionWS = TransformObjectToWorld(posOS4.xyz); // ← 여기만 posOS4로 교체
 				float3 normalWS = TransformObjectToWorldNormal(v.normalOS);
 
 				o.positionCS = TransformWorldToHClip(positionWS);

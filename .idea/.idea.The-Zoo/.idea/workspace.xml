@@ -6,10 +6,36 @@
   <component name="ChangeListManager">
     <list default="true" id="aad7af9a-d9eb-4779-b603-470b4a8a9e4a" name="변경" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/ReadMe.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/ReadMe.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Classic Runner/CurvedWorld_ClassicRunner_X_Positive_ID1.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Classic Runner/CurvedWorld_ClassicRunner_X_Positive_ID1.cginc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_Y_ID1.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_Y_ID1.cginc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLit.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLit.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Particles/ParticlesLit.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Particles/ParticlesLit.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Particles/ParticlesUnlit.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Particles/ParticlesUnlit.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/SpeedTree/SpeedTree7.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/SpeedTree/SpeedTree7.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Unlit/Unlit.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Unlit/Unlit.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/InGame_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/InGame_timers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Lobby_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Lobby_timers.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Materials/Field.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Materials/Field.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/FreeLook Camera.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/FreeLook Camera.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Quirky Series Ultimate/Pets Vol.1/Materials/M_Cat.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Quirky Series Ultimate/Pets Vol.1/Materials/M_Cat.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Quirky Series Ultimate/_Shader/URP (Unity 2019.3.0f3 and above)/SoftSurfaceGraph.shadergraph" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Quirky Series Ultimate/_Shader/URP (Unity 2019.3.0f3 and above)/SoftSurfaceGraph.shadergraph" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr proc ring water ripple local space ab.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr proc ring water ripple local space ab.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Shaders/CFXR Particle Procedural Ring.cfxrshader.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Shaders/CFXR Particle Procedural Ring.cfxrshader.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Shaders/CFXR Particle Ubershader.cfxrshader.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Shaders/CFXR Particle Ubershader.cfxrshader.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXRF Demo.unity" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXRF Demo.unity.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Fire/Fire_AlphaDistort_Ramped.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Fire/Fire_AlphaDistort_Ramped.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Crescent_Halftone_Add.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Crescent_Halftone_Add.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Flare_FatDot_Alpha.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Flare_FatDot_Alpha.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Flare_GlowdotPickbook_Add.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Flare_GlowdotPickbook_Add.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Smoke_HarsherAlbedo_Alpha_Soft.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Materials/Shared/Smoke_HarsherAlbedo_Alpha_Soft.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/PBR_Piloto/m_pbr_gradient_test.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/PBR_Piloto/m_pbr_gradient_test.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/SimplyToon_Piloto/GradModels_Toony.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/SimplyToon_Piloto/GradModels_Toony.mat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/VFX_Piloto/UberFX.shader" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/VFX_Piloto/UberFX.shader" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/manifest.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Packages/packages-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/Packages/packages-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +45,15 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$USER_HOME$/AppData/Local/Temp/DefaultCompany/The Zoo/Cartoon FX-Remaster-Particle Procedural Ring_Source.shader" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Amazing Assets/Curved World/Shaders/CGINC/Classic Runner/CurvedWorld_ClassicRunner_X_Positive_ID1.cginc" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Amazing Assets/Curved World/Shaders/Universal/Unlit/Unlit.shader" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Resources/Piloto Studio/Shaders/VFX_Piloto/UberFX.shader" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Temp/Compiled-Cartoon FX-Remaster-Particle Procedural Ring.shader" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Temp/GeneratedFromGraph-SoftSurfaceGraph.shader" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "git-widget-placeholder": "IG/구형-맵-수정",
@@ -54,6 +89,7 @@
   <component name="TaskManager">
     <servers />
   </component>
+  <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="Both" />
 </project>

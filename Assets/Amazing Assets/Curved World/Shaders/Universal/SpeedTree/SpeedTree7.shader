@@ -5,7 +5,7 @@ Shader "Amazing Assets/Curved World/Nature/SpeedTree7"
 {
     Properties
     {
-        [HideInInspector] [CurvedWorldBendSettings] _CurvedWorldBendSettings("0|1|1", Vector) = (0, 0, 0, 0)
+        [HideInInspector] [CurvedWorldBendSettings] _CurvedWorldBendSettings("0,5|1|1", Vector) = (0, 0, 0, 0)
 
         _Color("Main Color", Color) = (1,1,1,1)
         _HueVariation("Hue Variation", Color) = (1.0,0.5,0.0,0.1)
@@ -73,7 +73,7 @@ Shader "Amazing Assets/Curved World/Nature/SpeedTree7"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree7Input.hlsl"
 
 
-#define CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
 #define CURVEDWORLD_BEND_ID_1
 #pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 #pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON    
@@ -106,7 +106,7 @@ Shader "Amazing Assets/Curved World/Nature/SpeedTree7"
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree7Input.hlsl"
 
-#define CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
 #define CURVEDWORLD_BEND_ID_1
 #pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 #pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON    
@@ -149,7 +149,7 @@ Shader "Amazing Assets/Curved World/Nature/SpeedTree7"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree7Input.hlsl"
 
 
-#define CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
 #define CURVEDWORLD_BEND_ID_1
 #pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 #pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON    
@@ -199,7 +199,7 @@ Shader "Amazing Assets/Curved World/Nature/SpeedTree7"
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree7Input.hlsl"
             
-#define CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
 #define CURVEDWORLD_BEND_ID_1
 #pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 #pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON    
@@ -236,7 +236,7 @@ Shader "Amazing Assets/Curved World/Nature/SpeedTree7"
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree7Input.hlsl"
 
 
-#define CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
 #define CURVEDWORLD_BEND_ID_1
 #pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 #pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON    
@@ -271,7 +271,7 @@ Shader "Amazing Assets/Curved World/Nature/SpeedTree7"
 
             #include "Packages/com.unity.render-pipelines.universal/Shaders/Nature/SpeedTree7Input.hlsl"
 
-#define CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
 #define CURVEDWORLD_BEND_ID_1
 #pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 #pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON    

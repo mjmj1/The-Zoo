@@ -98,7 +98,7 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 0
   OrbitStyle: 0
-  Radius: 15
+  Radius: 6
   Orbits:
     Top:
       Radius: 2

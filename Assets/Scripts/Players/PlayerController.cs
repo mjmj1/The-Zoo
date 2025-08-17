@@ -1,6 +1,7 @@
 using EventHandler;
 using System.Collections;
 using System.Linq;
+using GamePlay;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
@@ -261,6 +262,8 @@ namespace Players
             CameraManager.Instance.SetFollowTarget(transform);
             CameraManager.Instance.LookMove();
             CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
+
+            PivotBinder.Instance.BindPivot(transform);
         }
 
         private void InitializeGravity()

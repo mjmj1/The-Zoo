@@ -1,6 +1,3 @@
-// Curved World <http://u3d.as/1W8h>
-// Copyright (c) Amazing Assets <https://amazingassets.world>
- 
 #ifndef CURVEDWORLD_LITTLEPLANET_Y_ID1_CGINC
 #define CURVEDWORLD_LITTLEPLANET_Y_ID1_CGINC
 
