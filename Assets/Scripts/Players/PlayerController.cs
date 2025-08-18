@@ -74,8 +74,8 @@ namespace Players
 #endif
         public LayerMask groundMask;
         public float jumpForce = 3f;
-        public float walkSpeed = 4f;
-        public float runSpeed = 7f;
+        public float walkSpeed = 3f;
+        public float runSpeed = 4.5f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
@@ -84,7 +84,7 @@ namespace Players
         private PlayerEntity entity;
         private Hittable hittable;
         private bool isAround;
-        private bool isSpin;
+        // private bool isSpin;
 
         private float moveSpeed;
         private Quaternion previousRotation;
@@ -97,6 +97,9 @@ namespace Players
         public void Reset()
         {
             CanMove = true;
+
+            walkSpeed = 3f;
+            runSpeed = 4.5f;
         }
 
         private void Start()
@@ -122,8 +125,6 @@ namespace Players
             if (!IsOwner) return;
 
             HandleMovement();
-
-            GamePlayEventHandler.OnPlayerSpined(isSpin);
         }
 
         private void OnDrawGizmosSelected()
@@ -180,6 +181,7 @@ namespace Players
 
             Reset();
             entity.Reset();
+            hittable.Reset();
             readyChecker.Reset();
 
             var clients = NetworkManager.ConnectedClientsIds.ToList();
@@ -252,6 +254,8 @@ namespace Players
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
+
+            rb.maxDepenetrationVelocity = 3f;
         }
 
         private void InitializeFollowCamera()
@@ -274,7 +278,7 @@ namespace Players
 
         private void HandleMovement()
         {
-            if (!CanMove || isSpin) return;
+            if (!CanMove || entity.isSpin) return;
 
             var moveInput = Input.MoveInput;
 
@@ -297,6 +301,13 @@ namespace Players
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+
+        private void PreventBouncing()
+        {
+            if(rb.linearVelocity.magnitude > 1.0f)
+                rb.linearVelocity = Vector3.zero;
+            print($"{rb.linearVelocity.magnitude:F2}");
         }
 
         private void Look(InputAction.CallbackContext ctx)
@@ -335,7 +346,7 @@ namespace Players
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
-            if (isSpin) return;
+            if (entity.isSpin) return;
 
             animator.OnJump(ctx);
         }
@@ -353,7 +364,7 @@ namespace Players
             if (!IsOwner) return;
             if (!CanMove) return;
             if (!IsGrounded()) return;
-            if (isSpin) return;
+            if (entity.isSpin) return;
 
             entity.AlignForward();
 
@@ -366,7 +377,7 @@ namespace Players
         {
             if (!CanMove) return;
 
-            isSpin = ctx.performed;
+            entity.isSpin = ctx.performed;
             animator.OnSpin(ctx);
         }
 
@@ -393,9 +404,9 @@ namespace Players
 
         private IEnumerator Slowdown()
         {
-            slowdownRate = 0.5f;
+            slowdownRate = 0.2f;
 
-            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(1f);
 
             slowdownRate = 1f;
         }
