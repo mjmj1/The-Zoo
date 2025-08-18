@@ -59,7 +59,7 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 1
   Lens:
-    FieldOfView: 60
+    FieldOfView: 40
     OrthographicSize: 4
     NearClipPlane: 0.01
     FarClipPlane: 50
@@ -98,7 +98,7 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 0
   OrbitStyle: 0
-  Radius: 6
+  Radius: 8
   Orbits:
     Top:
       Radius: 2

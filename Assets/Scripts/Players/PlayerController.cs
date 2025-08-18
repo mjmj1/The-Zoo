@@ -6,6 +6,7 @@ using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.SceneManagement;
 using Utils;
 #if UNITY_EDITOR
@@ -123,8 +124,14 @@ namespace Players
             if (!IsOwner) return;
 
             HandleMovement();
-
+            
             GamePlayEventHandler.OnPlayerSpined(isSpin);
+
+            if (!TorusWorld.Instance) return;
+            
+            var wrapped = TorusWorld.Instance.WrapXZ(rb.position);
+            if ((wrapped - rb.position).sqrMagnitude > 0f)
+                rb.position = wrapped;
         }
 
         private void OnDrawGizmosSelected()
@@ -182,13 +189,12 @@ namespace Players
             Reset();
             entity.Reset();
             readyChecker.Reset();
-
+            
             var clients = NetworkManager.ConnectedClientsIds.ToList();
-
-            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 5f, 8);
-
-            transform.SetPositionAndRotation(pos,
-                Quaternion.LookRotation((Vector3.zero - pos).normalized));
+            
+            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 2f, 4);
+            
+            transform.SetPositionAndRotation(pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
 
         private void Subscribe()
@@ -270,9 +276,9 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            rb.useGravity = !PlanetGravity.Instance;
-
-            PlanetGravity.Instance?.Subscribe(rb);
+            if (!TorusWorld.Instance) return;
+            
+            TorusWorld.Instance.PlaneVisual.follow = transform;
         }
 
         private void HandleMovement()

@@ -37,20 +37,22 @@ namespace Interactions
 
             for (var i = 0; i < count; i++)
             {
-                var spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
+                // var spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
+                var spawnPoint = Util.GetRandomPosition(-20f, 20f, -20f, 20f, -0.1f);
 
-                var rotationOnSurface =
-                    Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
+                /*var rotationOnSurface =
+                    Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);*/
 
                 var randomYaw = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
                 var interaction = prefab.InstantiateAndSpawn(NetworkManager,
                     position: spawnPoint,
-                    rotation: rotationOnSurface * randomYaw);
+                    rotation: randomYaw);
+                    //rotation: rotationOnSurface * randomYaw);
 
                 SpawnedInteractions.Add(interaction);
 
-                interaction.GetComponent<InteractableSpawner>().Initailize(targetSet.Contains(i));
+                interaction.GetComponent<InteractableSpawner>().Initialize(targetSet.Contains(i));
             }
         }
 

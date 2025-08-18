@@ -38,7 +38,7 @@ namespace Interactions
             }
         }
 #endif
-        public void Initailize(bool targeted)
+        public void Initialize(bool targeted)
         {
             targetMission.Value = targeted;
         }
