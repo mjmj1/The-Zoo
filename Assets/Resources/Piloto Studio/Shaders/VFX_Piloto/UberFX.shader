@@ -239,8 +239,8 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEALPHAOVERRIDE_ON
 
 			// === Curved World: definitions & keywords (BEGIN) ===
-			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
-			#define CURVEDWORLD_BEND_ID_1
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+#define CURVEDWORLD_BEND_ID_1
 			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
 			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
@@ -660,8 +660,8 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
 			// === Curved World: definitions & keywords (BEGIN) ===
-			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
-			#define CURVEDWORLD_BEND_ID_1
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+#define CURVEDWORLD_BEND_ID_1
 			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
 			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
@@ -997,8 +997,8 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
 			// === Curved World: definitions & keywords (BEGIN) ===
-			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
-			#define CURVEDWORLD_BEND_ID_1
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+#define CURVEDWORLD_BEND_ID_1
 			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
 			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
@@ -1316,8 +1316,8 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
 			// === Curved World: definitions & keywords (BEGIN) ===
-			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
-			#define CURVEDWORLD_BEND_ID_1
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+#define CURVEDWORLD_BEND_ID_1
 			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
 			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
@@ -1638,8 +1638,8 @@ Shader "Piloto Studio/UberFX"
 			#pragma shader_feature_local _USEUVOFFSET_ON
 
 			// === Curved World: definitions & keywords (BEGIN) ===
-			#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
-			#define CURVEDWORLD_BEND_ID_1
+#pragma shader_feature_local CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+#define CURVEDWORLD_BEND_ID_1
 			#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
 			#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
 			#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
