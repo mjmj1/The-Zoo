@@ -32,7 +32,11 @@ namespace Players.Roles
         
         private void FixedUpdate()
         {
-            if (IsOwner) CheckForInteractable();
+            if (!IsOwner) return;
+
+            CheckForInteractable();
+
+            GamePlayEventHandler.OnPlayerSpined(entity.isSpin);
         }
 
         private void OnEnable()

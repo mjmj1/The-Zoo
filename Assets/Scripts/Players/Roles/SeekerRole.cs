@@ -15,19 +15,25 @@ namespace Players.Roles
 
         private PlayerEntity entity;
         private Hittable hittable;
+        private PlayerController controller;
 
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
             hittable = GetComponent<Hittable>();
+            controller = GetComponent<PlayerController>();
         }
 
         private void OnEnable()
         {
             if (!IsOwner) return;
+
             GamePlayEventHandler.PlayerAttack += OnPlayerAttack;
             GamePlayEventHandler.NpcDeath += OnNpcDeath;
+
             entity.playerMarker.color = entity.roleColor.seekerColor;
+            controller.walkSpeed = 4f;
+            controller.runSpeed = 6f;
         }
 
         private void OnDisable()
@@ -46,6 +52,8 @@ namespace Players.Roles
 
         private void OnNpcDeath()
         {
+            print("Npc Death");
+
             hittable.Damaged();
         }
 
@@ -85,10 +93,11 @@ namespace Players.Roles
         {
             if (!targetRef.TryGet(out var nob)) return;
 
-            var hittable = nob.GetComponent<Hittable>();
-            if (hittable != null)
+            var component = nob.GetComponent<Hittable>();
+
+            if (component != null)
             {
-                hittable.Damaged();
+                component.Damaged();
             }
 
             if (!nob.TryGetComponent<Npa>(out var npa)) return;

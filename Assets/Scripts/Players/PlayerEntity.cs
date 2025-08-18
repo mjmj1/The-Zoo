@@ -33,6 +33,8 @@ namespace Players
 
         private PlayerRenderer playerRenderer;
 
+        internal bool isSpin;
+
         public void Reset()
         {
             foreach (var client in NetworkManager.Singleton.ConnectedClientsList)
