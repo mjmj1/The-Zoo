@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Maps;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
@@ -37,18 +38,15 @@ namespace Interactions
 
             for (var i = 0; i < count; i++)
             {
-                // var spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
                 var spawnPoint = Util.GetRandomPosition(-20f, 20f, -20f, 20f, -0.1f);
 
-                /*var rotationOnSurface =
-                    Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);*/
-
+                var spawnPos = TorusWorld.Instance.WrapXZ(spawnPoint);
+                
                 var randomYaw = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
                 var interaction = prefab.InstantiateAndSpawn(NetworkManager,
-                    position: spawnPoint,
+                    position: spawnPos,
                     rotation: randomYaw);
-                    //rotation: rotationOnSurface * randomYaw);
 
                 SpawnedInteractions.Add(interaction);
 

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3346068520527798883}
   - component: {fileID: -6495250992968162393}
   - component: {fileID: 2533377677056924308}
+  - component: {fileID: 452325670041353738}
   - component: {fileID: 8656036648174182437}
   m_Layer: 10
   m_Name: InteractableObject
@@ -34,8 +35,8 @@ Transform:
   m_Children:
   - {fileID: 8582721700243147623}
   - {fileID: 2618375896053000903}
-  - {fileID: 1048639399479177854}
   - {fileID: 4716992144786776862}
+  - {fileID: 1048639399479177854}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-6495250992968162393
@@ -86,6 +87,21 @@ MonoBehaviour:
   spawnPoints:
   - {fileID: 4518239940029411548}
   - {fileID: 7864027033349734109}
+--- !u!114 &452325670041353738
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1183728168525978545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb6fc66748b159346b2cc758fc736685, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTopMostFoldoutHeaderGroup: 1
+  visualRoot: {fileID: 1048639399479177854}
+  ghostBand: 2
 --- !u!136 &8656036648174182437
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -172,7 +188,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1048639399479177854}
   m_Layer: 0
-  m_Name: models
+  m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

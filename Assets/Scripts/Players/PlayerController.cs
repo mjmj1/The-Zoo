@@ -2,6 +2,7 @@ using EventHandler;
 using System.Collections;
 using System.Linq;
 using GamePlay;
+using Maps;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
@@ -275,10 +276,9 @@ namespace Players
         private void InitializeGravity()
         {
             if (!IsOwner) return;
-
             if (!TorusWorld.Instance) return;
             
-            TorusWorld.Instance.PlaneVisual.follow = transform;
+            TorusWorld.Instance.Tile.follow = CameraManager.Instance.Orbit.transform;
         }
 
         private void HandleMovement()

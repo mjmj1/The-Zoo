@@ -160,7 +160,6 @@ namespace GamePlay
         {
             var clientId = NetworkManager.Singleton.LocalClientId;
             var randomPos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
-            // var randomPos = Util.GetRandomPositionInSphere(spawnRadius);
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
