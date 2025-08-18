@@ -12,10 +12,10 @@
       </summary>
     </member>
     <member name="M:DG.DemiLib.Attributes.DeScriptExecutionOrderAttribute.#ctor(System.Int32)">
+      <param name="order">Script execution order index</param>
       <summary>
         Sets the script execution order for this class
       </summary>
-      <param name="order">Script execution order index</param>
     </member>
     <member name="F:DG.DemiLib.Core.GUIUtils.isProSkin">
       <summary>
@@ -32,12 +32,12 @@
       </summary>
     </member>
     <member name="M:DG.DemiLib.DeColorPalette.HexToColor(System.String)">
-      <summary>
-        Converts a HEX color to a Unity Color and returns it
-      </summary>
       <param name="hex">The HEX color, either with or without the initial # (accepts both regular
         and short format)
       </param>
+      <summary>
+        Converts a HEX color to a Unity Color and returns it
+      </summary>
     </member>
     <member name="T:DG.DemiLib.DeColorGlobal">
       <summary>
@@ -68,18 +68,16 @@
       </summary>
     </member>
     <member name="M:DG.DemiLib.DeInputUtils.IsNumKeyDown">
+      <returns></returns>
       <summary>
         Returns a number key int if a number key was pressed in this frame, or -1 otherwise
       </summary>
-      <returns></returns>
     </member>
     <member name="T:DG.DemiLib.DeScope">
       <summary>
         Extend this to replicate Unity's Scope system with any Unity version.
         Thanks to Dmitriy Yukhanov for pointing this out and creating an initial version.
         Expand this class to create scopes.
-        <para/>
-        Example:
         <code>public class VBoxScope : DeScope
           {
           public VBoxScope(GUIStyle style)
@@ -93,11 +91,13 @@
           }
           }
         </code>
-        Usage:
+        Example:
         <code>using (new VBoxScope(myStyle) {
           // Do something
           }
         </code>
+        Usage:
+        <para/>
       </summary>
     </member>
     <member name="T:DG.DemiLib.DeSkinColor">
@@ -221,35 +221,35 @@
     </member>
     <member
       name="M:DG.DemiLib.Utils.DeRuntimeUtils.GetOnlyComponentsInChildren``1(UnityEngine.GameObject,System.Boolean)">
+      <param name="includeInactive">If TRUE also includes inactive children</param>
       <summary>
         Returns ONLY the Components in the children, and ignores the parent.
       </summary>
-      <param name="includeInactive">If TRUE also includes inactive children</param>
     </member>
     <member
       name="M:DG.DemiLib.Utils.DeRuntimeUtils.GetOnlyComponentInChildren``1(UnityEngine.GameObject,System.Boolean)">
+      <param name="includeInactive">If TRUE also searches inactive children</param>
       <summary>
         Returns the Component only if it's in a child, and ignores the parent.
       </summary>
-      <param name="includeInactive">If TRUE also searches inactive children</param>
     </member>
     <member name="M:DG.DemiLib.Utils.DeRuntimeUtils.ToHex(UnityEngine.Color32,System.Boolean)">
-      <summary>
-        Returns a HEX version of the given Unity Color, without the initial #
-      </summary>
       <param name="includeAlpha">If TRUE, also converts the alpha value and returns a hex of 8
         characters,
         otherwise doesn't and returns a hex of 6 characters
       </param>
+      <summary>
+        Returns a HEX version of the given Unity Color, without the initial #
+      </summary>
     </member>
     <member name="M:DG.DemiLib.Utils.DeRuntimeUtils.ToHex(UnityEngine.Color,System.Boolean)">
-      <summary>
-        Returns a HEX version of the given Unity Color, without the initial #
-      </summary>
       <param name="includeAlpha">If TRUE, also converts the alpha value and returns a hex of 8
         characters,
         otherwise doesn't and returns a hex of 6 characters
       </param>
+      <summary>
+        Returns a HEX version of the given Unity Color, without the initial #
+      </summary>
     </member>
   </members>
 </doc>

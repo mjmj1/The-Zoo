@@ -12,14 +12,14 @@ namespace Maps
         public float HalfX => sizeX * 0.5f;
         public float HalfZ => sizeZ * 0.5f;
 
-        internal InfiniteTileStable Tile;
+        internal InfiniteTile tile;
 
         void Awake()
         {
             if (!Instance) Instance = this;
             else Destroy(gameObject);
         
-            Tile = GetComponent<InfiniteTileStable>();
+            tile = GetComponent<InfiniteTile>();
         }
 
         public Vector3 WrapXZ(Vector3 pos)

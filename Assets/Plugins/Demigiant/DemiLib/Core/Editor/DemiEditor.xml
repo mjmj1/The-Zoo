@@ -52,10 +52,10 @@
       <summary>
         Starts an editor coroutine. You can't use normal <code>yield new WaitFor</code> methods
         because
-        those are Unity runtime, but you can instead use<see
-        cref="M:DG.DemiEditor.DeEditorCoroutines.WaitForSeconds(System.Single)"/>.
-        Other than that, you can use normal <code>yield null/etc</code>.
-        <para/>
+        those are Unity runtime, but you can instead use<code>yield null/etc</code>.
+        Other than that, you can use normal <para/>.
+        <see
+        cref="M:DG.DemiEditor.DeEditorCoroutines.WaitForSeconds(System.Single)"/>
         Returns an
         <see cref="T:System.Collections.IEnumerator"/>
         (which you can use with
@@ -77,10 +77,10 @@
         To be used inside a coroutine as a yield instruction: waits for the given seconds
         (replaces Unity's <code>yield new WaitForSeconds</code> because it's not available
         in-editor).
-        <para/>
+        <code>yield return DeEditorCoroutines.WaitForSeconds(1);</code>
         Example usage:
         <para/>
-        <code>yield return DeEditorCoroutines.WaitForSeconds(1);</code>
+        <para/>
       </summary>
     </member>
     <member name="T:DG.DemiEditor.DeEditorFileUtils">
@@ -136,37 +136,37 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.DeEditorFileUtils.AssetExists(System.String)">
+      <param name="adbPath">Path, relative to Unity's project folder</param>
       <summary>
         Returns TRUE if the file/directory at the given path exists.
       </summary>
-      <param name="adbPath">Path, relative to Unity's project folder</param>
     </member>
     <member name="M:DG.DemiEditor.DeEditorFileUtils.IsValidFileName(System.String,System.Int32)">
+      <param name="s">string to replace</param>
+      <param name="minLength">Minimum length for considering the string valid</param>
       <summary>
         Validates the string as a valid fileName
         (uses commonly accepted characters an all systems instead of system-specific ones).
         <para/>
         BEWARE: doesn't check for reserved words
       </summary>
-      <param name="s">string to replace</param>
-      <param name="minLength">Minimum length for considering the string valid</param>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorFileUtils.FilePathIsWithinUnityProjectAssets(System.String)">
+      <param name="fullFilePath">Full file path</param>
       <summary>
         Returns TRUE if the given filepath is within this Unity project Assets folder
       </summary>
-      <param name="fullFilePath">Full file path</param>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorFileUtils.ConvertToValidFilename(System.String,System.Char)">
+      <param name="s">string to replace</param>
+      <param name="replaceWith">Character to use as replacement for invalid ones</param>
       <summary>
         Returns the given string stripped of any invalid filename characters.
         <para/>
         BEWARE: doesn't check for reserved words
       </summary>
-      <param name="s">string to replace</param>
-      <param name="replaceWith">Character to use as replacement for invalid ones</param>
     </member>
     <member name="M:DG.DemiEditor.DeEditorFileUtils.ApplySystemDirectorySeparators(System.String)">
       <summary>
@@ -239,40 +239,40 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.DeEditorMetaFixer.RetrieveMetaGuid(System.String)">
+      <param name="metaFilePath">Full filePath to the meta file</param>
       <summary>
         Retrieves the GUID in the given meta file and returns it, or NULL if it's not found
       </summary>
-      <param name="metaFilePath">Full filePath to the meta file</param>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorMetaFixer.FixComponentsGuidsInAllScenesAndPrefabs(DG.DemiEditor.DeEditorMetaFixer.ComponentData[])">
-      <summary>
-        Fixes all wrong Component GUIDs in scenes and prefabs
-      </summary>
       <param name="cDatas">
         <see cref="T:DG.DemiEditor.DeEditorMetaFixer.ComponentData"/>
         objects to use for the operation
       </param>
+      <summary>
+        Fixes all wrong Component GUIDs in scenes and prefabs
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorMetaFixer.FixComponentsGuidsInActiveScene(DG.DemiEditor.DeEditorMetaFixer.ComponentData[])">
+      <param name="cDatas">
+        <see cref="T:DG.DemiEditor.DeEditorMetaFixer.ComponentData"/>
+        objects to use for the operation
+      </param>
       <summary>
         Fixes all wrong Component GUIDs in the active scene and returns the total number of
         Components fixed
       </summary>
-      <param name="cDatas">
-        <see cref="T:DG.DemiEditor.DeEditorMetaFixer.ComponentData"/>
-        objects to use for the operation
-      </param>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorMetaFixer.FixComponentGuidInSceneOrPrefabString(DG.DemiEditor.DeEditorMetaFixer.ComponentData,System.String@,System.String,DG.DemiEditor.DeEditorMetaFixer.ModInfo)">
       <summary>
         Finds all MonoBehaviour/Behaviour/Component in the given scene/prefab file string
         that contain the given
-        <see cref="F:DG.DemiEditor.DeEditorMetaFixer.ComponentData.serializedIdentifiers"/>
-        and replaces their GUID with the one passed (if different).
         <para/>
+        and replaces their GUID with the one passed (if different).
+        <see cref="F:DG.DemiEditor.DeEditorMetaFixer.ComponentData.serializedIdentifiers"/>
         Returns the total number of Component GUIDs that were fixed
       </summary>
     </member>
@@ -288,22 +288,6 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorPackageManager.WriteFileListTo(System.String,System.String,System.Boolean)">
-      <summary>
-        Stores all file paths (excluding metas) found in the given AssetDatabase directory and
-        subdirectory
-        into the given AssetDatabase file (which will be created if missing),
-        writing them as relative to the given directory.
-        <para/>
-        EXAMPLE:
-        <para/>
-        <code>adbReadFromDirPath = "Plugins/DOTween"
-          <para/>
-          file "Assets/Plugins/DOTween/aScript.cs" stored as "aScript.cs"
-          <para/>
-          file "Assets/Plugins/DOTween/Subdir/aScript.cs" stored as "Subdir/aScript.cs"
-          <para/>
-        </code>
-      </summary>
       <param name="adbWriteToFilePath">AssetDatabase path ("Assets/...") where the list should be
         written
       </param>
@@ -311,15 +295,25 @@
         files should be retrieved, without final slash
       </param>
       <param name="ignoreASMDEFs">If TRUE ignores ASMDEF files</param>
+      <summary>
+        Stores all file paths (excluding metas) found in the given AssetDatabase directory and
+        subdirectory
+        into the given AssetDatabase file (which will be created if missing),
+        writing them as relative to the given directory.
+        <code>adbReadFromDirPath = "Plugins/DOTween"
+          <para/>
+          file "Assets/Plugins/DOTween/aScript.cs" stored as "aScript.cs"
+          <para/>
+          file "Assets/Plugins/DOTween/Subdir/aScript.cs" stored as "Subdir/aScript.cs"
+          <para/>
+        </code>
+        EXAMPLE:
+        <para/>
+        <para/>
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorPackageManager.ParseListAndRemoveExtraFiles(System.String,System.String,System.String,System.Boolean,System.Boolean)">
-      <summary>
-        Parses a file list created via
-        <see
-          cref="M:DG.DemiEditor.DeEditorPackageManager.WriteFileListTo(System.String,System.String,System.Boolean)"/>
-        and removes any files not present in the list from the given directory
-      </summary>
       <param name="label">Label to use when logging the result</param>
       <param name="adbListFilePath">AssetDatabase path ("Assets/...") to the file containing the
         list
@@ -331,6 +325,12 @@
       <param name="simulate">If TRUE only returns a report log and doesn't actually delete the
         files
       </param>
+      <summary>
+        Parses a file list created via
+        <see
+          cref="M:DG.DemiEditor.DeEditorPackageManager.WriteFileListTo(System.String,System.String,System.Boolean)"/>
+        and removes any files not present in the list from the given directory
+      </summary>
     </member>
     <member name="T:DG.DemiEditor.DeEditorPanelUtils">
       <summary>
@@ -339,6 +339,13 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorPanelUtils.ConnectToSourceAsset``1(System.String,System.Boolean,System.Boolean)">
+      <param name="adbFilePath">File path (relative to Unity's project folder)</param>
+      <param name="createIfMissing">If TRUE and the requested asset doesn't exist, forces its
+        creation
+      </param>
+      <param name="createFoldersIfMissing">If TRUE also creates the path folders if they don't
+        exist
+      </param>
       <summary>
         Connects to a
         <see cref="T:UnityEngine.ScriptableObject"/>
@@ -348,45 +355,38 @@
         it before loading and returning it.
       </summary>
       <typeparam name="T">Asset type</typeparam>
-      <param name="adbFilePath">File path (relative to Unity's project folder)</param>
-      <param name="createIfMissing">If TRUE and the requested asset doesn't exist, forces its
-        creation
-      </param>
-      <param name="createFoldersIfMissing">If TRUE also creates the path folders if they don't
-        exist
-      </param>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorPanelUtils.SourceAssetExists``1(System.String,System.Boolean)">
-      <summary>
-        Check if the
-        <see cref="T:UnityEngine.ScriptableObject"/>
-        at the given path exists and eventually if it's available
-      </summary>
       <param name="adbFilePath">File path (relative to Unity's project folder)</param>
       <param name="checkIfAvailable">If TRUE also check if the file is available
         (file can be unavailable if it was deleted outside Unity, or if Unity is just starting)
       </param>
       <returns></returns>
+      <summary>
+        Check if the
+        <see cref="T:UnityEngine.ScriptableObject"/>
+        at the given path exists and eventually if it's available
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.DeEditorPanelUtils.IsDockableWindow(UnityEditor.EditorWindow)">
+      <param name="editor"></param>
+      <returns></returns>
       <summary>
         Returns TRUE if the given
         <see cref="T:UnityEditor.EditorWindow"/>
         is dockable, FALSE if instead it's a utility window
       </summary>
-      <param name="editor"></param>
-      <returns></returns>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorPanelUtils.SetWindowTitle(UnityEditor.EditorWindow,UnityEngine.Texture,System.String)">
+      <param name="editor">Reference to the editor panel whose icon to set</param>
+      <param name="icon">Icon to apply</param>
+      <param name="title">Title. If NULL doesn't change it</param>
       <summary>
         Sets the icon and title of an editor window. Works with older versions of Unity, where the
         titleContent property wasn't available.
       </summary>
-      <param name="editor">Reference to the editor panel whose icon to set</param>
-      <param name="icon">Icon to apply</param>
-      <param name="title">Title. If NULL doesn't change it</param>
     </member>
     <member name="M:DG.DemiEditor.DeEditorPanelUtils.RepaintCurrentEditor">
       <summary>
@@ -400,11 +400,11 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorPrefabUtils.ApplyPrefabInstanceModifications(UnityEngine.GameObject)">
+      <param name="instance"></param>
       <summary>
         Behaves as the Inspector's Apply button, applying any modification of this instance to the
         prefab parent
       </summary>
-      <param name="instance"></param>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorPrefabUtils.InstanceHasUnappliedModifications(UnityEngine.GameObject)">
@@ -466,115 +466,115 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorUtils.AddGlobalDefine(System.String,System.Nullable{UnityEditor.BuildTargetGroup})">
-      <summary>
-        Adds the given global define (if it's not already present) to all the
-        <see cref="T:UnityEditor.BuildTargetGroup"/>
-        or only to the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
-        parameters,
-        and returns TRUE if it was added, FALSE otherwise.
-        <para/>
-        NOTE: when adding to all of them some legacy warnings might appear, which you can ignore.
-      </summary>
       <param name="id"></param>
       <param name="buildTargetGroup"><see cref="T:UnityEditor.BuildTargetGroup"/>to use. Leave NULL
         to add to all of them.
       </param>
-    </member>
-    <member
-      name="M:DG.DemiEditor.DeEditorUtils.AddGlobalDefines(System.Collections.Generic.List{System.String},System.Nullable{UnityEditor.BuildTargetGroup})">
       <summary>
-        Adds the given list of global defines (if they're not already present) to all the
-        <see cref="T:UnityEditor.BuildTargetGroup"/>
+        Adds the given global define (if it's not already present) to all the
+        <para/>
         or only to the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
         parameters,
         and returns TRUE if it was added, FALSE otherwise.
-        <para/>
+        <see cref="T:UnityEditor.BuildTargetGroup"/>
         NOTE: when adding to all of them some legacy warnings might appear, which you can ignore.
       </summary>
+    </member>
+    <member
+      name="M:DG.DemiEditor.DeEditorUtils.AddGlobalDefines(System.Collections.Generic.List{System.String},System.Nullable{UnityEditor.BuildTargetGroup})">
       <param name="ids">Defines to add</param>
       <param name="buildTargetGroup"><see cref="T:UnityEditor.BuildTargetGroup"/>to use. Leave NULL
         to add to all of them.
       </param>
+      <summary>
+        Adds the given list of global defines (if they're not already present) to all the
+        <para/>
+        or only to the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
+        parameters,
+        and returns TRUE if it was added, FALSE otherwise.
+        <see cref="T:UnityEditor.BuildTargetGroup"/>
+        NOTE: when adding to all of them some legacy warnings might appear, which you can ignore.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorUtils.RemoveGlobalDefine(System.String,System.Nullable{UnityEditor.BuildTargetGroup})">
-      <summary>
-        Removes the given global define (if present) from all the
-        <see cref="T:UnityEditor.BuildTargetGroup"/>
-        or only from the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
-        parameters,
-        and returns TRUE if it was removed, FALSE otherwise.
-        <para/>
-        NOTE: when removing from all of them some legacy warnings might appear, which you can
-        ignore.
-      </summary>
       <param name="id"></param>
       <param name="buildTargetGroup"><see cref="T:UnityEditor.BuildTargetGroup"/>to use. Leave NULL
         to remove from all of them.
       </param>
-    </member>
-    <member
-      name="M:DG.DemiEditor.DeEditorUtils.RemoveGlobalDefines(System.Collections.Generic.List{System.String},System.Nullable{UnityEditor.BuildTargetGroup})">
       <summary>
-        Removes the given global defines (if present) from all the
-        <see cref="T:UnityEditor.BuildTargetGroup"/>
+        Removes the given global define (if present) from all the
+        <para/>
         or only from the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
         parameters,
         and returns TRUE if it was removed, FALSE otherwise.
-        <para/>
+        <see cref="T:UnityEditor.BuildTargetGroup"/>
         NOTE: when removing from all of them some legacy warnings might appear, which you can
         ignore.
       </summary>
+    </member>
+    <member
+      name="M:DG.DemiEditor.DeEditorUtils.RemoveGlobalDefines(System.Collections.Generic.List{System.String},System.Nullable{UnityEditor.BuildTargetGroup})">
       <param name="ids">Defines to remove</param>
       <param name="buildTargetGroup"><see cref="T:UnityEditor.BuildTargetGroup"/>to use. Leave NULL
         to remove from all of them.
       </param>
+      <summary>
+        Removes the given global defines (if present) from all the
+        <para/>
+        or only from the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
+        parameters,
+        and returns TRUE if it was removed, FALSE otherwise.
+        <see cref="T:UnityEditor.BuildTargetGroup"/>
+        NOTE: when removing from all of them some legacy warnings might appear, which you can
+        ignore.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorUtils.HasGlobalDefine(System.String,System.Nullable{UnityEditor.BuildTargetGroup})">
-      <summary>
-        Returns TRUE if the given global define is present in at least one of the
-        <see cref="T:UnityEditor.BuildTargetGroup"/>
-        or only in the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
-        parameters.
-        <para/>
-      </summary>
       <param name="id"></param>
       <param name="buildTargetGroup"><see cref="T:UnityEditor.BuildTargetGroup"/>to use. Leave NULL
         to check in all of them for the first occurrence.
       </param>
+      <summary>
+        Returns TRUE if the given global define is present in at least one of the
+        <para/>
+        or only in the given<see cref="T:UnityEditor.BuildTargetGroup"/>, depending on passed
+        parameters.
+        <see cref="T:UnityEditor.BuildTargetGroup"/>
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.DeEditorUtils.GetGlobalDefinesForCurrentBuildTargetGroup">
       <summary>
-        Returns an array of all defines in the current<see cref="T:UnityEditor.BuildTargetGroup"/>.
-        <para/>
+        Returns an array of all defines in the current<para/>.
+        <see cref="T:UnityEditor.BuildTargetGroup"/>
       </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorUtils.SetGizmosIconVisibility(System.Boolean,System.String[])">
-      <summary>
-        Sets the gizmos icon visibility in the Scene and Game view for the given class names
-      </summary>
       <param name="visible">Visibility</param>
       <param name="classNames">Class names (no namespace), as many as you want separated by a
         comma
       </param>
+      <summary>
+        Sets the gizmos icon visibility in the Scene and Game view for the given class names
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeEditorUtils.SetGizmosIconVisibilityForAllCustomIcons(System.Boolean)">
+      <param name="visible">Visibility</param>
       <summary>
         Sets the gizmos icon visibility in the Scene and Game view for all custom icons
         (for example icons created with HOTools)
       </summary>
-      <param name="visible">Visibility</param>
     </member>
     <member name="M:DG.DemiEditor.DeEditorUtils.FindAllComponentsOfType``1">
       <summary>
         Returns all components of type T in the currently open scene, or NULL if none could be
         found.
+        <code>DeEditorTools</code>
+        If you're on Unity 5 or later, and have <code>DeEditorToolsUtils.FindAllComponentsOfType</code>, use
         <para/>
-        If you're on Unity 5 or later, and have <code>DeEditorTools</code>, use
-        <code>DeEditorToolsUtils.FindAllComponentsOfType</code>
         instead, which is more efficient.
       </summary>
     </member>
@@ -659,9 +659,6 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUIDrag.StartDrag(UnityEditor.Editor,System.Collections.IList,System.Int32,System.Object)">
-      <summary>
-        Starts a drag operation on a GUI element.
-      </summary>
       <param name="editor">Reference to the current editor drawing the GUI (used when a Repaint is
         needed)
       </param>
@@ -673,12 +670,12 @@
         <see cref="P:DG.DemiEditor.DeGUIDrag.optionalDragData"/>
         static property
       </param>
+      <summary>
+        Starts a drag operation on a GUI element.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUIDrag.StartDrag(System.Int32,UnityEditor.Editor,System.Collections.IList,System.Int32,System.Object)">
-      <summary>
-        Starts a drag operation on a GUI element.
-      </summary>
       <param name="dragId">ID for this drag operation (must be the same for both StartDrag and
         Drag
       </param>
@@ -693,12 +690,12 @@
         <see cref="P:DG.DemiEditor.DeGUIDrag.optionalDragData"/>
         static property
       </param>
+      <summary>
+        Starts a drag operation on a GUI element.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUIDrag.StartDrag(UnityEditor.EditorWindow,System.Collections.IList,System.Int32,System.Object)">
-      <summary>
-        Starts a drag operation on a GUI element.
-      </summary>
       <param name="editorWindow">Reference to the current editor drawing the GUI (used when a
         Repaint is needed)
       </param>
@@ -710,12 +707,12 @@
         <see cref="P:DG.DemiEditor.DeGUIDrag.optionalDragData"/>
         static property
       </param>
+      <summary>
+        Starts a drag operation on a GUI element.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUIDrag.StartDrag(System.Int32,UnityEditor.EditorWindow,System.Collections.IList,System.Int32,System.Object)">
-      <summary>
-        Starts a drag operation on a GUI element.
-      </summary>
       <param name="dragId">ID for this drag operation (must be the same for both StartDrag and
         Drag
       </param>
@@ -730,13 +727,12 @@
         <see cref="P:DG.DemiEditor.DeGUIDrag.optionalDragData"/>
         static property
       </param>
+      <summary>
+        Starts a drag operation on a GUI element.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUIDrag.Drag(System.Int32,System.Collections.IList,System.Int32,System.Nullable{UnityEngine.Rect},DG.DemiEditor.DeDragDirection,System.Boolean)">
-      <summary>
-        Call this after each draggable GUI block, to calculate and draw the current drag state
-        (or complete it if the mouse was released).
-      </summary>
       <param name="dragId">ID for this drag operation (must be the same for both StartDrag and
         Drag
       </param>
@@ -760,13 +756,13 @@
         (in the former case it will reflect the current index after the change, in the latter it
         will reflect the desired position)
       </param>
+      <summary>
+        Call this after each draggable GUI block, to calculate and draw the current drag state
+        (or complete it if the mouse was released).
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUIDrag.Drag(System.Collections.IList,System.Int32,System.Nullable{UnityEngine.Rect},DG.DemiEditor.DeDragDirection,System.Boolean)">
-      <summary>
-        Call this after each draggable GUI block, to calculate and draw the current drag state
-        (or complete it if the mouse was released).
-      </summary>
       <param name="draggableList">List containing the draggable item and all other relative
         draggable items
       </param>
@@ -787,13 +783,13 @@
         (in the former case it will reflect the current index after the change, in the latter it
         will reflect the desired position)
       </param>
-    </member>
-    <member
-      name="M:DG.DemiEditor.DeGUIDrag.Drag(System.Int32,System.Collections.IList,System.Int32,UnityEngine.Color,System.Nullable{UnityEngine.Rect},DG.DemiEditor.DeDragDirection,System.Boolean)">
       <summary>
         Call this after each draggable GUI block, to calculate and draw the current drag state
         (or complete it if the mouse was released).
       </summary>
+    </member>
+    <member
+      name="M:DG.DemiEditor.DeGUIDrag.Drag(System.Int32,System.Collections.IList,System.Int32,UnityEngine.Color,System.Nullable{UnityEngine.Rect},DG.DemiEditor.DeDragDirection,System.Boolean)">
       <param name="dragId">ID for this drag operation (must be the same for both StartDrag and
         Drag
       </param>
@@ -818,13 +814,13 @@
         (in the former case it will reflect the current index after the change, in the latter it
         will reflect the desired position)
       </param>
-    </member>
-    <member
-      name="M:DG.DemiEditor.DeGUIDrag.Drag(System.Collections.IList,System.Int32,UnityEngine.Color,System.Nullable{UnityEngine.Rect},DG.DemiEditor.DeDragDirection,System.Boolean)">
       <summary>
         Call this after each draggable GUI block, to calculate and draw the current drag state
         (or complete it if the mouse was released).
       </summary>
+    </member>
+    <member
+      name="M:DG.DemiEditor.DeGUIDrag.Drag(System.Collections.IList,System.Int32,UnityEngine.Color,System.Nullable{UnityEngine.Rect},DG.DemiEditor.DeDragDirection,System.Boolean)">
       <param name="draggableList">List containing the draggable item and all other relative
         draggable items
       </param>
@@ -846,20 +842,24 @@
         (in the former case it will reflect the current index after the change, in the latter it
         will reflect the desired position)
       </param>
+      <summary>
+        Call this after each draggable GUI block, to calculate and draw the current drag state
+        (or complete it if the mouse was released).
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.DeGUIDrag.EndDrag(System.Boolean,System.Boolean)">
-      <summary>
-        Ends the drag operations, and eventually applies the drag outcome.
-        Returns TRUE if the position of the dragged item actually changed.
-        Called automatically by Drag method. Use it only if you want to force the end of a drag
-        operation.
-      </summary>
       <param name="applyDrag">If TRUE marks the drag as successful and applied it if set so,
         otherwise simply cancels the drag
       </param>
       <param name="applyDragToListContents">If TRUE changes the list contents to reflect the drag
         result
       </param>
+      <summary>
+        Ends the drag operations, and eventually applies the drag outcome.
+        Returns TRUE if the position of the dragged item actually changed.
+        Called automatically by Drag method. Use it only if you want to force the end of a drag
+        operation.
+      </summary>
     </member>
     <member name="T:DG.DemiEditor.DeGUINodeSystem.ABSDeGUINode">
       <summary>
@@ -907,10 +907,10 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.DeGUINodeSystem.Core.NodesClipboard.GetNodesToPaste``1">
+      <returns></returns>
       <summary>
         Returns a list of pasteable nodes, with their GUID recreated and their connections adapted
       </summary>
-      <returns></returns>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUINodeSystem.Core.NodesClipboard.CloneNode``1(DG.DemiLib.IEditorGUINode)">
@@ -984,6 +984,9 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUINodeSystem.HelpPanel.Definition.AddKey(System.String,System.Boolean)">
+      <param name="newLine">If TRUE and there's other keys/targets, adds the new key on a new line
+        preceded by a comma
+      </param>
       <summary>
         Add key, automatically formatting these special keys:
         <para/>
@@ -993,9 +996,6 @@
         <para/>
         →
       </summary>
-      <param name="newLine">If TRUE and there's other keys/targets, adds the new key on a new line
-        preceded by a comma
-      </param>
     </member>
     <member name="M:DG.DemiEditor.DeGUINodeSystem.NodeGUIData.ShiftYBy(System.Single)">
       <summary>
@@ -1021,25 +1021,25 @@
       <summary>Returns TRUE if the given node is currently being dragged</summary>
     </member>
     <member name="M:DG.DemiEditor.DeGUINodeSystem.InteractionManager.Update">
+      <returns></returns>
       <summary>
         Returns TRUE if a repaint is required
       </summary>
-      <returns></returns>
     </member>
     <member name="T:DG.DemiEditor.DeGUINodeSystem.NodeProcess">
       <summary>
         Main class for DeGUI Node system.
-        Create it, then enclose your GUI node calls inside a<see cref="!:NodeProcessScope"/>.
+        Create it, then enclose your GUI node calls inside a<para/>.
         <para/>
         CODING ORDER:
         <para/>
         - Create a
-        <see cref="T:DG.DemiEditor.DeGUINodeSystem.NodeProcess"/>
-        to use for your node system (create it once, obviously)
         <para/>
+        to use for your node system (create it once, obviously)
+        <see cref="!:NodeProcessScope"/>
         - Inside OnGUI, write all your nodes GUI code inside a
         <see cref="!:NodeProcessScope"/>
-        <para/>
+        <see cref="T:DG.DemiEditor.DeGUINodeSystem.NodeProcess"/>
         - To draw the nodes, loop through the
         <see cref="F:DG.DemiEditor.DeGUINodeSystem.NodeProcess.orderedNodes"/>
         list and call
@@ -1066,9 +1066,6 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUINodeSystem.NodeProcess.#ctor(UnityEditor.EditorWindow,System.Func{System.Collections.Generic.List{DG.DemiLib.IEditorGUINode},System.Boolean},System.Func{DG.DemiLib.IEditorGUINode,DG.DemiLib.IEditorGUINode,System.Boolean})">
-      <summary>
-        Creates a new NodeProcess.
-      </summary>
       <param name="editor">EditorWindow for this process</param>
       <param name="onDeleteNodesCallback">Callback called when one or more nodes are going to be
         deleted.
@@ -1079,6 +1076,9 @@
         Return FALSE if you want the cloning to be canceled.
         Can be NULL, in which case it will be ignored
       </param>
+      <summary>
+        Creates a new NodeProcess.
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.DeGUINodeSystem.NodeProcess.Reset">
       <summary>
@@ -1160,14 +1160,6 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUINodeSystem.NodeProcess.CaptureScreenshot(DG.DemiEditor.DeGUINodeSystem.NodeProcess.ScreenshotMode,System.Action{UnityEngine.Texture2D},System.Single,System.Boolean)">
-      <summary>
-        Captures a screenshot of the node editor area and returns it when calling the onComplete
-        method.
-        <para/>
-        Sadly this requires a callback because if called immediately the capture will fail
-        with a "[d3d11] attempting to ReadPixels outside of RenderTexture bounds!" error in most
-        cases
-      </summary>
       <param name="screenshotMode">Screenshot mode</param>
       <param name="onComplete">A callback that accepts the generated Texture2D object</param>
       <param name="allNodesScaleFactor">Screenshot scale factor (only used if screenshotMode is set
@@ -1177,6 +1169,14 @@
         You'll want to set this to FALSE when you're already using a custom progressBar
         and the screenshot is only part of a larger queue of operations
       </param>
+      <summary>
+        Captures a screenshot of the node editor area and returns it when calling the onComplete
+        method.
+        <para/>
+        Sadly this requires a callback because if called immediately the capture will fail
+        with a "[d3d11] attempting to ReadPixels outside of RenderTexture bounds!" error in most
+        cases
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUINodeSystem.NodeProcess.DeleteNode``1(System.String,System.Collections.Generic.IList{``0})">
@@ -1189,16 +1189,6 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUINodeSystem.NodeProcessScope`1.#ctor(DG.DemiEditor.DeGUINodeSystem.NodeProcess,UnityEngine.Rect,UnityEngine.Vector2@,System.Collections.Generic.IList{`0})">
-      <summary>
-        Use this to encapsulate node GUI operations.
-        <para/>
-        Automatically manages various operations (press F1 to see them).
-        <para/>
-        Sets <code>GUI.changed</code> to TRUE if the area is panned, a node is dragged, controlNodes
-        change sorting or are deleted.
-        <para/>
-        Wraps all content inside a GUILayout Area (nodeArea).
-      </summary>
       <param name="process">The
         <see cref="T:DG.DemiEditor.DeGUINodeSystem.NodeProcess"/>
         to use
@@ -1207,14 +1197,24 @@
       <param name="refAreaShift">Area shift (caused by dragging)</param>
       <param name="controlNodes">This list will be sorted based on current node draw order,
         and changed in case one of its nodes is deleted.
-        <para/>
         <code>IMPORTANT:</code>
+        <para/>
         this list should be part of your serialized class (MonoBehaviour or ScriptableObject),
         so it will be stored as a reference and modifying one will modify the other.
         <para/>
         Usually you want to pass all nodes to this except the eventual start node (or nodes that
         can't be sorted nor deleted).
       </param>
+      <summary>
+        Use this to encapsulate node GUI operations.
+        <code>GUI.changed</code>
+        Automatically manages various operations (press F1 to see them).
+        <para/>
+        Sets <para/> to TRUE if the area is panned, a node is dragged, controlNodes
+        change sorting or are deleted.
+        <para/>
+        Wraps all content inside a GUILayout Area (nodeArea).
+      </summary>
     </member>
     <member name="P:DG.DemiEditor.DeGUINodeSystem.SelectionManager.focusedNode">
       <summary>
@@ -1224,10 +1224,10 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.DeGUINodeSystem.SelectionManager.DeselectAll">
+      <returns></returns>
       <summary>
         Returns TRUE if something was actually deselected, FALSE if there were no selected nodes
       </summary>
-      <returns></returns>
     </member>
     <member name="T:DG.DemiEditor.DeGUIKey">
       <summary>
@@ -1242,19 +1242,19 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.DeGUIKey.Refresh(System.String)">
-      <summary>
-        Call this method to update data required by softCtrl calculations.
-        Automatically called from within a<see
-        cref="T:DG.DemiEditor.DeGUINodeSystem.NodeProcessScope`1"/>.
-        <para/>
-        Returns a
-        <see cref="T:DG.DemiEditor.DeGUIKey.KeysRefreshResult"/>
-        object with the keys that were just pressed and just released
-      </summary>
       <param name="id">Required to have the correct
         <see cref="T:DG.DemiEditor.DeGUIKey.KeysRefreshResult"/>
         for the given target call
       </param>
+      <summary>
+        Call this method to update data required by softCtrl calculations.
+        Automatically called from within a<para/>.
+        <see
+        cref="T:DG.DemiEditor.DeGUINodeSystem.NodeProcessScope`1"/>
+        Returns a
+        <see cref="T:DG.DemiEditor.DeGUIKey.KeysRefreshResult"/>
+        object with the keys that were just pressed and just released
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.DeGUIKey.ToInt(UnityEngine.KeyCode)">
       <summary>
@@ -1286,11 +1286,12 @@
     </member>
     <member name="T:DG.DemiEditor.DeScrollView">
       <summary>
-        Returns by<see
-        cref="M:DG.DemiEditor.DeGUI.BeginScrollView(UnityEngine.Rect,DG.DemiEditor.DeScrollView,System.Boolean)"/>
+        Returns by
+        <para/>
         .
         Contains properties and methods to manage non-layout scrollview better.
-        <para/>
+        <see
+          cref="M:DG.DemiEditor.DeGUI.BeginScrollView(UnityEngine.Rect,DG.DemiEditor.DeScrollView,System.Boolean)"/>
         Remember to use
         <see cref="M:DG.DemiEditor.DeScrollView.IncreaseContentHeightBy(System.Single)"/>
         or
@@ -1334,17 +1335,14 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.DeScrollView.IncreaseContentHeightBy(System.Single)">
+      <param name="value"></param>
       <summary>
         Increase the
         <see cref="P:DG.DemiEditor.DeScrollView.fullContentArea"/>
         height by the given amount
       </summary>
-      <param name="value"></param>
     </member>
     <member name="M:DG.DemiEditor.DeScrollView.GetSingleLineRect(System.Single,System.Boolean)">
-      <summary>
-        Returns a Rect for a single line at the current scrollView yMax
-      </summary>
       <param name="height">If less than 0 uses default line height, otherwise the value passed
       </param>
       <param name="increaseScrollViewHeight">if TRUE (default) automatically increases the height of
@@ -1353,20 +1351,23 @@
         accordingly
       </param>
       <returns></returns>
+      <summary>
+        Returns a Rect for a single line at the current scrollView yMax
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.DeScrollView.GetWideSingleLineRect(System.Single,System.Boolean)">
+      <param name="height">If less than 0 uses default line height, otherwise the value passed
+      </param>
+      <param name="increaseScrollViewHeight">if TRUE (default) automatically increases the height of
+        the
+        <see cref="P:DG.DemiEditor.DeScrollView.fullContentArea"/>
+        accordingly
+      </param>
+      <returns></returns>
       <summary>
         Returns a Rect for a single line at the current scrollView yMax, as wide as the max visible
         rect width
       </summary>
-      <param name="height">If less than 0 uses default line height, otherwise the value passed
-      </param>
-      <param name="increaseScrollViewHeight">if TRUE (default) automatically increases the height of
-        the
-        <see cref="P:DG.DemiEditor.DeScrollView.fullContentArea"/>
-        accordingly
-      </param>
-      <returns></returns>
     </member>
     <member name="M:DG.DemiEditor.DeScrollView.IsVisible(UnityEngine.Rect)">
       <summary>
@@ -1465,24 +1466,24 @@
         values:
         <list type="bullet">
           <item>
-            <term>Format:</term>
             <description>Rich-text, wordwrap</description>
+            <term>Format:</term>
           </item>
           <item>
-            <term>FontStyle:</term>
             <description>Font style</description>
+            <term>FontStyle:</term>
           </item>
           <item>
-            <term>TextAnchor:</term>
             <description>Content anchor</description>
+            <term>TextAnchor:</term>
           </item>
           <item>
-            <term>int:</term>
             <description>Font size</description>
+            <term>int:</term>
           </item>
           <item>
-            <term>Color/DeSkinColor:</term>
             <description>Font color</description>
+            <term>Color/DeSkinColor:</term>
           </item>
         </list>
       </summary>
@@ -1492,24 +1493,24 @@
         Adds the given formats to the style. You can pass any of these types of values:
         <list type="bullet">
           <item>
-            <term>Format:</term>
             <description>RichText, WordWrap</description>
+            <term>Format:</term>
           </item>
           <item>
-            <term>FontStyle:</term>
             <description>Font style</description>
+            <term>FontStyle:</term>
           </item>
           <item>
-            <term>TextAnchor:</term>
             <description>Content anchor</description>
+            <term>TextAnchor:</term>
           </item>
           <item>
-            <term>int:</term>
             <description>Font size</description>
+            <term>int:</term>
           </item>
           <item>
-            <term>Color/DeSkinColor:</term>
             <description>Font color</description>
+            <term>Color/DeSkinColor:</term>
           </item>
         </list>
       </summary>
@@ -1749,6 +1750,10 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUILayout.ActiveButton(UnityEngine.GUIContent,UnityEngine.Color,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
+      <param name="content">Content</param>
+      <param name="onNormal">Default color</param>
+      <param name="guiStyle">Style</param>
+      <param name="options">GUILayout options</param>
       <summary>
         A button that triggers an immediate repaint when hovered/pressed/unhovered
         (which otherwise doesn't happen if you set a background to the button's GUIStyle)
@@ -1758,23 +1763,9 @@
         <see cref="P:UnityEditor.EditorWindow.wantsMouseMove"/>
         to be activated.
       </summary>
-      <param name="content">Content</param>
-      <param name="onNormal">Default color</param>
-      <param name="guiStyle">Style</param>
-      <param name="options">GUILayout options</param>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUILayout.ActiveButton(UnityEngine.GUIContent,UnityEngine.Color,System.Nullable{UnityEngine.Color},System.Nullable{UnityEngine.Color},UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
-      <summary>
-        A button that triggers an immediate repaint when hovered/pressed/unhovered
-        (which otherwise doesn't happen if you set a background to the button's GUIStyle)
-        and also assigns different GUI colors based on the button's state with options to eventually
-        auto-generate them.
-        <para/>
-        Requires
-        <see cref="P:UnityEditor.EditorWindow.wantsMouseMove"/>
-        to be activated.
-      </summary>
       <param name="content">Content</param>
       <param name="onNormal">Default color</param>
       <param name="onHover">Hover color (if NULL auto-generates it from the given one by making it
@@ -1785,6 +1776,16 @@
       </param>
       <param name="guiStyle">Style</param>
       <param name="options">GUILayout options</param>
+      <summary>
+        A button that triggers an immediate repaint when hovered/pressed/unhovered
+        (which otherwise doesn't happen if you set a background to the button's GUIStyle)
+        and also assigns different GUI colors based on the button's state with options to eventually
+        auto-generate them.
+        <para/>
+        Requires
+        <see cref="P:UnityEditor.EditorWindow.wantsMouseMove"/>
+        to be activated.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUILayout.ShadedButton(UnityEngine.Color,System.String,UnityEngine.GUILayoutOption[])">
@@ -2068,33 +2069,30 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUILayout.DoubleClickTextField(UnityEditor.EditorWindow,System.String,System.String,UnityEngine.GUIStyle,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
-      <summary>
-        A text field that becomes editable only on double-click
-      </summary>
       <param name="editorWindow">EditorWindow reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
       </param>
       <param name="text">Text</param>
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
+      <summary>
+        A text field that becomes editable only on double-click
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUILayout.DoubleClickTextField(UnityEditor.Editor,System.String,System.String,UnityEngine.GUIStyle,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
-      <summary>
-        A text field that becomes editable only on double-click
-      </summary>
       <param name="editor">Editor reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
       </param>
       <param name="text">Text</param>
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
+      <summary>
+        A text field that becomes editable only on double-click
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUILayout.DoubleClickDraggableTextField(UnityEditor.EditorWindow,System.String,System.String,System.Collections.IList,System.Int32,UnityEngine.GUIStyle,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
-      <summary>
-        A text field that becomes editable only on double-click and can also be dragged
-      </summary>
       <param name="editorWindow">EditorWindow reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
       </param>
@@ -2106,12 +2104,12 @@
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
       <returns></returns>
-    </member>
-    <member
-      name="M:DG.DemiEditor.DeGUILayout.DoubleClickDraggableTextField(UnityEditor.Editor,System.String,System.String,System.Collections.IList,System.Int32,UnityEngine.GUIStyle,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
       <summary>
         A text field that becomes editable only on double-click and can also be dragged
       </summary>
+    </member>
+    <member
+      name="M:DG.DemiEditor.DeGUILayout.DoubleClickDraggableTextField(UnityEditor.Editor,System.String,System.String,System.Collections.IList,System.Int32,UnityEngine.GUIStyle,UnityEngine.GUIStyle,UnityEngine.GUILayoutOption[])">
       <param name="editor">Editor reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
       </param>
@@ -2123,6 +2121,9 @@
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
       <returns></returns>
+      <summary>
+        A text field that becomes editable only on double-click and can also be dragged
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUILayout.GradientField(System.String,UnityEngine.Gradient,UnityEngine.GUILayoutOption[])">
@@ -2168,10 +2169,6 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.BeginGUI(DG.DemiLib.DeColorPalette,DG.DemiEditor.DeStylePalette)">
-      <summary>
-        Call this at the beginning of GUI methods.
-        Returns TRUE if the styles were initialized or re-initialized
-      </summary>
       <param name="guiColorPalette">Eventual
         <see cref="T:DG.DemiLib.DeColorPalette"/>
         to use
@@ -2180,15 +2177,28 @@
         <see cref="T:DG.DemiEditor.DeStylePalette"/>
         to use
       </param>
+      <summary>
+        Call this at the beginning of GUI methods.
+        Returns TRUE if the styles were initialized or re-initialized
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.BeginScrollView(UnityEngine.Rect,DG.DemiEditor.DeScrollView,System.Boolean)">
+      <param name="scrollViewArea">Visible area used by the scrollView</param>
+      <param name="scrollView">
+        <see cref="T:DG.DemiEditor.DeScrollView"/>
+        target. You'll need to set its size to the correct full content height
+        (either within the Begin/ENd ScrollView calls or before them)
+      </param>
+      <param name="resetContentHeightToZero">If TRUE (default) resets<see
+        cref="P:DG.DemiEditor.DeScrollView.fullContentArea"/>.height to 0
+        after beginning the ScrollView
+      </param>
       <summary>
         Better implementation of GUI.BeginScrollView.
         Returns the modified scrollView struct.
         <para/>
-        Must be closed by a DeGUI.<see cref="M:DG.DemiEditor.DeGUI.EndScrollView"/>.
-        <para/>
+        Must be closed by a DeGUI.<para/>.
         <pre>
           <code>EXAMPLE
             Rect scrollViewArea = ...;
@@ -2204,17 +2214,8 @@
             DeGUI.EndScrollView();
           </code>
         </pre>
+        <see cref="M:DG.DemiEditor.DeGUI.EndScrollView"/>
       </summary>
-      <param name="scrollViewArea">Visible area used by the scrollView</param>
-      <param name="scrollView">
-        <see cref="T:DG.DemiEditor.DeScrollView"/>
-        target. You'll need to set its size to the correct full content height
-        (either within the Begin/ENd ScrollView calls or before them)
-      </param>
-      <param name="resetContentHeightToZero">If TRUE (default) resets<see
-        cref="P:DG.DemiEditor.DeScrollView.fullContentArea"/>.height to 0
-        after beginning the ScrollView
-      </param>
     </member>
     <member name="M:DG.DemiEditor.DeGUI.EndScrollView">
       <summary>
@@ -2286,9 +2287,9 @@
         Wrapper to set serialized fields with multiple sources selected: automatically sets GUI to
         show mixed values when necessary
         and contains a fieldInfo
-        <see cref="T:System.Reflection.FieldInfo"/>
-        which is set within the wrapper.
         <para/>
+        which is set within the wrapper.
+        <see cref="T:System.Reflection.FieldInfo"/>
         Note that you must set the
         <see cref="F:DG.DemiEditor.DeGUI.MultiPropertyScope.value"/>
         property within the wrapper so that it's assigned correctly when closing the scope.
@@ -2296,7 +2297,6 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.MultiPropertyScope.#ctor(System.String,System.Collections.IList,System.Collections.Generic.List{UnityEditor.SerializedProperty},System.Boolean)">
-      <summary>Multi property scope</summary>
       <param name="fieldName">Name of the field so it can be found and set/get via Reflection
       </param>
       <param name="sources">List of the sources containing the given field</param>
@@ -2304,6 +2304,7 @@
         calling it
         (fixes an issue which happens with advanced Undo usage in DOTween Timeline and ColorFields)
       </param>
+      <summary>Multi property scope</summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.ActiveButton(UnityEngine.Rect,UnityEngine.GUIContent,UnityEngine.GUIStyle)">
@@ -2318,6 +2319,10 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.ActiveButton(UnityEngine.Rect,UnityEngine.GUIContent,UnityEngine.Color,UnityEngine.GUIStyle)">
+      <param name="rect">Rect</param>
+      <param name="content">Content</param>
+      <param name="onNormal">Default color</param>
+      <param name="guiStyle">Style</param>
       <summary>
         A button that triggers an immediate repaint when hovered/pressed/unhovered
         (which otherwise doesn't happen if you apply a background to the button's GUIStyle)
@@ -2327,23 +2332,9 @@
         <see cref="P:UnityEditor.EditorWindow.wantsMouseMove"/>
         to be activated.
       </summary>
-      <param name="rect">Rect</param>
-      <param name="content">Content</param>
-      <param name="onNormal">Default color</param>
-      <param name="guiStyle">Style</param>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.ActiveButton(UnityEngine.Rect,UnityEngine.GUIContent,UnityEngine.Color,System.Nullable{UnityEngine.Color},System.Nullable{UnityEngine.Color},UnityEngine.GUIStyle)">
-      <summary>
-        A button that triggers an immediate repaint when hovered/pressed/unhovered
-        (which otherwise doesn't happen if you apply a background to the button's GUIStyle)
-        and also assigns different GUI colors based on the button's state with options to eventually
-        auto-generate them.
-        <para/>
-        Requires
-        <see cref="P:UnityEditor.EditorWindow.wantsMouseMove"/>
-        to be activated.
-      </summary>
       <param name="rect">Rect</param>
       <param name="content">Content</param>
       <param name="onNormal">Default color</param>
@@ -2354,6 +2345,16 @@
         it even brighter
       </param>
       <param name="guiStyle">Style</param>
+      <summary>
+        A button that triggers an immediate repaint when hovered/pressed/unhovered
+        (which otherwise doesn't happen if you apply a background to the button's GUIStyle)
+        and also assigns different GUI colors based on the button's state with options to eventually
+        auto-generate them.
+        <para/>
+        Requires
+        <see cref="P:UnityEditor.EditorWindow.wantsMouseMove"/>
+        to be activated.
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.ShadedButton(UnityEngine.Rect,UnityEngine.Color,System.String)">
@@ -2489,25 +2490,25 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.BackgroundGrid(UnityEngine.Rect,UnityEngine.Vector2,UnityEngine.Texture2D,System.Single)">
-      <summary>
-        Draws a background grid using the given grid texture
-      </summary>
       <param name="area">Area rect</param>
       <param name="offset">Offset from 0, 0 position (used when area has been dragged)</param>
       <param name="texture">Texture to use for the grid</param>
       <param name="scale">Eventual scale to apply to the grid</param>
+      <summary>
+        Draws a background grid using the given grid texture
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.BackgroundGrid(UnityEngine.Rect,UnityEngine.Vector2,System.Boolean,System.Single)">
-      <summary>
-        Draws a background grid using default grid textures
-      </summary>
       <param name="area">Area rect</param>
       <param name="offset">Offset from 0, 0 position (used when area has been dragged)</param>
       <param name="forceDarkSkin">If TRUE forces a dark skin, otherwise uses a skin that fits with
         the current Unity's one
       </param>
       <param name="scale">Eventual scale to apply to the grid</param>
+      <summary>
+        Draws a background grid using default grid textures
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.Box(UnityEngine.Rect,UnityEngine.Color,UnityEngine.GUIStyle)">
@@ -2528,17 +2529,14 @@
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.DrawTiledTexture(UnityEngine.Rect,UnityEngine.Texture2D,System.Single,System.Nullable{UnityEngine.Color})">
-      <summary>Draws the given texture tiled within the given rect</summary>
       <param name="rect">Rect</param>
       <param name="texture">Texture</param>
       <param name="scale">Eventual scale to apply</param>
       <param name="color">If not NULL, colorizes the texture with this color</param>
+      <summary>Draws the given texture tiled within the given rect</summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.DoubleClickTextField(UnityEngine.Rect,UnityEditor.EditorWindow,System.String,System.String,UnityEngine.GUIStyle,UnityEngine.GUIStyle)">
-      <summary>
-        A text field that becomes editable only on double-click
-      </summary>
       <param name="rect">Area</param>
       <param name="editorWindow">EditorWindow reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
@@ -2546,25 +2544,25 @@
       <param name="text">Text</param>
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
+      <summary>
+        A text field that becomes editable only on double-click
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.DoubleClickTextField(UnityEngine.Rect,UnityEditor.Editor,System.String,System.String,UnityEngine.GUIStyle,UnityEngine.GUIStyle)">
+      <param name="rect">Area</param>
+      <param name="editor">Editor reference</param>
+      <param name="id">A unique ID to use in order to determine if the text is selected or not
+      </param>
+      <param name="text">Text</param>
+      <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
+      <param name="editingStyle">Style for editing mode</param>
       <summary>
         A text field that becomes editable only on double-click
       </summary>
-      <param name="rect">Area</param>
-      <param name="editor">Editor reference</param>
-      <param name="id">A unique ID to use in order to determine if the text is selected or not
-      </param>
-      <param name="text">Text</param>
-      <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
-      <param name="editingStyle">Style for editing mode</param>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.DoubleClickDraggableTextField(UnityEngine.Rect,UnityEditor.EditorWindow,System.String,System.String,System.Collections.IList,System.Int32,UnityEngine.GUIStyle,UnityEngine.GUIStyle)">
-      <summary>
-        A text field that becomes editable only on double-click and can also be dragged
-      </summary>
       <param name="rect">Area</param>
       <param name="editorWindow">EditorWindow reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
@@ -2576,12 +2574,12 @@
       <param name="draggedItemIndex">DraggableList index of the item being dragged</param>
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
+      <summary>
+        A text field that becomes editable only on double-click and can also be dragged
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.DoubleClickDraggableTextField(UnityEngine.Rect,UnityEditor.Editor,System.String,System.String,System.Collections.IList,System.Int32,UnityEngine.GUIStyle,UnityEngine.GUIStyle)">
-      <summary>
-        A text field that becomes editable only on double-click and can also be dragged
-      </summary>
       <param name="rect">Area</param>
       <param name="editor">Editor reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
@@ -2593,12 +2591,12 @@
       <param name="draggedItemIndex">DraggableList index of the item being dragged</param>
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
+      <summary>
+        A text field that becomes editable only on double-click and can also be dragged
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.DoubleClickTextArea(UnityEngine.Rect,UnityEditor.EditorWindow,System.String,System.String,UnityEngine.GUIStyle,UnityEngine.GUIStyle)">
-      <summary>
-        A textArea that becomes editable only on double-click
-      </summary>
       <param name="rect">Area</param>
       <param name="editorWindow">EditorWindow reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
@@ -2606,12 +2604,12 @@
       <param name="text">Text</param>
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
-    </member>
-    <member
-      name="M:DG.DemiEditor.DeGUI.DoubleClickTextArea(UnityEngine.Rect,UnityEditor.Editor,System.String,System.String,UnityEngine.GUIStyle,UnityEngine.GUIStyle)">
       <summary>
         A textArea that becomes editable only on double-click
       </summary>
+    </member>
+    <member
+      name="M:DG.DemiEditor.DeGUI.DoubleClickTextArea(UnityEngine.Rect,UnityEditor.Editor,System.String,System.String,UnityEngine.GUIStyle,UnityEngine.GUIStyle)">
       <param name="rect">Area</param>
       <param name="editor">Editor reference</param>
       <param name="id">A unique ID to use in order to determine if the text is selected or not
@@ -2619,6 +2617,9 @@
       <param name="text">Text</param>
       <param name="defaultStyle">Style for default (non-editing mode) appearance</param>
       <param name="editingStyle">Style for editing mode</param>
+      <summary>
+        A textArea that becomes editable only on double-click
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.DeGUI.FlatDivider(UnityEngine.Rect,System.Nullable{UnityEngine.Color})">
@@ -2758,21 +2759,21 @@
     </member>
     <member
       name="M:DG.DemiEditor.ColorExtensions.CloneAndChangeBrightness(UnityEngine.Color,System.Single,System.Nullable{System.Single})">
-      <summary>
-        Returns a new color equal to the given one with changed brightness
-      </summary>
       <param name="color">Color to evaluate</param>
       <param name="brightnessFactor">Brightness factor (multiplied by current brightness)</param>
       <param name="alpha">If set applies this alpha value</param>
+      <summary>
+        Returns a new color equal to the given one with changed brightness
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.ColorExtensions.CloneAndChangeSaturation(UnityEngine.Color,System.Single,System.Nullable{System.Single})">
-      <summary>
-        Returns a new color equal to the given one with changed saturation
-      </summary>
       <param name="color">Color to evaluate</param>
       <param name="saturationFactor">Saturation factor (multiplied by current brightness)</param>
       <param name="alpha">If set applies this alpha value</param>
+      <summary>
+        Returns a new color equal to the given one with changed saturation
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.ColorExtensions.SetAlpha(UnityEngine.Color,System.Single)">
       <summary>
@@ -2786,22 +2787,22 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.ColorExtensions.ToHex(UnityEngine.Color32,System.Boolean)">
-      <summary>
-        Returns a HEX version of the given Unity Color, without the initial #
-      </summary>
       <param name="includeAlpha">If TRUE, also converts the alpha value and returns a hex of 8
         characters,
         otherwise doesn't and returns a hex of 6 characters
       </param>
+      <summary>
+        Returns a HEX version of the given Unity Color, without the initial #
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.ColorExtensions.ToHex(UnityEngine.Color,System.Boolean)">
-      <summary>
-        Returns a HEX version of the given Unity Color, without the initial #
-      </summary>
       <param name="includeAlpha">If TRUE, also converts the alpha value and returns a hex of 8
         characters,
         otherwise doesn't and returns a hex of 6 characters
       </param>
+      <summary>
+        Returns a HEX version of the given Unity Color, without the initial #
+      </summary>
     </member>
     <member name="T:DG.DemiEditor.ListExtensions">
       <summary>
@@ -2831,61 +2832,61 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.RectExtensions.Expand(UnityEngine.Rect,System.Single)">
+      <param name="amount">Indicates how much to expand the rect on each size</param>
       <summary>
         Returns a copy or the Rect expanded around its center by the given amount
       </summary>
-      <param name="amount">Indicates how much to expand the rect on each size</param>
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.Expand(UnityEngine.Rect,System.Single,System.Single)">
+      <param name="amountX">Indicates how much to expand the rect on each horizontal side</param>
+      <param name="amountY">Indicates how much to expand the rect on each vertical side</param>
       <summary>
         Returns a copy or the Rect expanded around its center by the given amount
       </summary>
-      <param name="amountX">Indicates how much to expand the rect on each horizontal side</param>
-      <param name="amountY">Indicates how much to expand the rect on each vertical side</param>
     </member>
     <member name="M:DG.DemiEditor.RectExtensions.Contract(UnityEngine.Rect,System.Single)">
+      <param name="amount">Indicates how much to contract the rect on each size</param>
       <summary>
         Returns a copy or the Rect contracted around its center by the given amount
       </summary>
-      <param name="amount">Indicates how much to contract the rect on each size</param>
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.Contract(UnityEngine.Rect,System.Single,System.Single)">
+      <param name="amountX">Indicates how much to contract the rect on each horizontal side</param>
+      <param name="amountY">Indicates how much to contract the rect on each vertical side</param>
       <summary>
         Returns a copy or the Rect contracted around its center by the given amount
       </summary>
-      <param name="amountX">Indicates how much to contract the rect on each horizontal side</param>
-      <param name="amountY">Indicates how much to contract the rect on each vertical side</param>
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.Fit(UnityEngine.Rect,System.Single,System.Single,System.Boolean)">
-      <summary>
-        Returns a copy of the Rect resized so it fits proportionally within the given size limits
-      </summary>
       <param name="w">Width to fit</param>
       <param name="h">Height to fit</param>
       <param name="shrinkOnly">If TRUE (default) only shrinks the rect if needed, if FALSE also
         enlarges it to fit
       </param>
       <returns></returns>
+      <summary>
+        Returns a copy of the Rect resized so it fits proportionally within the given size limits
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.Includes(UnityEngine.Rect,UnityEngine.Rect,System.Boolean)">
-      <summary>
-        Returns TRUE if the first rect includes the second one
-      </summary>
       <param name="full">If TRUE, returns TRUE only if the second rect is fully included,
         otherwise just if some part of it is included
       </param>
+      <summary>
+        Returns TRUE if the first rect includes the second one
+      </summary>
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.Intersects(UnityEngine.Rect,UnityEngine.Rect,UnityEngine.Rect@)">
+      <param name="intersection">Intersection area</param>
       <summary>
         Returns TRUE if this rect intersects the given one, and also outputs the intersection area
         <para/>
       </summary>
-      <param name="intersection">Intersection area</param>
     </member>
     <member name="M:DG.DemiEditor.RectExtensions.ResetXY(UnityEngine.Rect)">
       <summary>
@@ -2894,20 +2895,20 @@
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.HangToLeftOf(UnityEngine.Rect,System.Single,System.Single,System.Single)">
+      <param name="margin">Distance between this rect and the given x position</param>
+      <param name="resizeWidthTo">If greater than zero resizes this rect to the given size</param>
       <summary>
         Sets this rect to the left of the given x position, with options for margin and width resize
       </summary>
-      <param name="margin">Distance between this rect and the given x position</param>
-      <param name="resizeWidthTo">If greater than zero resizes this rect to the given size</param>
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.HangToRightAndResize(UnityEngine.Rect,System.Single,System.Single,System.Single)">
+      <param name="margin">Distance between this rect and the given x position</param>
+      <param name="extraSizeOffset">Extra offset to add to the resulting width</param>
       <summary>
         Sets this rect to the right of the given x position and resizes it so that its xMax remains
         the same.
       </summary>
-      <param name="margin">Distance between this rect and the given x position</param>
-      <param name="extraSizeOffset">Extra offset to add to the resulting width</param>
     </member>
     <member
       name="M:DG.DemiEditor.RectExtensions.Shift(UnityEngine.Rect,System.Single,System.Single,System.Single,System.Single)">
@@ -3026,12 +3027,12 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.StringExtensions.IsNullOrEmpty(System.String,System.Boolean)">
-      <summary>
-        Returns TRUE if the string is null or empty
-      </summary>
       <param name="trimSpaces">If TRUE (default) and the string contains only spaces, considers it
         empty
       </param>
+      <summary>
+        Returns TRUE if the string is null or empty
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.StringExtensions.VersionIsMinorThan(System.String,System.String)">
       <summary>
@@ -3041,12 +3042,12 @@
       </summary>
     </member>
     <member name="M:DG.DemiEditor.StringExtensions.HexToColor(System.String)">
-      <summary>
-        Converts a HEX color to a Unity Color and returns it
-      </summary>
       <param name="hex">The HEX color, either with or without the initial # (accepts both regular
         and short format)
       </param>
+      <summary>
+        Converts a HEX color to a Unity Color and returns it
+      </summary>
     </member>
     <member name="M:DG.DemiEditor.StringExtensions.Nicify(System.String)">
       <summary>
@@ -3069,12 +3070,12 @@
     </member>
     <member
       name="M:DG.DemiEditor.StringExtensions.EvalAsProperty``1(System.String,System.Object,System.Boolean)">
-      <summary>
-        Evaluates the string as a property or field and returns its value.
-      </summary>
       <param name="obj">If NULL considers the string as a static property, otherwise uses obj as the
         starting instance
       </param>
+      <summary>
+        Evaluates the string as a property or field and returns its value.
+      </summary>
     </member>
     <member name="T:DG.DemiEditor.TextureExtensions">
       <summary>

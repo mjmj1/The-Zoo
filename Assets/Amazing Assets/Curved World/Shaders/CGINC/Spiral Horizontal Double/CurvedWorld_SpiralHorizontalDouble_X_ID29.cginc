@@ -1,6 +1,6 @@
 // Curved World <http://u3d.as/1W8h>
 // Copyright (c) Amazing Assets <https://amazingassets.world>
- 
+
 #ifndef CURVEDWORLD_SPIRALHORIZONTALDOUBLE_X_ID29_CGINC
 #define CURVEDWORLD_SPIRALHORIZONTALDOUBLE_X_ID29_CGINC
 
@@ -10,10 +10,10 @@ uniform float3 CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter2;
 uniform float2 CurvedWorld_SpiralHorizontalDouble_X_ID29_BendAngle;
 uniform float2 CurvedWorld_SpiralHorizontalDouble_X_ID29_BendMinimumRadius;
 
-                 
-#include "../../Core/Core.cginc"                           
-             
-      
+
+#include "../../Core/Core.cginc"
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                Main Method                                 //
@@ -21,24 +21,25 @@ uniform float2 CurvedWorld_SpiralHorizontalDouble_X_ID29_BendMinimumRadius;
 ////////////////////////////////////////////////////////////////////////////////
 void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float4 vertexOS)
 {
-    CurvedWorld_SpiralHorizontalDouble_X(vertexOS, 
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_PivotPoint,
-	                        CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter,
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter2,
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_BendAngle,
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_BendMinimumRadius);
+    CurvedWorld_SpiralHorizontalDouble_X(vertexOS,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_PivotPoint,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter2,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_BendAngle,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_BendMinimumRadius);
 }
 
-void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float4 vertexOS, inout float3 normalOS, float4 tangent)
+void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float4 vertexOS, inout float3 normalOS,
+                                               float4 tangent)
 {
-    CurvedWorld_SpiralHorizontalDouble_X(vertexOS, 
-                            normalOS, 
-                            tangent,
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_PivotPoint,
-                            CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter,
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter2,                            
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_BendAngle,
-							CurvedWorld_SpiralHorizontalDouble_X_ID29_BendMinimumRadius);
+    CurvedWorld_SpiralHorizontalDouble_X(vertexOS,
+                                         normalOS,
+                                         tangent,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_PivotPoint,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_RotationCenter2,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_BendAngle,
+                                         CurvedWorld_SpiralHorizontalDouble_X_ID29_BendMinimumRadius);
 }
 
 void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float3 vertexOS)
@@ -49,13 +50,14 @@ void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float3 vertexOS)
     vertexOS.xyz = vertex.xyz;
 }
 
-void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float3 vertexOS, inout float3 normalOS, float4 tangent)
+void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float3 vertexOS, inout float3 normalOS,
+                                               float4 tangent)
 {
     float4 vertex = float4(vertexOS, 1);
     CurvedWorld_SpiralHorizontalDouble_X_ID29(vertex, normalOS, tangent);
 
     vertexOS.xyz = vertex.xyz;
-} 
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -64,32 +66,35 @@ void CurvedWorld_SpiralHorizontalDouble_X_ID29(inout float3 vertexOS, inout floa
 ////////////////////////////////////////////////////////////////////////////////
 void CurvedWorld_SpiralHorizontalDouble_X_ID29_float(float3 vertexOS, out float3 retVertex)
 {
-    CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS); 	
+    CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS);
 
     retVertex = vertexOS.xyz;
 }
 
 void CurvedWorld_SpiralHorizontalDouble_X_ID29_half(half3 vertexOS, out half3 retVertex)
 {
-    CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS); 	
+    CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS);
 
     retVertex = vertexOS.xyz;
 }
 
-void CurvedWorld_SpiralHorizontalDouble_X_ID29_float(float3 vertexOS, float3 normalOS, float4 tangent, out float3 retVertex, out float3 retNormal)
+void CurvedWorld_SpiralHorizontalDouble_X_ID29_float(float3 vertexOS, float3 normalOS,
+                                                     float4 tangent, out float3 retVertex,
+                                                     out float3 retNormal)
 {
-	CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS, normalOS, tangent); 	
+    CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS, normalOS, tangent);
 
     retVertex = vertexOS.xyz;
     retNormal = normalOS.xyz;
 }
 
-void CurvedWorld_SpiralHorizontalDouble_X_ID29_half(half3 vertexOS, half3 normalOS, half4 tangent, out half3 retVertex, out float3 retNormal)
+void CurvedWorld_SpiralHorizontalDouble_X_ID29_half(half3 vertexOS, half3 normalOS, half4 tangent,
+                                                    out half3 retVertex, out float3 retNormal)
 {
-	CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS, normalOS, tangent); 	
+    CurvedWorld_SpiralHorizontalDouble_X_ID29(vertexOS, normalOS, tangent);
 
     retVertex = vertexOS.xyz;
-    retNormal = normalOS.xyz;	
-}     
+    retNormal = normalOS.xyz;
+}
 
 #endif

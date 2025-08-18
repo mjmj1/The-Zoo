@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   visualRoot: {fileID: 1048639399479177854}
-  ghostBand: 2
+  ghostBand: 15
 --- !u!136 &8656036648174182437
 CapsuleCollider:
   m_ObjectHideFlags: 0

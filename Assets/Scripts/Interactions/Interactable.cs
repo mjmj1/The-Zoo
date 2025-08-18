@@ -64,7 +64,8 @@ namespace Interactions
         [Rpc(SendTo.Everyone)]
         private void PlayFxRpc()
         {
-            AudioManager.Instance.PlaySfx(sfxData.clip, transform.position, sfxData.volume, sfxData.pitch);
+            AudioManager.Instance.PlaySfx(sfxData.clip, transform.position, sfxData.volume,
+                sfxData.pitch);
 
             vfxData.Play();
         }

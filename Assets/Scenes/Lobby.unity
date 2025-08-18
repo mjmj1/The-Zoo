@@ -1600,7 +1600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2540070967
+  GlobalObjectIdHash: 2387924095
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -2504,8 +2504,8 @@ Mesh:
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
-  m_MeshMetrics[0]: 1
-  m_MeshMetrics[1]: 2704.0059
+  'm_MeshMetrics[0]': 1
+  'm_MeshMetrics[1]': 2704.0059
   m_MeshOptimizationFlags: 1
   m_StreamData:
     serializedVersion: 2
@@ -15139,7 +15139,7 @@ MonoBehaviour:
   bendVerticalOffset: 0
   bendHorizontalSize: 0
   bendHorizontalOffset: 0
-  bendCurvatureSize: 20
+  bendCurvatureSize: 15
   bendCurvatureOffset: 0
   bendAngle: 0
   bendAngle2: 0
@@ -16329,7 +16329,6 @@ GameObject:
   - component: {fileID: 1485584500}
   - component: {fileID: 1485584503}
   - component: {fileID: 1485584504}
-  - component: {fileID: 1485584505}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -16487,24 +16486,6 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
---- !u!114 &1485584505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1485584499}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27fec5cae7b257341a91ca046321b6eb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  matrixType: 0
-  fieldOfView: 40
-  size: 4
-  nearClipPlaneSameAsCamera: 1
-  nearClipPlane: 0.01
-  drawGizmos: 0
 --- !u!1 &1487912114
 GameObject:
   m_ObjectHideFlags: 0
@@ -95357,8 +95338,8 @@ Mesh:
   m_CookingOptions: 30
   m_BakedConvexCollisionMesh: 
   m_BakedTriangleCollisionMesh: 
-  m_MeshMetrics[0]: 1
-  m_MeshMetrics[1]: 1
+  'm_MeshMetrics[0]': 1
+  'm_MeshMetrics[1]': 1
   m_MeshOptimizationFlags: 1
   m_StreamData:
     serializedVersion: 2
@@ -100432,7 +100413,7 @@ PrefabInstance:
     m_TransformParent: {fileID: 1147495309}
     m_Modifications:
     - target: {fileID: 5610529841412617978, guid: e4f26a2795077c749a9c01f2c33c797d, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 780734e5afceaef48b0b621413549da0, type: 2}
     - target: {fileID: 6258991218409019183, guid: e4f26a2795077c749a9c01f2c33c797d, type: 3}

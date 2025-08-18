@@ -7,7 +7,6 @@ using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.SceneManagement;
 using Utils;
 #if UNITY_EDITOR
@@ -87,7 +86,6 @@ namespace Players
         private PlayerEntity entity;
         private Hittable hittable;
         private bool isAround;
-        // private bool isSpin;
 
         private float moveSpeed;
         private Quaternion previousRotation;
@@ -128,14 +126,17 @@ namespace Players
             if (!IsOwner) return;
 
             HandleMovement();
-
-            GamePlayEventHandler.OnPlayerSpined(isSpin);
+            
+            GamePlayEventHandler.OnPlayerSpined(entity.isSpin);
 
             if (!TorusWorld.Instance) return;
-
+            
             var wrapped = TorusWorld.Instance.WrapXZ(rb.position);
-            if ((wrapped - rb.position).sqrMagnitude > 0f)
-                rb.position = wrapped;
+
+            if (!((wrapped - rb.position).sqrMagnitude > 0.0001f)) return;
+
+            rb.position = wrapped;
+            Teleport(wrapped, transform.rotation, transform.localScale);
         }
 
         private void OnDrawGizmosSelected()
@@ -158,7 +159,7 @@ namespace Players
             InitializeFollowCamera();
             Subscribe();
 
-            InitializeGravity();
+            InitializeMap();
 
             base.OnNetworkSpawn();
         }
@@ -180,7 +181,7 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            InitializeGravity();
+            InitializeMap();
 
             Input.MouseLeftClicked();
 
@@ -264,8 +265,6 @@ namespace Players
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
-
-            rb.maxDepenetrationVelocity = 3f;
         }
 
         private void InitializeFollowCamera()
@@ -279,12 +278,16 @@ namespace Players
             PivotBinder.Instance.BindPivot(transform);
         }
 
-        private void InitializeGravity()
+        private void InitializeMap()
         {
             if (!IsOwner) return;
             if (!TorusWorld.Instance) return;
-
-            TorusWorld.Instance.Tile.follow = CameraManager.Instance.Orbit.transform;
+            
+            // Tile이 없는 씬(예: Lobby)에서의 NRE 방지
+            if (TorusWorld.Instance.tile != null)
+            {
+                TorusWorld.Instance.tile.follow = transform;
+            }
         }
 
         private void HandleMovement()
@@ -312,13 +315,6 @@ namespace Players
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
-
-        private void PreventBouncing()
-        {
-            if(rb.linearVelocity.magnitude > 1.0f)
-                rb.linearVelocity = Vector3.zero;
-            print($"{rb.linearVelocity.magnitude:F2}");
         }
 
         private void Look(InputAction.CallbackContext ctx)

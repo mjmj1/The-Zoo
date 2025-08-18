@@ -1,6 +1,6 @@
 // Curved World <http://u3d.as/1W8h>
 // Copyright (c) Amazing Assets <https://amazingassets.world>
- 
+
 #ifndef CURVEDWORLD_SPIRALVERTICALDOUBLE_X_ID24_CGINC
 #define CURVEDWORLD_SPIRALVERTICALDOUBLE_X_ID24_CGINC
 
@@ -10,10 +10,10 @@ uniform float3 CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter2;
 uniform float2 CurvedWorld_SpiralVerticalDouble_X_ID24_BendAngle;
 uniform float2 CurvedWorld_SpiralVerticalDouble_X_ID24_BendMinimumRadius;
 
-                 
-#include "../../Core/Core.cginc"                           
-             
-      
+
+#include "../../Core/Core.cginc"
+
+
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
 //                                Main Method                                 //
@@ -21,24 +21,25 @@ uniform float2 CurvedWorld_SpiralVerticalDouble_X_ID24_BendMinimumRadius;
 ////////////////////////////////////////////////////////////////////////////////
 void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float4 vertexOS)
 {
-    CurvedWorld_SpiralVerticalDouble_X(vertexOS, 
-							CurvedWorld_SpiralVerticalDouble_X_ID24_PivotPoint,
-	                        CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter,
-							CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter2,
-							CurvedWorld_SpiralVerticalDouble_X_ID24_BendAngle,
-							CurvedWorld_SpiralVerticalDouble_X_ID24_BendMinimumRadius);
+    CurvedWorld_SpiralVerticalDouble_X(vertexOS,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_PivotPoint,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter2,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_BendAngle,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_BendMinimumRadius);
 }
 
-void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float4 vertexOS, inout float3 normalOS, float4 tangent)
+void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float4 vertexOS, inout float3 normalOS,
+                                             float4 tangent)
 {
-    CurvedWorld_SpiralVerticalDouble_X(vertexOS, 
-                            normalOS, 
-                            tangent,
-							CurvedWorld_SpiralVerticalDouble_X_ID24_PivotPoint,
-                            CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter,
-							CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter2,                            
-							CurvedWorld_SpiralVerticalDouble_X_ID24_BendAngle,
-							CurvedWorld_SpiralVerticalDouble_X_ID24_BendMinimumRadius);
+    CurvedWorld_SpiralVerticalDouble_X(vertexOS,
+                                       normalOS,
+                                       tangent,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_PivotPoint,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_RotationCenter2,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_BendAngle,
+                                       CurvedWorld_SpiralVerticalDouble_X_ID24_BendMinimumRadius);
 }
 
 void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float3 vertexOS)
@@ -49,13 +50,14 @@ void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float3 vertexOS)
     vertexOS.xyz = vertex.xyz;
 }
 
-void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float3 vertexOS, inout float3 normalOS, float4 tangent)
+void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float3 vertexOS, inout float3 normalOS,
+                                             float4 tangent)
 {
     float4 vertex = float4(vertexOS, 1);
     CurvedWorld_SpiralVerticalDouble_X_ID24(vertex, normalOS, tangent);
 
     vertexOS.xyz = vertex.xyz;
-} 
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 //                                                                            //
@@ -64,32 +66,34 @@ void CurvedWorld_SpiralVerticalDouble_X_ID24(inout float3 vertexOS, inout float3
 ////////////////////////////////////////////////////////////////////////////////
 void CurvedWorld_SpiralVerticalDouble_X_ID24_float(float3 vertexOS, out float3 retVertex)
 {
-    CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS); 	
+    CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS);
 
     retVertex = vertexOS.xyz;
 }
 
 void CurvedWorld_SpiralVerticalDouble_X_ID24_half(half3 vertexOS, out half3 retVertex)
 {
-    CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS); 	
+    CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS);
 
     retVertex = vertexOS.xyz;
 }
 
-void CurvedWorld_SpiralVerticalDouble_X_ID24_float(float3 vertexOS, float3 normalOS, float4 tangent, out float3 retVertex, out float3 retNormal)
+void CurvedWorld_SpiralVerticalDouble_X_ID24_float(float3 vertexOS, float3 normalOS, float4 tangent,
+                                                   out float3 retVertex, out float3 retNormal)
 {
-	CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS, normalOS, tangent); 	
+    CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS, normalOS, tangent);
 
     retVertex = vertexOS.xyz;
     retNormal = normalOS.xyz;
 }
 
-void CurvedWorld_SpiralVerticalDouble_X_ID24_half(half3 vertexOS, half3 normalOS, half4 tangent, out half3 retVertex, out float3 retNormal)
+void CurvedWorld_SpiralVerticalDouble_X_ID24_half(half3 vertexOS, half3 normalOS, half4 tangent,
+                                                  out half3 retVertex, out float3 retNormal)
 {
-	CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS, normalOS, tangent); 	
+    CurvedWorld_SpiralVerticalDouble_X_ID24(vertexOS, normalOS, tangent);
 
     retVertex = vertexOS.xyz;
-    retNormal = normalOS.xyz;	
-}     
+    retNormal = normalOS.xyz;
+}
 
 #endif
