@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7775055411240680118}
-  - component: {fileID: 6206305475902488970}
+  - component: {fileID: 4105441741641506369}
   - component: {fileID: 2550229429905853943}
   - component: {fileID: 7698470656365953208}
   - component: {fileID: 8260965337020107351}
@@ -37,7 +37,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6206305475902488970
+--- !u!114 &4105441741641506369
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,13 +46,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 363135223107981298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d4d28853cda246f881bacd3d03b5d53f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f1b9dbad994e164eb01e99be2514ac0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 1000
+  MaxStep: 0
   seeker: {fileID: 0}
   target: {fileID: 0}
   interactables: []
@@ -76,6 +76,8 @@ MonoBehaviour:
   hasHit: 0
   lastHitDirection: {x: 0, y: 0, z: 0}
   started: 0
+  lastYawRad: 0
+  lastYawRate: 0
 --- !u!114 &2550229429905853943
 MonoBehaviour:
   m_ObjectHideFlags: 0

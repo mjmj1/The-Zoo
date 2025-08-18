@@ -11,7 +11,7 @@ using Utils;
 
 namespace AI
 {
-    public class HiderAgentv2 : Agent, IMoveState
+    public class HiderTrainAgent : Agent, IMoveState
     {
         public enum AgentActionState
         {
@@ -41,6 +41,8 @@ namespace AI
         [SerializeField] private float rotationSpeed = 500f;
         [SerializeField] private LPlanetGravity planet;
 
+        private float moveSpeed;
+
         public Vector2 moveInput;
         public Vector2 lookInput;
 
@@ -50,27 +52,32 @@ namespace AI
         public Transform foundSeeker;
         public bool isAction;
 
-        private readonly float slowdownRate = 1f;
-        private Animator animator;
-        private PlayerInputActions input;
-        private float moveSpeed;
-
-        private RayPerceptionSensorComponent3D raySensor;
-        private BehaviorParameters bp;
-        private DecisionRequester dr;
-        private Rigidbody rb;
-
         // freeze
         public bool freeze;
         public float spinHoldTime;
-        private int lastSpinInput = 0;
-        private readonly float spinTriggerThreshold = 1.2f;
 
         // Hit
         public bool hasHit;
         public Vector3 lastHitDirection;
 
         public bool started;
+
+        private readonly float slowdownRate = 1f;
+        private readonly float spinTriggerThreshold = 1.2f;
+
+        // agents components
+        private RayPerceptionSensorComponent3D raySensor;
+        private DecisionRequester dr;
+        private BehaviorParameters bp;
+
+        private PlayerInputActions input;
+        private Rigidbody rb;
+        private Animator animator;
+        private int lastSpinInput;
+
+        public Vector3 lastTangentForward;
+        public float lastYawRad;
+        public float lastYawRate;
 
         private void Start()
         {
@@ -103,6 +110,20 @@ namespace AI
             planet.Unsubscribe(rb);
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.CompareTag("Interactable"))
+                //print("Collision Enter Penalty");
+                AddReward(-0.01f);
+
+            if (collision.collider.CompareTag("Target"))
+            {
+                print("Target Get");
+                AddReward(1f);
+                EndEpisode();
+            }
+        }
+
         public bool CanMove { get; set; }
         public bool IsSpinning { get; set; }
 
@@ -127,10 +148,7 @@ namespace AI
             input.UI.Escape.performed += EscapePressed;
             input.UI.Click.performed += MouseLeftClicked;
 
-            if (bp.BehaviorType == BehaviorType.HeuristicOnly)
-            {
-                dr.DecisionPeriod = 1;
-            }
+            if (bp.BehaviorType == BehaviorType.HeuristicOnly) dr.DecisionPeriod = 1;
         }
 
         private void EscapePressed(InputAction.CallbackContext ctx)
@@ -178,7 +196,8 @@ namespace AI
 
             started = false;
 
-            transform.position = planet.transform.position + Util.GetRandomPositionInSphere(planet.GetRadius());
+            transform.position = planet.transform.position +
+                                 Util.GetRandomPositionInSphere(planet.GetRadius());
 
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
@@ -202,6 +221,14 @@ namespace AI
             hasHit = false;
             lastHitDirection = Vector3.zero;
 
+            var up = -planet.GetGravityDirection(transform.position);
+            var fwdOnTangent = Vector3.ProjectOnPlane(transform.forward, up);
+            lastTangentForward = fwdOnTangent.sqrMagnitude > 1e-6f
+                ? fwdOnTangent.normalized
+                : Vector3.ProjectOnPlane(transform.right, up).normalized;
+            lastYawRate = 0f;
+
+
             if (seeker != null)
                 seeker.position =
                     planet.transform.position + Util.GetRandomPositionInSphere(8f);
@@ -212,10 +239,12 @@ namespace AI
 
             foreach (var interactable in interactables)
             {
-                interactable.position = planet.transform.position + Util.GetRandomPositionInSphere(8.5f);
+                interactable.position =
+                    planet.transform.position + Util.GetRandomPositionInSphere(8.5f);
 
                 var normal = -planet.GetGravityDirection(interactable.position);
-                interactable.rotation = Quaternion.FromToRotation(interactable.transform.up, normal);
+                interactable.rotation =
+                    Quaternion.FromToRotation(interactable.transform.up, normal);
             }
         }
 
@@ -372,6 +401,7 @@ namespace AI
                     else
                         currentAAState = AgentActionState.Spinning;
                 }
+
                 PlayActionCycle();
             }
             else
@@ -417,127 +447,141 @@ namespace AI
             AddReward(-0.0001f);
 
             var moveDir = Vector3.ProjectOnPlane(rb.linearVelocity, transform.up).normalized;
-            var lookDir = transform.forward;
-
-            var dot = Vector3.Dot(moveDir, lookDir);
-
-            if(lookInput.x == 0)
-                AddReward(0.000001f);
-            else if(lookInput.x != 0)
-                AddReward(-0.00001f);
 
             if (hasHit)
             {
-                var hitDot = Vector3.Dot(moveDir, lastHitDirection);
+                var hitDot = -Vector3.Dot(moveDir, lastHitDirection);
 
                 if (currentMoveState != AgentMoveState.Idle && hitDot > 0.8f)
-                {
                     //print($"Hit Reward");
-                    AddReward(hitDot * 0.01f);
-                }
+                    AddReward(hitDot * 0.001f);
 
                 return;
             }
 
-            if (freeze)
+            lastHitDirection = Vector3.zero;
+
+            if (!IsSpinning)
             {
-                if (currentAAState != AgentActionState.None)
+                var dt = Mathf.Max(Time.deltaTime, 1e-4f);
+
+                // 로컬 업(지면 법선) 기준 접평면에서의 전방을 사용해 좌우 회전량 계산
+                var localUp = -planet.GetGravityDirection(transform.position);
+                var currFwdProj = Vector3.ProjectOnPlane(transform.forward, localUp);
+                if (currFwdProj.sqrMagnitude < 1e-6f)
                 {
-                    //print($"Freeze Action Penalty");
-                    AddReward(-0.005f);
+                    // 투영이 불안정하면 오른쪽 벡터로 대체
+                    currFwdProj = Vector3.ProjectOnPlane(transform.right, localUp);
+                }
+                currFwdProj = currFwdProj.normalized;
+
+                // 접평면 상의 서클릭(부호 있는 각도)
+                var yawDeltaDeg = Vector3.SignedAngle(lastTangentForward, currFwdProj, localUp);
+                var yawRate = (yawDeltaDeg * Mathf.Deg2Rad) / dt;
+
+                // 1) 각속도 비용(데드존 적용)
+                var deadzoneDeg = 1.0f; // 0.5~1.5 권장
+                var deadzoneRate = (deadzoneDeg * Mathf.Deg2Rad) / dt;
+                var rateMag = Mathf.Max(Mathf.Abs(yawRate) - deadzoneRate, 0f);
+                var wSpeed = currentMoveState == AgentMoveState.Idle ? 5e-5f : 3e-5f;
+                AddReward(-wSpeed * rateMag * rateMag);
+
+                // 2) 각가속도 비용(떨림 억제)
+                var acc = yawRate - lastYawRate;
+                var wAcc = currentMoveState == AgentMoveState.Idle ? 2e-5f : 1e-5f;
+                AddReward(-wAcc * acc * acc);
+
+                // 3) 좌↔우 잦은 반전 패널티
+                var smallRate = 5f * Mathf.Deg2Rad; // 초당 5도 미만은 무시
+                if (Mathf.Abs(yawRate) > smallRate && Mathf.Abs(lastYawRate) > smallRate)
+                    if (!Mathf.Approximately(Mathf.Sign(yawRate), Mathf.Sign(lastYawRate)))
+                        AddReward(-3e-4f);
+
+                // 4) 이동 중 진행 방향과 시선 정렬 보상(접평면 기준)
+                var v = rb.linearVelocity;
+                v = Vector3.ProjectOnPlane(v, localUp);
+                var vMag = v.magnitude;
+                if (vMag > 0.5f && currentMoveState != AgentMoveState.Idle)
+                {
+                    var vDir = v / vMag;
+                    var fwdOnPlane = currFwdProj; // 접평면 위 전방
+                    var align = Vector3.Dot(fwdOnPlane, vDir); // -1..1
+                    AddReward(5e-4f * align);
                 }
 
-                if (currentMoveState != AgentMoveState.Idle)
-                {
-                    //print($"Freeze Penalty");
-                    AddReward(-0.005f);
-                }
-                else if (currentMoveState == AgentMoveState.Idle)
-                {
-                    //print($"Freeze Reward");
-                    AddReward(-0.005f);
-                }
+                // 상태 업데이트
+                lastYawRate = yawRate;
+                lastTangentForward = currFwdProj;
+            }
+
+
+            var lookDir = transform.forward;
+
+            var dot = Vector3.Dot(moveDir, lookDir);
+
+            if (!freeze)
+            {
+                if (!IsSpinning)
+                    if (currentMoveState != AgentMoveState.Idle)
+                        if (dot > 0.8)
+                            // print($"Walking Action");
+                            AddReward(dot * 0.00001f);
             }
             else
             {
-                if (!IsSpinning)
-                {
-                    if (currentMoveState == AgentMoveState.Walking)
-                    {
-                        //print($"Walking Action");
-                        var reward = dot * 0.000001f;
-                        AddReward(reward);
-                    }
-                    else if (currentMoveState == AgentMoveState.Running)
-                    {
-                        //print($"Running Action");
-                        var reward = dot * 0.0000011f;
-                        AddReward(reward);
-                    }
-                }
+                if (currentAAState != AgentActionState.None)
+                    //print($"Freeze Action Penalty");
+                    AddReward(-0.0001f);
+
+                if (currentMoveState != AgentMoveState.Idle)
+                    //print($"Freeze Penalty");
+                    AddReward(-0.00001f);
+                else if (currentMoveState == AgentMoveState.Idle)
+                    //print($"Freeze Reward");
+                    AddReward(0.00001f);
             }
 
             if (currentAAState != prevAAState)
-            {
                 switch (currentAAState)
                 {
                     case AgentActionState.Jumping:
                         if (isAction)
-                        {
                             //print("Jumping Penalty");
                             AddReward(-0.005f);
-                        }
                         else
-                        {
                             //print("Jumping Reward");
-                            AddReward(0.02f);
-                        }
+                            AddReward(0.001f);
 
                         break;
                     case AgentActionState.Attacking:
                         if (isAction)
-                        {
                             //print("Attacking Penalty");
                             AddReward(-0.005f);
-                        }
                         else
-                        {
                             //print("Attacking Reward");
-                            AddReward(0.02f);
-                        }
+                            AddReward(0.001f);
                         break;
                     case AgentActionState.SpinStart:
                         if (isAction)
-                        {
                             //print("SpinStart Penalty");
                             AddReward(-0.005f);
-                        }
                         else
-                        {
                             //print("SpinStart Reward");
-                            AddReward(0.02f);
-                        }
+                            AddReward(0.0005f);
                         break;
                     case AgentActionState.SpinEnd:
                         if (isAction)
-                        {
                             // print("SpinEnd Reward");
-                            AddReward(0.02f);
-                        }
+                            AddReward(0.0005f);
                         break;
                 }
-            }
 
             prevAAState = currentAAState;
 
             if (currentAAState == AgentActionState.Spinning)
-            {
                 if (isAction)
-                {
                     //print("Spinning Reward");
-                    AddReward(0.000001f);
-                }
-            }
+                    AddReward(0.0000001f);
 
             if (IsSeekerFind(out var tr)) foundSeeker = tr;
 
@@ -551,30 +595,14 @@ namespace AI
             if (dist > 10f)
             {
                 //print("Seeker Avoided");
-                AddReward(0.02f);
+                AddReward(0.01f);
                 foundSeeker = null;
             }
             else
             {
                 //print("Seeker closed");
-                var penalty = (1f - dist / 10f) * 0.005f;
+                var penalty = (1f - dist / 10f) * 0.01f;
                 AddReward(-penalty);
-            }
-        }
-
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.collider.CompareTag("Interactable"))
-            {
-                //print("Collision Enter Penalty");
-                AddReward(-0.01f);
-            }
-
-            if (collision.collider.CompareTag("Target"))
-            {
-                print("Target Get");
-                AddReward(1f);
-                EndEpisode();
             }
         }
 
@@ -630,7 +658,7 @@ namespace AI
         {
             while (started)
             {
-                yield return new WaitForSeconds(Random.Range(10f, 15f));
+                yield return new WaitForSeconds(Random.Range(15f, 20f));
 
                 hasHit = true;
 

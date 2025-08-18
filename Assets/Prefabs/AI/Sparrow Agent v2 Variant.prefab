@@ -803,7 +803,8 @@ PrefabInstance:
       propertyPath: m_RaysPerDirection
       value: 8
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6206305475902488970, guid: 5d9229f69afc7f84cbbf3bb139ef94e8, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 7775055411240680118, guid: 5d9229f69afc7f84cbbf3bb139ef94e8, type: 3}
