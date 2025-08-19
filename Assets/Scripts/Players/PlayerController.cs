@@ -1,6 +1,8 @@
 using EventHandler;
 using System.Collections;
 using System.Linq;
+using GamePlay;
+using Maps;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
@@ -26,6 +28,7 @@ namespace Players
         private SerializedProperty rotationSpeed;
         private SerializedProperty sprintSpeed;
         private SerializedProperty walkSpeed;
+        private SerializedProperty mover;
 
         public override void OnEnable()
         {
@@ -36,6 +39,7 @@ namespace Players
             rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
+            mover = serializedObject.FindProperty(nameof(PlayerController.mover));
             base.OnEnable();
         }
 
@@ -47,6 +51,7 @@ namespace Players
             EditorGUILayout.PropertyField(sprintSpeed);
             EditorGUILayout.PropertyField(rotationSpeed);
             EditorGUILayout.PropertyField(mouseSensitivity);
+            EditorGUILayout.PropertyField(mover);
         }
 
         public override void OnInspectorGUI()
@@ -84,7 +89,6 @@ namespace Players
         private PlayerEntity entity;
         private Hittable hittable;
         private bool isAround;
-        // private bool isSpin;
 
         private float moveSpeed;
         private Quaternion previousRotation;
@@ -93,6 +97,8 @@ namespace Players
 
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
+
+        public bool mover;
 
         public void Reset()
         {
@@ -124,7 +130,20 @@ namespace Players
         {
             if (!IsOwner) return;
 
+            mover = CanMove;
+            
             HandleMovement();
+            
+            GamePlayEventHandler.OnPlayerSpined(entity.isSpin);
+
+            if (!TorusWorld.Instance) return;
+            
+            var wrapped = TorusWorld.Instance.WrapXZ(rb.position);
+
+            if (!((wrapped - rb.position).sqrMagnitude > 0.0001f)) return;
+
+            rb.position = wrapped;
+            Teleport(wrapped, transform.rotation, transform.localScale);
         }
 
         private void OnDrawGizmosSelected()
@@ -147,7 +166,7 @@ namespace Players
             InitializeFollowCamera();
             Subscribe();
 
-            InitializeGravity();
+            InitializeMap();
 
             base.OnNetworkSpawn();
         }
@@ -169,7 +188,7 @@ namespace Players
         {
             if (!IsOwner) return;
 
-            InitializeGravity();
+            InitializeMap();
 
             Input.MouseLeftClicked();
 
@@ -186,10 +205,9 @@ namespace Players
 
             var clients = NetworkManager.ConnectedClientsIds.ToList();
 
-            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 5f, 8);
+            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 2f, 4);
 
-            transform.SetPositionAndRotation(pos,
-                Quaternion.LookRotation((Vector3.zero - pos).normalized));
+            transform.SetPositionAndRotation(pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
         }
 
         private void Subscribe()
@@ -254,8 +272,6 @@ namespace Players
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
-
-            rb.maxDepenetrationVelocity = 3f;
         }
 
         private void InitializeFollowCamera()
@@ -265,15 +281,16 @@ namespace Players
             CameraManager.Instance.SetFollowTarget(transform);
             CameraManager.Instance.LookMove();
             CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
+
+            PivotBinder.Instance.BindPivot(transform);
         }
 
-        private void InitializeGravity()
+        private void InitializeMap()
         {
             if (!IsOwner) return;
+            if (!TorusWorld.Instance) return;
 
-            rb.useGravity = !PlanetGravity.Instance;
-
-            PlanetGravity.Instance?.Subscribe(rb);
+            TorusWorld.Instance.tile.follow = transform;
         }
 
         private void HandleMovement()
@@ -301,13 +318,6 @@ namespace Players
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
                 transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
-
-        private void PreventBouncing()
-        {
-            if(rb.linearVelocity.magnitude > 1.0f)
-                rb.linearVelocity = Vector3.zero;
-            print($"{rb.linearVelocity.magnitude:F2}");
         }
 
         private void Look(InputAction.CallbackContext ctx)

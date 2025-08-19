@@ -7,6 +7,7 @@ namespace Players
     public class PlayerRenderer : NetworkBehaviour
     {
         [SerializeField] private Shader ghostShader;
+        [SerializeField] private LODGroup lodGroup;
 
         private Shader originShader;
 
@@ -15,7 +16,7 @@ namespace Players
 
         private void OnEnable()
         {
-            lods = GetComponent<LODGroup>().GetLODs();
+            lods = lodGroup.GetLODs();
             originShader = lods[0].renderers[0].sharedMaterial.shader;
         }
 

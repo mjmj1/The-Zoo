@@ -95,7 +95,7 @@ namespace Networks
         {
             var prefab = animalPrefabs[i];
 
-            var pos = Util.GetCirclePositions(Vector3.zero, SpawnedAnimals.Count, 5f, 8);
+            var pos = Util.GetCirclePositions(Vector3.zero, SpawnedAnimals.Count, 2f, 4);
 
             var netObj = prefab.InstantiateAndSpawn(NetworkManager,
                 NetworkManager.LocalClientId,

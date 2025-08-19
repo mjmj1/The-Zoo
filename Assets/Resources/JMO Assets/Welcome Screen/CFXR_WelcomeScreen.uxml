@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+  xmlns:engine="UnityEngine.UIElements"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd"
+>
+  <engine:VisualElement name="main">
+
+    <engine:VisualElement name="titlebox">
+      <engine:Image name="img_title"/>
+      <engine:Label name="lbl_welcometo" text="Welcome to"/>
+    </engine:VisualElement>
+
+    <engine:VisualElement class="roundedbox">
+      <engine:Label class="hyperlink" name="btn_cfxr1" text="• Cartoon FX Remaster 1"/>
+      <engine:Label class="hyperlink" name="btn_cfxr2" text="• Cartoon FX Remaster 2"/>
+      <engine:Label class="hyperlink" name="btn_cfxr3" text="• Cartoon FX Remaster 3"/>
+      <engine:Label class="hyperlink" name="btn_cfxr4" text="• Cartoon FX Remaster 4"/>
+      <engine:Label class="hyperlink" name="btn_cfxrbundle" text="• Cartoon FX Remaster Bundle"/>
+      <engine:TextElement
+        text="Cartoon FX Remaster FREE contains sample effects taken from the commercial Cartoon FX Remaster 1,2,3,4 packs!"/>
+      <engine:TextElement
+        text="Feel free to use them for your projects, and please buy any or all of the commercial packs if you want more!"/>
+      <engine:TextElement text="Effects are taken from:"/>
+      <engine:TextElement text="You can also buy all effects at once at"/>
+      <engine:TextElement text="a reduced price through the"/>
+      <engine:VisualElement style="height: 10px;"/>
+      <engine:VisualElement style="height: 10px;"/>
+      <engine:VisualElement style="height: 10px;"/>
+
+      <engine:VisualElement style="display:flex; flex-direction: row;">
+        <engine:Button name="close_dontshow" text="Close and don't show again"/>
+        <engine:Button name="close" text="Close"/>
+        <engine:TextElement text="Thank you! :)"/>
+        <engine:VisualElement style="flex-grow: 1;" name="spacer"/>
+      </engine:VisualElement>
+
+    </engine:VisualElement>
+  </engine:VisualElement>
+</engine:UXML>

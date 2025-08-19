@@ -1,1 +1,74 @@
-{"count":1,"self":63.993151999999995,"total":64.243717699999991,"children":{"InitializeActuators":{"count":1,"self":0.00201,"total":0.00201,"children":null},"InitializeSensors":{"count":1,"self":0.0040190999999999994,"total":0.0040190999999999994,"children":null},"AgentSendState":{"count":2912,"self":0.0982084,"total":0.1651309,"children":{"CollectObservations":{"count":2912,"self":0.0234288,"total":0.0234288,"children":null},"WriteActionMask":{"count":2912,"self":0.0025179,"total":0.0025179,"children":null},"RequestDecision":{"count":2912,"self":0.0316134,"total":0.0409758,"children":{"RayPerceptionSensor.Perceive":{"count":2912,"self":0.0093624,"total":0.0093624,"children":null}}}}},"DecideAction":{"count":2912,"self":0.0215739,"total":0.0215739,"children":null},"AgentAct":{"count":2912,"self":0.0568261,"total":0.0568261,"children":null}},"gauges":{},"metadata":{"timer_format_version":"0.1.0","start_time_seconds":"1755432941","unity_version":"6000.1.12f1","command_line_arguments":"C:\\Program Files\\Unity\\Hub\\Editor\\6000.1.12f1\\Editor\\Unity.exe -projectpath C:\\Users\\user\\Documents\\GitHub\\The-Zoo -useHub -hubIPC -cloudEnvironment production -licensingIpc LicenseClient-user -hubSessionId 116dd678-23bf-4b98-aca6-3c6539bec8db -accessToken ljIMCAvNWKfvw2RrZjNPhLGLfNEZ0859Kn2tIf2bg8I00df","communication_protocol_version":"1.5.0","com.unity.ml-agents_version":"2.0.1","scene_name":"AiLearn","end_time_seconds":"1755433005"}}
+{
+  "count": 1,
+  "self": 63.993151999999995,
+  "total": 64.243717699999991,
+  "children": {
+    "InitializeActuators": {
+      "count": 1,
+      "self": 0.00201,
+      "total": 0.00201,
+      "children": null
+    },
+    "InitializeSensors": {
+      "count": 1,
+      "self": 0.0040190999999999994,
+      "total": 0.0040190999999999994,
+      "children": null
+    },
+    "AgentSendState": {
+      "count": 2912,
+      "self": 0.0982084,
+      "total": 0.1651309,
+      "children": {
+        "CollectObservations": {
+          "count": 2912,
+          "self": 0.0234288,
+          "total": 0.0234288,
+          "children": null
+        },
+        "WriteActionMask": {
+          "count": 2912,
+          "self": 0.0025179,
+          "total": 0.0025179,
+          "children": null
+        },
+        "RequestDecision": {
+          "count": 2912,
+          "self": 0.0316134,
+          "total": 0.0409758,
+          "children": {
+            "RayPerceptionSensor.Perceive": {
+              "count": 2912,
+              "self": 0.0093624,
+              "total": 0.0093624,
+              "children": null
+            }
+          }
+        }
+      }
+    },
+    "DecideAction": {
+      "count": 2912,
+      "self": 0.0215739,
+      "total": 0.0215739,
+      "children": null
+    },
+    "AgentAct": {
+      "count": 2912,
+      "self": 0.0568261,
+      "total": 0.0568261,
+      "children": null
+    }
+  },
+  "gauges": {},
+  "metadata": {
+    "timer_format_version": "0.1.0",
+    "start_time_seconds": "1755432941",
+    "unity_version": "6000.1.12f1",
+    "command_line_arguments": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.1.12f1\\Editor\\Unity.exe -projectpath C:\\Users\\user\\Documents\\GitHub\\The-Zoo -useHub -hubIPC -cloudEnvironment production -licensingIpc LicenseClient-user -hubSessionId 116dd678-23bf-4b98-aca6-3c6539bec8db -accessToken ljIMCAvNWKfvw2RrZjNPhLGLfNEZ0859Kn2tIf2bg8I00df",
+    "communication_protocol_version": "1.5.0",
+    "com.unity.ml-agents_version": "2.0.1",
+    "scene_name": "AiLearn",
+    "end_time_seconds": "1755433005"
+  }
+}

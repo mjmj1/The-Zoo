@@ -36,6 +36,21 @@ namespace Utils
             return SESSIONNAMES[Random.Range(0, SESSIONNAMES.Length)];
         }
 
+        public static Vector3 GetRandomPosition(float minX, float maxX, float minZ, float maxZ, float y = 0f)
+        {
+            var x = Random.Range(minX, maxX);
+            var z = Random.Range(minZ, maxZ);
+            return new Vector3(x, y, z);
+        }
+        
+        public static Vector3 GetRandomPosition(Collider planeCollider)
+        {
+            var bounds = planeCollider.bounds;
+            var x = Random.Range(bounds.min.x, bounds.max.x);
+            var z = Random.Range(bounds.min.z, bounds.max.z);
+            return new Vector3(x, bounds.center.y, z);
+        }
+        
         public static Vector3 GetCirclePositions(Vector3 center, int index, float radius, int count)
         {
             var angle = index * Mathf.PI * 2f / count;

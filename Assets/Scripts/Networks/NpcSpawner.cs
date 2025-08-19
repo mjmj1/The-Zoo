@@ -34,7 +34,8 @@ namespace Networks
 
             for (var i = 0; i < count; i++)
             {
-                var pos = Util.GetRandomPositionInSphere(7.5f);
+                // var pos = Util.GetRandomPositionInSphere(7.5f);
+                var pos = Util.GetRandomPosition(-10f, 10f, -10f, 10f, 1);
 
                 var npc = prefab.InstantiateAndSpawn(NetworkManager,
                     position: pos,

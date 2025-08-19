@@ -1,11 +1,8 @@
 using System.Collections;
-using System.IO;
 using EventHandler;
 using Players;
-using Unity.Barracuda;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 using Unity.Netcode;
 using UnityEngine;
@@ -229,6 +226,7 @@ namespace AI
 
             rb.MovePosition(rb.position +
                             moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+
         }
 
         private void HandleLookActions(ActionSegment<float> action)

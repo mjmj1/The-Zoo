@@ -15,7 +15,6 @@ namespace GamePlay
     {
         [SerializeField] private GameResultUI gameResult;
         [SerializeField] private LoadingUI loading;
-        [SerializeField] private float spawnRadius = 7.5f;
 
         public NetworkVariable<bool> isGameStarted;
         public NetworkVariable<int> currentTime = new();
@@ -159,7 +158,7 @@ namespace GamePlay
         private void MoveRandomPositionRpc()
         {
             var clientId = NetworkManager.Singleton.LocalClientId;
-            var randomPos = Util.GetRandomPositionInSphere(spawnRadius);
+            var randomPos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
