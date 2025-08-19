@@ -28,6 +28,7 @@ namespace Players
         private SerializedProperty rotationSpeed;
         private SerializedProperty sprintSpeed;
         private SerializedProperty walkSpeed;
+        private SerializedProperty mover;
 
         public override void OnEnable()
         {
@@ -38,6 +39,7 @@ namespace Players
             rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
+            mover = serializedObject.FindProperty(nameof(PlayerController.mover));
             base.OnEnable();
         }
 
@@ -49,6 +51,7 @@ namespace Players
             EditorGUILayout.PropertyField(sprintSpeed);
             EditorGUILayout.PropertyField(rotationSpeed);
             EditorGUILayout.PropertyField(mouseSensitivity);
+            EditorGUILayout.PropertyField(mover);
         }
 
         public override void OnInspectorGUI()
@@ -95,6 +98,8 @@ namespace Players
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
 
+        public bool mover;
+
         public void Reset()
         {
             CanMove = true;
@@ -125,6 +130,8 @@ namespace Players
         {
             if (!IsOwner) return;
 
+            mover = CanMove;
+            
             HandleMovement();
             
             GamePlayEventHandler.OnPlayerSpined(entity.isSpin);

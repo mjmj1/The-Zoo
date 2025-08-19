@@ -12955,37 +12955,6 @@ MonoBehaviour:
   quitButton: {fileID: 1280687801}
   gameStartButton: {fileID: 1187354060}
   gameReadyButton: {fileID: 515005715}
---- !u!1 &1183899964
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1183899965}
-  m_Layer: 0
-  m_Name: Pivot Point
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1183899965
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1183899964}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1187354058
 GameObject:
   m_ObjectHideFlags: 0
@@ -15127,7 +15096,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bendType: 5
   bendID: 1
-  bendPivotPoint: {fileID: 1183899965}
+  bendPivotPoint: {fileID: 0}
   bendPivotPointPosition: {x: 0, y: 0, z: 0}
   bendRotationCenter: {fileID: 0}
   bendRotationCenterPosition: {x: 0, y: 0, z: 0}
@@ -101799,4 +101768,3 @@ SceneRoots:
   - {fileID: 1397684206}
   - {fileID: 784105036}
   - {fileID: 630055860}
-  - {fileID: 1183899965}
