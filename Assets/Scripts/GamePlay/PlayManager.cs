@@ -15,7 +15,6 @@ namespace GamePlay
     {
         [SerializeField] private GameResultUI gameResult;
         [SerializeField] private LoadingUI loading;
-        [SerializeField] private float spawnRadius = 7.5f;
 
         public NetworkVariable<bool> isGameStarted;
         public NetworkVariable<int> currentTime = new();

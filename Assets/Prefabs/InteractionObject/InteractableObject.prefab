@@ -101,7 +101,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   visualRoot: {fileID: 1048639399479177854}
-  ghostBand: 15
+  ghostBand: 25
 --- !u!136 &8656036648174182437
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -395,6 +395,22 @@ PrefabInstance:
     - target: {fileID: 400008, guid: 48f2b7e11b9820e4bbf7777804eaea94, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 48f2b7e11b9820e4bbf7777804eaea94, type: 3}
+      propertyPath: m_Size
+      value: 2.43474
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 48f2b7e11b9820e4bbf7777804eaea94, type: 3}
+      propertyPath: m_LocalReferencePoint.x
+      value: -0.09277189
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 48f2b7e11b9820e4bbf7777804eaea94, type: 3}
+      propertyPath: m_LocalReferencePoint.y
+      value: 1.1690264
+      objectReference: {fileID: 0}
+    - target: {fileID: 20500000, guid: 48f2b7e11b9820e4bbf7777804eaea94, type: 3}
+      propertyPath: m_LocalReferencePoint.z
+      value: 0.059896857
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

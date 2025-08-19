@@ -1600,7 +1600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2387924095
+  GlobalObjectIdHash: 2540070967
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -16329,6 +16329,7 @@ GameObject:
   - component: {fileID: 1485584500}
   - component: {fileID: 1485584503}
   - component: {fileID: 1485584504}
+  - component: {fileID: 1485584505}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -16486,6 +16487,24 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
   CustomBlends: {fileID: 0}
+--- !u!114 &1485584505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1485584499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27fec5cae7b257341a91ca046321b6eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  matrixType: 0
+  fieldOfView: 120
+  size: 4
+  nearClipPlaneSameAsCamera: 1
+  nearClipPlane: 1
+  drawGizmos: 0
 --- !u!1 &1487912114
 GameObject:
   m_ObjectHideFlags: 0

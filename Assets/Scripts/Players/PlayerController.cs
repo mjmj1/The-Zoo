@@ -282,12 +282,8 @@ namespace Players
         {
             if (!IsOwner) return;
             if (!TorusWorld.Instance) return;
-            
-            // Tile이 없는 씬(예: Lobby)에서의 NRE 방지
-            if (TorusWorld.Instance.tile != null)
-            {
-                TorusWorld.Instance.tile.follow = transform;
-            }
+
+            TorusWorld.Instance.tile.follow = transform;
         }
 
         private void HandleMovement()
