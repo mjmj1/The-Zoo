@@ -53,9 +53,9 @@
         Starts an editor coroutine. You can't use normal <code>yield new WaitFor</code> methods
         because
         those are Unity runtime, but you can instead use<code>yield null/etc</code>.
-        Other than that, you can use normal <para/>.
+        Other than that, you can use normal<para/>.
         <see
-        cref="M:DG.DemiEditor.DeEditorCoroutines.WaitForSeconds(System.Single)"/>
+          cref="M:DG.DemiEditor.DeEditorCoroutines.WaitForSeconds(System.Single)"/>
         Returns an
         <see cref="T:System.Collections.IEnumerator"/>
         (which you can use with
@@ -573,7 +573,8 @@
         Returns all components of type T in the currently open scene, or NULL if none could be
         found.
         <code>DeEditorTools</code>
-        If you're on Unity 5 or later, and have <code>DeEditorToolsUtils.FindAllComponentsOfType</code>, use
+        If you're on Unity 5 or later, and have <code>
+        DeEditorToolsUtils.FindAllComponentsOfType</code>, use
         <para/>
         instead, which is more efficient.
       </summary>
@@ -1210,7 +1211,9 @@
         <code>GUI.changed</code>
         Automatically manages various operations (press F1 to see them).
         <para/>
-        Sets <para/> to TRUE if the area is panned, a node is dragged, controlNodes
+        Sets
+        <para/>
+        to TRUE if the area is panned, a node is dragged, controlNodes
         change sorting or are deleted.
         <para/>
         Wraps all content inside a GUILayout Area (nodeArea).
@@ -1250,7 +1253,7 @@
         Call this method to update data required by softCtrl calculations.
         Automatically called from within a<para/>.
         <see
-        cref="T:DG.DemiEditor.DeGUINodeSystem.NodeProcessScope`1"/>
+          cref="T:DG.DemiEditor.DeGUINodeSystem.NodeProcessScope`1"/>
         Returns a
         <see cref="T:DG.DemiEditor.DeGUIKey.KeysRefreshResult"/>
         object with the keys that were just pressed and just released

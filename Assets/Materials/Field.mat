@@ -25,7 +25,7 @@ Material:
   m_Parent: {fileID: 2100000, guid: f33c1f6d083153146a47c48a412f409d, type: 2}
   m_ModifiedSerializedProperties: 16
   m_ValidKeywords:
-  - CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
+  - CURVEDWORLD_BEND_TYPE_CLASSICRUNNER_X_POSITIVE
   m_InvalidKeywords:
   - CURVEDWORLD_BEND_ID_1
   m_LightmapFlags: 4
@@ -65,6 +65,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 0.31446534, g: 0.31446534, b: 0.31446534, a: 1}
     - _Color: {r: 0.3144653, g: 0.3144653, b: 0.3144653, a: 1}
+    - _CurvedWorldBendSettings: {r: 0, g: 1, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
