@@ -172,6 +172,7 @@ namespace Players
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
             if (!IsOwner) return;
+            if (clientId != NetworkManager.LocalClientId) return;
 
             InitializePlanet();
             InitializeTorusWorld();
