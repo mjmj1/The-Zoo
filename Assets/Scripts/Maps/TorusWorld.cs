@@ -19,7 +19,7 @@ namespace Maps
             if (!Instance) Instance = this;
             else Destroy(gameObject);
         
-            tile = GetComponent<InfiniteTile>();
+            TryGetComponent<InfiniteTile>(out tile);
         }
 
         public Vector3 WrapXZ(Vector3 pos)

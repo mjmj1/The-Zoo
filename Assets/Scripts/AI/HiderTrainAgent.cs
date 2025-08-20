@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Maps;
 using Players;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
@@ -18,7 +19,6 @@ namespace AI
             None,
             Jumping,
             Attacking,
-            Interacting,
             SpinStart,
             Spinning,
             SpinEnd
@@ -33,12 +33,13 @@ namespace AI
 
         [SerializeField] private Transform seeker;
         [SerializeField] private Transform target;
-        [SerializeField] private List<Transform> interactables;
+        [SerializeField] private Transform interactions;
         [SerializeField] private LayerMask groundMask;
         [SerializeField] private float walkSpeed = 3f;
         [SerializeField] private float runSpeed = 4.5f;
         [SerializeField] private float rotationSpeed = 500f;
-        [SerializeField] private LPlanetGravity planet;
+        [SerializeField] private TrainPlanetGravity planet;
+        [SerializeField] private Collider groundCollider;
 
         private float moveSpeed;
 
@@ -78,7 +79,19 @@ namespace AI
 
         private void Start()
         {
+            if (!planet) return;
             planet.Subscribe(rb);
+        }
+
+        private void FixedUpdate()
+        {
+            if (!TorusWorld.Instance) return;
+
+            var wrapped = TorusWorld.Instance.WrapXZ(rb.position);
+
+            if (!((wrapped - rb.position).sqrMagnitude > 0.0001f)) return;
+
+            transform.position = wrapped;
         }
 
         private void Update()
@@ -104,6 +117,7 @@ namespace AI
         {
             input.UI.Escape.performed -= EscapePressed;
             input.UI.Click.performed -= MouseLeftClicked;
+            if (!planet) return;
             planet.Unsubscribe(rb);
         }
 
@@ -188,9 +202,6 @@ namespace AI
 
             started = false;
 
-            transform.position = planet.transform.position +
-                                 Util.GetRandomPositionInSphere(planet.GetRadius());
-
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
 
@@ -213,22 +224,43 @@ namespace AI
             hasHit = false;
             lastHitDirection = Vector3.zero;
 
-            if (seeker != null)
-                seeker.position =
-                    planet.transform.position + Util.GetRandomPositionInSphere(8f);
-
-            if (target != null)
-                target.position =
-                    planet.transform.position + Util.GetRandomPositionInSphere(8f);
-
-            foreach (var interactable in interactables)
+            if (planet)
             {
-                interactable.position =
-                    planet.transform.position + Util.GetRandomPositionInSphere(8.5f);
+                transform.position = planet.transform.position +
+                                     Util.GetRandomPositionInSphere(planet.GetRadius());
 
-                var normal = -planet.GetGravityDirection(interactable.position);
-                interactable.rotation =
-                    Quaternion.FromToRotation(interactable.transform.up, normal);
+                if (seeker != null)
+                    seeker.position =
+                        planet.transform.position + Util.GetRandomPositionInSphere(8f);
+
+                if (target != null)
+                    target.position =
+                        planet.transform.position + Util.GetRandomPositionInSphere(8f);
+
+                foreach (Transform interactable in interactions)
+                {
+                    interactable.position =
+                        planet.transform.position + Util.GetRandomPositionInSphere(8.5f);
+
+                    var normal = -planet.GetGravityDirection(interactable.position);
+                    interactable.rotation =
+                        Quaternion.FromToRotation(interactable.transform.up, normal);
+                }
+            }
+            else
+            {
+                transform.position = Util.GetRandomPosition(groundCollider);
+
+                if (seeker != null)
+                    seeker.position = Util.GetRandomPosition(groundCollider);
+
+                if (target != null)
+                    target.position = Util.GetRandomPosition(groundCollider);
+
+                foreach (Transform interactable in interactions)
+                {
+                    interactable.position = Util.GetRandomPosition(groundCollider);
+                }
             }
         }
 

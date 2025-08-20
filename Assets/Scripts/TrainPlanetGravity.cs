@@ -1,10 +1,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LPlanetGravity : MonoBehaviour
+public class TrainPlanetGravity : MonoBehaviour
 {
     public float gravityStrength = 9.81f;
     private readonly HashSet<Rigidbody> affectedBodies = new();
+
+    private Renderer rend;
+
+    private void Awake()
+    {
+        rend = GetComponent<Renderer>();
+    }
 
     private void FixedUpdate()
     {
