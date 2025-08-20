@@ -252,14 +252,14 @@ namespace AI
                 transform.position = Util.GetRandomPosition(groundCollider);
 
                 if (seeker != null)
-                    seeker.position = Util.GetRandomPosition(groundCollider);
+                    seeker.position = Vector3.up * 0.5f + Util.GetRandomPosition(groundCollider);
 
                 if (target != null)
-                    target.position = Util.GetRandomPosition(groundCollider);
+                    target.position = Vector3.up * 0.5f + Util.GetRandomPosition(groundCollider);
 
                 foreach (Transform interactable in interactions)
                 {
-                    interactable.position = Util.GetRandomPosition(groundCollider);
+                    interactable.position = Vector3.up + Util.GetRandomPosition(groundCollider);
                 }
             }
         }
