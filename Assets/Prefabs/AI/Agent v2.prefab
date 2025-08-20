@@ -93,7 +93,6 @@ MonoBehaviour:
     m_Bits: 64
   walkSpeed: 4
   runSpeed: 7
-  jumpForce: 3
   rotationSpeed: 500
   planet: {fileID: 0}
   moveInput: {x: 0, y: 0}
@@ -128,7 +127,7 @@ MonoBehaviour:
     NumStackedVectorObservations: 4
     m_ActionSpec:
       m_NumContinuousActions: 1
-      BranchSizes: 0300000003000000020000000200000004000000
+      BranchSizes: 030000000300000002000000020000000200000002000000
     VectorActionSize: 
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
@@ -215,8 +214,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363135223107981298}
   serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
+  m_Mass: 100
+  m_LinearDamping: 10
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}

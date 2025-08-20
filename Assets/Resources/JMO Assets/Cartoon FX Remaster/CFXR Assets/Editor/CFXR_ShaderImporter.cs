@@ -387,14 +387,14 @@ namespace CartoonFX
 #if SHOW_EXPORT_BUTTON
                     GUILayout.Space(8);
 
-                    EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(Importer.shaderSourceCode));
+                    EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(importer.shaderSourceCode));
                     {
                         if (GUILayout.Button("Export .shader file", GUILayout.ExpandWidth(false)))
                         {
                             string savePath = EditorUtility.SaveFilePanel("Export CFXR shader", Application.dataPath, "CFXR Shader","shader");
                             if (!string.IsNullOrEmpty(savePath))
                             {
-                                File.WriteAllText(savePath, Importer.shaderSourceCode);
+                                File.WriteAllText(savePath, importer.shaderSourceCode);
                             }
                         }
                     }

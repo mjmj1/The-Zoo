@@ -23,35 +23,29 @@ namespace Players
     public class CharacterControllerEditor : NetworkTransformEditor
     {
         private SerializedProperty groundMask;
-        private SerializedProperty jumpForce;
         private SerializedProperty mouseSensitivity;
         private SerializedProperty rotationSpeed;
         private SerializedProperty sprintSpeed;
         private SerializedProperty walkSpeed;
-        private SerializedProperty mover;
 
         public override void OnEnable()
         {
             groundMask = serializedObject.FindProperty(nameof(PlayerController.groundMask));
-            jumpForce = serializedObject.FindProperty(nameof(PlayerController.jumpForce));
             walkSpeed = serializedObject.FindProperty(nameof(PlayerController.walkSpeed));
             sprintSpeed = serializedObject.FindProperty(nameof(PlayerController.runSpeed));
             rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
             mouseSensitivity =
                 serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
-            mover = serializedObject.FindProperty(nameof(PlayerController.mover));
             base.OnEnable();
         }
 
         private void DisplayCharacterControllerProperties()
         {
             EditorGUILayout.PropertyField(groundMask);
-            EditorGUILayout.PropertyField(jumpForce);
             EditorGUILayout.PropertyField(walkSpeed);
             EditorGUILayout.PropertyField(sprintSpeed);
             EditorGUILayout.PropertyField(rotationSpeed);
             EditorGUILayout.PropertyField(mouseSensitivity);
-            EditorGUILayout.PropertyField(mover);
         }
 
         public override void OnInspectorGUI()
@@ -78,13 +72,12 @@ namespace Players
         public bool controllerPropertiesVisible;
 #endif
         public LayerMask groundMask;
-        public float jumpForce = 3f;
         public float walkSpeed = 3f;
         public float runSpeed = 4.5f;
         public float rotationSpeed = 50f;
         public float mouseSensitivity = 0.1f;
 
-        internal InputHandler Input;
+        internal InputHandler input;
         private PlayerNetworkAnimator animator;
         private PlayerEntity entity;
         private Hittable hittable;
@@ -97,8 +90,6 @@ namespace Players
 
         private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
-
-        public bool mover;
 
         public void Reset()
         {
@@ -129,12 +120,10 @@ namespace Players
         private void FixedUpdate()
         {
             if (!IsOwner) return;
-
-            mover = CanMove;
             
             HandleMovement();
             
-            GamePlayEventHandler.OnPlayerSpined(entity.isSpin);
+            GamePlayEventHandler.OnPlayerSpined(entity.isSpinHold);
 
             if (!TorusWorld.Instance) return;
             
@@ -153,7 +142,7 @@ namespace Players
         }
 
         public bool CanMove { get; set; } = true;
-        public bool IsSpinning { get; set; }
+        public bool IsJumping { get; set; }
 
         public void ApplyMouseSensitivity(float value)
         {
@@ -166,7 +155,8 @@ namespace Players
             InitializeFollowCamera();
             Subscribe();
 
-            InitializeMap();
+            InitializePlanet();
+            InitializeTorusWorld();
 
             base.OnNetworkSpawn();
         }
@@ -179,18 +169,14 @@ namespace Players
             base.OnNetworkDespawn();
         }
 
-        private bool IsGrounded()
-        {
-            return Physics.CheckSphere(transform.position, 0.05f, groundMask);
-        }
-
         private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
         {
             if (!IsOwner) return;
 
-            InitializeMap();
+            InitializePlanet();
+            InitializeTorusWorld();
 
-            Input.MouseLeftClicked();
+            input.MouseLeftClicked();
 
             entity.AlignForward();
 
@@ -216,18 +202,18 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            Input.InputActions.Player.Look.performed += Look;
-            Input.InputActions.Player.Look.canceled += Look;
-            Input.InputActions.Player.RightClick.performed += Rmb;
-            Input.InputActions.Player.RightClick.canceled += Rmb;
-            Input.InputActions.Player.Move.performed += Movement;
-            Input.InputActions.Player.Move.canceled += Movement;
-            Input.InputActions.Player.Run.performed += Run;
-            Input.InputActions.Player.Run.canceled += Run;
-            Input.InputActions.Player.Spin.performed += Spin;
-            Input.InputActions.Player.Spin.canceled += Spin;
-            Input.InputActions.Player.Jump.performed += Jump;
-            Input.InputActions.Player.Attack.started += Attack;
+            input.InputActions.Player.Look.performed += Look;
+            input.InputActions.Player.Look.canceled += Look;
+            input.InputActions.Player.RightClick.performed += Rmb;
+            input.InputActions.Player.RightClick.canceled += Rmb;
+            input.InputActions.Player.Move.performed += Movement;
+            input.InputActions.Player.Move.canceled += Movement;
+            input.InputActions.Player.Run.performed += Run;
+            input.InputActions.Player.Run.canceled += Run;
+            input.InputActions.Player.Spin.performed += Spin;
+            input.InputActions.Player.Spin.canceled += Spin;
+            input.InputActions.Player.Jump.performed += Jump;
+            input.InputActions.Player.Attack.started += Attack;
 
             hittable.health.OnValueChanged += Hit;
         }
@@ -238,18 +224,18 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            Input.InputActions.Player.Look.performed -= Look;
-            Input.InputActions.Player.Look.canceled -= Look;
-            Input.InputActions.Player.RightClick.performed -= Rmb;
-            Input.InputActions.Player.RightClick.canceled -= Rmb;
-            Input.InputActions.Player.Move.performed -= Movement;
-            Input.InputActions.Player.Move.canceled -= Movement;
-            Input.InputActions.Player.Run.performed -= Run;
-            Input.InputActions.Player.Run.canceled -= Run;
-            Input.InputActions.Player.Spin.performed -= Spin;
-            Input.InputActions.Player.Spin.canceled -= Spin;
-            Input.InputActions.Player.Jump.performed -= Jump;
-            Input.InputActions.Player.Attack.performed -= Attack;
+            input.InputActions.Player.Look.performed -= Look;
+            input.InputActions.Player.Look.canceled -= Look;
+            input.InputActions.Player.RightClick.performed -= Rmb;
+            input.InputActions.Player.RightClick.canceled -= Rmb;
+            input.InputActions.Player.Move.performed -= Movement;
+            input.InputActions.Player.Move.canceled -= Movement;
+            input.InputActions.Player.Run.performed -= Run;
+            input.InputActions.Player.Run.canceled -= Run;
+            input.InputActions.Player.Spin.performed -= Spin;
+            input.InputActions.Player.Spin.canceled -= Spin;
+            input.InputActions.Player.Jump.performed -= Jump;
+            input.InputActions.Player.Attack.performed -= Attack;
 
             hittable.health.OnValueChanged -= Hit;
         }
@@ -267,7 +253,7 @@ namespace Players
             Cursor.visible = false;
 
             rb = GetComponent<Rigidbody>();
-            Input = GetComponent<InputHandler>();
+            input = GetComponent<InputHandler>();
             entity = GetComponent<PlayerEntity>();
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
@@ -281,23 +267,31 @@ namespace Players
             CameraManager.Instance.SetFollowTarget(transform);
             CameraManager.Instance.LookMove();
             CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
-
-            PivotBinder.Instance.BindPivot(transform);
         }
 
-        private void InitializeMap()
+        private void InitializePlanet()
+        {
+            if (!IsOwner) return;
+
+            rb.useGravity = !PlanetGravity.Instance;
+            PlanetGravity.Instance?.Subscribe(rb);
+        }
+
+        private void InitializeTorusWorld()
         {
             if (!IsOwner) return;
             if (!TorusWorld.Instance) return;
+
+            PivotBinder.Instance.BindPivot(transform);
 
             TorusWorld.Instance.tile.follow = transform;
         }
 
         private void HandleMovement()
         {
-            if (!CanMove || entity.isSpin) return;
+            if (!CanMove || entity.isSpinHold) return;
 
-            var moveInput = Input.MoveInput;
+            var moveInput = input.MoveInput;
 
             if (moveInput == Vector2.zero) return;
 
@@ -332,7 +326,7 @@ namespace Players
             {
                 CameraManager.Instance.LookMove();
 
-                transform.Rotate(Vector3.up * (Input.LookInput.x * mouseSensitivity));
+                transform.Rotate(Vector3.up * (input.LookInput.x * mouseSensitivity));
 
                 CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
             }
@@ -351,12 +345,12 @@ namespace Players
 
         private void Jump(InputAction.CallbackContext ctx)
         {
-            if (!IsGrounded()) return;
+            if (IsJumping) return;
             if (!CanMove) return;
 
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            // rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
 
-            if (entity.isSpin) return;
+            if (entity.isSpinHold) return;
 
             animator.OnJump(ctx);
         }
@@ -373,8 +367,8 @@ namespace Players
         {
             if (!IsOwner) return;
             if (!CanMove) return;
-            if (!IsGrounded()) return;
-            if (entity.isSpin) return;
+            if (IsJumping) return;
+            if (entity.isSpinHold) return;
 
             entity.AlignForward();
 
@@ -387,7 +381,8 @@ namespace Players
         {
             if (!CanMove) return;
 
-            entity.isSpin = ctx.performed;
+            entity.isSpinHold = ctx.performed;
+
             animator.OnSpin(ctx);
         }
 

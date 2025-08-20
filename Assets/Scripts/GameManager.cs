@@ -63,7 +63,7 @@ public class GameManager : NetworkBehaviour
         print("Game EndRpc called");
 
         NpcSpawner.Instance.DespawnNpcRpc();
-        PlayManager.Instance.Interactor.DespawnInteractionRpc();
+        PlayManager.Instance.interactor.DespawnInteractionRpc();
 
         LoadSceneRpc("Lobby");
     }

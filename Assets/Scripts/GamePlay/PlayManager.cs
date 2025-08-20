@@ -1,5 +1,6 @@
 using System.Collections;
 using Interactions;
+using Maps;
 using Mission;
 using Networks;
 using Players;
@@ -20,9 +21,9 @@ namespace GamePlay
         public NetworkVariable<int> currentTime = new();
         private readonly WaitForSeconds waitDelay = new(1.0f);
 
-        internal InteractionController Interactor;
-        internal ObserverManager ObserverManager;
-        internal RoleManager RoleManager;
+        internal InteractionController interactor;
+        internal ObserverManager observerManager;
+        internal RoleManager roleManager;
 
         public static PlayManager Instance { get; private set; }
 
@@ -39,9 +40,9 @@ namespace GamePlay
 
         public override void OnNetworkSpawn()
         {
-            Interactor = GetComponent<InteractionController>();
-            ObserverManager = GetComponent<ObserverManager>();
-            RoleManager = GetComponent<RoleManager>();
+            interactor = GetComponent<InteractionController>();
+            observerManager = GetComponent<ObserverManager>();
+            roleManager = GetComponent<RoleManager>();
 
             if (!IsOwner) return;
 
@@ -50,8 +51,8 @@ namespace GamePlay
             MissionManager.instance.missionGauge.HiderProgress.OnValueChanged +=
                 OnHiderMissionWinChecked;
 
-            RoleManager.SeekerIds.OnListChanged += OnHiderWinChecked;
-            RoleManager.HiderIds.OnListChanged += OnSeekerWinChecked;
+            roleManager.SeekerIds.OnListChanged += OnHiderWinChecked;
+            roleManager.HiderIds.OnListChanged += OnSeekerWinChecked;
         }
 
         public override void OnNetworkDespawn()
@@ -64,8 +65,8 @@ namespace GamePlay
             MissionManager.instance.missionGauge.HiderProgress.OnValueChanged -=
                 OnHiderMissionWinChecked;
 
-            RoleManager.SeekerIds.OnListChanged -= OnHiderWinChecked;
-            RoleManager.HiderIds.OnListChanged -= OnSeekerWinChecked;
+            roleManager.SeekerIds.OnListChanged -= OnHiderWinChecked;
+            roleManager.HiderIds.OnListChanged -= OnSeekerWinChecked;
         }
 
 
@@ -76,7 +77,7 @@ namespace GamePlay
             if (newValue)
                 StartCoroutine(GameStartRoutine());
             else
-                RoleManager.UnassignRole();
+                roleManager.UnassignRole();
         }
 
         private void OnHiderWinChecked(NetworkListEvent<PlayerData> changeEvent)
@@ -85,7 +86,7 @@ namespace GamePlay
 
             if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Remove) return;
 
-            if (RoleManager.SeekerIds.Count != 0) return;
+            if (roleManager.SeekerIds.Count != 0) return;
 
             isGameStarted.Value = false;
 
@@ -124,7 +125,7 @@ namespace GamePlay
 
             if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Remove) return;
 
-            if (RoleManager.HiderIds.Count != 0) return;
+            if (roleManager.HiderIds.Count != 0) return;
 
             isGameStarted.Value = false;
 
@@ -158,7 +159,13 @@ namespace GamePlay
         private void MoveRandomPositionRpc()
         {
             var clientId = NetworkManager.Singleton.LocalClientId;
-            var randomPos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
+
+            var randomPos = Vector3.zero;
+
+            if (PlanetGravity.Instance)
+                randomPos = Util.GetRandomPositionInSphere(7.5f);
+            else if (TorusWorld.Instance)
+                randomPos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
@@ -172,7 +179,7 @@ namespace GamePlay
 
             yield return null;
 
-            RoleManager.AssignRole();
+            roleManager.AssignRole();
 
             yield return null;
 
@@ -187,7 +194,7 @@ namespace GamePlay
         {
             yield return new WaitForSeconds(2f);
 
-            foreach (var data in RoleManager.HiderIds)
+            foreach (var data in roleManager.HiderIds)
                 NpcSpawner.Instance.SpawnNpcRpc(data.AnimalIndex, 5);
         }
 
