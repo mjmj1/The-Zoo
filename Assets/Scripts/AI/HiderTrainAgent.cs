@@ -39,6 +39,7 @@ namespace AI
         [SerializeField] private float runSpeed = 4.5f;
         [SerializeField] private float rotationSpeed = 500f;
         [SerializeField] private TrainPlanetGravity planet;
+        [SerializeField] private TrainTorusWorld torus;
         [SerializeField] private Collider groundCollider;
 
         private float moveSpeed;
@@ -85,9 +86,9 @@ namespace AI
 
         private void FixedUpdate()
         {
-            if (!TorusWorld.Instance) return;
+            if (!torus) return;
 
-            var wrapped = TorusWorld.Instance.WrapXZ(rb.position);
+            var wrapped = torus.WrapXZ(rb.position);
 
             if (!((wrapped - rb.position).sqrMagnitude > 0.0001f)) return;
 
