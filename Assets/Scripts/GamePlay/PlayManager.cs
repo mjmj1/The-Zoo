@@ -163,7 +163,7 @@ namespace GamePlay
             var randomPos = Vector3.zero;
 
             if (PlanetGravity.Instance)
-                randomPos = Util.GetRandomPositionInSphere(7.5f);
+                randomPos = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
             else if (TorusWorld.Instance)
                 randomPos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
 
@@ -183,7 +183,7 @@ namespace GamePlay
 
             yield return null;
 
-            yield return StartCoroutine(SpawnNpc());
+            // yield return StartCoroutine(SpawnNpc());
 
             HideLoadingRpc();
 

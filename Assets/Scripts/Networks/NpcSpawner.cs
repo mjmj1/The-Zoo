@@ -38,7 +38,7 @@ namespace Networks
                 var pos = Vector3.zero;
 
                 if (PlanetGravity.Instance)
-                    pos = Util.GetRandomPositionInSphere(7.5f);
+                    pos = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
                 else if (TorusWorld.Instance)
                     pos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
 

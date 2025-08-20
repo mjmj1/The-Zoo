@@ -272,9 +272,11 @@ namespace Players
         private void InitializePlanet()
         {
             if (!IsOwner) return;
+            if (!PlanetGravity.Instance) return;
 
-            rb.useGravity = !PlanetGravity.Instance;
-            PlanetGravity.Instance?.Subscribe(rb);
+            rb.useGravity = false;
+            PlanetGravity.Instance.Subscribe(rb);
+            PivotBinder.Instance.gameObject.SetActive(false);
         }
 
         private void InitializeTorusWorld()
@@ -283,7 +285,6 @@ namespace Players
             if (!TorusWorld.Instance) return;
 
             PivotBinder.Instance.BindPivot(transform);
-
             TorusWorld.Instance.tile.follow = transform;
         }
 

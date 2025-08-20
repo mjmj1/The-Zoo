@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &65249846008590625
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7255323630380010305}
+  m_Layer: 7
+  m_Name: VisualRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7255323630380010305
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65249846008590625}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7775055411240680118}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &363135223107981298
 GameObject:
   m_ObjectHideFlags: 0
@@ -9,14 +40,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7775055411240680118}
-  - component: {fileID: 6386036970616992373}
+  - component: {fileID: 4105441741641506369}
   - component: {fileID: 2550229429905853943}
   - component: {fileID: 7698470656365953208}
   - component: {fileID: 8260965337020107351}
   - component: {fileID: 360131352170152545}
   - component: {fileID: 1184873129868919449}
   m_Layer: 7
-  m_Name: Agent
+  m_Name: TrainAgent
   m_TagString: Hider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34,10 +65,11 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 7255323630380010305}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6386036970616992373
+--- !u!114 &4105441741641506369
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,35 +78,38 @@ MonoBehaviour:
   m_GameObject: {fileID: 363135223107981298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc5d2479ebf4448fb73dccf16a65197f, type: 3}
+  m_Script: {fileID: 11500000, guid: 9f1b9dbad994e164eb01e99be2514ac0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 1000
-  walkSpeed: 4
-  runSpeed: 7
-  jumpForce: 3
-  rotationSpeed: 500
+  MaxStep: 0
   seeker: {fileID: 0}
+  target: {fileID: 0}
+  interactables: []
   groundMask:
     serializedVersion: 2
     m_Bits: 64
+  walkSpeed: 4
+  runSpeed: 7
+  rotationSpeed: 500
+  planet: {fileID: 0}
   moveInput: {x: 0, y: 0}
   lookInput: {x: 0, y: 0}
-  spinRewardThreshold: 2
-  spinTimer: 0
-  idle: 0
-  look: 0
-  walking: 0
-  running: 0
-  spinning: 0
-  attacking: 0
+  currentMoveState: 0
+  prevAAState: 0
+  currentAAState: 0
+  foundSeeker: {fileID: 0}
   isAction: 0
-  isGrounded: 0
-  seekerDetected: 0
-  hasGivenTurnAwayReward: 0
+  freeze: 0
+  spinHoldTime: 0
+  hasHit: 0
+  lastHitDirection: {x: 0, y: 0, z: 0}
+  started: 0
+  lastTangentForward: {x: 0, y: 0, z: 0}
+  lastYawRad: 0
+  lastYawRate: 0
 --- !u!114 &2550229429905853943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -88,11 +123,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 19
-    NumStackedVectorObservations: 5
+    VectorObservationSize: 25
+    NumStackedVectorObservations: 4
     m_ActionSpec:
       m_NumContinuousActions: 1
-      BranchSizes: 03000000030000000200000004000000
+      BranchSizes: 030000000300000002000000020000000200000002000000
     VectorActionSize: 
     VectorActionDescriptions: []
     VectorActionSpaceType: 0
@@ -134,13 +169,15 @@ MonoBehaviour:
   m_SensorName: RayPerceptionSensor
   m_DetectableTags:
   - Seeker
-  m_RaysPerDirection: 5
-  m_MaxRayDegrees: 90
+  - Target
+  - Interactable
+  m_RaysPerDirection: 8
+  m_MaxRayDegrees: 180
   m_SphereCastRadius: 0.5
   m_RayLength: 6
   m_RayLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967241
+    m_Bits: 4294967177
   m_ObservationStacks: 5
   rayHitColor: {r: 1, g: 0, b: 0, a: 1}
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
@@ -177,8 +214,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363135223107981298}
   serializedVersion: 5
-  m_Mass: 1
-  m_LinearDamping: 0
+  m_Mass: 100
+  m_LinearDamping: 10
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}

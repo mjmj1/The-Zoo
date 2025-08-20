@@ -12,10 +12,8 @@ namespace Interactions
         [SerializeField] private List<NetworkObject> interactionPrefabs;
         [SerializeField] private int interactionsCount = 15;
         [SerializeField] internal int targetCount = 5;
-        [SerializeField] private float spawnPadding = 1.5f;
-        [SerializeField] private LayerMask groundMask = ~0;
 
-        internal readonly List<NetworkObject> SpawnedInteractions = new();
+        private readonly List<NetworkObject> spawnedInteractions = new();
 
         private readonly HashSet<int> targetSet = new();
 
@@ -47,13 +45,13 @@ namespace Interactions
 
                 if (PlanetGravity.Instance)
                 {
-                    spawnPoint = Util.GetRandomPositionInSphere(7.5f);
+                    spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
                     var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
                     rotation = rotationOnSurface * Quaternion.Euler(0, Random.Range(0f, 360f), 0);
                 }
                 else if (TorusWorld.Instance)
                 {
-                    spawnPoint = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
+                    spawnPoint = Util.GetRandomPosition(-15f, 15f, -15f, 15f, -0.1f);
                     rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
                 }
 
@@ -61,7 +59,7 @@ namespace Interactions
                     position: spawnPoint,
                     rotation: rotation);
 
-                SpawnedInteractions.Add(interaction);
+                spawnedInteractions.Add(interaction);
 
                 interaction.GetComponent<InteractableSpawner>().Initialize(targetSet.Contains(i));
             }
@@ -70,13 +68,13 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         internal void DespawnInteractionRpc(RpcParams rpcParams = default)
         {
-            foreach (var obj in SpawnedInteractions.Where(obj => obj.IsSpawned))
+            foreach (var obj in spawnedInteractions.Where(obj => obj.IsSpawned))
             {
                 obj.GetComponent<InteractableSpawner>().DespawnInteraction();
                 obj.Despawn();
             }
 
-            SpawnedInteractions.Clear();
+            spawnedInteractions.Clear();
         }
     }
 }
