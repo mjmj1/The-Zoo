@@ -33,7 +33,7 @@ namespace Players
 
         private PlayerRenderer playerRenderer;
 
-        internal bool isSpin;
+        internal bool isSpinHold;
 
         public void Reset()
         {
@@ -103,7 +103,7 @@ namespace Players
                     MyLogger.Print(this, "옵저버 리스트 구독 해체");
                     if (!PlayManager.Instance) return;
 
-                    PlayManager.Instance.ObserverManager.observerIds.OnListChanged -= OnObserverListChanged;
+                    PlayManager.Instance.observerManager.observerIds.OnListChanged -= OnObserverListChanged;
                     break;
                 }
                 case "InGame":
@@ -111,7 +111,7 @@ namespace Players
                     MyLogger.Print(this, "옵저버 리스트 구독");
                     if (!PlayManager.Instance) return;
 
-                    PlayManager.Instance.ObserverManager.observerIds.OnListChanged += OnObserverListChanged;
+                    PlayManager.Instance.observerManager.observerIds.OnListChanged += OnObserverListChanged;
                     break;
                 }
             }
@@ -177,11 +177,11 @@ namespace Players
             if (!IsOwner) return;
 
             if(role.Value == Role.Hider)
-                PlayManager.Instance.RoleManager.RemoveHiderRpc(OwnerClientId);
+                PlayManager.Instance.roleManager.RemoveHiderRpc(OwnerClientId);
             else if(role.Value == Role.Seeker)
-                PlayManager.Instance.RoleManager.RemoveSeekerRpc(OwnerClientId);
+                PlayManager.Instance.roleManager.RemoveSeekerRpc(OwnerClientId);
 
-            PlayManager.Instance.ObserverManager.AddRpc(OwnerClientId);
+            PlayManager.Instance.observerManager.AddRpc(OwnerClientId);
         }
 
         private void OnObserverListChanged(NetworkListEvent<ulong> changeEvent)
@@ -191,14 +191,14 @@ namespace Players
             if (OwnerClientId == changeEvent.Value)
                 foreach (var client in NetworkManager.Singleton.ConnectedClientsIds)
                 {
-                    if (PlayManager.Instance.ObserverManager.observerIds.Contains(client)) continue;
+                    if (PlayManager.Instance.observerManager.observerIds.Contains(client)) continue;
 
                     NetworkHide(client);
                 }
 
             if (!isDead.Value) return;
 
-            foreach (var observer in PlayManager.Instance.ObserverManager.observerIds)
+            foreach (var observer in PlayManager.Instance.observerManager.observerIds)
                 NetworkShow(observer);
         }
 

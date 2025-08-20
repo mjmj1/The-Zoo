@@ -14,7 +14,7 @@ namespace GamePlay
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
 
-                Controller = GetComponent<CurvedWorldController>();
+                controller = GetComponent<CurvedWorldController>();
             }
             else
             {
@@ -22,11 +22,11 @@ namespace GamePlay
             }
         }
 
-        internal CurvedWorldController Controller;
+        private CurvedWorldController controller;
 
         public void BindPivot(Transform pivot)
         {
-            Controller.bendPivotPoint = pivot;
+            controller.bendPivotPoint = pivot;
         }
     }
 }

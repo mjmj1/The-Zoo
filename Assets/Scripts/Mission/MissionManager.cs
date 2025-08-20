@@ -35,7 +35,7 @@ namespace Mission
 
         public override void OnNetworkSpawn()
         {
-            PlayManager.Instance.RoleManager.HiderIds.OnListChanged += HiderListChanged;
+            PlayManager.Instance.roleManager.HiderIds.OnListChanged += HiderListChanged;
 
             pickupCount.OnValueChanged += OnPickupCountChanged;
             spinCount.OnValueChanged += OnSpinCountChanged;
@@ -49,7 +49,7 @@ namespace Mission
 
         public override void OnNetworkDespawn()
         {
-            PlayManager.Instance.RoleManager.HiderIds.OnListChanged -= HiderListChanged;
+            PlayManager.Instance.roleManager.HiderIds.OnListChanged -= HiderListChanged;
 
             pickupCount.OnValueChanged -= OnPickupCountChanged;
             spinCount.OnValueChanged -= OnSpinCountChanged;
@@ -65,7 +65,7 @@ namespace Mission
 
         private void HiderListChanged(NetworkListEvent<PlayerData> changeEvent)
         {
-            seekerMissionCountText.text = $"{PlayManager.Instance.RoleManager.HiderIds.Count}";
+            seekerMissionCountText.text = $"{PlayManager.Instance.roleManager.HiderIds.Count}";
         }
 
         private void OnPickupCountChanged(int prev, int newValue)

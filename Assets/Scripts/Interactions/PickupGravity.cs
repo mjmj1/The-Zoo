@@ -18,6 +18,7 @@ namespace Interactions
 
             PlanetGravity.Instance?.Subscribe(rb);
         }
+
         private void OnDestroy()
         {
             PlanetGravity.Instance?.Unsubscribe(rb);

@@ -8,10 +8,14 @@ public class PlanetGravity : MonoBehaviour
     private readonly float gravityStrength = 9.81f;
     private readonly HashSet<Rigidbody> affectedBodies = new();
 
+    private Renderer rend;
+
     private void Awake()
     {
         if (!Instance) Instance = this;
         else Destroy(gameObject);
+
+        rend = GetComponent<Renderer>();
     }
 
     private void FixedUpdate()
@@ -36,7 +40,8 @@ public class PlanetGravity : MonoBehaviour
 
     public float GetRadius()
     {
-        return transform.localScale.x * 0.5f;
+        var size = rend.bounds.size;
+        return 0.5f * Mathf.Max(size.x, Mathf.Max(size.y, size.z));
     }
 
     public void Subscribe(Rigidbody rb)

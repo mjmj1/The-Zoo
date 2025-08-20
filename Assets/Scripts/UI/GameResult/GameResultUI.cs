@@ -54,7 +54,7 @@ namespace UI.GameResult
             var uniqueIds = new HashSet<ulong>();
 
             if (isSeekerWin)
-                foreach (var seeker in PlayManager.Instance.RoleManager.SeekerIds)
+                foreach (var seeker in PlayManager.Instance.roleManager.SeekerIds)
                 {
                     if (!uniqueIds.Add(seeker.ClientId)) continue;
 
@@ -63,12 +63,12 @@ namespace UI.GameResult
                     item.SetPlayerName(seeker.Name.Value);
                 }
             else
-                foreach (var hider in PlayManager.Instance.RoleManager.HiderIds)
+                foreach (var hider in PlayManager.Instance.roleManager.HiderIds)
                 {
                     if (!uniqueIds.Add(hider.ClientId)) continue;
 
                     var prefab =
-                        PlayManager.Instance.ObserverManager.observerIds.Contains(hider.ClientId)
+                        PlayManager.Instance.observerManager.observerIds.Contains(hider.ClientId)
                             ? hiderDeath
                             : hiderAlive;
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Maps;
 using Unity.Netcode;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -34,14 +35,19 @@ namespace Networks
 
             for (var i = 0; i < count; i++)
             {
-                // var pos = Util.GetRandomPositionInSphere(7.5f);
-                var pos = Util.GetRandomPosition(-10f, 10f, -10f, 10f, 1);
+                var pos = Vector3.zero;
+
+                if (PlanetGravity.Instance)
+                    pos = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
+                else if (TorusWorld.Instance)
+                    pos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
 
                 var npc = prefab.InstantiateAndSpawn(NetworkManager,
                     position: pos,
                     rotation: Quaternion.LookRotation((Vector3.zero - pos).normalized));
 
                 spawnedNpcs.Add(npc);
+
                 yield return null;
             }
 

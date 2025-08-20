@@ -8,15 +8,12 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: cfxr proc ring water ripple local space ab
-  m_Shader: {fileID: 4800000, guid: c61d9e0219b7e3a4f96252d3a678be2b, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
+  m_Shader: {fileID: -6465566751694194690, guid: 1581eccce46ba384596a1dce7936ab19,
+    type: 3}
   m_ValidKeywords:
   - _CFXR_DISSOLVE
   - _CFXR_WORLD_SPACE_RING
   m_InvalidKeywords:
-  - CURVEDWORLD_BEND_ID_1
-  - CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
   - _CFXR_DITHERED_SHADOWS_OFF
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
@@ -24,7 +21,6 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -59,7 +55,5 @@ Material:
     - _UseSP: 0
     - _WorldSpaceRing: 1
     m_Colors:
-    - _CurvedWorldBendSettings: {r: 5, g: 1, b: 0, a: 0}
     - _Debug: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
-  m_AllowLocking: 1

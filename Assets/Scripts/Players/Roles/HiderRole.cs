@@ -36,7 +36,7 @@ namespace Players.Roles
 
             CheckForInteractable();
 
-            GamePlayEventHandler.OnPlayerSpined(entity.isSpin);
+            GamePlayEventHandler.OnPlayerSpined(entity.isSpinHold);
         }
 
         private void OnEnable()
