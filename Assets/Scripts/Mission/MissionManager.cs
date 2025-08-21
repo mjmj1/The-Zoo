@@ -18,12 +18,9 @@ namespace Mission
 
         public NetworkVariable<int> pickupCount = new();
         public NetworkVariable<int> spinCount = new();
-        public float spinTimer;
-
+        
         internal readonly int MaxPickup = 15;
         internal readonly int MaxSpin = 60;
-
-        private int maxHiderCount;
 
         private void Awake()
         {
@@ -40,9 +37,6 @@ namespace Mission
             pickupCount.OnValueChanged += OnPickupCountChanged;
             spinCount.OnValueChanged += OnSpinCountChanged;
 
-            GamePlayEventHandler.PlayerPickup += OnPlayerPickup;
-            GamePlayEventHandler.PlayerSpined += OnPlayerSpined;
-
             pickupCountText.text = $"{pickupCount.Value} / {MaxPickup}";
             spinCountText.text = $"{spinCount.Value} / {MaxSpin}";
         }
@@ -53,9 +47,6 @@ namespace Mission
 
             pickupCount.OnValueChanged -= OnPickupCountChanged;
             spinCount.OnValueChanged -= OnSpinCountChanged;
-
-            GamePlayEventHandler.PlayerPickup -= OnPlayerPickup;
-            GamePlayEventHandler.PlayerSpined -= OnPlayerSpined;
         }
 
         public int GetTotalMissionCount()
@@ -73,41 +64,20 @@ namespace Mission
             pickupCountText.text = $"{newValue} / {MaxPickup}";
         }
 
-        private void OnPlayerPickup()
-        {
-            OnPickupRpc();
-        }
-
-        [Rpc(SendTo.Server, RequireOwnership = false)]
-        private void OnPickupRpc(RpcParams param = default)
-        {
-            pickupCount.Value += 1;
-            missionGauge.HiderProgress.Value += 1;
-        }
-
         private void OnSpinCountChanged(int previousValue, int newValue)
         {
             spinCountText.text = $"{spinCount.Value} / {MaxSpin}";
         }
 
-        private void OnPlayerSpined(bool value)
+        [Rpc(SendTo.Server, RequireOwnership = false)]
+        public void AddPickupCountServerRpc(RpcParams rpcParams = default)
         {
-            if (!value)
-            {
-                spinTimer = 0;
-                return;
-            }
-
-            spinTimer += Time.deltaTime;
-
-            if (!(spinTimer >= 1.0f)) return;
-
-            spinTimer = 0f;
-            OnSpinRpc();
+            pickupCount.Value += 1;
+            missionGauge.HiderProgress.Value += 1;
         }
 
         [Rpc(SendTo.Server, RequireOwnership = false)]
-        private void OnSpinRpc(RpcParams param = default)
+        public void AddSpinCountServerRpc(RpcParams rpcParams = default)
         {
             spinCount.Value += 1;
             missionGauge.HiderProgress.Value += 1;
