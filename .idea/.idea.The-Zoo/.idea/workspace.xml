@@ -5,74 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aad7af9a-d9eb-4779-b603-470b4a8a9e4a" name="변경" comment="">
-      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Maps/InfiniteTile.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/AI/SphereTrainAgent.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/AI/SphereTrainAgent.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.The-Zoo/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Editor/AmazingAssets.CurvedWorld.Editor.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Editor/AmazingAssets.CurvedWorld.Editor.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Editor/Material Editors/Universal/AmazingAssets.CurvedWorld.Editor.Universal.ShaderGUI.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Editor/Material Editors/Universal/AmazingAssets.CurvedWorld.Editor.Universal.ShaderGUI.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/AmazingAssets.CurvedWorld.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/AmazingAssets.CurvedWorld.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/CurvedWorldController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/CurvedWorldController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/CurvedWorldRenderPipeline.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/CurvedWorldRenderPipeline.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/CurvedWorldUtilities.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Scripts/CurvedWorldUtilities.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Rolloff/CurvedWorld_CylindricalRolloff_X_ID21.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Rolloff/CurvedWorld_CylindricalRolloff_X_ID21.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Rolloff/CurvedWorld_CylindricalRolloff_X_ID24.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Rolloff/CurvedWorld_CylindricalRolloff_X_ID24.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Tower/CurvedWorld_CylindricalTower_X_ID17.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Tower/CurvedWorld_CylindricalTower_X_ID17.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Tower/CurvedWorld_CylindricalTower_X_ID18.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Cylindrical Tower/CurvedWorld_CylindricalTower_X_ID18.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_X_ID4.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_X_ID4.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_X_ID5.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_X_ID5.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_Z_ID6.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_Z_ID6.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_Z_ID7.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Little Planet/CurvedWorld_LittlePlanet_Z_ID7.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal Double/CurvedWorld_SpiralHorizontalDouble_X_ID28.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal Double/CurvedWorld_SpiralHorizontalDouble_X_ID28.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal Double/CurvedWorld_SpiralHorizontalDouble_X_ID29.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal Double/CurvedWorld_SpiralHorizontalDouble_X_ID29.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal Rolloff/CurvedWorld_SpiralHorizontalRolloff_X_ID3.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal Rolloff/CurvedWorld_SpiralHorizontalRolloff_X_ID3.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID18.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID18.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID19.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID19.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID2.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID2.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID20.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Horizontal/CurvedWorld_SpiralHorizontal_X_Negative_ID20.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Double/CurvedWorld_SpiralVerticalDouble_X_ID24.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Double/CurvedWorld_SpiralVerticalDouble_X_ID24.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Rolloff/CurvedWorld_SpiralVerticalRolloff_X_ID25.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Rolloff/CurvedWorld_SpiralVerticalRolloff_X_ID25.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Rolloff/CurvedWorld_SpiralVerticalRolloff_X_ID26.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Rolloff/CurvedWorld_SpiralVerticalRolloff_X_ID26.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Rolloff/CurvedWorld_SpiralVerticalRolloff_X_ID27.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical Rolloff/CurvedWorld_SpiralVerticalRolloff_X_ID27.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_X_Negative_ID13.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_X_Negative_ID13.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_X_Negative_ID14.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_X_Negative_ID14.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_Z_Negative_ID15.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_Z_Negative_ID15.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_Z_Negative_ID16.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Spiral Vertical/CurvedWorld_SpiralVertical_Z_Negative_ID16.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Twisted Spiral/CurvedWorld_TwistedSpiral_Z_Negative_ID12.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/CGINC/Twisted Spiral/CurvedWorld_TwistedSpiral_Z_Negative_ID12.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Core/ScenePicking.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Core/ScenePicking.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Core/SceneSelection.cginc" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Core/SceneSelection.cginc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLitDepthNormalsPass.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLitDepthNormalsPass.hlsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLitForwardPass.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLitForwardPass.hlsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLitGBufferPass.hlsl" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Amazing Assets/Curved World/Shaders/Universal/Lit/SimpleLitGBufferPass.hlsl" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Handpainted_Grass_and_Ground_Textures/Textures/Grass/Grass_lighted/Materials/Grass_lighted_up.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Handpainted_Grass_and_Ground_Textures/Textures/Grass/Grass_lighted/Materials/Grass_lighted_up.mat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/AiLearn_timers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/CFXRF Demo_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/CFXRF Demo_timers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/InGame_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/InGame_timers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Lobby_timers.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/ML-Agents/Timers/Lobby_timers.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Piloto Studio/Shaders/Standard_Package.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Piloto Studio/Shaders/URP_2022.3DepthIssue.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Piloto Studio/Shaders/URP_2DPackage.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Piloto Studio/Shaders/URP_Package.unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Demigiant/DemiLib/Core/DemiLib.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Demigiant/DemiLib/Core/DemiLib.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Demigiant/DemiLib/Core/Editor/DemiEditor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Demigiant/DemiLib/Core/Editor/DemiEditor.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/InteractionObject/InteractableObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/InteractionObject/InteractableObject.prefab" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/PlayerObject.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/AI/TrainAgent.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/AI/TrainAgent.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/AI/Training Area.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/AI/Training Area.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Animals/Cat Variant.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Animals/Cat Variant.prefab" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX FREE (old legacy effects).unitypackage.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Editor/CFXR Editor.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Editor/CFXR Editor.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr proc ring water ripple local space ab.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr proc ring water ripple local space ab.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr spikes impact dissolve ab.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr spikes impact dissolve ab.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr stretch rectangle ray ab.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr stretch rectangle ray ab.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr sword trail plain.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Graphics/cfxr sword trail plain.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Welcome Screen/CFXR_WelcomeScreen.uss" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Welcome Screen/CFXR_WelcomeScreen.uss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Welcome Screen/CFXR_WelcomeScreen.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/JMO Assets/Welcome Screen/CFXR_WelcomeScreen.uxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/SimplyToon_Piloto/Curved_GradModels_Toony.mat" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Resources/Piloto Studio/Shaders/SimplyToon_Piloto/Curved_GradModels_Toony.mat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/InGame.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Lobby.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Interactions/Interactable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Interactions/Interactable.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Maps/InfiniteTileStable.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Maps/InfiniteTileStable.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Maps/InfiniteTile.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Maps/TorusGhostReplicator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Maps/TorusGhostReplicator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Maps/TorusWorld.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Maps/TorusWorld.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Players/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/AiLearn.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -98,12 +39,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$USER_HOME$/AppData/Local/Temp/DefaultCompany/The Zoo/Cartoon FX-Remaster-Particle Procedural Ring_Source.shader" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Editor/CFXR Editor.asmdef" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Editor/CFXR Editor.asmdef" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Resources/JMO Assets/Cartoon FX Remaster/CFXR Assets/Editor/CFXR Editor.asmdef" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Scripts/Players/PlayerController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Scripts/Players/PlayerController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Scripts/Players/PlayerController.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/user/Documents/GitHub/The-Zoo/Assets/Scripts/Players/PlayerController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/AI/SphereTrainAgent.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Library/PackageCache/com.unity.ide.rider@4d374c7eb6db/Rider/Editor/RiderScriptEditor.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -120,7 +56,7 @@
   &quot;keyToString&quot;: {
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;IG/구형-맵-수정&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;IG/ai/001/ml-agents-학습-환경-구현&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -209,6 +145,9 @@
       <workItem from="1755519494651" duration="885000" />
       <workItem from="1755520400839" duration="1116000" />
       <workItem from="1755525605106" duration="4218000" />
+      <workItem from="1755776264350" duration="170000" />
+      <workItem from="1755776449456" duration="3261000" />
+      <workItem from="1755779804376" duration="3589000" />
     </task>
     <servers />
   </component>
