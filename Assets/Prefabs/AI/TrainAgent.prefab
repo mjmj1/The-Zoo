@@ -84,10 +84,10 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  MaxStep: 0
+  MaxStep: 2000
   seeker: {fileID: 0}
   target: {fileID: 0}
-  interactables: []
+  interactions: {fileID: 0}
   groundMask:
     serializedVersion: 2
     m_Bits: 64
@@ -95,6 +95,8 @@ MonoBehaviour:
   runSpeed: 7
   rotationSpeed: 500
   planet: {fileID: 0}
+  torus: {fileID: 0}
+  groundCollider: {fileID: 0}
   moveInput: {x: 0, y: 0}
   lookInput: {x: 0, y: 0}
   currentMoveState: 0
@@ -107,9 +109,6 @@ MonoBehaviour:
   hasHit: 0
   lastHitDirection: {x: 0, y: 0, z: 0}
   started: 0
-  lastTangentForward: {x: 0, y: 0, z: 0}
-  lastYawRad: 0
-  lastYawRate: 0
 --- !u!114 &2550229429905853943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,10 +170,10 @@ MonoBehaviour:
   - Seeker
   - Target
   - Interactable
-  m_RaysPerDirection: 8
+  m_RaysPerDirection: 15
   m_MaxRayDegrees: 180
   m_SphereCastRadius: 0.5
-  m_RayLength: 6
+  m_RayLength: 15
   m_RayLayerMask:
     serializedVersion: 2
     m_Bits: 4294967177

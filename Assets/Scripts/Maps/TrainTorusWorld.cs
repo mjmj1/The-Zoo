@@ -12,9 +12,11 @@ namespace Maps
 
         public Vector3 WrapXZ(Vector3 pos)
         {
-            pos.x = Mathf.Repeat(pos.x + HalfX, sizeX) - HalfX;
-            pos.z = Mathf.Repeat(pos.z + HalfZ, sizeZ) - HalfZ;
-            return pos;
+            // 맵의 중심을 고려하여 상대 위치 계산
+            var relativePos = pos - transform.position;
+            relativePos.x = Mathf.Repeat(relativePos.x + HalfX, sizeX) - HalfX;
+            relativePos.z = Mathf.Repeat(relativePos.z + HalfZ, sizeZ) - HalfZ;
+            return transform.position + relativePos;
         }
     }
 }

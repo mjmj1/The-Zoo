@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using Maps;
 using Players;
 using Unity.MLAgents;
@@ -97,6 +96,8 @@ namespace AI
 
         private void Update()
         {
+            if (!planet) return;
+
             AlignToSurface();
         }
 
@@ -460,7 +461,7 @@ namespace AI
 
                 if (currentMoveState != AgentMoveState.Idle && hitDot > 0.8f)
                     //print($"Hit Reward");
-                    AddReward(hitDot * 0.001f);
+                    AddReward(hitDot * 0.00001f);
 
                 return;
             }
@@ -476,20 +477,20 @@ namespace AI
                 if (currentMoveState != AgentMoveState.Idle)
                     if (dot > 0.8)
                         // print($"Move Action");
-                        AddReward(dot * 0.00001f);
+                        AddReward(dot * 0.0000001f);
             }
             else
             {
                 if (currentAAState != AgentActionState.None)
                     //print($"Freeze Action Penalty");
-                    AddReward(-0.0001f);
+                    AddReward(-0.000001f);
 
                 if (currentMoveState != AgentMoveState.Idle)
                     //print($"Freeze Penalty");
-                    AddReward(-0.00001f);
+                    AddReward(-0.0000001f);
                 else if (currentMoveState == AgentMoveState.Idle)
                     //print($"Freeze Reward");
-                    AddReward(0.00001f);
+                    AddReward(0.0000001f);
             }
 
             if (currentAAState != prevAAState)
@@ -498,32 +499,32 @@ namespace AI
                     case AgentActionState.Jumping:
                         if (isAction)
                             //print("Jumping Penalty");
-                            AddReward(-0.005f);
+                            AddReward(-0.00005f);
                         else
                             //print("Jumping Reward");
-                            AddReward(0.001f);
+                            AddReward(0.00001f);
 
                         break;
                     case AgentActionState.Attacking:
                         if (isAction)
                             //print("Attacking Penalty");
-                            AddReward(-0.005f);
+                            AddReward(-0.00005f);
                         else
                             //print("Attacking Reward");
-                            AddReward(0.001f);
+                            AddReward(0.00001f);
                         break;
                     case AgentActionState.SpinStart:
                         if (isAction)
                             //print("SpinStart Penalty");
-                            AddReward(-0.005f);
+                            AddReward(-0.00005f);
                         else
                             //print("SpinStart Reward");
-                            AddReward(0.0005f);
+                            AddReward(0.000005f);
                         break;
                     case AgentActionState.SpinEnd:
                         if (isAction)
                             // print("SpinEnd Reward");
-                            AddReward(0.0005f);
+                            AddReward(0.000005f);
                         break;
                 }
 
@@ -532,7 +533,7 @@ namespace AI
             if (currentAAState == AgentActionState.Spinning)
                 if (isAction)
                     //print("Spinning Reward");
-                    AddReward(0.0000001f);
+                    AddReward(0.0000000001f);
 
             if (IsSeekerFind(out var tr)) foundSeeker = tr;
 
