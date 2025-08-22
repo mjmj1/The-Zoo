@@ -18,18 +18,16 @@ namespace AI
 
         [Header("Params")]
         public float moveSpeed = 3f;
-        public float successDistance = 0.2f;
 
         public Vector2 moveInput;
         public Vector2 lookInput;
-        private float lastSphericalDist;
-        private float lastSeekerDist;
 
         private RayPerceptionSensorComponent3D raySensor;
         private DecisionRequester dr;
         private BehaviorParameters bp;
+
+        private Rigidbody rb;
         private PlayerInputActions input;
-        private CharacterController cc;
 
         private void Update()
         {
@@ -63,8 +61,8 @@ namespace AI
 
         public override void Initialize()
         {
-            cc = GetComponent<CharacterController>();
-            planet.Subscribe(cc.attachedRigidbody);
+            rb = GetComponent<Rigidbody>();
+            planet.Subscribe(rb);
 
             input = new PlayerInputActions();
 
@@ -112,8 +110,8 @@ namespace AI
 
         public override void CollectObservations(VectorSensor sensor)
         {
-            sensor.AddObservation(cc.velocity.normalized);
-            sensor.AddObservation(cc.velocity.magnitude);
+            sensor.AddObservation(rb.linearVelocity.normalized);
+            sensor.AddObservation(rb.linearVelocity.magnitude);
             sensor.AddObservation(transform.up.normalized);
             sensor.AddObservation(transform.forward.normalized);
         }
@@ -134,7 +132,7 @@ namespace AI
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            cc.Move(moveDirection * moveSpeed * Time.fixedDeltaTime);
+            rb.MovePosition(rb.position + moveDirection * moveSpeed * Time.fixedDeltaTime);
         }
 
         private void LookActions(ActionSegment<float> action)
@@ -148,13 +146,15 @@ namespace AI
         {
             AddReward(-0.001f);
 
-            var moveDir = Vector3.ProjectOnPlane(cc.velocity.normalized, transform.up).normalized;
+            var moveDir = Vector3.ProjectOnPlane(rb.linearVelocity.normalized, transform.up).normalized;
             var lookDir = transform.forward;
 
             var dot = Vector3.Dot(moveDir, lookDir);
 
-            print($"{dot * 0.001f:F2}");
-            AddReward(dot * 0.001f);
+            if (dot is > 0.8f or < 0f)
+            {
+                AddReward(dot * 0.001f);
+            }
         }
 
         public override void Heuristic(in ActionBuffers actionsOut)

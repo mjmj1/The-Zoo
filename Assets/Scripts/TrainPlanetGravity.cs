@@ -35,7 +35,8 @@ public class TrainPlanetGravity : MonoBehaviour
 
     public float GetRadius()
     {
-        return transform.localScale.x * 0.5f;
+        var size = rend.bounds.size;
+        return 0.5f * Mathf.Max(size.x, Mathf.Max(size.y, size.z));
     }
 
     public void Subscribe(Rigidbody rb)

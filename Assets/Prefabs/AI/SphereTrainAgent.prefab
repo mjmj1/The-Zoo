@@ -111,7 +111,8 @@ GameObject:
   - component: {fileID: 7997293009033602997}
   - component: {fileID: 424466357250375721}
   - component: {fileID: 7624782888238975144}
-  - component: {fileID: 5485781923044903460}
+  - component: {fileID: 8386960984858984585}
+  - component: {fileID: 5526731074009871516}
   m_Layer: 7
   m_Name: SphereTrainAgent
   m_TagString: Hider
@@ -156,7 +157,6 @@ MonoBehaviour:
   seeker: {fileID: 0}
   interactions: {fileID: 0}
   moveSpeed: 3
-  successDistance: 0.2
   moveInput: {x: 0, y: 0}
   lookInput: {x: 0, y: 0}
 --- !u!114 &7997293009033602997
@@ -232,8 +232,8 @@ MonoBehaviour:
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
   m_StartVerticalOffset: 1
   m_EndVerticalOffset: -1
---- !u!143 &5485781923044903460
-CharacterController:
+--- !u!136 &8386960984858984585
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -245,18 +245,43 @@ CharacterController:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 0
   m_LayerOverridePriority: 0
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
+  serializedVersion: 2
+  m_Radius: 0.3
   m_Height: 1
-  m_Radius: 0.35
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!54 &5526731074009871516
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 334532012657732222}
+  serializedVersion: 5
+  m_Mass: 100
+  m_LinearDamping: 10
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 112
+  m_CollisionDetection: 0
 --- !u!1 &492144365199901847
 GameObject:
   m_ObjectHideFlags: 0
