@@ -636,6 +636,7 @@ MonoBehaviour:
   titleBGM: {fileID: 8300000, guid: 31ed1efb6c082447b8c7a125191f2c43, type: 3}
   lobbyBGM: {fileID: 8300000, guid: 316e97651dba24b2daf13dcd8ad1500f, type: 3}
   inGameBGM: {fileID: 8300000, guid: 852c40b7d108f4e39a7ee03add8b931a, type: 3}
+  uiClickSfx: {fileID: 8300000, guid: 557bdf83b0e4d724d865c9cf2a9165db, type: 3}
   bgmSource: {fileID: 1943972233}
   poolCapacity: 10
   poolMaxSize: 20
@@ -1600,7 +1601,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2540070967
+  GlobalObjectIdHash: 2387924095
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -5490,6 +5491,7 @@ GameObject:
   - component: {fileID: 528864037}
   - component: {fileID: 528864036}
   - component: {fileID: 528864035}
+  - component: {fileID: 528864039}
   m_Layer: 5
   m_Name: LoadingCanvas
   m_TagString: Untagged
@@ -5580,6 +5582,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &528864039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 528864034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab5575ab9e7faee449933bd81b8f1ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickClip: {fileID: 0}
 --- !u!1 &542996879
 GameObject:
   m_ObjectHideFlags: 0
@@ -7031,6 +7046,7 @@ GameObject:
   - component: {fileID: 664528547}
   - component: {fileID: 664528546}
   - component: {fileID: 664528545}
+  - component: {fileID: 664528549}
   m_Layer: 5
   m_Name: BackgroundCanvas
   m_TagString: Untagged
@@ -7122,6 +7138,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &664528549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 664528544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab5575ab9e7faee449933bd81b8f1ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickClip: {fileID: 8300000, guid: 557bdf83b0e4d724d865c9cf2a9165db, type: 3}
 --- !u!1 &676809840
 GameObject:
   m_ObjectHideFlags: 0
@@ -13005,6 +13034,7 @@ GameObject:
   - component: {fileID: 1165384660}
   - component: {fileID: 1165384659}
   - component: {fileID: 1165384663}
+  - component: {fileID: 1165384664}
   m_Layer: 5
   m_Name: LobbyCanvas
   m_TagString: Untagged
@@ -13116,6 +13146,19 @@ MonoBehaviour:
   quitButton: {fileID: 1280687801}
   gameStartButton: {fileID: 1187354060}
   gameReadyButton: {fileID: 515005715}
+--- !u!114 &1165384664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1165384658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab5575ab9e7faee449933bd81b8f1ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickClip: {fileID: 8300000, guid: 557bdf83b0e4d724d865c9cf2a9165db, type: 3}
 --- !u!1 &1187354058
 GameObject:
   m_ObjectHideFlags: 0
@@ -14634,6 +14677,7 @@ GameObject:
   - component: {fileID: 1359457996}
   - component: {fileID: 1359457995}
   - component: {fileID: 1359457999}
+  - component: {fileID: 1359458000}
   m_Layer: 5
   m_Name: MainCanvas
   m_TagString: Untagged
@@ -14742,6 +14786,19 @@ MonoBehaviour:
   joinButton: {fileID: 1398445184}
   sessionListButton: {fileID: 1487912116}
   sessionsList: {fileID: 390516379}
+--- !u!114 &1359458000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359457994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab5575ab9e7faee449933bd81b8f1ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickClip: {fileID: 8300000, guid: 557bdf83b0e4d724d865c9cf2a9165db, type: 3}
 --- !u!1 &1364916627
 GameObject:
   m_ObjectHideFlags: 0
@@ -97228,6 +97285,7 @@ GameObject:
   - component: {fileID: 1603376911}
   - component: {fileID: 1603376910}
   - component: {fileID: 1603376909}
+  - component: {fileID: 1603376913}
   m_Layer: 5
   m_Name: PreferenceCanvas
   m_TagString: Untagged
@@ -97319,6 +97377,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1603376913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603376908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab5575ab9e7faee449933bd81b8f1ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickClip: {fileID: 8300000, guid: 557bdf83b0e4d724d865c9cf2a9165db, type: 3}
 --- !u!1 &1606942110
 GameObject:
   m_ObjectHideFlags: 0
@@ -98218,6 +98289,7 @@ GameObject:
   - component: {fileID: 1691859094}
   - component: {fileID: 1691859093}
   - component: {fileID: 1691859097}
+  - component: {fileID: 1691859098}
   m_Layer: 5
   m_Name: TitleCanvas
   m_TagString: Untagged
@@ -98322,6 +98394,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerNameInput: {fileID: 1422068608}
   enterButton: {fileID: 1735799861}
+--- !u!114 &1691859098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691859091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab5575ab9e7faee449933bd81b8f1ba4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clickClip: {fileID: 8300000, guid: 557bdf83b0e4d724d865c9cf2a9165db, type: 3}
 --- !u!1 &1699000819
 GameObject:
   m_ObjectHideFlags: 0
