@@ -1,4 +1,3 @@
-using Scriptable;
 using UnityEngine;
 using UnityEngine.UI;
 
