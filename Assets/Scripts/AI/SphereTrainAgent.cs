@@ -29,21 +29,23 @@ namespace AI
         private DecisionRequester dr;
         private BehaviorParameters bp;
         private PlayerInputActions input;
-        private Rigidbody rb;
+        private CharacterController cc;
 
         private void Update()
         {
             AlignToSurface();
         }
 
-        private void OnTriggerEnter(Collider col)
+        private void OnCollisionEnter(Collision collision)
         {
-            if (col.CompareTag("Interactable"))
+            if (collision.gameObject.CompareTag("Interactable"))
             {
                 AddReward(-0.01f);
             }
+        }
 
-
+        private void OnTriggerEnter(Collider col)
+        {
             if (col.CompareTag("Seeker"))
             {
                 print("Seeker Get");
@@ -61,11 +63,8 @@ namespace AI
 
         public override void Initialize()
         {
-            rb = GetComponent<Rigidbody>();
-
-            rb.useGravity = false;
-
-            planet.Subscribe(rb);
+            cc = GetComponent<CharacterController>();
+            planet.Subscribe(cc.attachedRigidbody);
 
             input = new PlayerInputActions();
 
@@ -93,8 +92,6 @@ namespace AI
             var cen = planet.transform.position;
 
             transform.position = cen + Util.GetRandomPositionInSphere(planet.GetRadius());
-            rb.linearVelocity = Vector3.zero;
-            rb.angularVelocity = Vector3.zero;
 
             if (raySensor) raySensor.enabled = true;
 
@@ -115,8 +112,8 @@ namespace AI
 
         public override void CollectObservations(VectorSensor sensor)
         {
-            sensor.AddObservation(rb.linearVelocity.normalized);
-            sensor.AddObservation(rb.linearVelocity.magnitude);
+            sensor.AddObservation(cc.velocity.normalized);
+            sensor.AddObservation(cc.velocity.magnitude);
             sensor.AddObservation(transform.up.normalized);
             sensor.AddObservation(transform.forward.normalized);
         }
@@ -137,7 +134,7 @@ namespace AI
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
+            cc.Move(moveDirection * moveSpeed * Time.fixedDeltaTime);
         }
 
         private void LookActions(ActionSegment<float> action)
@@ -151,13 +148,13 @@ namespace AI
         {
             AddReward(-0.001f);
 
-            var moveDir = Vector3.ProjectOnPlane(rb.linearVelocity, transform.up).normalized;
+            var moveDir = Vector3.ProjectOnPlane(cc.velocity.normalized, transform.up).normalized;
             var lookDir = transform.forward;
 
             var dot = Vector3.Dot(moveDir, lookDir);
 
-            if (dot > 0.8)
-                AddReward(dot * 0.001f);
+            print($"{dot * 0.001f:F2}");
+            AddReward(dot * 0.001f);
         }
 
         public override void Heuristic(in ActionBuffers actionsOut)
