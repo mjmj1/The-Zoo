@@ -156,7 +156,6 @@ namespace Players
             Subscribe();
 
             InitializePlanet();
-            InitializeTorusWorld();
 
             base.OnNetworkSpawn();
         }
@@ -175,7 +174,6 @@ namespace Players
             if (clientId != NetworkManager.LocalClientId) return;
 
             InitializePlanet();
-            InitializeTorusWorld();
 
             input.MouseLeftClicked();
 
@@ -277,16 +275,6 @@ namespace Players
 
             rb.useGravity = false;
             PlanetGravity.Instance.Subscribe(rb);
-            PivotBinder.Instance.gameObject.SetActive(false);
-        }
-
-        private void InitializeTorusWorld()
-        {
-            if (!IsOwner) return;
-            if (!TorusWorld.Instance) return;
-
-            PivotBinder.Instance.BindPivot(transform);
-            TorusWorld.Instance.tile.follow = transform;
         }
 
         private void HandleMovement()

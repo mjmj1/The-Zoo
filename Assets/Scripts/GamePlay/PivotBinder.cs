@@ -9,17 +9,10 @@ namespace GamePlay
 
         private void Awake()
         {
-            if (!Instance)
-            {
-                Instance = this;
-                DontDestroyOnLoad(gameObject);
+            if (!Instance) Instance = this;
+            else Destroy(gameObject);
 
-                controller = GetComponent<CurvedWorldController>();
-            }
-            else
-            {
-                Destroy(gameObject);
-            }
+            controller = GetComponent<CurvedWorldController>();
         }
 
         private CurvedWorldController controller;
