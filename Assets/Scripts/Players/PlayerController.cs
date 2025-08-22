@@ -1,8 +1,6 @@
 using EventHandler;
 using System.Collections;
 using System.Linq;
-using GamePlay;
-using Maps;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
@@ -23,7 +21,6 @@ namespace Players
     public class CharacterControllerEditor : NetworkTransformEditor
     {
         private SerializedProperty groundMask;
-        private SerializedProperty mouseSensitivity;
         private SerializedProperty rotationSpeed;
         private SerializedProperty sprintSpeed;
         private SerializedProperty walkSpeed;
@@ -34,8 +31,6 @@ namespace Players
             walkSpeed = serializedObject.FindProperty(nameof(PlayerController.walkSpeed));
             sprintSpeed = serializedObject.FindProperty(nameof(PlayerController.runSpeed));
             rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
-            mouseSensitivity =
-                serializedObject.FindProperty(nameof(PlayerController.mouseSensitivity));
             base.OnEnable();
         }
 
@@ -45,7 +40,6 @@ namespace Players
             EditorGUILayout.PropertyField(walkSpeed);
             EditorGUILayout.PropertyField(sprintSpeed);
             EditorGUILayout.PropertyField(rotationSpeed);
-            EditorGUILayout.PropertyField(mouseSensitivity);
         }
 
         public override void OnInspectorGUI()
@@ -75,16 +69,14 @@ namespace Players
         public float walkSpeed = 3f;
         public float runSpeed = 4.5f;
         public float rotationSpeed = 50f;
-        public float mouseSensitivity = 0.1f;
 
         internal InputHandler input;
         private PlayerNetworkAnimator animator;
         private PlayerEntity entity;
         private Hittable hittable;
         private bool isAround;
-
         private float moveSpeed;
-        private Quaternion previousRotation;
+        private float mouseSensitivity = 0.25f;
 
         private Rigidbody rb;
 
@@ -124,15 +116,6 @@ namespace Players
             HandleMovement();
             
             GamePlayEventHandler.OnPlayerSpined(entity.isSpinHold);
-
-            if (!TorusWorld.Instance) return;
-            
-            var wrapped = TorusWorld.Instance.WrapXZ(rb.position);
-
-            if (!((wrapped - rb.position).sqrMagnitude > 0.0001f)) return;
-
-            rb.position = wrapped;
-            Teleport(wrapped, transform.rotation, transform.localScale);
         }
 
         private void OnDrawGizmosSelected()
@@ -288,8 +271,7 @@ namespace Players
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            rb.MovePosition(rb.position +
-                            moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+            rb.MovePosition(rb.position + moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
         }
 
         private void AlignToSurface()
@@ -337,9 +319,6 @@ namespace Players
         {
             if (IsJumping) return;
             if (!CanMove) return;
-
-            // rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
             if (entity.isSpinHold) return;
 
             animator.OnJump(ctx);

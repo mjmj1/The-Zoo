@@ -126,11 +126,9 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 64
-  jumpForce: 3
   walkSpeed: 3
   runSpeed: 4.5
   rotationSpeed: 500
-  mouseSensitivity: 0.25
 --- !u!114 &2736765177486910086
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -251,7 +249,7 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.35
+  m_Radius: 0.3
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0.5, z: 0}
@@ -395,9 +393,9 @@ MonoBehaviour:
     m_Bits: 1024
   pickupLayer:
     serializedVersion: 2
-    m_Bits: 2048
-  interactRange: 0.7
-  interactRadius: 0.3
+    m_Bits: 4096
+  interactRange: 0.6
+  interactRadius: 0.4
   origin: {fileID: 5877200157190742088}
 --- !u!114 &8991061074975073049
 MonoBehaviour:
@@ -412,8 +410,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  attackRange: 0.7
-  attackRadius: 0.3
+  attackRange: 0.6
+  attackRadius: 0.4
   hiderMask:
     serializedVersion: 2
     m_Bits: 128
