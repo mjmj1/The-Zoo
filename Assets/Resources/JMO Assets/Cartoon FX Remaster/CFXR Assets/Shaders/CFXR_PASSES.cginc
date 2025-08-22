@@ -16,11 +16,7 @@
 #define _CFXR_UV_DISTORTION_ADD (_UVDistortionAdd > 0)
 #define _CFXR_OVERLAYBLEND_A (_CFXR_OVERLAYBLEND == 2)
 #define _CFXR_OVERLAYBLEND_RGB (_CFXR_OVERLAYBLEND == 1)
-#define CURVEDWORLD_BEND_TYPE_LITTLEPLANET_Y
-#define CURVEDWORLD_BEND_ID_1
-#pragma shader_feature_local CURVEDWORLD_DISABLED_ON
-#pragma shader_feature_local CURVEDWORLD_NORMAL_TRANSFORMATION_ON
-#include "Assets/Amazing Assets/Curved World/Shaders/Core/CurvedWorldTransform.cginc"
+
 #if defined(CFXR_UBERSHADER)
 
 		#if defined(UNITY_SAMPLE_FULL_SH_PER_PIXEL)
@@ -216,13 +212,6 @@
 			UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 	#if !defined(PASS_SHADOW_CASTER)
-			#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
-			#ifdef CURVEDWORLD_NORMAL_TRANSFORMATION_ON
-			CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(v.vertex, v.normal, v.tangent)
-		 #else
-			CURVEDWORLD_TRANSFORM_VERTEX(v.vertex)
-		 #endif
-	  #endif
 			o.pos = UnityObjectToClipPos(v.vertex);
 
 		#if defined(LIGHTING_DIRECT) || (defined(LIGHTING_INDIRECT) && _NORMALMAP)
@@ -669,15 +658,6 @@
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 		#if !defined(PASS_SHADOW_CASTER)
-
-#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
-#ifdef CURVEDWORLD_NORMAL_TRANSFORMATION_ON
-				CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(v.vertex, v.normal, v.tangent)
-#else
-				CURVEDWORLD_TRANSFORM_VERTEX(v.vertex)
-#endif
-#endif
-				
 				o.pos = UnityObjectToClipPos(v.vertex);
 		#endif
 
@@ -855,13 +835,6 @@
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
 		#if !defined(PASS_SHADOW_CASTER)
-				#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
-				#ifdef CURVEDWORLD_NORMAL_TRANSFORMATION_ON
-				CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(v.vertex, v.normal, v.tangent)
-			 #else
-				CURVEDWORLD_TRANSFORM_VERTEX(v.vertex)
-			 #endif
-		  #endif
 				o.pos = UnityObjectToClipPos(v.vertex);
 				o.grabPassPosition = ComputeGrabScreenPos(o.pos);
 		#endif
@@ -1059,13 +1032,6 @@
 					// to clip space with width offset
 					v.vertex.xyz = v.vertex.xyz - v.normal.xyz * v.texcoord.y * ringWidth;
 				#if !defined(PASS_SHADOW_CASTER)
-				#if defined(CURVEDWORLD_IS_INSTALLED) && !defined(CURVEDWORLD_DISABLED_ON)
-				#ifdef CURVEDWORLD_NORMAL_TRANSFORMATION_ON
-				CURVEDWORLD_TRANSFORM_VERTEX_AND_NORMAL(v.vertex, v.normal, v.tangent)
-			 #else
-				CURVEDWORLD_TRANSFORM_VERTEX(v.vertex)
-			 #endif
-		  #endif
 					o.pos = UnityObjectToClipPos(v.vertex);
 				#endif
 			#else
