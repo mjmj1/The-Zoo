@@ -9,8 +9,10 @@ namespace Interactions
 {
     public class InteractableSpawner : Interactable
     {
+        [SerializeField] private Transform visualsRoot;
         [SerializeField] private NetworkObject spawnObject;
         [SerializeField] private BoxCollider[] spawnPoints;
+        [SerializeField] private int spawnTypeIndex = 0;
 
         private bool isInteracting;
 
@@ -90,6 +92,9 @@ namespace Interactions
                 rotation: Quaternion.identity);
             SpawnedObject.Add(no);
 
+            ApplyVariant(no, spawnTypeIndex);
+            ApplyVariantClientRpc(no, spawnTypeIndex);
+
             maxSpawnCount.Value--;
         }
 
@@ -100,10 +105,39 @@ namespace Interactions
                 obj.Despawn();
             }
         }
-
+        public void SetSpawnTypeIndex(int typeIndex)
+        {
+            spawnTypeIndex = typeIndex;
+        }
+        public void SetVisualsByIndex(int index)
+        {
+            if (visualsRoot == null) return;
+            for (int i = 0; i < visualsRoot.childCount; i++)
+            {
+                visualsRoot.GetChild(i).gameObject.SetActive(i == index);
+            }
+        }
         public override InteractableType GetInteractableType()
         {
             return InteractableType.LeftClick;
+        }
+        private void ApplyVariant(NetworkObject no, int index)
+        {
+            var root = no.transform;
+            if (root.childCount == 0) return;
+
+            var models = root.GetChild(0);
+            for (int i = 0; i < models.childCount; i++)
+            {
+                var go = models.GetChild(i).gameObject;
+                go.SetActive(i == index);
+            }
+        }
+        [Rpc(SendTo.Everyone)]
+        private void ApplyVariantClientRpc(NetworkObjectReference objectRef, int index, RpcParams _ = default)
+        {
+            if (!objectRef.TryGet(out var no)) return;
+            ApplyVariant(no, index);
         }
     }
 }
