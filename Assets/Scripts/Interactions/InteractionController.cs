@@ -26,9 +26,6 @@ namespace Interactions
         [Rpc(SendTo.Server, RequireOwnership = false)]
         private void SpawnInteractionObjectsRpc(int count, RpcParams rpcParams = default)
         {
-            var world = TorusWorld.Instance;
-            if (!world) return;
-
             while (targetCount > 0)
             {
                 var value = Random.Range(0, count);
@@ -37,20 +34,9 @@ namespace Interactions
 
             for (var i = 0; i < count; i++)
             {
-                var spawnPoint = Vector3.zero;
-                var rotation = Quaternion.identity;
-
-                if (PlanetGravity.Instance)
-                {
-                    spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
-                    var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
-                    rotation = rotationOnSurface * Quaternion.Euler(0, Random.Range(0f, 360f), 0);
-                }
-                else if (TorusWorld.Instance)
-                {
-                    spawnPoint = Util.GetRandomPosition(-15f, 15f, -15f, 15f, -0.1f);
-                    rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
-                }
+                var spawnPoint = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
+                var rotationOnSurface = Quaternion.FromToRotation(Vector3.up, spawnPoint.normalized);
+                var rotation = rotationOnSurface * Quaternion.Euler(0, Random.Range(0f, 360f), 0);
 
                 var interaction = interactionPrefabs.InstantiateAndSpawn(NetworkManager,
                     position: spawnPoint,
