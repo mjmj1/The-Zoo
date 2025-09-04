@@ -200,7 +200,7 @@ MonoBehaviour:
     m_InternalValue: 0
   isDead:
     m_InternalValue: 0
-  animalIndex:
+  animalType:
     m_InternalValue: 0
 --- !u!114 &6675916858937408846
 MonoBehaviour:
@@ -260,7 +260,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1978094491091307183}
   serializedVersion: 5
-  m_Mass: 100
+  m_Mass: 1
   m_LinearDamping: 10
   m_AngularDamping: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
