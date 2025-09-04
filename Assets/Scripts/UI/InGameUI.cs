@@ -39,7 +39,7 @@ namespace UI
             PlayManager.Instance.currentTime.OnValueChanged += OnTimerChanged;
 
             NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<Hittable>().health.OnValueChanged += OnPlayerHealthChanged;
+                .GetComponent<PlayerHealth>().health.OnValueChanged += OnPlayerHealthChanged;
 
             var input = NetworkManager.Singleton.LocalClient.PlayerObject
                 .GetComponent<PlayerController>().playerInput;
@@ -73,7 +73,7 @@ namespace UI
             GamePlayEventHandler.CheckInteractable -= OnKeyUI;
 
             NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<Hittable>().health.OnValueChanged -= OnPlayerHealthChanged;
+                .GetComponent<PlayerHealth>().health.OnValueChanged -= OnPlayerHealthChanged;
         }
 
         private void OnKeyUI(bool value, bool isTarget, int count)

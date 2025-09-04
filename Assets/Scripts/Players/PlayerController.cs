@@ -74,7 +74,7 @@ namespace Players
         internal PlayerInputHandler playerInput;
         private PlayerNetworkAnimator animator;
         private PlayerEntity entity;
-        private Hittable hittable;
+        private PlayerHealth playerHealth;
         private bool isAround;
         private float moveSpeed;
         private float mouseSensitivity = 0.25f;
@@ -169,7 +169,7 @@ namespace Players
 
             Reset();
             entity.Reset();
-            hittable.Reset();
+            playerHealth.Reset();
             readyChecker.Reset();
 
             var clients = NetworkManager.ConnectedClientsIds.ToList();
@@ -198,7 +198,7 @@ namespace Players
             playerInput.InputActions.Player.Jump.performed += Jump;
             playerInput.InputActions.Player.Attack.started += Attack;
 
-            hittable.health.OnValueChanged += Hit;
+            playerHealth.health.OnValueChanged += Hit;
         }
 
         private void Unsubscribe()
@@ -220,7 +220,7 @@ namespace Players
             playerInput.InputActions.Player.Jump.performed -= Jump;
             playerInput.InputActions.Player.Attack.performed -= Attack;
 
-            hittable.health.OnValueChanged -= Hit;
+            playerHealth.health.OnValueChanged -= Hit;
         }
 
         private void Rmb(InputAction.CallbackContext ctx)
@@ -238,7 +238,7 @@ namespace Players
             rb = GetComponent<Rigidbody>();
             playerInput = GetComponent<PlayerInputHandler>();
             entity = GetComponent<PlayerEntity>();
-            hittable = GetComponent<Hittable>();
+            playerHealth = GetComponent<PlayerHealth>();
             animator = GetComponent<PlayerNetworkAnimator>();
             readyChecker = GetComponent<PlayerReadyChecker>();
         }

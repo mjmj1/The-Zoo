@@ -2,7 +2,7 @@ using Unity.Netcode;
 
 namespace Players
 {
-    public class Hittable : NetworkBehaviour
+    public class PlayerHealth : NetworkBehaviour
     {
         public NetworkVariable<int> health = new (3);
 

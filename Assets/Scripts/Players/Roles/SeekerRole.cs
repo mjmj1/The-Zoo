@@ -14,13 +14,13 @@ namespace Players.Roles
         [SerializeField] private Transform attackOrigin;
 
         private PlayerEntity entity;
-        private Hittable hittable;
+        private PlayerHealth playerHealth;
         private PlayerController controller;
 
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
-            hittable = GetComponent<Hittable>();
+            playerHealth = GetComponent<PlayerHealth>();
             controller = GetComponent<PlayerController>();
         }
 
@@ -54,7 +54,7 @@ namespace Players.Roles
         {
             print("Npc Death");
 
-            hittable.Damaged();
+            playerHealth.Damaged();
         }
 
         private void OnPlayerAttack()
@@ -83,7 +83,7 @@ namespace Players.Roles
             print($"target-{OwnerClientId} Hit");
 
             var target = NetworkManager.Singleton
-                .LocalClient.PlayerObject.GetComponent<Hittable>();
+                .LocalClient.PlayerObject.GetComponent<PlayerHealth>();
 
             target.Damaged();
         }
@@ -93,7 +93,7 @@ namespace Players.Roles
         {
             if (!targetRef.TryGet(out var nob)) return;
 
-            var component = nob.GetComponent<Hittable>();
+            var component = nob.GetComponent<PlayerHealth>();
 
             if (component != null)
             {

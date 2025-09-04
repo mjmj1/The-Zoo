@@ -43,7 +43,7 @@ namespace AI
         public bool isAction;
 
         private AgentTransform agent;
-        private Hittable hittable;
+        private PlayerHealth playerHealth;
         private RayPerceptionSensorComponent3D raySensor;
         private PlayerNetworkAnimator animator;
         private Rigidbody rb;
@@ -74,7 +74,7 @@ namespace AI
                 enabled = false;
             }
 
-            hittable.health.OnValueChanged += Hit;
+            playerHealth.health.OnValueChanged += Hit;
             agent.isDead.OnValueChanged += Dead;
         }
 
@@ -92,7 +92,7 @@ namespace AI
 
             rb = GetComponent<Rigidbody>();
             agent = GetComponent<AgentTransform>();
-            hittable = GetComponent<Hittable>();
+            playerHealth = GetComponent<PlayerHealth>();
             animator = GetComponent<PlayerNetworkAnimator>();
             raySensor = GetComponent<RayPerceptionSensorComponent3D>();
         }
@@ -117,7 +117,7 @@ namespace AI
 
         private void OnDestroy()
         {
-            hittable.health.OnValueChanged -= Hit;
+            playerHealth.health.OnValueChanged -= Hit;
             agent.isDead.OnValueChanged -= Dead;
         }
 
