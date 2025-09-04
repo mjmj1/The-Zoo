@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Possum Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 11
-  playerPrefab: {fileID: 488747777735660930, guid: 96c557c905ccc2240b1ac832b0d55d15, type: 3}
-  npcPrefab: {fileID: 8678784211226725703, guid: 360c060f94f81104ea024435624ae4fa, type: 3}
+  playerPrefab: {fileID: 5481314749034436189, guid: 96c557c905ccc2240b1ac832b0d55d15, type: 3}
+  npcPrefab: {fileID: 4797693919811499671, guid: 360c060f94f81104ea024435624ae4fa, type: 3}

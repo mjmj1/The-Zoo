@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Dog Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 1
-  playerPrefab: {fileID: 5670916111645164188, guid: ab6080e5b1b89894b9be1bea78553986, type: 3}
-  npcPrefab: {fileID: 6758057140416451838, guid: 0bfbe9a9ae5e0d547bcaaa6d63cfe6d7, type: 3}
+  playerPrefab: {fileID: 318294403579560259, guid: ab6080e5b1b89894b9be1bea78553986, type: 3}
+  npcPrefab: {fileID: 7434484591647977262, guid: 0bfbe9a9ae5e0d547bcaaa6d63cfe6d7, type: 3}

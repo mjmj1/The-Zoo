@@ -1,3 +1,5 @@
+using System;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Scriptable
@@ -23,13 +25,14 @@ namespace Scriptable
         TasmanianDevil,
         Tortoise,
         Wombat,
+        End
     }
 
     [CreateAssetMenu(fileName = "AnimalData", menuName = "Game/Animals", order = 0)]
     public class AnimalData : ScriptableObject
     {
         public AnimalType type;
-        public GameObject playerPrefab;
-        public GameObject npcPrefab;
+        public NetworkObject playerPrefab;
+        public NetworkObject npcPrefab;
     }
 }

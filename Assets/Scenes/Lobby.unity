@@ -1549,6 +1549,7 @@ GameObject:
   - component: {fileID: 194974663}
   - component: {fileID: 194974665}
   - component: {fileID: 194974664}
+  - component: {fileID: 194974670}
   - component: {fileID: 194974668}
   - component: {fileID: 194974669}
   m_Layer: 0
@@ -1659,6 +1660,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraPrefab: {fileID: 4515375947022272454, guid: 9d69a4ce2574c284ba474d241a3636a2, type: 3}
+--- !u!114 &194974670
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 194974662}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c94b4949fc1e4b60b2500d788a7ed7b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GamePlay.Spawner.SpawnObjectStore
+  animalDataList:
+  - {fileID: 11400000, guid: 887a109f4e3600240847a52415df40b7, type: 2}
+  - {fileID: 11400000, guid: e5abdf545f7a0804094436ecfcbe4908, type: 2}
+  - {fileID: 11400000, guid: b83b3b56d63f9c74dbb142131dd5221b, type: 2}
+  - {fileID: 11400000, guid: 064ab998100a61247ba65295dd13686e, type: 2}
+  - {fileID: 11400000, guid: d5e862b32ffe5fe47947100a46f88bab, type: 2}
+  - {fileID: 11400000, guid: dfa0b32cd104a23408b37f92c7b9944d, type: 2}
+  - {fileID: 11400000, guid: c855f9c8158ac2946aaba78e04b8f58d, type: 2}
+  - {fileID: 11400000, guid: bd808a5755a59d14cb5283a59164d97a, type: 2}
+  - {fileID: 11400000, guid: ab5d5f6697527654db3df7cfd15f2641, type: 2}
+  - {fileID: 11400000, guid: d49f171f2ddb2bb45851763ffc014b07, type: 2}
+  - {fileID: 11400000, guid: 58622d4fc3f96a34786c40aa99bd3974, type: 2}
+  - {fileID: 11400000, guid: 8cc63a999f7b8db46b051de5c72763e4, type: 2}
+  - {fileID: 11400000, guid: 2b895f19d765e974e9bbd9f85fc00fe6, type: 2}
+  - {fileID: 11400000, guid: fd37f297f9dabd4448bc50f26ad247da, type: 2}
+  - {fileID: 11400000, guid: 4794e7839c70e514db3aca14bafff9ed, type: 2}
+  - {fileID: 11400000, guid: 40670b396ec99514e844275258cc10f8, type: 2}
+  - {fileID: 11400000, guid: 4835536e351cb104da1b6390ecfa95f4, type: 2}
+  - {fileID: 11400000, guid: 9d4329aaed6c63844a1e7cb0f6c8cabe, type: 2}
+  - {fileID: 11400000, guid: df0ae5b901ebb42409610b977601819d, type: 2}
 --- !u!1 &196045057
 GameObject:
   m_ObjectHideFlags: 0

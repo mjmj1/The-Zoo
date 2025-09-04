@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Mouse Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 6
-  playerPrefab: {fileID: 648111842284400325, guid: 61a77bcd63b37c94bb2aa292a96a09f1, type: 3}
-  npcPrefab: {fileID: 6355850028349858369, guid: 2ecf8a7886e9c894a87ed18bbae14e1d, type: 3}
+  playerPrefab: {fileID: 4766890278896889114, guid: 61a77bcd63b37c94bb2aa292a96a09f1, type: 3}
+  npcPrefab: {fileID: 7120589706217740689, guid: 2ecf8a7886e9c894a87ed18bbae14e1d, type: 3}

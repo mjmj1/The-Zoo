@@ -1,4 +1,5 @@
 using System;
+using Scriptable;
 using Unity.Collections;
 using Unity.Netcode;
 
@@ -8,26 +9,26 @@ namespace Players
     {
         public ulong clientId;
         public FixedString32Bytes name;
-        public int animalIndex;
+        public AnimalType type;
 
-        public PlayerData(ulong id, FixedString32Bytes name, int index)
+        public PlayerData(ulong id, FixedString32Bytes name, AnimalType type)
         {
             clientId = id;
             this.name = name;
-            animalIndex = index;
+            this.type = type;
         }
 
         public bool Equals(PlayerData other)
         {
             return clientId == other.clientId && name.Equals(other.name) &&
-                   animalIndex.Equals(other.animalIndex);
+                   type.Equals(other.type);
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
             serializer.SerializeValue(ref clientId);
             serializer.SerializeValue(ref name);
-            serializer.SerializeValue(ref animalIndex);
+            serializer.SerializeValue(ref type);
         }
     }
 }

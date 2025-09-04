@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Gecko Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 4
-  playerPrefab: {fileID: 4102481164576493586, guid: b0b6755f5da5e4a4e88b82c7838694cf, type: 3}
-  npcPrefab: {fileID: 3252315887142348633, guid: c18894125d4152440b05ded61c71ecc6, type: 3}
+  playerPrefab: {fileID: 8230077461164757965, guid: b0b6755f5da5e4a4e88b82c7838694cf, type: 3}
+  npcPrefab: {fileID: 1713449647057460361, guid: c18894125d4152440b05ded61c71ecc6, type: 3}

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Tortoise Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 17
-  playerPrefab: {fileID: 5161122886111005396, guid: b8eb18e09b544ee4fbda195ee5b8d3fc, type: 3}
-  npcPrefab: {fileID: 386755057498165203, guid: 25394286569b14249b95e1d34df62ce8, type: 3}
+  playerPrefab: {fileID: 956477058676263179, guid: b8eb18e09b544ee4fbda195ee5b8d3fc, type: 3}
+  npcPrefab: {fileID: 4592526880512013315, guid: 25394286569b14249b95e1d34df62ce8, type: 3}

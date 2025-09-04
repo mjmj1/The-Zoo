@@ -51,7 +51,7 @@ namespace GamePlay
                 var entity = clients[i].PlayerObject.GetComponent<PlayerEntity>();
 
                 var playerName = entity.playerName.Value;
-                var index = entity.animalIndex.Value;
+                var index = entity.animalType.Value;
 
                 var data = new PlayerData(clients[i].ClientId, playerName, index);
 

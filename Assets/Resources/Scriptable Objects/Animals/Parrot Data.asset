@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Parrot Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 8
-  playerPrefab: {fileID: 2848282319329567247, guid: c03db721e947a99498e0c76cc4099d17, type: 3}
-  npcPrefab: {fileID: 6751809369383341205, guid: 0f4bd11fb2c11c4409fe822c2ab6e2f7, type: 3}
+  playerPrefab: {fileID: 7880959148057600464, guid: c03db721e947a99498e0c76cc4099d17, type: 3}
+  npcPrefab: {fileID: 7446376151031084869, guid: 0f4bd11fb2c11c4409fe822c2ab6e2f7, type: 3}

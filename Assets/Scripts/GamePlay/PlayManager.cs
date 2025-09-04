@@ -1,4 +1,5 @@
 using System.Collections;
+using GamePlay.Spawner;
 using Interactions;
 using Mission;
 using Networks;
@@ -191,8 +192,8 @@ namespace GamePlay
         {
             yield return new WaitForSeconds(2f);
 
-            foreach (var data in roleManager.HiderIds)
-                NpcSpawner.Instance.SpawnNpcRpc(data.animalIndex, 5);
+            // foreach (var data in roleManager.HiderIds)
+                // NpcSpawner.Instance.SpawnNpcRpc(data.type, 5);
         }
 
         private IEnumerator CountTime()

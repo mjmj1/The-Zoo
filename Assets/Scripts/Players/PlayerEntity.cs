@@ -1,4 +1,5 @@
 using GamePlay;
+using GamePlay.Spawner;
 using Players.Roles;
 using Scriptable;
 using TMPro;
@@ -29,7 +30,7 @@ namespace Players
 
         public NetworkVariable<Role> role = new();
         public NetworkVariable<bool> isDead = new();
-        public NetworkVariable<int> animalIndex = new();
+        public NetworkVariable<AnimalType> animalType = new();
 
         private PlayerRenderer playerRenderer;
 
@@ -88,6 +89,8 @@ namespace Players
             if (!IsOwner) return;
 
             NetworkManager.Singleton.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
+
+            PlayerSpawner.Instance.RemoveRpc(animalType.Value);
 
             CameraManager.Instance.EnableCamera(false);
         }

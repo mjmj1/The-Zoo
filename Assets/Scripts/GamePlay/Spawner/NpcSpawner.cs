@@ -4,7 +4,7 @@ using Unity.Netcode;
 using UnityEngine;
 using Utils;
 
-namespace Networks
+namespace GamePlay.Spawner
 {
     [DefaultExecutionOrder(-100)]
     public class NpcSpawner : NetworkBehaviour

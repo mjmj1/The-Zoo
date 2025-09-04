@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Pudu Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 12
-  playerPrefab: {fileID: 3468230469261297897, guid: 645f06e8a64d1f3469579abd7ac977e0, type: 3}
-  npcPrefab: {fileID: 4352991565722185112, guid: 734f27d715cf34e4c9106edafddd060e, type: 3}
+  playerPrefab: {fileID: 8860913659795016502, guid: 645f06e8a64d1f3469579abd7ac977e0, type: 3}
+  npcPrefab: {fileID: 472042012032243272, guid: 734f27d715cf34e4c9106edafddd060e, type: 3}

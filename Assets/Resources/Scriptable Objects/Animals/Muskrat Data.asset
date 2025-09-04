@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Muskrat Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 7
-  playerPrefab: {fileID: 7391675148629421093, guid: 482a715451ba5a94880f4eb245394dd5, type: 3}
-  npcPrefab: {fileID: 4023241215832384156, guid: de28b4ac9dd21244ca090bb0da0fb0b2, type: 3}
+  playerPrefab: {fileID: 3192324637935480826, guid: 482a715451ba5a94880f4eb245394dd5, type: 3}
+  npcPrefab: {fileID: 950406721522374988, guid: de28b4ac9dd21244ca090bb0da0fb0b2, type: 3}

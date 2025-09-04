@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Dove Data
   m_EditorClassIdentifier: Assembly-CSharp::Scriptable.AnimalData
   type: 2
-  playerPrefab: {fileID: 7715955291322043154, guid: fd4164b74a7584849ac021e4091237be, type: 3}
-  npcPrefab: {fileID: 3084229483787304960, guid: ef06419349616aa4386951a64e83e67d, type: 3}
+  playerPrefab: {fileID: 2435742947954084045, guid: fd4164b74a7584849ac021e4091237be, type: 3}
+  npcPrefab: {fileID: 1164333535741852624, guid: ef06419349616aa4386951a64e83e67d, type: 3}
