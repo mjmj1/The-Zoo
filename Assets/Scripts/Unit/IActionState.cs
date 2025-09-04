@@ -1,8 +1,6 @@
-using System;
-
-namespace Players
+namespace Unit
 {
-    public interface IMoveState
+    public interface IActionState
     {
         bool CanMove { get; set; }
         bool IsJumping { get; set; }

@@ -1,3 +1,4 @@
+using System;
 using GamePlay;
 using GamePlay.Spawner;
 using Players.Roles;
@@ -48,10 +49,13 @@ namespace Players
             CameraManager.Instance.EnableCamera(true);
         }
 
-        public override void OnNetworkSpawn()
+        private void Awake()
         {
             playerRenderer = GetComponent<PlayerRenderer>();
+        }
 
+        public override void OnNetworkSpawn()
+        {
             clientId.OnValueChanged += OnClientIdChanged;
             playerName.OnValueChanged += OnPlayerNameChanged;
             role.OnValueChanged += OnRoleChanged;
@@ -123,7 +127,7 @@ namespace Players
         internal void AlignForward()
         {
             var forward = Vector3.Cross(
-                CameraManager.Instance.Orbit.transform.right,
+                CameraManager.Instance.orbit.transform.right,
                 transform.up).normalized;
 
             transform.rotation = Quaternion.LookRotation(forward, transform.up);

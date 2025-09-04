@@ -26,21 +26,21 @@ namespace GamePlay.Spawner
 
         protected override void OnNetworkSessionSynchronized()
         {
-            base.OnNetworkSessionSynchronized();
-
             Spawn();
+
+            base.OnNetworkSessionSynchronized();
         }
 
         [Rpc(SendTo.Owner)]
         private void AddRpc(AnimalType type)
         {
-            spawnedAnimals.Add((int) type);
+            spawnedAnimals.Add((int)type);
         }
 
         [Rpc(SendTo.Owner)]
         internal void RemoveRpc(AnimalType type)
         {
-            spawnedAnimals.Remove((int) type);
+            spawnedAnimals.Remove((int)type);
         }
 
         private void Spawn()

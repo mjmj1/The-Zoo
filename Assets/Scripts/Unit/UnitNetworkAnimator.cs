@@ -2,9 +2,9 @@ using Unity.Netcode.Components;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Players
+namespace Unit
 {
-    public class PlayerNetworkAnimator : NetworkAnimator
+    public class UnitNetworkAnimator : NetworkAnimator
     {
         public static readonly int MoveHash = Animator.StringToHash("Move");
         public static readonly int RunHash = Animator.StringToHash("Run");

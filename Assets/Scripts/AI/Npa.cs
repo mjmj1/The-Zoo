@@ -1,15 +1,17 @@
 using System.Collections;
 using EventHandler;
 using Players;
+using Unit;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
 using Unity.MLAgents.Sensors;
 using Unity.Netcode;
 using UnityEngine;
+using World;
 
 namespace AI
 {
-    public class Npa : Agent, IMoveState
+    public class Npa : Agent, IActionState
     {
         public enum AgentActionState
         {
@@ -43,9 +45,9 @@ namespace AI
         public bool isAction;
 
         private AgentTransform agent;
-        private PlayerHealth playerHealth;
+        private HittableBody hittableBody;
         private RayPerceptionSensorComponent3D raySensor;
-        private PlayerNetworkAnimator animator;
+        private UnitNetworkAnimator animator;
         private Rigidbody rb;
 
         // freeze
@@ -74,7 +76,7 @@ namespace AI
                 enabled = false;
             }
 
-            playerHealth.health.OnValueChanged += Hit;
+            hittableBody.healthPoint.OnValueChanged += Hit;
             agent.isDead.OnValueChanged += Dead;
         }
 
@@ -92,8 +94,8 @@ namespace AI
 
             rb = GetComponent<Rigidbody>();
             agent = GetComponent<AgentTransform>();
-            playerHealth = GetComponent<PlayerHealth>();
-            animator = GetComponent<PlayerNetworkAnimator>();
+            hittableBody = GetComponent<HittableBody>();
+            animator = GetComponent<UnitNetworkAnimator>();
             raySensor = GetComponent<RayPerceptionSensorComponent3D>();
         }
 
@@ -117,7 +119,7 @@ namespace AI
 
         private void OnDestroy()
         {
-            playerHealth.health.OnValueChanged -= Hit;
+            hittableBody.healthPoint.OnValueChanged -= Hit;
             agent.isDead.OnValueChanged -= Dead;
         }
 
@@ -208,8 +210,8 @@ namespace AI
 
             if (moveInput == Vector2.zero)
             {
-                animator.SetBool(PlayerNetworkAnimator.MoveHash, false);
-                animator.SetBool(PlayerNetworkAnimator.RunHash, false);
+                animator.SetBool(UnitNetworkAnimator.MoveHash, false);
+                animator.SetBool(UnitNetworkAnimator.RunHash, false);
                 currentMoveState = AgentMoveState.Idle;
             }
             else
@@ -217,14 +219,14 @@ namespace AI
                 if (action[4] == 1)
                 {
                     moveSpeed = runSpeed;
-                    animator.SetBool(PlayerNetworkAnimator.RunHash, true);
+                    animator.SetBool(UnitNetworkAnimator.RunHash, true);
                     currentMoveState = AgentMoveState.Running;
                 }
                 else
                 {
                     moveSpeed = walkSpeed;
-                    animator.SetBool(PlayerNetworkAnimator.RunHash, false);
-                    animator.SetBool(PlayerNetworkAnimator.MoveHash, true);
+                    animator.SetBool(UnitNetworkAnimator.RunHash, false);
+                    animator.SetBool(UnitNetworkAnimator.MoveHash, true);
                     currentMoveState = AgentMoveState.Walking;
                 }
             }
@@ -253,7 +255,7 @@ namespace AI
             {
                 currentAAState = AgentActionState.Jumping;
 
-                animator.SetTrigger(PlayerNetworkAnimator.JumpHash);
+                animator.SetTrigger(UnitNetworkAnimator.JumpHash);
 
                 PlayActionCycle();
             }
@@ -272,7 +274,7 @@ namespace AI
                 isSpinHold = true;
 
                 currentMoveState = AgentMoveState.Idle;
-                animator.SetBool(PlayerNetworkAnimator.SpinHash, true);
+                animator.SetBool(UnitNetworkAnimator.SpinHash, true);
 
                 if (lastSpinInput == 0)
                 {
@@ -294,7 +296,7 @@ namespace AI
             {
                 isSpinHold = false;
 
-                animator.SetBool(PlayerNetworkAnimator.SpinHash, false);
+                animator.SetBool(UnitNetworkAnimator.SpinHash, false);
 
                 spinHoldTime = 0f;
             }
@@ -308,7 +310,7 @@ namespace AI
 
             if (action[5] == 1)
             {
-                animator.SetTrigger(PlayerNetworkAnimator.AttackHash);
+                animator.SetTrigger(UnitNetworkAnimator.AttackHash);
                 currentAAState = AgentActionState.Attacking;
                 PlayActionCycle();
             }
@@ -386,8 +388,8 @@ namespace AI
             if (!newValue) return;
             moveInput = Vector2.zero;
 
-            animator.SetBool(PlayerNetworkAnimator.MoveHash, false);
-            animator.SetBool(PlayerNetworkAnimator.RunHash, false);
+            animator.SetBool(UnitNetworkAnimator.MoveHash, false);
+            animator.SetBool(UnitNetworkAnimator.RunHash, false);
         }
 
         private IEnumerator DeathCoroutine()

@@ -10,17 +10,18 @@ GameObject:
   m_Component:
   - component: {fileID: 7395097020419450626}
   - component: {fileID: 4108932776260164882}
-  - component: {fileID: 1990945987182773192}
+  - component: {fileID: 6899282768533719088}
+  - component: {fileID: 2872522887251759511}
   - component: {fileID: 9024497503586991314}
   - component: {fileID: 3288526713616270971}
   - component: {fileID: 1617496535271734288}
   - component: {fileID: 6014694769444137826}
   - component: {fileID: 7827092999446940829}
+  - component: {fileID: 5616437718488566327}
   - component: {fileID: 6130322915762357225}
   - component: {fileID: 5209263119254473209}
   - component: {fileID: 1840931845092775345}
   - component: {fileID: 2176734310208081023}
-  - component: {fileID: 5616437718488566327}
   m_Layer: 7
   m_Name: Agent V2
   m_TagString: Hider
@@ -70,7 +71,7 @@ MonoBehaviour:
   AutoObjectParentSync: 1
   SyncOwnerTransformWhenParented: 1
   AllowOwnerToParent: 0
---- !u!114 &1990945987182773192
+--- !u!114 &6899282768533719088
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -79,11 +80,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 279282440632542914}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd65d805e98e4fa2b735051416e9cd18, type: 3}
+  m_Script: {fileID: 11500000, guid: b5645427f99f499c92a12d954ef381a9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::World.GravityBody
+--- !u!114 &2872522887251759511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279282440632542914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b4ecc9298e46f7a6af1890d5c21fdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Unit.HittableBody
   ShowTopMostFoldoutHeaderGroup: 1
-  health:
+  healthPoint:
     m_InternalValue: 3
 --- !u!114 &9024497503586991314
 MonoBehaviour:
@@ -215,6 +228,19 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   TransitionStateInfoList: []
   m_Animator: {fileID: 4563706925017374740}
+--- !u!114 &5616437718488566327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279282440632542914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 880df90388a7a1d438d6dccc82a97a08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitEffect: {fileID: 1354079397779670737}
 --- !u!114 &6130322915762357225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -321,19 +347,6 @@ MonoBehaviour:
   rayMissColor: {r: 1, g: 1, b: 1, a: 1}
   m_StartVerticalOffset: 1
   m_EndVerticalOffset: -1
---- !u!114 &5616437718488566327
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 279282440632542914}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 880df90388a7a1d438d6dccc82a97a08, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hitEffect: {fileID: 1354079397779670737}
 --- !u!1 &1155305889991534598
 GameObject:
   m_ObjectHideFlags: 0

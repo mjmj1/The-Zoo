@@ -2,12 +2,14 @@ using EventHandler;
 using System.Collections;
 using System.Linq;
 using GamePlay;
+using Unit;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using Utils;
+using World;
 #if UNITY_EDITOR
 using Unity.Netcode.Editor;
 #endif
@@ -15,23 +17,18 @@ using Unity.Netcode.Editor;
 namespace Players
 {
 #if UNITY_EDITOR
-    /// <summary>
-    ///     The custom editor for the <see cref="PlayerController" /> component.
-    /// </summary>
     [CustomEditor(typeof(PlayerController), true)]
     public class CharacterControllerEditor : NetworkTransformEditor
     {
         private SerializedProperty groundMask;
-        private SerializedProperty rotationSpeed;
-        private SerializedProperty sprintSpeed;
+        private SerializedProperty runSpeed;
         private SerializedProperty walkSpeed;
 
         public override void OnEnable()
         {
             groundMask = serializedObject.FindProperty(nameof(PlayerController.groundMask));
             walkSpeed = serializedObject.FindProperty(nameof(PlayerController.walkSpeed));
-            sprintSpeed = serializedObject.FindProperty(nameof(PlayerController.runSpeed));
-            rotationSpeed = serializedObject.FindProperty(nameof(PlayerController.rotationSpeed));
+            runSpeed = serializedObject.FindProperty(nameof(PlayerController.runSpeed));
             base.OnEnable();
         }
 
@@ -39,8 +36,7 @@ namespace Players
         {
             EditorGUILayout.PropertyField(groundMask);
             EditorGUILayout.PropertyField(walkSpeed);
-            EditorGUILayout.PropertyField(sprintSpeed);
-            EditorGUILayout.PropertyField(rotationSpeed);
+            EditorGUILayout.PropertyField(runSpeed);
         }
 
         public override void OnInspectorGUI()
@@ -61,53 +57,95 @@ namespace Players
     }
 #endif
 
-    public class PlayerController : NetworkTransform, IMoveState
+    public class PlayerController : NetworkTransform, IActionState
     {
 #if UNITY_EDITOR
         public bool controllerPropertiesVisible;
 #endif
         public LayerMask groundMask;
-        public float walkSpeed = 3f;
-        public float runSpeed = 4.5f;
-        public float rotationSpeed = 50f;
+        public float walkSpeed = 30f;
+        public float runSpeed = 45f;
 
-        internal PlayerInputHandler playerInput;
-        private PlayerNetworkAnimator animator;
+        private Rigidbody rb;
+
+        private HittableBody hittableBody;
+        private GravityBody gravityBody;
+
+        internal PlayerInputHandler inputHandler;
+        private PlayerReadyChecker readyChecker;
         private PlayerEntity entity;
-        private PlayerHealth playerHealth;
+
+        private UnitNetworkAnimator animator;
+
         private bool isAround;
         private float moveSpeed;
         private float mouseSensitivity = 0.25f;
 
-        private Rigidbody rb;
-
-        private PlayerReadyChecker readyChecker;
         private float slowdownRate = 1f;
 
         public void Reset()
         {
             CanMove = true;
 
-            walkSpeed = 3f;
-            runSpeed = 4.5f;
+            walkSpeed = 30f;
+            runSpeed = 45f;
+            slowdownRate = 1.0f;
+        }
+
+        protected override void Awake()
+        {
+            if (!IsOwner) return;
+
+
+            rb = GetComponent<Rigidbody>();
+            gravityBody = GetComponent<GravityBody>();
+            hittableBody = GetComponent<HittableBody>();
+
+            entity = GetComponent<PlayerEntity>();
+            readyChecker = GetComponent<PlayerReadyChecker>();
+            animator = GetComponent<UnitNetworkAnimator>();
+            inputHandler = GetComponent<PlayerInputHandler>();
+
+            base.Awake();
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (!IsOwner) return;
+
+            gravityBody.Initialize();
+            hittableBody.SetHealthPoint(3);
+
+            CameraManager.Instance.SetFollowTarget(transform);
+            CameraManager.Instance.LookMove();
+            CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
+
+            PivotBinder.Instance?.BindPivot(transform);
+
+            SubscribeInputEvent();
+
+            base.OnNetworkSpawn();
         }
 
         private void Start()
         {
             if (!IsOwner) return;
 
-            var saved = PlayerPrefs.GetFloat("opt_mouse_sens", mouseSensitivity);
-
-            ApplyMouseSensitivity(saved);
-
             moveSpeed = walkSpeed;
+
+            inputHandler.HideCursor();
+
+            var saved = PlayerPrefs.GetFloat("opt_mouse_sens", mouseSensitivity);
+            ApplyMouseSensitivity(saved);
         }
 
-        private void Update()
+        public override void OnNetworkDespawn()
         {
             if (!IsOwner) return;
 
-            AlignToSurface();
+            UnsubscribeInputEvent();
+
+            base.OnNetworkDespawn();
         }
 
         private void FixedUpdate()
@@ -119,12 +157,6 @@ namespace Players
             GamePlayEventHandler.OnPlayerSpined(entity.isSpinHold);
         }
 
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(transform.position, 0.05f);
-        }
-
         public bool CanMove { get; set; } = true;
         public bool IsJumping { get; set; }
 
@@ -133,160 +165,101 @@ namespace Players
             mouseSensitivity = Mathf.Clamp(value, 0.02f, 5f);
         }
 
-        public override void OnNetworkSpawn()
-        {
-            InitializeComponent();
-            InitializeFollowCamera();
-            Subscribe();
-
-            InitializePlanet();
-
-            base.OnNetworkSpawn();
-        }
-
-        public override void OnNetworkDespawn()
-        {
-            Unsubscribe();
-            PlanetGravity.Instance?.Unsubscribe(rb);
-
-            base.OnNetworkDespawn();
-        }
-
-        private void OnOnLoadComplete(ulong clientId, string sceneName, LoadSceneMode loadSceneMode)
+        private void OnNetworkSceneLoadComplete(ulong id, string sceneName, LoadSceneMode mode)
         {
             if (!IsOwner) return;
-            if (clientId != NetworkManager.LocalClientId) return;
+            if (id != NetworkManager.LocalClientId) return;
 
-            InitializePlanet();
-
-            playerInput.ShowCursor();
-
+            gravityBody.Initialize();
             entity.AlignForward();
+            inputHandler.HideCursor();
 
-            if (!sceneName.Equals("Lobby")) return;
+            GamePlayEventHandler.OnUIChanged(sceneName);
 
-            GamePlayEventHandler.OnUIChanged("Lobby");
+            switch (sceneName)
+            {
+                case "Lobby":
+                {
+                    Reset();
+                    entity.Reset();
+                    // health.Reset();
+                    readyChecker.Reset();
 
-            Reset();
-            entity.Reset();
-            playerHealth.Reset();
-            readyChecker.Reset();
+                    var clients = NetworkManager.ConnectedClientsIds.ToList();
 
-            var clients = NetworkManager.ConnectedClientsIds.ToList();
+                    var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(id), 2f, 4);
 
-            var pos = Util.GetCirclePositions(Vector3.zero, clients.IndexOf(clientId), 2f, 4);
-
-            transform.SetPositionAndRotation(pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
+                    transform.SetPositionAndRotation(pos, Quaternion.LookRotation((Vector3.zero - pos).normalized));
+                    break;
+                }
+                case "InGame":
+                {
+                    break;
+                }
+            }
         }
 
-        private void Subscribe()
+        private void SubscribeInputEvent()
         {
             if (!IsOwner) return;
 
-            NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
+            NetworkManager.SceneManager.OnLoadComplete += OnNetworkSceneLoadComplete;
 
-            playerInput.InputActions.Player.Look.performed += Look;
-            playerInput.InputActions.Player.Look.canceled += Look;
-            playerInput.InputActions.Player.RightClick.performed += Rmb;
-            playerInput.InputActions.Player.RightClick.canceled += Rmb;
-            playerInput.InputActions.Player.Move.performed += Movement;
-            playerInput.InputActions.Player.Move.canceled += Movement;
-            playerInput.InputActions.Player.Run.performed += Run;
-            playerInput.InputActions.Player.Run.canceled += Run;
-            playerInput.InputActions.Player.Spin.performed += Spin;
-            playerInput.InputActions.Player.Spin.canceled += Spin;
-            playerInput.InputActions.Player.Jump.performed += Jump;
-            playerInput.InputActions.Player.Attack.started += Attack;
+            inputHandler.InputActions.Player.Look.performed += Look;
+            inputHandler.InputActions.Player.Look.canceled += Look;
+            inputHandler.InputActions.Player.RightClick.performed += Rmb;
+            inputHandler.InputActions.Player.RightClick.canceled += Rmb;
+            inputHandler.InputActions.Player.Move.performed += Movement;
+            inputHandler.InputActions.Player.Move.canceled += Movement;
+            inputHandler.InputActions.Player.Run.performed += Run;
+            inputHandler.InputActions.Player.Run.canceled += Run;
+            inputHandler.InputActions.Player.Spin.performed += Spin;
+            inputHandler.InputActions.Player.Spin.canceled += Spin;
+            inputHandler.InputActions.Player.Jump.performed += Jump;
+            inputHandler.InputActions.Player.Attack.started += Attack;
 
-            playerHealth.health.OnValueChanged += Hit;
+            hittableBody.healthPoint.OnValueChanged += Hit;
         }
 
-        private void Unsubscribe()
+        private void UnsubscribeInputEvent()
         {
             if (!IsOwner) return;
 
-            NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
+            NetworkManager.SceneManager.OnLoadComplete -= OnNetworkSceneLoadComplete;
 
-            playerInput.InputActions.Player.Look.performed -= Look;
-            playerInput.InputActions.Player.Look.canceled -= Look;
-            playerInput.InputActions.Player.RightClick.performed -= Rmb;
-            playerInput.InputActions.Player.RightClick.canceled -= Rmb;
-            playerInput.InputActions.Player.Move.performed -= Movement;
-            playerInput.InputActions.Player.Move.canceled -= Movement;
-            playerInput.InputActions.Player.Run.performed -= Run;
-            playerInput.InputActions.Player.Run.canceled -= Run;
-            playerInput.InputActions.Player.Spin.performed -= Spin;
-            playerInput.InputActions.Player.Spin.canceled -= Spin;
-            playerInput.InputActions.Player.Jump.performed -= Jump;
-            playerInput.InputActions.Player.Attack.performed -= Attack;
+            inputHandler.InputActions.Player.Look.performed -= Look;
+            inputHandler.InputActions.Player.Look.canceled -= Look;
+            inputHandler.InputActions.Player.RightClick.performed -= Rmb;
+            inputHandler.InputActions.Player.RightClick.canceled -= Rmb;
+            inputHandler.InputActions.Player.Move.performed -= Movement;
+            inputHandler.InputActions.Player.Move.canceled -= Movement;
+            inputHandler.InputActions.Player.Run.performed -= Run;
+            inputHandler.InputActions.Player.Run.canceled -= Run;
+            inputHandler.InputActions.Player.Spin.performed -= Spin;
+            inputHandler.InputActions.Player.Spin.canceled -= Spin;
+            inputHandler.InputActions.Player.Jump.performed -= Jump;
+            inputHandler.InputActions.Player.Attack.performed -= Attack;
 
-            playerHealth.health.OnValueChanged -= Hit;
-        }
-
-        private void Rmb(InputAction.CallbackContext ctx)
-        {
-            isAround = ctx.performed;
-        }
-
-        private void InitializeComponent()
-        {
-            if (!IsOwner) return;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-
-            rb = GetComponent<Rigidbody>();
-            playerInput = GetComponent<PlayerInputHandler>();
-            entity = GetComponent<PlayerEntity>();
-            playerHealth = GetComponent<PlayerHealth>();
-            animator = GetComponent<PlayerNetworkAnimator>();
-            readyChecker = GetComponent<PlayerReadyChecker>();
-        }
-
-        private void InitializeFollowCamera()
-        {
-            if (!IsOwner) return;
-
-            CameraManager.Instance.SetFollowTarget(transform);
-            CameraManager.Instance.LookMove();
-            CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
-        }
-
-        private void InitializePlanet()
-        {
-            if (!IsOwner) return;
-            if (!PlanetGravity.Instance) return;
-
-            rb.useGravity = false;
-            PlanetGravity.Instance.Subscribe(rb);
-
-            PivotBinder.Instance?.BindPivot(transform);
+            hittableBody.healthPoint.OnValueChanged -= Hit;
         }
 
         private void HandleMovement()
         {
             if (!CanMove || entity.isSpinHold) return;
 
-            var moveInput = playerInput.MoveInput;
+            var moveInput = inputHandler.MoveInput;
 
             if (moveInput == Vector2.zero) return;
 
             var moveDirection = transform.forward * moveInput.y + transform.right * moveInput.x;
             moveDirection.Normalize();
 
-            rb.MovePosition(rb.position + moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime));
+            rb.AddForce(moveDirection * (moveSpeed * slowdownRate * Time.fixedDeltaTime), ForceMode.VelocityChange);
         }
 
-        private void AlignToSurface()
+        private void Rmb(InputAction.CallbackContext ctx)
         {
-            if (!PlanetGravity.Instance) return;
-
-            var gravityDirection = -PlanetGravity.Instance.GetGravityDirection(transform.position);
-
-            var targetRotation = Quaternion.FromToRotation(
-                transform.up, gravityDirection) * transform.rotation;
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+            isAround = ctx.performed;
         }
 
         private void Look(InputAction.CallbackContext ctx)
@@ -301,7 +274,7 @@ namespace Players
             {
                 CameraManager.Instance.LookMove();
 
-                transform.Rotate(Vector3.up * (playerInput.LookInput.x * mouseSensitivity));
+                transform.Rotate(Vector3.up * (inputHandler.LookInput.x * mouseSensitivity));
 
                 CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
             }
@@ -311,7 +284,7 @@ namespace Players
         {
             if (ctx.canceled)
             {
-                CameraManager.Instance.Orbit.HorizontalAxis.Value = 0;
+                CameraManager.Instance.orbit.HorizontalAxis.Value = 0;
                 CameraManager.Instance.LookAround();
             }
 
@@ -337,7 +310,6 @@ namespace Players
 
         private void Attack(InputAction.CallbackContext ctx)
         {
-            if (!IsOwner) return;
             if (!CanMove) return;
             if (IsJumping) return;
             if (entity.isSpinHold) return;

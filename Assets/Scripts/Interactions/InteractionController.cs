@@ -3,6 +3,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;
+using World;
 
 namespace Interactions
 {

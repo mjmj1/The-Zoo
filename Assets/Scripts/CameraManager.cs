@@ -7,7 +7,7 @@ public class CameraManager : MonoBehaviour
 
     private readonly Vector2 range = new(-180, 180);
 
-    internal CinemachineOrbitalFollow Orbit;
+    internal CinemachineOrbitalFollow orbit;
     
     public static CameraManager Instance { get; private set; }
 
@@ -26,49 +26,49 @@ public class CameraManager : MonoBehaviour
 
     public void Start()
     {
-        Orbit = Instantiate(cameraPrefab).GetComponent<CinemachineOrbitalFollow>();
+        orbit = Instantiate(cameraPrefab).GetComponent<CinemachineOrbitalFollow>();
 
-        DontDestroyOnLoad(Orbit.gameObject);
+        DontDestroyOnLoad(orbit.gameObject);
 
         EnableCamera(false);
     }
 
     public void EnableCamera(bool enable)
     {
-        Orbit.gameObject.SetActive(enable);
+        orbit.gameObject.SetActive(enable);
     }
 
     public void SetFollowTarget(Transform target)
     {
-        Orbit.VirtualCamera.Follow = target;
-        Orbit.VirtualCamera.LookAt = target;
+        orbit.VirtualCamera.Follow = target;
+        orbit.VirtualCamera.LookAt = target;
     }
 
     public void LookAround()
     {
-        Orbit.HorizontalAxis.Range = range;
+        orbit.HorizontalAxis.Range = range;
     }
 
     public void LookMove()
     {
-        Orbit.HorizontalAxis.Range = Vector2.zero;
+        orbit.HorizontalAxis.Range = Vector2.zero;
     }
 
     public void SetEulerAngles(float angle)
     {
-        Orbit.HorizontalAxis.Value = angle;
+        orbit.HorizontalAxis.Value = angle;
     }
 
     public float GetY()
     {
-        return Orbit.transform.rotation.eulerAngles.y;
+        return orbit.transform.rotation.eulerAngles.y;
     }
 
     public void LookMoveSmooth(float targetYaw)
     {
-        var current = Orbit.HorizontalAxis.Value;
+        var current = orbit.HorizontalAxis.Value;
 
         var smooth = Mathf.MoveTowardsAngle(current, targetYaw, 100 * Time.deltaTime);
-        Orbit.HorizontalAxis.Value = smooth;
+        orbit.HorizontalAxis.Value = smooth;
     }
 }

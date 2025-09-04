@@ -1,23 +1,21 @@
 using UnityEngine;
-using World;
 
-namespace Interactions
+namespace World
 {
-    public class PickupGravity : MonoBehaviour
+    public class GravityBody : MonoBehaviour
     {
+        private readonly float alignSpeed = 500f;
         private Rigidbody rb;
-        private readonly float rotationSpeed = 500f;
+
+        public void Initialize()
+        {
+            rb.useGravity = !PlanetGravity.Instance;
+            PlanetGravity.Instance?.Subscribe(rb);
+        }
 
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
-        }
-
-        private void Start()
-        {
-            rb.useGravity = !PlanetGravity.Instance;
-
-            PlanetGravity.Instance?.Subscribe(rb);
         }
 
         private void OnDestroy()
@@ -39,7 +37,7 @@ namespace Interactions
             var targetRotation = Quaternion.FromToRotation(
                 transform.up, gravityDirection) * transform.rotation;
             transform.rotation = Quaternion.Slerp(
-                transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                transform.rotation, targetRotation, alignSpeed * Time.deltaTime);
         }
     }
 }

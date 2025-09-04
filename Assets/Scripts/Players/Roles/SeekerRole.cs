@@ -1,6 +1,7 @@
 using AI;
 using EventHandler;
 using GamePlay;
+using Unit;
 using Unity.Netcode;
 using UnityEngine;
 
@@ -13,14 +14,14 @@ namespace Players.Roles
         [SerializeField] private LayerMask hiderMask;
         [SerializeField] private Transform attackOrigin;
 
+        private HittableBody hittableBody;
         private PlayerEntity entity;
-        private PlayerHealth playerHealth;
         private PlayerController controller;
 
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
-            playerHealth = GetComponent<PlayerHealth>();
+            hittableBody = GetComponent<HittableBody>();
             controller = GetComponent<PlayerController>();
         }
 
@@ -54,7 +55,7 @@ namespace Players.Roles
         {
             print("Npc Death");
 
-            playerHealth.Damaged();
+            hittableBody.Damaged(1);
         }
 
         private void OnPlayerAttack()
@@ -83,9 +84,9 @@ namespace Players.Roles
             print($"target-{OwnerClientId} Hit");
 
             var target = NetworkManager.Singleton
-                .LocalClient.PlayerObject.GetComponent<PlayerHealth>();
+                .LocalClient.PlayerObject.GetComponent<HittableBody>();
 
-            target.Damaged();
+            target.Damaged(1);
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
@@ -93,11 +94,11 @@ namespace Players.Roles
         {
             if (!targetRef.TryGet(out var nob)) return;
 
-            var component = nob.GetComponent<PlayerHealth>();
+            var component = nob.GetComponent<HittableBody>();
 
             if (component != null)
             {
-                component.Damaged();
+                component.Damaged(1);
             }
 
             if (!nob.TryGetComponent<Npa>(out var npa)) return;
