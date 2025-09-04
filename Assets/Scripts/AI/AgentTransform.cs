@@ -1,5 +1,3 @@
-using System;
-using Maps;
 using Unity.Netcode;
 using Unity.Netcode.Components;
 using UnityEngine;
@@ -16,18 +14,6 @@ namespace AI
             base.Awake();
 
             rb = GetComponent<Rigidbody>();
-        }
-
-        private void FixedUpdate()
-        {
-            if (!TorusWorld.Instance) return;
-
-            var wrapped = TorusWorld.Instance.WrapXZ(rb.position);
-
-            if (!((wrapped - rb.position).sqrMagnitude > 0.0001f)) return;
-
-            rb.position = wrapped;
-            Teleport(wrapped, transform.rotation, transform.localScale);
         }
 
         public override void OnDestroy()

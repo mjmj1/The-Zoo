@@ -1,6 +1,5 @@
 using System.Collections;
 using Interactions;
-using Maps;
 using Mission;
 using Networks;
 using Players;
@@ -164,8 +163,6 @@ namespace GamePlay
 
             if (PlanetGravity.Instance)
                 randomPos = Util.GetRandomPositionInSphere(PlanetGravity.Instance.GetRadius());
-            else if (TorusWorld.Instance)
-                randomPos = Util.GetRandomPosition(-15f, 15f, -15f, 15f, 1f);
 
             var obj = NetworkManager.Singleton.ConnectedClients[clientId].PlayerObject;
             obj.transform.position = randomPos;
@@ -195,7 +192,7 @@ namespace GamePlay
             yield return new WaitForSeconds(2f);
 
             foreach (var data in roleManager.HiderIds)
-                NpcSpawner.Instance.SpawnNpcRpc(data.AnimalIndex, 5);
+                NpcSpawner.Instance.SpawnNpcRpc(data.animalIndex, 5);
         }
 
         private IEnumerator CountTime()

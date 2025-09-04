@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Maps;
 using Unity.Netcode;
 using UnityEngine;
 using Utils;

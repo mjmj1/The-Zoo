@@ -6,27 +6,28 @@ namespace Players
 {
     public struct PlayerData : INetworkSerializable, IEquatable<PlayerData>
     {
-        public ulong ClientId;
-        public FixedString32Bytes Name;
-        public int AnimalIndex;
+        public ulong clientId;
+        public FixedString32Bytes name;
+        public int animalIndex;
 
         public PlayerData(ulong id, FixedString32Bytes name, int index)
         {
-            ClientId = id;
-            Name = name;
-            AnimalIndex = index;
+            clientId = id;
+            this.name = name;
+            animalIndex = index;
         }
 
         public bool Equals(PlayerData other)
         {
-            return ClientId == other.ClientId && Name.Equals(other.Name) && AnimalIndex.Equals(other.AnimalIndex);
+            return clientId == other.clientId && name.Equals(other.name) &&
+                   animalIndex.Equals(other.animalIndex);
         }
 
         public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
         {
-            serializer.SerializeValue(ref ClientId);
-            serializer.SerializeValue(ref Name);
-            serializer.SerializeValue(ref AnimalIndex);
+            serializer.SerializeValue(ref clientId);
+            serializer.SerializeValue(ref name);
+            serializer.SerializeValue(ref animalIndex);
         }
     }
 }

@@ -56,25 +56,25 @@ namespace UI.GameResult
             if (isSeekerWin)
                 foreach (var seeker in PlayManager.Instance.roleManager.SeekerIds)
                 {
-                    if (!uniqueIds.Add(seeker.ClientId)) continue;
+                    if (!uniqueIds.Add(seeker.clientId)) continue;
 
                     var item = Instantiate(seekerView, playersParent);
 
-                    item.SetPlayerName(seeker.Name.Value);
+                    item.SetPlayerName(seeker.name.Value);
                 }
             else
                 foreach (var hider in PlayManager.Instance.roleManager.HiderIds)
                 {
-                    if (!uniqueIds.Add(hider.ClientId)) continue;
+                    if (!uniqueIds.Add(hider.clientId)) continue;
 
                     var prefab =
-                        PlayManager.Instance.observerManager.observerIds.Contains(hider.ClientId)
+                        PlayManager.Instance.observerManager.observerIds.Contains(hider.clientId)
                             ? hiderDeath
                             : hiderAlive;
 
                     var item = Instantiate(prefab, playersParent);
 
-                    item.SetPlayerName(hider.Name.Value);
+                    item.SetPlayerName(hider.name.Value);
                 }
         }
 

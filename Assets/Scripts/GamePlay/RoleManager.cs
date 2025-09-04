@@ -30,7 +30,7 @@ namespace GamePlay
             if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Add) return;
 
             SetRoleRpc(PlayerEntity.Role.Hider,
-                RpcTarget.Single(changeEvent.Value.ClientId, RpcTargetUse.Temp));
+                RpcTarget.Single(changeEvent.Value.clientId, RpcTargetUse.Temp));
         }
 
         private void OnSeekerListChanged(NetworkListEvent<PlayerData> changeEvent)
@@ -38,7 +38,7 @@ namespace GamePlay
             if (changeEvent.Type != NetworkListEvent<PlayerData>.EventType.Add) return;
 
             SetRoleRpc(PlayerEntity.Role.Seeker,
-                RpcTarget.Single(changeEvent.Value.ClientId, RpcTargetUse.Temp));
+                RpcTarget.Single(changeEvent.Value.clientId, RpcTargetUse.Temp));
         }
 
         internal void AssignRole()
@@ -73,7 +73,7 @@ namespace GamePlay
         internal void RemoveHiderRpc(ulong clientId)
         {
             foreach (var data in HiderIds)
-                if (data.ClientId == clientId)
+                if (data.clientId == clientId)
                     HiderIds.Remove(data);
         }
 
@@ -81,7 +81,7 @@ namespace GamePlay
         internal void RemoveSeekerRpc(ulong clientId)
         {
             foreach (var data in SeekerIds)
-                if (data.ClientId == clientId)
+                if (data.clientId == clientId)
                     SeekerIds.Remove(data);
         }
 
