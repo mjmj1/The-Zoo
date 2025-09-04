@@ -22,12 +22,12 @@ namespace Players.Roles
         private Interactable currentInteractable;
 
         private PlayerEntity entity;
-        private InputHandler inputHandler;
+        private PlayerInputHandler playerInputHandler;
 
         private void Awake()
         {
             entity = GetComponent<PlayerEntity>();
-            inputHandler = GetComponent<InputHandler>();
+            playerInputHandler = GetComponent<PlayerInputHandler>();
         }
         
         private void FixedUpdate()
@@ -45,16 +45,16 @@ namespace Players.Roles
 
             entity.playerMarker.color = entity.roleColor.hiderColor;
 
-            inputHandler.InputActions.Player.Interact.performed += Interact;
-            inputHandler.InputActions.Player.Interact.canceled += Interact;
+            playerInputHandler.InputActions.Player.Interact.performed += Interact;
+            playerInputHandler.InputActions.Player.Interact.canceled += Interact;
 
             GamePlayEventHandler.PlayerAttack += TryInteract;
         }
 
         private void OnDisable()
         {
-            inputHandler.InputActions.Player.Interact.performed -= Interact;
-            inputHandler.InputActions.Player.Interact.canceled -= Interact;
+            playerInputHandler.InputActions.Player.Interact.performed -= Interact;
+            playerInputHandler.InputActions.Player.Interact.canceled -= Interact;
 
             GamePlayEventHandler.PlayerAttack -= TryInteract;
         }

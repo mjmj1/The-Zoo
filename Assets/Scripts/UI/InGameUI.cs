@@ -42,7 +42,7 @@ namespace UI
                 .GetComponent<Hittable>().health.OnValueChanged += OnPlayerHealthChanged;
 
             var input = NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerController>().input;
+                .GetComponent<PlayerController>().playerInput;
 
             input.InputActions.UI.Tab.performed += OnTabKeyPressed;
             input.InputActions.UI.Tab.canceled += OnTabKeyPressed;
@@ -65,7 +65,7 @@ namespace UI
             PlayManager.Instance.currentTime.OnValueChanged -= OnTimerChanged;
 
             var input = NetworkManager.Singleton.LocalClient.PlayerObject
-                .GetComponent<PlayerController>().input;
+                .GetComponent<PlayerController>().playerInput;
 
             input.InputActions.UI.Tab.performed -= OnTabKeyPressed;
             input.InputActions.UI.Tab.canceled -= OnTabKeyPressed;

@@ -71,7 +71,7 @@ namespace Players
         public float runSpeed = 4.5f;
         public float rotationSpeed = 50f;
 
-        internal InputHandler input;
+        internal PlayerInputHandler playerInput;
         private PlayerNetworkAnimator animator;
         private PlayerEntity entity;
         private Hittable hittable;
@@ -159,7 +159,7 @@ namespace Players
 
             InitializePlanet();
 
-            input.MouseLeftClicked();
+            playerInput.ShowCursor();
 
             entity.AlignForward();
 
@@ -185,18 +185,18 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete += OnOnLoadComplete;
 
-            input.InputActions.Player.Look.performed += Look;
-            input.InputActions.Player.Look.canceled += Look;
-            input.InputActions.Player.RightClick.performed += Rmb;
-            input.InputActions.Player.RightClick.canceled += Rmb;
-            input.InputActions.Player.Move.performed += Movement;
-            input.InputActions.Player.Move.canceled += Movement;
-            input.InputActions.Player.Run.performed += Run;
-            input.InputActions.Player.Run.canceled += Run;
-            input.InputActions.Player.Spin.performed += Spin;
-            input.InputActions.Player.Spin.canceled += Spin;
-            input.InputActions.Player.Jump.performed += Jump;
-            input.InputActions.Player.Attack.started += Attack;
+            playerInput.InputActions.Player.Look.performed += Look;
+            playerInput.InputActions.Player.Look.canceled += Look;
+            playerInput.InputActions.Player.RightClick.performed += Rmb;
+            playerInput.InputActions.Player.RightClick.canceled += Rmb;
+            playerInput.InputActions.Player.Move.performed += Movement;
+            playerInput.InputActions.Player.Move.canceled += Movement;
+            playerInput.InputActions.Player.Run.performed += Run;
+            playerInput.InputActions.Player.Run.canceled += Run;
+            playerInput.InputActions.Player.Spin.performed += Spin;
+            playerInput.InputActions.Player.Spin.canceled += Spin;
+            playerInput.InputActions.Player.Jump.performed += Jump;
+            playerInput.InputActions.Player.Attack.started += Attack;
 
             hittable.health.OnValueChanged += Hit;
         }
@@ -207,18 +207,18 @@ namespace Players
 
             NetworkManager.SceneManager.OnLoadComplete -= OnOnLoadComplete;
 
-            input.InputActions.Player.Look.performed -= Look;
-            input.InputActions.Player.Look.canceled -= Look;
-            input.InputActions.Player.RightClick.performed -= Rmb;
-            input.InputActions.Player.RightClick.canceled -= Rmb;
-            input.InputActions.Player.Move.performed -= Movement;
-            input.InputActions.Player.Move.canceled -= Movement;
-            input.InputActions.Player.Run.performed -= Run;
-            input.InputActions.Player.Run.canceled -= Run;
-            input.InputActions.Player.Spin.performed -= Spin;
-            input.InputActions.Player.Spin.canceled -= Spin;
-            input.InputActions.Player.Jump.performed -= Jump;
-            input.InputActions.Player.Attack.performed -= Attack;
+            playerInput.InputActions.Player.Look.performed -= Look;
+            playerInput.InputActions.Player.Look.canceled -= Look;
+            playerInput.InputActions.Player.RightClick.performed -= Rmb;
+            playerInput.InputActions.Player.RightClick.canceled -= Rmb;
+            playerInput.InputActions.Player.Move.performed -= Movement;
+            playerInput.InputActions.Player.Move.canceled -= Movement;
+            playerInput.InputActions.Player.Run.performed -= Run;
+            playerInput.InputActions.Player.Run.canceled -= Run;
+            playerInput.InputActions.Player.Spin.performed -= Spin;
+            playerInput.InputActions.Player.Spin.canceled -= Spin;
+            playerInput.InputActions.Player.Jump.performed -= Jump;
+            playerInput.InputActions.Player.Attack.performed -= Attack;
 
             hittable.health.OnValueChanged -= Hit;
         }
@@ -236,7 +236,7 @@ namespace Players
             Cursor.visible = false;
 
             rb = GetComponent<Rigidbody>();
-            input = GetComponent<InputHandler>();
+            playerInput = GetComponent<PlayerInputHandler>();
             entity = GetComponent<PlayerEntity>();
             hittable = GetComponent<Hittable>();
             animator = GetComponent<PlayerNetworkAnimator>();
@@ -267,7 +267,7 @@ namespace Players
         {
             if (!CanMove || entity.isSpinHold) return;
 
-            var moveInput = input.MoveInput;
+            var moveInput = playerInput.MoveInput;
 
             if (moveInput == Vector2.zero) return;
 
@@ -301,7 +301,7 @@ namespace Players
             {
                 CameraManager.Instance.LookMove();
 
-                transform.Rotate(Vector3.up * (input.LookInput.x * mouseSensitivity));
+                transform.Rotate(Vector3.up * (playerInput.LookInput.x * mouseSensitivity));
 
                 CameraManager.Instance.SetEulerAngles(transform.rotation.eulerAngles.y);
             }

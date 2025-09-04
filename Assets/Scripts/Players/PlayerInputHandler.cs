@@ -4,10 +4,8 @@ using UnityEngine.InputSystem;
 
 namespace Players
 {
-    internal class InputHandler : MonoBehaviour
+    internal class PlayerInputHandler : MonoBehaviour
     {
-        private bool isOverUI;
-
         public Vector2 MoveInput { get; private set; }
         public Vector2 LookInput { get; private set; }
 
@@ -25,12 +23,9 @@ namespace Players
 
             InputActions.UI.Escape.performed += EscapePressed;
             InputActions.UI.Click.performed += MouseLeftClicked;
-        }
 
-        private void Update()
-        {
-            if (!InputActions.Player.enabled)
-                isOverUI = IsPointerOverUI();
+            InputActions.UI.Alt.performed += AltButtonPressed;
+            InputActions.UI.Alt.canceled += AltButtonPressed;
         }
 
         private void OnEnable()
@@ -47,31 +42,47 @@ namespace Players
         {
             InputActions.UI.Escape.performed -= EscapePressed;
             InputActions.UI.Click.performed -= MouseLeftClicked;
+
+            InputActions.UI.Alt.performed -= AltButtonPressed;
+            InputActions.UI.Alt.canceled -= AltButtonPressed;
+        }
+
+        private void AltButtonPressed(InputAction.CallbackContext ctx)
+        {
+            if(ctx.performed)
+                ShowCursor();
+            else
+                HideCursor();
         }
 
         private void EscapePressed(InputAction.CallbackContext ctx)
+        {
+            ShowCursor();
+        }
+
+        private void MouseLeftClicked(InputAction.CallbackContext ctx)
+        {
+            if (IsPointerOverUI()) return;
+
+            HideCursor();
+        }
+
+        internal void HideCursor()
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+
+            CameraManager.Instance.EnableCamera(true);
+            InputActions.Player.Enable();
+        }
+
+        internal void ShowCursor()
         {
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 
             CameraManager.Instance.EnableCamera(false);
             InputActions.Player.Disable();
-        }
-
-        private void MouseLeftClicked(InputAction.CallbackContext ctx)
-        {
-            MouseLeftClicked();
-        }
-
-        internal void MouseLeftClicked()
-        {
-            if (isOverUI) return;
-
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-
-            CameraManager.Instance.EnableCamera(true);
-            InputActions.Player.Enable();
         }
 
         private static bool IsPointerOverUI()
