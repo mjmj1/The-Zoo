@@ -1,6 +1,7 @@
 using EventHandler;
 using System.Collections;
 using System.Linq;
+using GamePlay;
 using Unity.Netcode.Components;
 using UnityEditor;
 using UnityEngine;
@@ -258,6 +259,8 @@ namespace Players
 
             rb.useGravity = false;
             PlanetGravity.Instance.Subscribe(rb);
+
+            PivotBinder.Instance?.BindPivot(transform);
         }
 
         private void HandleMovement()

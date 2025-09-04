@@ -128,7 +128,7 @@ namespace AmazingAssets.CurvedWorld.Editor
             }
             foreach (MaterialProperty prop6 in materialPropertyList)
             {
-                if ((uint)(prop6.flags & MaterialProperty.PropFlags.HideInInspector) <= 0U)
+                if ((uint)(prop6.propertyFlags & ShaderPropertyFlags.HideInInspector) <= 0U)
                     materialEditor.ShaderProperty(prop6, prop6.displayName);
             }
             EditorGUILayout.Space();
