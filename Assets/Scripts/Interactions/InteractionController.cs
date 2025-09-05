@@ -52,7 +52,7 @@ namespace Interactions
 
                 spawner.Initialize(targetSet.Contains(i));
 
-                //interaction.GetComponent<InteractableSpawner>().Initialize(targetSet.Contains(i));
+                interaction.GetComponent<InteractableSpawner>().Initialize(targetSet.Contains(i));
             }
         }
 
